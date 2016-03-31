@@ -1,6 +1,5 @@
 <div class="panel panel-default" ng-repeat="file in files | orderBy: 'updated_at':false">
   <div class="panel-body">
-    <!--<p>Author: {{ file.author }}</p>-->
     <p>{{ file.markdown | limitTo:30 }}</p>
     <p>last edited: {{ file.updated_at | limitTo:16 }}</p>
     <p>

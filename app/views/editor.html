@@ -1,10 +1,10 @@
 <!--<textarea ui-codemirror ></textarea>-->
 
-<div ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model=markdown ng-change="onEditorChange()"></div>
+<div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model=markdown ng-change="onEditorChange()"></div>
 <p>
-	<!--<button ng-click="">undo</button>
-	<button ng-click="">repeat</button>
-	<button ng-click="">image</button>
-	<button ng-click="">label</button>-->
+	<!--<button ng-click="onUndoClick()">undo</button>-->
+	<!--<button ng-click="">repeat</button>-->
+	<button ng-click="onImageClick()">image</button>
+	<button ng-click="onLabelClick()">label</button>
 	<button ng-click="onSaveClick()">save</button>
 </p> 
