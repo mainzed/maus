@@ -12,12 +12,12 @@ angular.module('meanMarkdownApp')
 
  	// check if already editing
  	if (markdownService.getMarkdown().length === 0) {  // new
- 		console.log("new!: " + markdownService.getMarkdown().length);
+ 		//console.log("new!: " + markdownService.getMarkdown().length);
  		$scope.markdown = "This is a **template**.";
  		markdownService.setMarkdown($scope.markdown);
         markdownService.setCurrentFileId(-1);
  	} else {  // already editing
- 		console.log("already editing!: " + markdownService.getMarkdown().length);
+ 		//console.log("already editing!: " + markdownService.getMarkdown().length);
  		$scope.markdown = markdownService.getMarkdown();
  	}
 
@@ -25,7 +25,7 @@ angular.module('meanMarkdownApp')
   	var id = $routeParams.id;
 	if (id !== undefined) {  // new file
 		// existing file
-		console.log("getting file with ID: " + id);
+		//console.log("getting file with ID: " + id);
 		fileService.get({id: id}, function(file) {
 			markdownService.setMarkdown(file.markdown);
             markdownService.setCurrentFileId(file._id);
@@ -58,16 +58,19 @@ angular.module('meanMarkdownApp')
     // listeners
 
     $scope.onSaveClick = function() {
-        console.log("clicked save");
 
         var id = markdownService.getCurrentFileId();
         var markdown = markdownService.getMarkdown();
         console.log(id);
         if (id === -1) {  // new file
-            console.log("post!");
-            fileService.save({
+            var file = {
                 author: "John Doe",
                 markdown: markdown
+            };
+
+            // save as new file and set current id
+            fileService.save(file, function(file) {
+                markdownService.setCurrentFileId(file._id);
             });
         } else {  // existing file
             fileService.update({ id: id }, {

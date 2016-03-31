@@ -37,7 +37,17 @@ angular.module('meanMarkdownApp')
     	}
     	
     	markdownService.setMarkdown("");
-      markdownService.setCurrentFileId(-1);
+        markdownService.setCurrentFileId(-1);
     	window.location.href = "#/editor";
+    };
+
+    $scope.onRemoveClick = function(id) {
+        console.log("remove file!");
+        
+        fileService.remove({id: id}, function() {
+            console.log("file remove successfull!");
+        });
+
+        window.location.href = "/";
     };
   });

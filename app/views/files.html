@@ -3,9 +3,16 @@
     <!--<p>Author: {{ file.author }}</p>-->
     <p>{{ file.markdown | limitTo:30 }}</p>
     <p>last edited: {{ file.updated_at | limitTo:16 }}</p>
-    <p><a ng-href="#/editor/{{file._id}}">Edit</a></p>
-    <p><a ng-href="#" ng-click="onRemoveClick(file._id)">Delete</a></p>
+    <p>
+    	<a ng-href="#/editor/{{file._id}}">
+    		<span class="glyphicon glyphicon-pencil"></span> Edit 
+    	</a>
+    </p>
+    <p>
+    	<a href="#" ng-click="onRemoveClick(file._id)">
+    	<span class="glyphicon glyphicon-trash"></span> Delete 
+    	</a>
+    </p>
   </div>
 </div>
-
 <button ng-click="onCreateNewFile()">Create new file</button>
