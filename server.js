@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 
 // mongoose + mongoose schemas
 var mongoose = require('mongoose');
-//export MONGOLAB_URI="mongodb://admin:root@ds019678.mlab.com:19678/heroku_5d24197s"
-//var db = "mongodb://admin:root@ds019678.mlab.com:19678/heroku_5d24197s";
-var db = 'mongodb://localhost/markdownstore';
+
+//var db = 'mongodb://localhost/markdownstore';
+var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
 
 mongoose.connect(db, function(err) {
     if (err) {
