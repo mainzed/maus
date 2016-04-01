@@ -42,7 +42,7 @@ angular.module('meanMarkdownApp')
     };
 
     // bind editor to var to access it's methods later
-    var editor = angular.element('#codeMirrorEditor');
+    //var editor = angular.element('#codeMirrorEditor');
 
 
     // direct access to codemirror
@@ -83,12 +83,23 @@ angular.module('meanMarkdownApp')
 
     };
 
+    $scope.onFilesClick = function() {
+        window.location.href = "/#/files";
+    };
+
     $scope.onLabelClick = function() {
-        $scope.markdown += "\n!label(name, uri)";
+        $scope.markdown += "\n[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)";
+        markdownService.setMarkdown($scope.markdown);
+    };
+
+    $scope.onLinkClick = function() {
+        $scope.markdown += "\n[I'm a link](https://www.google.com)";
+        markdownService.setMarkdown($scope.markdown);
     };
 
     $scope.onImageClick = function() {
-        $scope.markdown += "\n![image-alt](https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTZs5OnFksgdOw_wKv72Ep5v1pO32SVV-KZPJEDH7J86V5pfGO8>)\n*Caption this!*\n\n";
+        $scope.markdown += "\n![I'm an image](http://placehold.it/350x150)\n*I'm the optional image caption!*\n\n";
+        markdownService.setMarkdown($scope.markdown);
     };
 
     $scope.onUndoClick = function() {
@@ -99,6 +110,47 @@ angular.module('meanMarkdownApp')
         what.undo();
 
         //var codeMirrorInstance = angular.element('#idCodemirror').CodeMirror;
+    };
+
+    $scope.onOlatClick = function() {
+        if (markdownService.getMarkdown().length > 0) {
+            var html = marked(markdownService.getMarkdown());
+            if (html !== undefined) {
+
+                // attach body to html
+                var content =   "<html>\n" +
+                                "  <head>\n" +
+                                "  </head>\n"+
+                                "  <body>\n" +
+                                html + 
+                                "  </body>\n"+
+                                "</html>\n";
+
+                var anchor = document.querySelector('#exportOlat');
+                anchor.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+                // trigger download
+                anchor.download = 'export.html';
+            }
+
+        } else {
+            console.log("no markdown available! start editing something or choose existing file");
+        }
+
+    };
+    
+    $scope.onMarkdownClick = function() {
+        if (markdownService.getMarkdown().length > 0) {
+            var markdown = markdownService.getMarkdown();
+            if (markdown !== undefined) {
+                var anchor = document.querySelector('#exportMarkdown');
+                anchor.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(markdown);
+                // trigger download
+                anchor.download = 'export.md';
+            }
+
+        } else {
+            console.log("no markdown available! start editing something or choose existing file");
+        }
     };
 
     /**

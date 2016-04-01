@@ -10,8 +10,12 @@
 angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, fileService, markdownService) {
     console.log("loading MainCtrl...");
-  	$scope.files = fileService.query();
+  	
+
+
+    $scope.files = fileService.query();
     
+
     // listeners
     $scope.onCreateNewFile = function() {
     	// TODO: make popup will cancel option

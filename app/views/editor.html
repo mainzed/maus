@@ -1,10 +1,58 @@
 <!--<textarea ui-codemirror ></textarea>-->
+<div class="header">
+  <div class="navbar navbar-default" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <a class="navbar-brand">mdWriter</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="js-navbar-collapse">
+
+        <ul class="nav navbar-nav">
+          <li class="active"><a ng-href="#/editor">Editor</a></li>
+          <li><a ng-href="#/preview">Preview</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model=markdown ng-change="onEditorChange()"></div>
 <p>
-	<!--<button ng-click="onUndoClick()">undo</button>-->
-	<!--<button ng-click="">repeat</button>-->
-	<button ng-click="onImageClick()">image</button>
-	<button ng-click="onLabelClick()">label</button>
-	<button ng-click="onSaveClick()">save</button>
+  <div id="editor-buttons">
+  	<!--<button ng-click="onUndoClick()">undo</button>-->
+  	<!--<button ng-click="">repeat</button>-->
+  	<button class="btn btn-default btn-sm editor-button" ng-click="onFilesClick()">back to files</button>
+  	
+    <!-- help-->
+    
+    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm" role="button"><i class="fa fa-question"></i></a>
+    <button class="btn btn-default btn-sm" ng-click="onImageClick()"><i class="fa fa-picture-o"></i></button>
+    <button class="btn btn-default btn-sm" ng-click="onLinkClick()"><i class="fa fa-link"></i></button>
+  	<button class="btn btn-default btn-sm" ng-click="onLabelClick()"><i class="fa fa-tags"></i></button>
+  	<button class="btn btn-default btn-sm" ng-click="onSaveClick()"><i class="fa fa-floppy-o"></i></button>
+  </div>
+	<div id="share-button" class="dropup">
+    <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+  	  <i class="fa fa-share-square-o"></i>
+  		<!--<span class="caret"></span>-->
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href="#" id="exportOlat" ng-click="onOlatClick()">as OLAT-HTML</a></li>
+      <li><a href="#" id="exportMarkdown" ng-click="onMarkdownClick()">as Markdown</a></li>
+    </ul>
+  </div>
+		
+	
 </p> 
+
+

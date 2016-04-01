@@ -8,3 +8,16 @@
 body {
   padding: 0;
 }
+
+#editor-buttons {
+	float: left;
+}
+
+#share-button {
+	float: left;
+	margin-left: 4px;
+}
+
+.CodeMirror {
+	height: 500px;
+}

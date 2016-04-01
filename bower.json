@@ -10,6 +10,7 @@
     "angular-route": "^1.4.0",
     "angular-sanitize": "^1.4.0",
     "angular-touch": "^1.4.0",
+    "font-awesome": "~4",
     "marked": "^0.3.5",
     "codemirror": "^5.13.2",
     "angular-ui-codemirror": "^0.3.0"

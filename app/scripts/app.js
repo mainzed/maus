@@ -23,11 +23,13 @@ angular
       .when('/', {
         redirectTo: '/files'
       })
+
       .when('/files', {
         templateUrl: 'views/files.html',
         controller: 'MainCtrl'
         //controllerAs: 'main'
       })
+
       .when('/editor/:id', {
           templateUrl: './views/editor.html',
           controller: 'EditorCtrl'
