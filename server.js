@@ -15,8 +15,8 @@ app.use(bodyParser.json());
 // mongoose + mongoose schemas
 var mongoose = require('mongoose');
 
-//var db = 'mongodb://localhost/markdownstore';
-var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
+var db = 'mongodb://localhost/markdownstore';
+//var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
 
 mongoose.connect(db, function(err) {
     if (err) {
@@ -28,6 +28,7 @@ mongoose.connect(db, function(err) {
 });
 
 var File = require('./app/scripts/models/file');
+var Definition = require('./app/scripts/models/definition');
 
 // security
 app.disable('x-powered-by');
@@ -95,6 +96,64 @@ app.delete('/api/v1/files/:id', function (req, res) {
     });
 });
 
+// definitions
+app.get('/api/v1/definitions', function (req, res) {
+    Definition.find(function(err, definitions) {
+        if (err) {
+            throw err;
+        }
+        res.json(definitions);
+    });
+});
+
+app.get('/api/v1/definitions/:id', function (req, res) {
+    var id = req.params.id;
+    Definition.findById(id, function(err, definition) {
+        if (err) {
+            res.status(404).send('Not found');
+        }
+        res.json(definition);
+    });
+});
+
+app.post('/api/v1/definitions', function (req, res) {
+    var definition = req.body;
+    Definition.create(definition, function(err, file) {
+        if (err) {
+            throw err;
+        }
+        res.json(file);
+    });
+});
+
+app.put('/api/v1/definitions/:id', function (req, res) {
+    var id = req.params.id;
+    var definition = req.body;   
+
+    var update = {
+        author: definition.author,
+        text: definition.text,
+        url: definition.url
+    };
+    Definition.findOneAndUpdate({_id: id}, update, function(err, definition) {
+        if (err) {
+            throw err;
+        }
+        res.json(definition);
+    });
+});
+
+/*app.delete('/api/v1/files/:id', function (req, res) {
+    var id = req.params.id;
+    File.deleteFile(id, function(err, file) {
+        if (err) {
+            throw err;
+        }
+        res.json(file);
+    });
+});*/
+
 app.listen(port, function () {
     console.log('Server listening on port ' + port + "!");
+    
 });

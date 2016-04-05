@@ -1,0 +1,32 @@
+<div class="container">
+  <table class="table"> 
+    <thead> 
+      <tr> 
+        <th>#</th>
+        <th>Definition</th>
+        <th>URL</th>
+        <th>Author</th>
+        <th></th>
+      </tr> 
+    </thead> 
+
+    <tbody> 
+      <tr ng-repeat="definition in definitions"> 
+        <th scope="row">{{$index + 1}}</th>
+
+        <td>{{ definition.text }}</td> 
+        <td>{{ definition.url }}</td> 
+        <td>{{ definition.author }}</td>
+        <td>
+          <a ng-href="#/definitions/{{definition._id}}">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+          </a>
+        </td>
+      </tr> 
+
+    </tbody> 
+  </table>
+
+  <a type="button" href="#/files" class="btn btn-default btn-sm">back to files</a>
+  <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick()">create new</a>
+</div>

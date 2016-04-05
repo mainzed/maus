@@ -19,6 +19,7 @@ angular.module('meanMarkdownApp')
  	} else {  // already editing
  		//console.log("already editing!: " + markdownService.getMarkdown().length);
  		$scope.markdown = markdownService.getMarkdown();
+        
  	}
 
  	// check if id was provided to prefill with existing markdown
@@ -30,6 +31,7 @@ angular.module('meanMarkdownApp')
 			markdownService.setMarkdown(file.markdown);
             markdownService.setCurrentFileId(file._id);
 			$scope.markdown = markdownService.getMarkdown();
+            $scope.file = file; // TODO: use $scope.file.markdown instead of $scope.markdown
 		});
 	}
 	
@@ -64,21 +66,28 @@ angular.module('meanMarkdownApp')
     // listeners
 
     $scope.onSaveClick = function() {
+        
         var id = markdownService.getCurrentFileId();
         var markdown = markdownService.getMarkdown();
+
         if (id === -1) {  // new file
+            console.log("saving as new file!");
+
             var file = {
                 author: "John Doe",
-                markdown: markdown
+                markdown: markdown,
+                title: $scope.file.title
             };
+            console.log(file);
             // save as new file and set current id
             fileService.save(file, function(file) {
                 markdownService.setCurrentFileId(file._id);
             });
         } else {  // existing file
-            fileService.update({ id: id }, {
-                markdown: markdown
-            });
+            console.log("updating existing!");
+            $scope.file.markdown = markdownService.getMarkdown();
+            console.log($scope.file);
+            fileService.update({ id: id }, $scope.file);
         }
 
     };
@@ -93,12 +102,23 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onLinkClick = function() {
-        $scope.markdown += "\n[I'm a link](https://www.google.com)";
+        $scope.markdown += "\n[I'm a link](https://www.google.com)\n";
         markdownService.setMarkdown($scope.markdown);
     };
 
     $scope.onImageClick = function() {
         $scope.markdown += "\n![I'm an image](http://placehold.it/350x150)\n*I'm the optional image caption!*\n\n";
+        markdownService.setMarkdown($scope.markdown);
+    };
+
+    $scope.onStoryScriptClick = function() {
+        $scope.markdown += "\n*Place storyscript inside asterisks*\n";
+        markdownService.setMarkdown($scope.markdown);
+    };
+
+    $scope.onTooltipLinkClick = function() {
+        console.log("show toolip!");
+        $scope.markdown += "\n[I'm a definition](https://en.wikipedia.org/wiki/Koala \"This is the tooltip text!\")";
         markdownService.setMarkdown($scope.markdown);
     };
 
@@ -159,5 +179,17 @@ angular.module('meanMarkdownApp')
     $scope.onEditorChange = function() {
     	markdownService.setMarkdown($scope.markdown);
     };
+
+    // enabling submenus
+    $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+        console.log("does somethnig!");
+        // Avoid following the href location when clicking
+        event.preventDefault(); 
+        // Avoid having the menu to close when clicking
+        event.stopPropagation(); 
+        // Re-add .open to parent sub-menu item
+        $(this).parent().addClass('open');
+        $(this).parent().find("ul").parent().find("li.dropdown").addClass('open');
+    });
 
   });

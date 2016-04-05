@@ -1,18 +1,26 @@
 <div class="panel panel-default" ng-repeat="file in files | orderBy: 'updated_at':false">
   <div class="panel-body">
-    <p>{{ file.markdown | limitTo:30 }}</p>
+    <h3>{{ file.title }}</h4>
     <p>last edited: {{ file.updated_at | limitTo:16 }}</p>
     <p>
-    	<a ng-href="#/editor/{{file._id}}">
-    		<span class="glyphicon glyphicon-pencil"></span> Edit 
+    	<a ng-href="#/editor/{{file._id}}" class="file-links">
+    		<span class="glyphicon glyphicon-pencil"></span> Edit
     	</a>
-    </p>
-    <p>
-    	<a href="#" ng-click="onRemoveClick(file._id)">
+
+      <a ng-href="#" target="_self" class="file-links" ng-click="onDownloadClick(file._id)">
+        <span class="glyphicon glyphicon-download-alt"></span> Download
+      </a>
+
+    	<a ng-href="#" ng-click="onRemoveClick(file._id)" class="file-links">
     	<span class="glyphicon glyphicon-trash"></span> Delete 
     	</a>
     </p>
   </div>
 </div>
 
-<button ng-click="onCreateNewFile()">Create new file</button>
+
+<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">Create new</button>
+<a type="button" href="#/definitions" class="btn btn-default btn-sm">definitions</a>
+
+
+

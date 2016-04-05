@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 
 var fileSchema = new Schema({
     author: { type: String, default: "John Doe" },
+    title: String,
     markdown: String,
     updated_at: { type: Date, default: Date.now }
 });
@@ -37,6 +38,7 @@ module.exports.updateFile = function(id, file, callback) {
     // but: "ALL ATTRIBUTES IN UPDATE HAVE TO BE ASSIGNED IN THE JSON, IT CANNOT BE UNDEFINED"
     var update = {
         author: file.author,
+        title: file.title,
         markdown: file.markdown
     };
 

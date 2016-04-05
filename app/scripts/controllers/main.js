@@ -33,4 +33,20 @@ angular.module('meanMarkdownApp')
         });
         window.location.href = "/";
     };
+
+    $scope.onDownloadClick = function(id) {
+        fileService.get({id: id}, function(file) {
+            console.log(file);
+            
+            // trigger download
+            var blob = new Blob([file.markdown], { type:"data:text/plain;charset=utf-8;" });           
+            var downloadLink = angular.element('<a></a>');
+            downloadLink.attr('href', window.URL.createObjectURL(blob));
+            downloadLink.attr('download', 'export.md');
+            downloadLink[0].click();
+     
+        });
+    };
   });
+
+
