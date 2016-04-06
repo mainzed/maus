@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, fileService, markdownService) {
+  .controller('MainCtrl', function ($scope, fileService, temporaryService) {
     console.log("loading MainCtrl...");
   	
 
@@ -19,11 +19,9 @@ angular.module('meanMarkdownApp')
     // listeners
     $scope.onCreateNewFile = function() {
     	// TODO: make popup will cancel option
-    	if (markdownService.getMarkdown().length > 0) {
-    		console.log("If you continue, unsaved changes will be lost.");
-    	}
-    	markdownService.setMarkdown("");
-        markdownService.setCurrentFileId(-1);
+        // reset currently edited data
+        temporaryService.setMarkdown("This is **markdown**.");
+        temporaryService.setTitle("");
     	window.location.href = "#/editor";
     };
 

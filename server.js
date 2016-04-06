@@ -15,8 +15,8 @@ app.use(bodyParser.json());
 // mongoose + mongoose schemas
 var mongoose = require('mongoose');
 
-var db = 'mongodb://localhost/markdownstore';
-//var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
+//var db = 'mongodb://localhost/markdownstore';
+var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
 
 mongoose.connect(db, function(err) {
     if (err) {
@@ -131,6 +131,7 @@ app.put('/api/v1/definitions/:id', function (req, res) {
     var definition = req.body;   
 
     var update = {
+        word: definition.word,
         author: definition.author,
         text: definition.text,
         url: definition.url

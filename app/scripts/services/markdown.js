@@ -8,12 +8,13 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .factory('markdownService', function () {
+  .factory('temporaryService', function () {
     // AngularJS will instantiate a singleton by calling "new" on this function
     var service = {};
 
-    var markdown = "";
-    var currentFileId;
+    var markdown = "This is a **template**.";
+    var title = "";
+    var currentFileId = -1;
     
     service.setMarkdown = function(newMarkdown){
     	markdown = newMarkdown;
@@ -22,6 +23,14 @@ angular.module('meanMarkdownApp')
   	service.getMarkdown = function(){
     	return markdown;
   	};
+
+    service.setTitle = function(newTitle){
+      title = newTitle;
+    };
+
+    service.getTitle = function(){
+      return title;
+    };
 
     service.setCurrentFileId = function(id){
       currentFileId = id;

@@ -3,6 +3,7 @@
     <thead> 
       <tr> 
         <th>#</th>
+        <th>Word</th>
         <th>Definition</th>
         <th>URL</th>
         <th>Author</th>
@@ -13,7 +14,7 @@
     <tbody> 
       <tr ng-repeat="definition in definitions"> 
         <th scope="row">{{$index + 1}}</th>
-
+        <td>{{ definition.word }}</td> 
         <td>{{ definition.text }}</td> 
         <td>{{ definition.url }}</td> 
         <td>{{ definition.author }}</td>
@@ -27,6 +28,6 @@
     </tbody> 
   </table>
 
-  <a type="button" href="#/files" class="btn btn-default btn-sm">back to files</a>
+  <a type="button" href="#/editor" class="btn btn-default btn-sm">back to editor</a>
   <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick()">create new</a>
 </div>

@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 
 var definitionSchema = new Schema({
     author: { type: String, default: "John Doe" },
+    word: String, 
     url: String,
     text: String,
     updated_at: { type: Date, default: Date.now }

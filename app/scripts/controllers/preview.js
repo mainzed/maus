@@ -8,11 +8,11 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, markdownService) {
+  .controller('PreviewCtrl', function ($scope, temporaryService) {
 
   	$scope.file = {};
     
-    if (markdownService.getMarkdown().length > 0) {  // markdown exists
+    if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
     	// convert markdown
 		var customRenderer = new marked.Renderer();
@@ -29,19 +29,21 @@ angular.module('meanMarkdownApp')
 
 
 
-		// create OLAT mhtl
-		var markdown = markdownService.getMarkdown();
+		// create OLAT
+		var markdown = temporaryService.getMarkdown();
  		var html = marked(markdown, { renderer: customRenderer });
  		
  		$scope.html = html;
 
 
  		// if links exist, create table of links
- 		var links = getLinksFromHtml(html);
-
+ 		var links = getLinks(html);
+ 		//console.log(html);
+ 		//console.log(links);
  		if (links.length) {
  			var linksTable = createLinksTable(links);
- 			$scope.html = html + linksTable;
+ 			var definitionsTable = createDefinitionsTable(links);
+ 			$scope.html = html + linksTable + definitionsTable;
  		}
  		
 
@@ -53,23 +55,58 @@ angular.module('meanMarkdownApp')
     // returns html containing table of links
     // requires array containing link objects
 	function createLinksTable(links) {
+		var counter = 0;
 		var html = "";
-		html += "<div id='links'>Links\n<ul>\n";
+		html += "<div id='links-table'>Links\n<ul>\n";
 		for (var key in links) {
 			var link = links[key];
-			html += "<li><a href='" + link.url + "'>" + link.title + "</a></li>\n";
+			var title = link[3];
+			var text = link[2];
+			var url = link[1];
+			if (!title) {  // skip links with titles (definitions)
+				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
+				counter++;
+			}
 		}
 		html += "</ul>\n</div>";
 
-		return html;
+		if (counter < 1) {
+			return "";
+		} else {
+			return html;
+		}
+	}
+
+	function createDefinitionsTable(links) {
+		var counter = 0; 
+		var html = "";
+		html += "<div id='definitions-table'>Definitions\n<ul>\n";
+		for (var key in links) {
+			var link = links[key];
+			var title = link[3];
+			var text = link[2];
+			var url = link[1];
+			if (title) {  // skip links with titles (definitions)
+				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
+				counter++;
+			}
+		}
+		html += "</ul>\n</div>";
+
+		
+		if (counter < 1) {
+			return "";
+		} else {
+			return html;
+		}
 	}
 
 	/**
 	 * returns an array that contains all links
 	 */
-	function getLinksFromMarkdown() {
+	/*function getLinksFromMarkdown() {
 		var links = [];
-		var markdown = markdownService.getMarkdown();	
+		var markdown = temporaryService.getMarkdown();	
 		var matches = markdown.match(/\[(.*?)\)/g);  // 'g' makes it return all matches
 	
 		// TODO: skip images
@@ -88,35 +125,57 @@ angular.module('meanMarkdownApp')
 			});
 		}
 		return links;
+	}*/
+
+	function getLinks(html) {
+	    var container = document.createElement("p");
+	    container.innerHTML = html;
+
+	    var anchors = container.getElementsByTagName("a");
+	    var list = [];
+
+	    for (var i = 0; i < anchors.length; i++) {
+	        var href = anchors[i].href;
+	        var title = anchors[i].title;
+	        var text = anchors[i].textContent;
+
+	        if (text === undefined) text = anchors[i].innerText;
+
+	        list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
+	    }
+
+	    return list;
 	}
 
-	function getLinksFromHtml(html) {
-		var links = [];
-		
-		var matches = html.match(/\<a(.*?)\<\/a\>/g);  // 'g' makes it return all matches
-	
-		// TODO: skip images
-		
-		if (matches) {
-			matches.forEach(function(link){
+	$scope.onOlatClick = function() {
+		console.log("trigger!");
+        if (temporaryService.getMarkdown().length > 0) {
+            var html = marked(temporaryService.getMarkdown());
+            if (html !== undefined) {
 
-				// skip links with tooltips!
-				console.log(link.match(/title=([^)]+)\>/g));
-				
+                // attach body to html
+                var content =   "<html>\n" +
+                                "  <head>\n" +
+                                "  </head>\n"+
+                                "  <body>\n" +
+                                html + 
+                                "  </body>\n"+
+                                "</html>\n";
 
-				var linkText = link.match(/\>([^)]+)\</g)[0].replace("<", "").replace(">", "");
-				console.log(linkText);
-				var linkUrl = link.match(/\"([^)]+)\"/g)[0].replace('"', "").replace('"', "");
-				console.log(linkUrl);
-				links.push({
-					text: linkText,
-					url: linkUrl,
-					title: ""
-				});
-			});
-		}
-		return links;
-	}
+                // trigger download
+	            var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
+	            var downloadLink = angular.element('<a></a>');
+	            downloadLink.attr('href', window.URL.createObjectURL(blob));
+	            downloadLink.attr('download', 'export.html');
+	            downloadLink[0].click();
+
+            }
+
+        } else {
+            console.log("no markdown available! start editing something or choose existing file");
+        }
+
+    };
   	
   });
 

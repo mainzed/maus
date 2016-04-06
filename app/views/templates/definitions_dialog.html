@@ -1,0 +1,10 @@
+<div ng-init="getDefinitions()">
+  <h3>Available Definitions</h3>
+  <ul ng-repeat="definition in definitions"> 
+    <li><button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)">{{ definition.word }}</button></li>
+  </ul>
+</div>
+
+<button class="btn btn-default btn-sm" ng-click="onDefinitionsEditClick(); closeThisDialog()">edit</button>
+
+

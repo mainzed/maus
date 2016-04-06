@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('DefinitionsCtrl', function ($scope, $routeParams, $location, definitionService) {
+  .controller('DefinitionsCtrl', function ($scope, $routeParams, $location, definitionService, temporaryService) {
     $scope.definitions = definitionService.query();
 
     // used to get definition by id -> for definition_details!
