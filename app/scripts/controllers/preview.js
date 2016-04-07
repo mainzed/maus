@@ -8,10 +8,11 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, temporaryService) {
+  .controller('PreviewCtrl', function ($scope, temporaryService, definitionService, cssInjector) {
 
   	$scope.file = {};
     
+
     if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
     	// convert markdown
@@ -31,20 +32,58 @@ angular.module('meanMarkdownApp')
 
 		// create OLAT
 		var markdown = temporaryService.getMarkdown();
+
  		var html = marked(markdown, { renderer: customRenderer });
  		
  		$scope.html = html;
 
 
- 		// if links exist, create table of links
- 		var links = getLinks(html);
- 		//console.log(html);
- 		//console.log(links);
- 		if (links.length) {
- 			var linksTable = createLinksTable(links);
- 			var definitionsTable = createDefinitionsTable(links);
- 			$scope.html = html + linksTable + definitionsTable;
- 		}
+ 		
+
+        // convert definitions
+        // convert definition
+        var words = $scope.html.match(/\{(.*?)\}/g);
+        if (words) {
+            words.forEach(function(word) {
+                
+                //word = word.replace("{", "").replace("}", "");
+                
+                var definitions = definitionService.query(function() {
+                    definitions.forEach(function(definition) {
+                        
+                        if (definition.word === word.replace("{", "").replace("}", "")) {
+                            //console.log($scope.html);
+                            var snippet = "<a href=\"" + definition.url +  "\" title=\"" + definition.text + "\">" + definition.word + "</a>";
+                            var html = $scope.html;
+                            //console.log("replacing: " + word + " with: " + snippet);
+                            
+                            //console.log(html.replace(word, snippet));
+
+                            // convert to anchors
+                            $scope.html = html.replace(word, snippet);
+
+                            //
+                        }
+                    });
+
+                });
+
+
+                //var definitionObject = getDefinitionByName(definition);
+                //console.log(definitionObject);
+            });    
+        }
+
+        // if links exist, create table of links
+        var links = getLinks(html);
+        //console.log(html);
+        //console.log(links);
+        if (links.length) {
+            console.log(links);
+            var linksTable = createLinksTable(links);
+            var definitionsTable = createDefinitionsTable(links);
+            $scope.html = html + linksTable + definitionsTable;
+        }
  		
 
 
@@ -63,7 +102,7 @@ angular.module('meanMarkdownApp')
 			var title = link[3];
 			var text = link[2];
 			var url = link[1];
-			if (!title) {  // skip links with titles (definitions)
+			if (!title && url !== "definition") {  // skip links with titles (definitions)
 				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
 				counter++;
 			}
@@ -86,7 +125,7 @@ angular.module('meanMarkdownApp')
 			var title = link[3];
 			var text = link[2];
 			var url = link[1];
-			if (title) {  // skip links with titles (definitions)
+			if (url === "definition") {  // skip links with titles (definitions)
 				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
 				counter++;
 			}
@@ -150,17 +189,23 @@ angular.module('meanMarkdownApp')
 	$scope.onOlatClick = function() {
 		console.log("trigger!");
         if (temporaryService.getMarkdown().length > 0) {
-            var html = marked(temporaryService.getMarkdown());
+            //var html = marked(temporaryService.getMarkdown());
+            $scope.html = html;
+            console.log($scope.html);
             if (html !== undefined) {
 
+                
                 // attach body to html
                 var content =   "<html>\n" +
                                 "  <head>\n" +
+                                '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
+                                '<link rel="stylesheet" href="style/olat.css" />\n' +
                                 "  </head>\n"+
                                 "  <body>\n" +
                                 html + 
                                 "  </body>\n"+
                                 "</html>\n";
+
 
                 // trigger download
 	            var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
@@ -177,6 +222,35 @@ angular.module('meanMarkdownApp')
 
     };
   	
+    function getDefinitionByName(word) {
+        var definitions = definitionService.query();
+        
+        definitions.forEach(function(definition) {
+            if (definition.word === word) {
+                return definition;
+            }
+        });
+    }
+
+    // triggers when choice changes
+    // dynamically adds and removes css styles according to preview choice
+    $scope.$watch('choice', function (newValue, oldValue) {
+        if (newValue === "OLAT") {
+            cssInjector.add("/styles/olat.css");
+        } else {
+            cssInjector.disable("/styles/olat.css");
+        }
+    });
+
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.shiftKey && code === 80) { // Crel + P 
+
+           window.location.href = "/#/editor";
+        }
+    });
+
   });
 
 

@@ -14,7 +14,9 @@
     "codemirror": "^5.13.2",
     "angular-ui-codemirror": "^0.3.0",
     "bootstrap": "3.3.6",
-    "ng-dialog": "0.5.9"
+    "ng-dialog": "0.5.9",
+    "ngcssinjector": "*",
+    "angular-css": "^1.0.7"
   },
   "resolutions": {
     "angular": "^1.4.0"

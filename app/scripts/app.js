@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'ui.codemirror',
-    'ngDialog'
+    'ngDialog',
+    'ngCssInjector'
   ])
   .config(function ($routeProvider) {
     $routeProvider

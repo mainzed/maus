@@ -12,6 +12,9 @@ angular.module('meanMarkdownApp')
     console.log("loading MainCtrl...");
   	
 
+    $scope.test1 = function() {
+        return "works!";
+    };
 
     $scope.files = fileService.query();
     
@@ -31,7 +34,7 @@ angular.module('meanMarkdownApp')
         });
         window.location.href = "/";
     };
-
+    
     $scope.onDownloadClick = function(id) {
         fileService.get({id: id}, function(file) {
             console.log(file);

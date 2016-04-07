@@ -11,6 +11,8 @@ angular.module('meanMarkdownApp')
   .controller('DefinitionsCtrl', function ($scope, $routeParams, $location, definitionService, temporaryService) {
     $scope.definitions = definitionService.query();
 
+    $scope.awesomeThings = [1, 2, 3];
+
     // used to get definition by id -> for definition_details!
     $scope.getDefinition = function() {
         var id = $routeParams.id;
@@ -42,4 +44,5 @@ angular.module('meanMarkdownApp')
     $scope.onCreateDefinitionClick = function() {
         window.location.href = "#/definitions/new";  // new doesnt actually work -> just to send an id that doesnt work
     };
+
   });

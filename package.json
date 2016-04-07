@@ -19,6 +19,7 @@
     "grunt-filerev": "^2.1.2",
     "grunt-google-cdn": "^0.4.3",
     "grunt-jscs": "^1.8.0",
+    "grunt-karma": "^0.12.2",
     "grunt-newer": "^1.1.0",
     "grunt-ng-annotate": "^0.9.2",
     "grunt-postcss": "^0.5.5",
@@ -26,8 +27,8 @@
     "grunt-usemin": "^3.0.0",
     "grunt-wiredep": "^2.0.0",
     "jit-grunt": "^0.9.1",
-    "time-grunt": "^1.0.0",
-    "jshint-stylish": "^1.0.0"
+    "jshint-stylish": "^1.0.0",
+    "time-grunt": "^1.0.0"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -43,7 +44,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "postinstall": "bower install",
     "start": "node server.js",
-    "postinstall": "bower install"
+    "test": "karma start test/karma.conf.js"
   }
 }

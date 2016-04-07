@@ -27,8 +27,8 @@ mongoose.connect(db, function(err) {
     }
 });
 
-var File = require('./app/scripts/models/file');
-var Definition = require('./app/scripts/models/definition');
+var File = require('./models/file');
+var Definition = require('./models/definition');
 
 // security
 app.disable('x-powered-by');

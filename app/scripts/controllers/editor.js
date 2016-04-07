@@ -10,6 +10,15 @@
 angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function ($scope, $routeParams, $document, fileService, temporaryService, ngDialog, definitionService) {
 
+    /**
+     * makes editor available to rest of controller 
+     */
+    $scope.codemirrorLoaded = function(_editor){
+        // Editor part
+        $scope.editor = _editor;  // for global settings
+        $scope.doc = _editor.getDoc();  // access to the editor content
+    };
+
     // set empty file object in case there's no id provided
     /*$scope.file = {
         author: "John Doe",
@@ -89,24 +98,40 @@ angular.module('meanMarkdownApp')
         window.location.href = "/#/files";
     };
 
+    $scope.addSnippet = function(snippet) {
+        // add snippet at cursor position or replace selection
+        $scope.editor.replaceSelection(snippet);
+        $scope.editor.focus();
+
+        // update markdown-service for previews
+        var content = $scope.editor.getValue();
+        temporaryService.setMarkdown(content);
+
+    };
+
+    $scope.addDefinition = function(definition) {
+        var snippet = "{" + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
     $scope.onLabelClick = function() {
-        $scope.markdown += "\n[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)";
-        temporaryService.setMarkdown($scope.markdown);
+        var snippet = "[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)";
+        $scope.addSnippet(snippet);
     };
 
     $scope.onLinkClick = function() {
-        $scope.markdown += "\n[I'm a link](https://www.google.com)\n";
-        temporaryService.setMarkdown($scope.markdown);
+        var snippet = "[I'm a link](https://www.google.com)";
+        $scope.addSnippet(snippet);
     };
 
     $scope.onImageClick = function() {
-        $scope.markdown += "\n![I'm an image](http://placehold.it/350x150)\n*I'm the optional image caption!*\n\n";
-        temporaryService.setMarkdown($scope.markdown);
+        var snippet = "![I'm an image](http://placehold.it/350x150)\n*I'm the optional image caption!*";
+        $scope.addSnippet(snippet);
     };
 
     $scope.onStoryScriptClick = function() {
-        $scope.markdown += "\n*Place storyscript inside asterisks*\n";
-        temporaryService.setMarkdown($scope.markdown);
+        var snippet = "*Place storyscript inside asterisks*";
+        $scope.addSnippet(snippet);
     };
 
     $scope.onTooltipLinkClick = function() {
@@ -119,26 +144,16 @@ angular.module('meanMarkdownApp')
         $scope.definitions = definitionService.query();
     };
 
-    $scope.addDefinition = function(definition) {
-        //console.log("add something!");
-        var markdown = temporaryService.getMarkdown();
-        var snippet = "\n[" + definition.word + "](" + definition.url + " \"" + definition.text + "\")";
-        $scope.markdown = markdown + snippet;
-        temporaryService.setMarkdown($scope.markdown);
-    };
-
     $scope.onDefinitionsEditClick = function() {
         window.location.href = "#/definitions";
     };
 
     $scope.onUndoClick = function() {
-        var what = angular.element('.CodeMirror');
-        //var what = uiConfig.codemirror;
+        $scope.editor.undo();
+    };
 
-        //console.log($uiCodemirror);
-        what.undo();
-
-        //var codeMirrorInstance = angular.element('#idCodemirror').CodeMirror;
+    $scope.onRedoClick = function() {
+        $scope.editor.redo();
     };
     
     $scope.onMarkdownClick = function() {
@@ -166,5 +181,19 @@ angular.module('meanMarkdownApp')
     $scope.onTitleChange = function() {
         temporaryService.setTitle($scope.title);
     };
+
+    // listener shortcuts
+
+    
+
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.shiftKey && code === 80) { // Crel + P 
+
+           window.location.href = "/#/preview";
+        }
+    });
+
 
   });
