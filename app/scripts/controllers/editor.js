@@ -130,7 +130,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onStoryScriptClick = function() {
-        var snippet = "*Place storyscript inside asterisks*";
+        var snippet = "§{\nWrite normal markdown inside storyscript tags\n}§";
         $scope.addSnippet(snippet);
     };
 
@@ -189,9 +189,25 @@ angular.module('meanMarkdownApp')
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
-        if(e.shiftKey && code === 80) { // Crel + P 
+        if(e.ctrlKey && code === 80) { // Shift + P 
 
            window.location.href = "/#/preview";
+        }
+    });
+
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.ctrlKey && code === 76) { // Shift + L 
+           $scope.onLinkClick();
+        }
+    });
+
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.ctrlKey && code === 83) { // Shift + S 
+           $scope.onStoryScriptClick();
         }
     });
 

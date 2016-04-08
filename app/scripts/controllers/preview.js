@@ -27,24 +27,33 @@ angular.module('meanMarkdownApp')
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
 		};
 
-
-
-
 		// create OLAT
 		var markdown = temporaryService.getMarkdown();
 
  		var html = marked(markdown, { renderer: customRenderer });
- 		
+ 
+        html = replaceStoryTags(html);
+
  		$scope.html = html;
 
+        // appends tables after last definition was changed
+        replaceDefinitionTags();
+        
+        appendLinkTable($scope.html);
 
- 		
-
+    } else {
+    	$scope.html = "<p>Nothing to preview!</p>";
+    }
+    
+    function replaceDefinitionTags() {
         // convert definitions
         // convert definition
         var words = $scope.html.match(/\{(.*?)\}/g);
+
         if (words) {
-            words.forEach(function(word) {
+            console.log(words.length);
+            words.forEach(function(word, index) {
+                console.log("index: " + index);
                 
                 //word = word.replace("{", "").replace("}", "");
                 
@@ -52,51 +61,73 @@ angular.module('meanMarkdownApp')
                     definitions.forEach(function(definition) {
                         
                         if (definition.word === word.replace("{", "").replace("}", "")) {
+                            //console.log(definition.word);
                             //console.log($scope.html);
                             var snippet = "<a href=\"" + definition.url +  "\" title=\"" + definition.text + "\">" + definition.word + "</a>";
                             var html = $scope.html;
                             //console.log("replacing: " + word + " with: " + snippet);
                             
                             //console.log(html.replace(word, snippet));
-
+                            //console.log($scope.html);
+                            //console.log(word);
                             // convert to anchors
                             $scope.html = html.replace(word, snippet);
+                            console.log($scope.html);
 
-                            //
+                            // TODO: gets run again for evey word, unneccessary
+                            //console.log("append tables!");
+                            //appendTables($scope.html);
+                        
+                            // on last word -> create definitions table
+                            //console.log(index + " of " + words.length);
+                            if (index === words.length - 1) {  // last word
+                                
+                                console.log(word + " is last word!");
+
+                                var links = getLinks($scope.html);
+                                //console.log(links);
+                                if (links.length) {
+                                    
+                                    var definitionsTable = createDefinitionsTable(links);
+                                    $scope.html += definitionsTable;
+                                }
+
+                            }
                         }
                     });
 
                 });
-
-
-                //var definitionObject = getDefinitionByName(definition);
-                //console.log(definitionObject);
             });    
         }
+    }
 
-        // if links exist, create table of links
+    // replaces opening and closing $ tags with a wrapping div
+    // for slides -> use counter to keep track of slide-ids
+    function replaceStoryTags(html) {
+        //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
+        //var stories = markdown.match(reg);  // store them for later
+
+        return html.replace(/<p>§{/g, '<div class="story">').replace(/}§<\/p>/g, "</div>");
+        //html = html.replace(/\n§{/g, '<div class="story">');
+    } 
+
+    function appendLinkTable(html) {
         var links = getLinks(html);
         //console.log(html);
         //console.log(links);
         if (links.length) {
-            console.log(links);
             var linksTable = createLinksTable(links);
-            var definitionsTable = createDefinitionsTable(links);
-            $scope.html = html + linksTable + definitionsTable;
+            //var definitionsTable = createDefinitionsTable(links);
+            $scope.html = html + linksTable;  // + definitionsTable;
         }
- 		
-
-
-    } else {
-    	$scope.html = "<p>Nothing to preview!</p>";
     }
-    
+
     // returns html containing table of links
     // requires array containing link objects
 	function createLinksTable(links) {
 		var counter = 0;
 		var html = "";
-		html += "<div id='links-table'>Links\n<ul>\n";
+		html += "<div class=\"links-table\"><h4>Links</h4><ul>";
 		for (var key in links) {
 			var link = links[key];
 			var title = link[3];
@@ -108,7 +139,7 @@ angular.module('meanMarkdownApp')
 			}
 		}
 		html += "</ul>\n</div>";
-
+        //console.log(html);
 		if (counter < 1) {
 			return "";
 		} else {
@@ -119,25 +150,25 @@ angular.module('meanMarkdownApp')
 	function createDefinitionsTable(links) {
 		var counter = 0; 
 		var html = "";
-		html += "<div id='definitions-table'>Definitions\n<ul>\n";
+		html += "<div class=\"definitions-table\"><h4>Definitions</h4><ul>";
 		for (var key in links) {
 			var link = links[key];
 			var title = link[3];
 			var text = link[2];
 			var url = link[1];
-			if (url === "definition") {  // skip links with titles (definitions)
+			if (title) {  // skip links with titles (definitions)
 				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
 				counter++;
 			}
 		}
 		html += "</ul>\n</div>";
 
-		
-		if (counter < 1) {
-			return "";
-		} else {
-			return html;
+		var result = "";
+		if (counter > 0) {
+            result = html;
 		}
+
+        return result;
 	}
 
 	/**

@@ -15,6 +15,7 @@ angular.module('meanMarkdownApp')
     var markdown = "This is a **template**.";
     var title = "";
     var currentFileId = -1;
+    var html = "";
     
     service.setMarkdown = function(newMarkdown){
     	markdown = newMarkdown;
@@ -38,6 +39,14 @@ angular.module('meanMarkdownApp')
 
     service.getCurrentFileId = function(){
       return currentFileId;
+    };
+
+    service.setHtml = function(newHtml){
+      html = newHtml;
+    };
+
+    service.getHtml = function(){
+      return html;
     };
 
     return service;

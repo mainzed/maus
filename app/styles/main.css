@@ -9,9 +9,8 @@ body {
   padding: 0;
 }
 
-.editor-buttons {
-	float: left;
-	margin-left: 4px;
+.editor-tools {
+    margin-right: 10px;
 }
 
 .dropup-button {
