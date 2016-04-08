@@ -11,7 +11,6 @@ angular.module('meanMarkdownApp')
   .controller('PreviewCtrl', function ($scope, temporaryService, definitionService, cssInjector) {
 
   	$scope.file = {};
-    
 
     if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
@@ -107,7 +106,7 @@ angular.module('meanMarkdownApp')
         //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
         //var stories = markdown.match(reg);  // store them for later
 
-        return html.replace(/<p>§{/g, '<div class="story">').replace(/}§<\/p>/g, "</div>");
+        return html.replace(/<p>story{/g, '<div class="story">').replace(/}story<\/p>/g, "</div>");
         //html = html.replace(/\n§{/g, '<div class="story">');
     } 
 

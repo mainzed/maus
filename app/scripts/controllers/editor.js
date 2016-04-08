@@ -130,7 +130,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onStoryScriptClick = function() {
-        var snippet = "§{\nWrite normal markdown inside storyscript tags\n}§";
+        var snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n";
         $scope.addSnippet(snippet);
     };
 

@@ -11,6 +11,7 @@ angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, fileService, temporaryService) {
     console.log("loading MainCtrl...");
   	
+    //$scope.filesActive = false;
 
     $scope.test1 = function() {
         return "works!";
