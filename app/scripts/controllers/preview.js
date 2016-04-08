@@ -36,7 +36,7 @@ angular.module('meanMarkdownApp')
  		$scope.html = html;
 
         // appends tables after last definition was changed
-        replaceDefinitionTags();
+        replaceDefinitionTags($scope.html);
         
         appendLinkTable($scope.html);
 
@@ -71,7 +71,7 @@ angular.module('meanMarkdownApp')
                             //console.log(word);
                             // convert to anchors
                             $scope.html = html.replace(word, snippet);
-                            console.log($scope.html);
+                            //console.log($scope.html);
 
                             // TODO: gets run again for evey word, unneccessary
                             //console.log("append tables!");
@@ -148,16 +148,21 @@ angular.module('meanMarkdownApp')
 
 	function createDefinitionsTable(links) {
 		var counter = 0; 
+        var wordsInTable = [];  // skip duplicates
 		var html = "";
 		html += "<div class=\"definitions-table\"><h4>Definitions</h4><ul>";
 		for (var key in links) {
 			var link = links[key];
-			var title = link[3];
-			var text = link[2];
+			var tooltip = link[3];
+			var word = link[2];
 			var url = link[1];
-			if (title) {  // skip links with titles (definitions)
-				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
-				counter++;
+
+            // skip links without title attribute (tooltip) and
+            // definitions already in table
+			if (tooltip && wordsInTable.indexOf(word) < 0) {  
+				html += "<li>" + word + ": " + tooltip + "</li>\n";
+				wordsInTable.push(word);
+                counter++;
 			}
 		}
 		html += "</ul>\n</div>";
@@ -166,7 +171,6 @@ angular.module('meanMarkdownApp')
 		if (counter > 0) {
             result = html;
 		}
-
         return result;
 	}
 
@@ -218,37 +222,29 @@ angular.module('meanMarkdownApp')
 
 	$scope.onOlatClick = function() {
 		console.log("trigger!");
-        if (temporaryService.getMarkdown().length > 0) {
-            //var html = marked(temporaryService.getMarkdown());
-            $scope.html = html;
-            console.log($scope.html);
-            if (html !== undefined) {
 
-                
-                // attach body to html
-                var content =   "<html>\n" +
-                                "  <head>\n" +
-                                '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
-                                '<link rel="stylesheet" href="style/olat.css" />\n' +
-                                "  </head>\n"+
-                                "  <body>\n" +
-                                html + 
-                                "  </body>\n"+
-                                "</html>\n";
+        // workaround -> convert definiions and append tables again
+        // then trigger download after last definition was done
+
+            
+        // attach body to html
+        var content =   "<html>\n" +
+                        "  <head>\n" +
+                        '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
+                        '<link rel="stylesheet" href="style/olat.css" />\n' +
+                        "  </head>\n"+
+                        "  <body>\n" +
+                        $scope.html + 
+                        "  </body>\n"+
+                        "</html>\n";
 
 
-                // trigger download
-	            var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
-	            var downloadLink = angular.element('<a></a>');
-	            downloadLink.attr('href', window.URL.createObjectURL(blob));
-	            downloadLink.attr('download', 'export.html');
-	            downloadLink[0].click();
-
-            }
-
-        } else {
-            console.log("no markdown available! start editing something or choose existing file");
-        }
+        // trigger download
+        var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
+        var downloadLink = angular.element('<a></a>');
+        downloadLink.attr('href', window.URL.createObjectURL(blob));
+        downloadLink.attr('download', 'export.html');
+        downloadLink[0].click();
 
     };
   	

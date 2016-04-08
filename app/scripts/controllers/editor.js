@@ -17,6 +17,7 @@ angular.module('meanMarkdownApp')
         // Editor part
         $scope.editor = _editor;  // for global settings
         $scope.doc = _editor.getDoc();  // access to the editor content
+
     };
 
     // set empty file object in case there's no id provided
