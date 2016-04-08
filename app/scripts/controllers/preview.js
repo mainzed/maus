@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, temporaryService, definitionService, cssInjector) {
+  .controller('PreviewCtrl', function ($scope, temporaryService, fileService, definitionService, cssInjector) {
 
   	$scope.file = {};
 
@@ -221,13 +221,22 @@ angular.module('meanMarkdownApp')
 	}
 
 	$scope.onOlatClick = function() {
-		console.log("trigger!");
 
-        // workaround -> convert definiions and append tables again
-        // then trigger download after last definition was done
-
-            
-        // attach body to html
+        // get current filename
+        var id = temporaryService.getCurrentFileId();
+        
+        if (id === -1) {
+            startDownload("export.html"); 
+        } else {
+            console.log("found name!");
+            fileService.get({id: id}, function(file) {
+                startDownload(file.title.replace(" ", "-") + ".html");           
+            });
+        }
+        
+    };
+  	
+    function startDownload(filename) {
         var content =   "<html>\n" +
                         "  <head>\n" +
                         '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
@@ -238,16 +247,14 @@ angular.module('meanMarkdownApp')
                         "  </body>\n"+
                         "</html>\n";
 
-
         // trigger download
         var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
         var downloadLink = angular.element('<a></a>');
         downloadLink.attr('href', window.URL.createObjectURL(blob));
-        downloadLink.attr('download', 'export.html');
-        downloadLink[0].click();
+        downloadLink.attr('download', filename);
+        downloadLink[0].click();  
+    }
 
-    };
-  	
     function getDefinitionByName(word) {
         var definitions = definitionService.query();
         
