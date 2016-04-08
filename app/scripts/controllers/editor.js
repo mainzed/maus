@@ -20,6 +20,11 @@ angular.module('meanMarkdownApp')
 
     };
 
+    
+    
+
+
+
     // set empty file object in case there's no id provided
     /*$scope.file = {
         author: "John Doe",
@@ -58,9 +63,10 @@ angular.module('meanMarkdownApp')
     $scope.editorOptions = {
         lineWrapping : true,
         lineNumbers: false,
-        mode: 'markdown',
+        mode: 'markdown',  // CurlyBraceWrappedText
         showTrailingSpace: false,
-        showMarkdownLineBreaks: true  // custom
+        showMarkdownLineBreaks: true,  // custom
+        showOlatMarkdown: true  // custom OLAT
     };
 
 
