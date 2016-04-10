@@ -26,8 +26,12 @@
     "grunt-svgmin": "^2.0.0",
     "grunt-usemin": "^3.0.0",
     "grunt-wiredep": "^2.0.0",
+    "jasmine-core": "^2.4.1",
     "jit-grunt": "^0.9.1",
     "jshint-stylish": "^1.0.0",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-jasmine": "^0.3.8",
     "time-grunt": "^1.0.0"
   },
   "dependencies": {

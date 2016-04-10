@@ -15,6 +15,7 @@ angular.module('meanMarkdownApp')
     $scope.files = fileService.query();
     $scope.newFile = {};  // filled by dialog
     
+    $scope.test1 = "works!";
 
     // listeners
     $scope.onCreateNewFile = function() {
