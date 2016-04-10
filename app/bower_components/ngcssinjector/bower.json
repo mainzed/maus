@@ -1,0 +1,28 @@
+{
+  "name": "ngcssinjector",
+  "version": "0.2.2",
+  "homepage": "https://github.com/CristianMR/ngcssinjector",
+  "authors": [
+    "Cristian Martín Rios <matrixcmr@gmail.com>"
+  ],
+  "description": "Load multiple CSS files in AngularJS with promises.",
+  "main": "./dist/ngcssinjector.min.js",
+  "keywords": [
+    "ng",
+    "css",
+    "injector",
+    "angularjs",
+    "module",
+    "CristianMR"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
