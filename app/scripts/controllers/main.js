@@ -8,32 +8,64 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, fileService, temporaryService) {
-    console.log("loading MainCtrl...");
+  .controller('MainCtrl', function ($scope, $location, fileService, temporaryService, ngDialog) {
   	
     //$scope.filesActive = false;
 
-    $scope.test1 = function() {
-        return "works!";
-    };
-
     $scope.files = fileService.query();
+    $scope.newFile = {};  // filled by dialog
     
 
     // listeners
     $scope.onCreateNewFile = function() {
-    	// TODO: make popup will cancel option
+    	/*
+        // TODO: make popup will cancel option
         // reset currently edited data
         temporaryService.setMarkdown("This is **markdown**.");
         temporaryService.setTitle("");
-    	window.location.href = "#/editor";
+    	//window.location.href = "#/editor";  // full page reload
+        $location.path('/editor');
+        */
+
+        ngDialog.open({ 
+            template: "./views/templates/dialog_new_file.html",
+            scope: $scope
+        });
+
+    };
+
+    // within dialog, click on create
+    $scope.onCreateConfirm = function() {
+        console.log("create!");
+
+        // save as new file
+        var file = {
+            author: $scope.newFile.author,
+            title: $scope.newFile.title,
+            markdown: "This is **markdown**."
+        };
+
+        fileService.save(file, function(file) {
+            // success
+            temporaryService.setCurrentFileId(file._id);
+            temporaryService.setTitle(file.author);
+            temporaryService.setMarkdown(file.markdown);
+
+            $location.path("/editor/" + file._id);
+
+        }, function() {
+            // error
+            console.log("could not create new file!");
+        });
+
+
     };
 
     $scope.onRemoveClick = function(id) {
         fileService.remove({id: id}, function() {
+            // success
             console.log("file remove successfull!");
         });
-        window.location.href = "/";
     };
     
     $scope.onDownloadClick = function(id) {
@@ -49,6 +81,7 @@ angular.module('meanMarkdownApp')
      
         });
     };
+
   });
 
 

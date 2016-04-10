@@ -8,7 +8,10 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function ($scope, $routeParams, $document, fileService, temporaryService, ngDialog, definitionService) {
+  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, $document, fileService, temporaryService, ngDialog, definitionService) {
+
+    $scope.showSuccess = false;
+    $scope.showError = false;
 
     /**
      * makes editor available to rest of controller 
@@ -20,17 +23,6 @@ angular.module('meanMarkdownApp')
 
     };
 
-    
-    
-
-
-
-    // set empty file object in case there's no id provided
-    /*$scope.file = {
-        author: "John Doe",
-        markdown: "This is a **template**.",
-        title: "This is a title! :)"
-    };*/
     // define before get request
     $scope.markdown = temporaryService.getMarkdown();
     $scope.title = temporaryService.getTitle();
@@ -76,6 +68,7 @@ angular.module('meanMarkdownApp')
         
         var id = temporaryService.getCurrentFileId();
 
+        // isnt needed currently
         if (id === -1) {  // new file
             console.log("saving as new file!");
 
@@ -87,8 +80,23 @@ angular.module('meanMarkdownApp')
  
             // save as new file and set current id
             fileService.save(file, function(file) {
+                // success
+                console.log("success!");
                 temporaryService.setCurrentFileId(file._id);
+                
+                // show success message for 2 seconds
+                $scope.showSuccess = true;
+                $timeout(function () { $scope.showSuccess = false; }, 3000);
+
+            
+            }, function() {
+                // error
+                // show success message for 2 seconds
+                $scope.showError = true;
+                $timeout(function () { $scope.showError = false; }, 3000);
             });
+
+
         } else {  // existing file
             console.log("updating existing!");
             var newFile = {
@@ -97,12 +105,20 @@ angular.module('meanMarkdownApp')
                 title: $scope.title
             };
 
-            fileService.update({ id: id }, newFile);
+            fileService.update({ id: id }, newFile, function() {
+                // success
+                $scope.showSuccess = true;
+                $timeout(function () { $scope.showSuccess = false; }, 3000);
+            }, function() {
+                //error
+                $scope.showError = true;
+                $timeout(function () { $scope.showError = false; }, 3000);
+            });
         }
     };
 
     $scope.onFilesClick = function() {
-        window.location.href = "/#/files";
+        $location.path("/files");
     };
 
     $scope.addSnippet = function(snippet) {
@@ -152,7 +168,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onDefinitionsEditClick = function() {
-        window.location.href = "#/definitions";
+        $location.path("/definitions");
     };
 
     $scope.onUndoClick = function() {
@@ -163,7 +179,7 @@ angular.module('meanMarkdownApp')
         $scope.editor.redo();
     };
     
-    $scope.onMarkdownClick = function() {
+    /*$scope.onMarkdownClick = function() {
         if (markdownService.getMarkdown().length > 0) {
             var markdown = markdownService.getMarkdown();
             if (markdown !== undefined) {
@@ -176,29 +192,32 @@ angular.module('meanMarkdownApp')
         } else {
             console.log("no markdown available! start editing something or choose existing file");
         }
-    };
+    };*/
 
     /**
      * update markdown service when editor changes
      */
+    $scope.enableSaveButton = false;
     $scope.onEditorChange = function() {
     	temporaryService.setMarkdown($scope.markdown);
+        $scope.enableSaveButton = true; // enable button when code was changed
     };
+
+    // also enable save button when title was changed
+    $scope.$watch('enableSaveButton', function (newValue, oldValue) {
+        $scope.enableSaveButton = true;
+    });
 
     $scope.onTitleChange = function() {
         temporaryService.setTitle($scope.title);
     };
 
     // listener shortcuts
-
-    
-
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 80) { // Shift + P 
-
-           window.location.href = "/#/preview";
+            $location.path('/preview');
         }
     });
 

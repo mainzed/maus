@@ -23,4 +23,23 @@ angular.module('meanMarkdownApp')
   'remove': {method:'DELETE'},
   'delete': {method:'DELETE'} };
 
+
+
+Resource.query(function(data) {
+    // success handler
+}, function(error) {
+    // error handler
+});
+
+Resource.query({
+    'query': 'thequery'
+},function(data) {
+    // success handler
+}, function(error) {
+    // error handler
+});
+
+
+
+
   */

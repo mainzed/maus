@@ -4,28 +4,19 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 var logger = require('morgan');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var compression = require('compression');
 
 // middleware
+app.use(compression());
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/app'));
-app.use(express.static(__dirname));  // include bower_components
-var bodyParser = require('body-parser');
+
+//app.use(express.static(__dirname));  // include bower_components
 app.use(bodyParser.json());
 
-// mongoose + mongoose schemas
-var mongoose = require('mongoose');
-
-//var db = 'mongodb://localhost/markdownstore';
-var db = "mongodb://admin:root@ds011800.mlab.com:11800/heroku_ll09cx2q";
-
-mongoose.connect(db, function(err) {
-    if (err) {
-        console.log("couldn't connect to mongodb!");
-        console.log(err);
-    } else {
-        console.log("connected to mongodb successfull!");
-    }
-});
+require('./database.js');
 
 var File = require('./models/file');
 var Definition = require('./models/definition');

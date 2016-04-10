@@ -8,16 +8,16 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
-    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog.css" />
     <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog-theme-default.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
+    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
@@ -61,14 +61,9 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/marked/lib/marked.js"></script>
-    
     <script src="bower_components/codemirror/lib/codemirror.js"></script>
     <script src="bower_components/codemirror/mode/markdown/markdown.js"></script>
-    <script src="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
-    <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
     <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
-
-
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
     <script src="bower_components/ngcssinjector/dist/ngcssinjector.min.js"></script>
@@ -86,6 +81,8 @@
         <script src="scripts/controllers/definitions.js"></script>
         <script src="scripts/services/definition.js"></script>
         <script src="scripts/directives/navbar.js"></script>
+        <script src="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
+        <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
         <!-- endbuild -->
 </body>
 </html>

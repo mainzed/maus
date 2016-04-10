@@ -19,7 +19,7 @@ body {
 }
 
 .CodeMirror {
-	height: 500px;
+	height: 450px;
 }
 
 #editor-panel {
@@ -30,3 +30,7 @@ body {
 	margin-right: 5px;
 }
 
+.save-text {
+  color: gray;
+  margin-left: 5px;
+}

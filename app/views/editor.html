@@ -92,8 +92,10 @@
 
   <div class="btn-group editor-tools" role="group"> 
     <button class="btn btn-success
-     btn-sm" ng-click="onSaveClick()"><i class="fa fa-floppy-o"> save</i></button>
+     btn-sm" ng-click="onSaveClick()">
+      <i class="fa fa-floppy-o"> save</i>
+     </button>
   </div>
-    
-  
+  <span class="save-text" ng-show="showSuccess === true">... saved!</span>
+  <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
 </p> 
