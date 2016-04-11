@@ -79,7 +79,6 @@ angular.module('meanMarkdownApp')
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', 'export.md');
             downloadLink[0].click();
-     
         });
     };
 

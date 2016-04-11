@@ -1,4 +1,4 @@
-<div class="panel panel-default" ng-repeat="file in files | orderBy: 'updated_at':false">
+<div class="panel panel-default file-group" ng-repeat="file in files | orderBy: 'updated_at':false">
   <div class="panel-body">
     <h3>{{ file.title }}</h4>
     <p>last edited: {{ file.updated_at | limitTo:16 }}</p>
@@ -18,8 +18,14 @@
   </div>
 </div>
 
+<!--<div class="list-group file-group">
+  <a ng-repeat="file in files | orderBy: 'updated_at':false" ng-href="#/editor/{{file._id}}" class="list-group-item">
+    {{ file.title }} <i>by {{ file.author }}</i>
+  </a>
+  
+</div>-->
 
-<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">Create new</button>
+<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>
 <!--<a type="button" href="#/definitions" class="btn btn-default btn-sm">definitions</a>-->
 
 

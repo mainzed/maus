@@ -38,7 +38,7 @@ module.exports = function(config) {
       'app/bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
-      'test/mock/**/*.js',
+      //'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
 
@@ -64,6 +64,7 @@ module.exports = function(config) {
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
+      //'karma-chrome-launcher',
       'karma-jasmine'
     ],
 

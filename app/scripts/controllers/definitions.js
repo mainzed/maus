@@ -30,19 +30,20 @@ angular.module('meanMarkdownApp')
         if ($scope.definition._id) {  // already exists, update!
             console.log("exists! update!");
             definitionService.update({id: $scope.definition._id}, $scope.definition, function() {
-                console.log("updating definition successfull!");
-                //$location.path('/#/definitions');
+                
+                //console.log("updating definition successfull!");
+                $location.path('/#/definitions');
             });
         } else {  // doesnt exist, create new!
-            console.log("create new!");
+            //console.log("create new!");
             definitionService.save($scope.definition);
         }
-        window.location.href = "#/definitions";
- 
+        //window.location.href = "#/definitions";
+        $location.path("/definitions");
     };
 
     $scope.onCreateDefinitionClick = function() {
-        window.location.href = "#/definitions/new";  // new doesnt actually work -> just to send an id that doesnt work
+        $location.path("/definitions/new");    // new doesnt actually work -> just to send an id that doesnt work
     };
 
   });
