@@ -11,8 +11,8 @@ describe('Service: definition', function () {
     definition = _definition_;
   }));
 
-  it('should do something', function () {
+  /*it('should do something', function () {
     expect(!!definition).toBe(true);
-  });
+  });*/
 
 });

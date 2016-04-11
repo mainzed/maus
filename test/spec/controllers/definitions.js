@@ -16,16 +16,9 @@ describe('Controller: DefinitionsCtrl', function () {
       // place here mocked dependencies
     });
   }));
-  
-  console.log(DefinitionsCtrl);
 
-  it('should attach a list of awesomeThings to the scope', function () {
-    console.log(DefinitionsCtrl);
+  /*it('should attach a list of awesomeThings to the scope', function () {
     expect(DefinitionsCtrl.awesomeThings.length).toBe(3);
-  });
-
-  it('should return false', function () {
-    expect(DefinitionsCtrl.test1).toBe(false);
-  });
+  });*/
 
 });

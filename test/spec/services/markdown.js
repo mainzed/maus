@@ -1,18 +1,18 @@
 'use strict';
 
-describe('Service: markdown', function () {
+describe('Service: temporaryService', function () {
 
   // load the service's module
   beforeEach(module('meanMarkdownApp'));
 
   // instantiate service
-  var markdown;
-  beforeEach(inject(function (_markdown_) {
-    markdown = _markdown_;
+  var temporaryService;
+  beforeEach(inject(function (_temporaryService_) {
+    temporaryService = _temporaryService_;
   }));
 
   it('should do something', function () {
-    expect(!!markdown).toBe(true);
+    expect(!!temporaryService).toBe(true);
   });
 
 });

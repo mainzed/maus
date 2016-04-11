@@ -18,6 +18,7 @@ angular.module('meanMarkdownApp')
     $scope.files = fileService.query();
     $scope.newFile = {};  // filled by dialog
     
+    $scope.test1 = "works!";
 
     // listeners
     $scope.onCreateNewFile = function() {
@@ -81,7 +82,6 @@ angular.module('meanMarkdownApp')
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', 'export.md');
             downloadLink[0].click();
-     
         });
     };
 

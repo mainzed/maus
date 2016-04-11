@@ -24,7 +24,6 @@ angular.module('meanMarkdownApp')
         // Editor part
         $scope.editor = _editor;  // for global settings
         $scope.doc = _editor.getDoc();  // access to the editor content
-
     };
 
     // define before get request
@@ -227,6 +226,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onTitleChange = function() {
         temporaryService.setTitle($scope.title);
+        return "works!";  // just for testing
     };
 
     // listener shortcuts

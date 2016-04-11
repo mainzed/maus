@@ -21,6 +21,11 @@ describe('Controller: EditorCtrl', function () {
     expect(EditorCtrl.awesomeThings.length).toBe(3);
   });*/
 
+  /*it('should return awesome stuff!', function () {
+    expect(scope.onTitleChange()).toBe("works!");
+  });
+
+
   it('should attach a list of awesomeThings to the scope', function () {
     expect(2===3).toBe(true);
   });
@@ -30,6 +35,6 @@ describe('Controller: EditorCtrl', function () {
     //scope.addTodo();
     //scope.removeTodo(0);
     expect(scope.todos.length).toBe(0);
-  });
+  });*/
 
 });

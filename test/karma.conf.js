@@ -20,25 +20,25 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // bower:js
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/angular/angular.js',
-      'bower_components/angular-animate/angular-animate.js',
-      'bower_components/angular-cookies/angular-cookies.js',
-      'bower_components/angular-resource/angular-resource.js',
-      'bower_components/angular-route/angular-route.js',
-      'bower_components/angular-sanitize/angular-sanitize.js',
-      'bower_components/angular-touch/angular-touch.js',
-      'bower_components/marked/lib/marked.js',
-      'bower_components/codemirror/lib/codemirror.js',
-      'bower_components/angular-ui-codemirror/ui-codemirror.js',
-      'bower_components/bootstrap/dist/js/bootstrap.js',
-      'bower_components/ng-dialog/js/ngDialog.js',
-      'bower_components/ngcssinjector/dist/ngcssinjector.min.js',
-      'bower_components/angular-css/angular-css.js',
-      'bower_components/angular-mocks/angular-mocks.js',
+      'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/angular/angular.js',
+      'app/bower_components/angular-animate/angular-animate.js',
+      'app/bower_components/angular-cookies/angular-cookies.js',
+      'app/bower_components/angular-resource/angular-resource.js',
+      'app/bower_components/angular-route/angular-route.js',
+      'app/bower_components/angular-sanitize/angular-sanitize.js',
+      'app/bower_components/angular-touch/angular-touch.js',
+      'app/bower_components/marked/lib/marked.js',
+      'app/bower_components/codemirror/lib/codemirror.js',
+      'app/bower_components/angular-ui-codemirror/ui-codemirror.js',
+      'app/bower_components/bootstrap/dist/js/bootstrap.js',
+      'app/bower_components/ng-dialog/js/ngDialog.js',
+      'app/bower_components/ngcssinjector/dist/ngcssinjector.min.js',
+      'app/bower_components/angular-css/angular-css.js',
+      'app/bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
-      'test/mock/**/*.js',
+      //'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
 
@@ -64,6 +64,7 @@ module.exports = function(config) {
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
+      //'karma-chrome-launcher',
       'karma-jasmine'
     ],
 
