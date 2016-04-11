@@ -13,6 +13,10 @@ angular.module('meanMarkdownApp')
     $scope.showSuccess = false;
     $scope.showError = false;
 
+    // fills title, id and markdown if cookie exists
+    temporaryService.getCookies();
+
+
     /**
      * makes editor available to rest of controller 
      */
@@ -118,7 +122,20 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onFilesClick = function() {
+        
+
+        /*ngDialog.open({ 
+            template: "./views/templates/dialog_back_to_files.html",
+            scope: $scope
+        });*/
+        
+        /*ngDialog.openConfirm({
+            template: "./views/templates/dialog_back_to_files.html",
+            scope: $scope
+        });*/
+
         $location.path("/files");
+
     };
 
     $scope.addSnippet = function(snippet) {

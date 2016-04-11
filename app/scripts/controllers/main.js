@@ -10,6 +10,9 @@
 angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, $location, fileService, temporaryService, ngDialog) {
   	
+
+
+
     //$scope.filesActive = false;
 
     $scope.files = fileService.query();

@@ -12,6 +12,9 @@ angular.module('meanMarkdownApp')
 
   	$scope.file = {};
 
+    // fills title, id and markdown if cookie exists
+    temporaryService.getCookies();
+
     if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
     	// convert markdown
