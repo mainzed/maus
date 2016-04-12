@@ -8,9 +8,13 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, temporaryService, fileService, definitionService, cssInjector) {
+  .controller('PreviewCtrl', function ($scope, temporaryService, fileService, definitionService, cssInjector) {  // cssInjector
+
+    $scope.test = "hello";
 
   	$scope.file = {};
+
+    $scope.awesomeThings = [1, 2, 3];
 
     // fills title, id and markdown if cookie exists
     temporaryService.getCookies();

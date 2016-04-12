@@ -33,7 +33,7 @@ angular.module('meanMarkdownApp')
      * id, title and markdown
      */
     service.getCookies = function() {
-        var cookie = $cookies.get('current_markdown');
+        /*var cookie = $cookies.get('current_markdown');
         if (cookie) {
             markdown = cookie;
         }
@@ -46,12 +46,12 @@ angular.module('meanMarkdownApp')
         cookie = $cookies.get('current_id');
         if (cookie) {
             currentFileId = cookie;
-        }
+        }*/
     };
     
     service.setMarkdown = function(newMarkdown) {
     	markdown = newMarkdown;
-        $cookies.put("current_markdown", newMarkdown);
+        //$cookies.put("current_markdown", newMarkdown);
   	};
 
   	service.getMarkdown = function() {
@@ -60,7 +60,7 @@ angular.module('meanMarkdownApp')
 
     service.setTitle = function(newTitle) {
         title = newTitle;
-        $cookies.put("current_title", newTitle);
+        //$cookies.put("current_title", newTitle);
     };
 
     service.getTitle = function() {
@@ -69,7 +69,7 @@ angular.module('meanMarkdownApp')
 
     service.setCurrentFileId = function(id) {
         currentFileId = id;
-        $cookies.put("current_id", id);
+        //$cookies.put("current_id", id);
     };
 
     service.getCurrentFileId = function() {

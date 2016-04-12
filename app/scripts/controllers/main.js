@@ -11,14 +11,12 @@ angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, $location, fileService, temporaryService, ngDialog) {
   	
 
-
+    $scope.awesomeThings = [1, 2, 3];
 
     //$scope.filesActive = false;
 
     $scope.files = fileService.query();
     $scope.newFile = {};  // filled by dialog
-    
-    $scope.test1 = "works!";
 
     // listeners
     $scope.onCreateNewFile = function() {

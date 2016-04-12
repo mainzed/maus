@@ -16,7 +16,6 @@ angular.module('meanMarkdownApp')
     // fills title, id and markdown if cookie exists
     temporaryService.getCookies();
 
-
     /**
      * makes editor available to rest of controller 
      */
@@ -226,7 +225,6 @@ angular.module('meanMarkdownApp')
 
     $scope.onTitleChange = function() {
         temporaryService.setTitle($scope.title);
-        return "works!";  // just for testing
     };
 
     // listener shortcuts
