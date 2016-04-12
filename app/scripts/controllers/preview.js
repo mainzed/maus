@@ -33,6 +33,12 @@ angular.module('meanMarkdownApp')
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
 		};
 
+        // change renderer to export figure instead of img + em
+        // <figure>
+        // <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
+        // <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
+        // </figure>
+
 		// create OLAT
 		var markdown = temporaryService.getMarkdown();
 

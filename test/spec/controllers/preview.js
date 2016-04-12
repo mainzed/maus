@@ -3,41 +3,42 @@
 describe('Controller: PreviewCtrl', function () {
 
     // load the controller's module
-    beforeEach(module('meanMarkdownApp'), [
-        'ngAnimate',
-        'ngCookies',
-        'ngResource',
-        'ngRoute',
-        'ngSanitize',
-        'ngTouch',
-        'ui.codemirror',
-        'ngDialog',
-        'ngCssInjector'
-    ]);
+    beforeEach(module('meanMarkdownApp', ['cssInjector']));
+    // load the controller's module
+    //beforeEach(module('cssInjector'));
 
     var PreviewCtrl;
     var scope;
+    var cssInjector;
 
     // Initialize the controller and a mock scope
-    beforeEach(inject(function ($controller, $rootScope) {
-        
-        scope = $rootScope.$new();
+    beforeEach(inject(function ($controller, $rootScope, _cssInjector_) {
         //$location = _$location_;
-        //cssInjector = _cssInjector_;
+        scope = $rootScope.$new();
         PreviewCtrl = $controller('PreviewCtrl', {
             $scope: scope
+            //cssInjector: _cssInjector_
             // place here mocked dependencies
         });
+
+
+        //angular.module('MyAppMocks',[]).service('B', ...));
+        //angular.module('Test',['MyApp','MyAppMocks']);
 
     }));
 
 
 
+
+    /*it('should return hello', function () {
+        expect(scope.test.toBe("hello"));
+    });
+
     it('should replace story tags in html with divs', function () {
         var html = "some story{ html }story text";
         var expected = "some <div class=\"story\"> html </div> text";
         expect(scope.replaceStoryTags(html)).toBe(expected);
-    });
+    });*/
 
     /*it('should replace story tags in html with divs', function () {
         //console.log(PreviewCtrl.test);

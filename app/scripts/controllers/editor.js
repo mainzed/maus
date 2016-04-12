@@ -67,6 +67,11 @@ angular.module('meanMarkdownApp')
     // listeners
 
     $scope.onSaveClick = function() {
+        var w = window.innerWidth / 100 * 90;
+        console.log("90% of screen: " + w);
+
+        var images = $scope.getImages(marked(temporaryService.getMarkdown()));
+        console.log(images);
         
         var id = temporaryService.getCurrentFileId();
 
@@ -163,7 +168,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onImageClick = function() {
-        var snippet = "![I'm an image](http://placehold.it/350x150)\n*I'm the optional image caption!*";
+        var snippet = "![Image title](bilder/filname.jpg)\n*I'm the image caption! (source description, author, license)*";
         $scope.addSnippet(snippet);
     };
 
@@ -208,6 +213,27 @@ angular.module('meanMarkdownApp')
             console.log("no markdown available! start editing something or choose existing file");
         }
     };*/
+
+    $scope.getImages = function(html) {
+        var container = document.createElement("p");
+        container.innerHTML = html;
+
+        var images = container.getElementsByTagName("img");
+        var list = [];
+
+        for (var i = 0; i < images.length; i++) {
+            var src = images[i].src;
+            var alt = images[i].alt;
+
+            //if (text === undefined) text = anchors[i].innerText;
+
+            list.push({
+                src: src,
+                alt: alt
+            });
+        }
+        return list;
+    }
 
     /**
      * update markdown service when editor changes

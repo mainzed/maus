@@ -10,8 +10,9 @@
 angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, $location, fileService, temporaryService, ngDialog) {
   	
-
+    
     $scope.awesomeThings = [1, 2, 3];
+    $scope.test = "hello!";
 
     //$scope.filesActive = false;
 
@@ -48,6 +49,7 @@ angular.module('meanMarkdownApp')
         };
 
         fileService.save(file, function(file) {
+
             // success
             temporaryService.setCurrentFileId(file._id);
             temporaryService.setTitle(file.author);
@@ -82,6 +84,65 @@ angular.module('meanMarkdownApp')
             downloadLink[0].click();
         });
     };
+
+    $scope.markdownToOlatHtml = function(markdown) {
+        //var customRenderer = new marked.Renderer();
+
+        // custom heading renderer
+        /*var counter = 0;
+        customRenderer.heading = function (text, level) {
+            var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+            counter++;
+
+            return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
+        };*/
+
+        // create OLAT
+        //var markdown = temporaryService.getMarkdown();
+
+        //var html = marked(markdown, { renderer: customRenderer });
+        var html = marked(markdown);
+
+        html = $scope.replaceStoryTags(html);
+
+        //$scope.html = html;
+
+        // appends tables after last definition was changed
+        //replaceDefinitionTags($scope.html);
+        
+        //appendLinkTable($scope.html);
+
+        return html;
+    }
+
+    // replaces opening and closing $ tags with a wrapping div
+    // for slides -> use counter to keep track of slide-ids
+    $scope.replaceStoryTags = function(html) {
+        //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
+        //var stories = markdown.match(reg);  // store them for later
+
+        return html.replace(/<p>story{/g, '<div class="story">').replace(/}story<\/p>/g, "</div>");
+        //html = html.replace(/\n§{/g, '<div class="story">');
+    }
+
+    $scope.getLinks = function(html) {
+        var container = document.createElement("p");
+        container.innerHTML = html;
+
+        var anchors = container.getElementsByTagName("a");
+        var list = [];
+
+        for (var i = 0; i < anchors.length; i++) {
+            var href = anchors[i].href;
+            var title = anchors[i].title;
+            var text = anchors[i].textContent;
+
+            if (text === undefined) text = anchors[i].innerText;
+
+            list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
+        }
+        return list;
+    }
 
   });
 

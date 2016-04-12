@@ -1,7 +1,7 @@
 <div class="panel panel-default file-group" ng-repeat="file in files | orderBy: 'updated_at':false">
   <div class="panel-body">
     <h3>{{ file.title }}</h4>
-    <p>last edited: {{ file.updated_at | limitTo:16 }}</p>
+    <p>last edited on {{ file.updated_at | limitTo:10 }} by {{ file.author }} </p>
     <p>
     	<a ng-href="#/editor/{{file._id}}" class="file-links">
     		<span class="glyphicon glyphicon-pencil"></span> Edit

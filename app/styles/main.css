@@ -19,7 +19,7 @@ body {
 }
 
 .CodeMirror {
-	height: 450px;
+	/*height: 450px;*/
 }
 
 #editor-panel {
