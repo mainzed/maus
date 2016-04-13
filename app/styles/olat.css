@@ -13,3 +13,19 @@ h1 {
 .definitions-table {
     background-color: yellow;
 }
+
+.images-table {
+    background-color: fuchsia;
+}
+
+figure {
+	background-color: seagreen; 
+}
+
+img {
+	background-color: lime; 
+}
+
+figcaption {
+	background-color: palegreen;
+}

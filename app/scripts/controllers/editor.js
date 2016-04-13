@@ -70,8 +70,8 @@ angular.module('meanMarkdownApp')
         var w = window.innerWidth / 100 * 90;
         console.log("90% of screen: " + w);
 
-        var images = $scope.getImages(marked(temporaryService.getMarkdown()));
-        console.log(images);
+        //var images = $scope.getImages(marked(temporaryService.getMarkdown()));
+        //console.log(images);
         
         var id = temporaryService.getCurrentFileId();
 
@@ -168,7 +168,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onImageClick = function() {
-        var snippet = "![Image title](bilder/filname.jpg)\n*I'm the image caption! (source description, author, license)*";
+        var snippet = "![image-alt](bilder/filname.jpg \"caption, source, author, license\")\n";
         $scope.addSnippet(snippet);
     };
 
@@ -213,27 +213,6 @@ angular.module('meanMarkdownApp')
             console.log("no markdown available! start editing something or choose existing file");
         }
     };*/
-
-    $scope.getImages = function(html) {
-        var container = document.createElement("p");
-        container.innerHTML = html;
-
-        var images = container.getElementsByTagName("img");
-        var list = [];
-
-        for (var i = 0; i < images.length; i++) {
-            var src = images[i].src;
-            var alt = images[i].alt;
-
-            //if (text === undefined) text = anchors[i].innerText;
-
-            list.push({
-                src: src,
-                alt: alt
-            });
-        }
-        return list;
-    }
 
     /**
      * update markdown service when editor changes

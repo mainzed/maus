@@ -33,6 +33,36 @@ angular.module('meanMarkdownApp')
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
 		};
 
+        // custom image renderer
+        var images = []; // save images here to use them for the images-table
+        var counter = 0;
+        customRenderer.image = function (src, title, alt) {
+            // used title attr for caption, author etc
+            var tokens = title.split(", ");
+            var caption = tokens[0];
+            var source = tokens[1];
+            var author = tokens[2];
+            var license = tokens[3];
+            var title = alt;
+
+            // not needed for rendering, but to access them later
+            images.push({
+                source: source,
+                caption: caption,
+                author: author,
+                license: license,
+                title: title
+            });
+            //var html = "";
+
+            return "<figure>\n" + 
+                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
+                    "<figcaption>\n" + 
+                    caption + " (Quelle: " + source + ", Autor: " + author + " © " + license + ")\n" +
+                    "</figcaption>\n" + 
+                    "</figure>\n";
+        };
+
         // change renderer to export figure instead of img + em
         // <figure>
         // <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
@@ -53,6 +83,11 @@ angular.module('meanMarkdownApp')
         
         appendLinkTable($scope.html);
 
+        // add table of images
+        //var images = getImages($scope.html);
+        //console.log(images);
+        $scope.html += createImagesTable(images);
+
     } else {
     	$scope.html = "<p>Nothing to preview!</p>";
     }
@@ -63,9 +98,9 @@ angular.module('meanMarkdownApp')
         var words = $scope.html.match(/\{(.*?)\}/g);
 
         if (words) {
-            console.log(words.length);
+            //console.log(words.length);
             words.forEach(function(word, index) {
-                console.log("index: " + index);
+                //console.log("index: " + index);
                 
                 //word = word.replace("{", "").replace("}", "");
                 
@@ -94,7 +129,7 @@ angular.module('meanMarkdownApp')
                             //console.log(index + " of " + words.length);
                             if (index === words.length - 1) {  // last word
                                 
-                                console.log(word + " is last word!");
+                                //console.log(word + " is last word!");
 
                                 var links = getLinks($scope.html);
                                 //console.log(links);
@@ -187,32 +222,6 @@ angular.module('meanMarkdownApp')
         return result;
 	}
 
-	/**
-	 * returns an array that contains all links
-	 */
-	/*function getLinksFromMarkdown() {
-		var links = [];
-		var markdown = temporaryService.getMarkdown();	
-		var matches = markdown.match(/\[(.*?)\)/g);  // 'g' makes it return all matches
-	
-		// TODO: skip images
-		
-		if (matches) {
-			matches.forEach(function(link){
-				var linkTitle = link.match(/\[([^)]+)\]/g);
-				console.log(linkTitle);
-
-				var linkUrl = link.match(/\(([^)]+)\)/g);
-				console.log(linkUrl);
-				links.push({
-					title: linkTitle,
-					url: linkUrl
-				});
-			});
-		}
-		return links;
-	}*/
-
 	function getLinks(html) {
 	    var container = document.createElement("p");
 	    container.innerHTML = html;
@@ -232,6 +241,28 @@ angular.module('meanMarkdownApp')
 
 	    return list;
 	}
+
+    /**
+     * returns a html div element containing and 
+     * unordered list with all images. 
+     * requires a list of image objects
+     */
+    function createImagesTable(images) {
+        var html = "<div class=\"images-table\">\n<h4>Images</h4>\n<ul>";
+        if (images.length) {
+
+            // create html
+            images.forEach(function(image) {
+                html += "<li>" + 
+                        image.title + ", " +  
+                        image.author + ", " +  
+                        image.license + ", " +  
+                        "</li>";
+            });
+        }
+        html += "</ul>\n</div>\n";
+        return html;
+    }
 
 	$scope.onOlatClick = function() {
 
