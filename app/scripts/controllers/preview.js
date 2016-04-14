@@ -10,7 +10,7 @@
 angular.module('meanMarkdownApp')
   .controller('PreviewCtrl', function ($scope, $location, temporaryService, fileService, definitionService, cssInjector) {  // cssInjector
     fitPanelHeight();
-    $(".nano").nanoScroller();
+
     $scope.test = "hello";
 
   	$scope.file = {};
@@ -102,8 +102,6 @@ angular.module('meanMarkdownApp')
         var title = temporaryService.getTitle();
         $scope.html = createPageTitle(title) + $scope.html;
 
-        $(".nano").nanoScroller();
-
     } else {
     	$scope.html = "<p>Nothing to preview!</p>";
     }
@@ -151,7 +149,7 @@ angular.module('meanMarkdownApp')
                                 if (defs.length) {
                                     // append to end of file
                                     $scope.html += createDefinitionsTable(defs);
-                                    $(".nano").nanoScroller();
+
                                 }
 
                             }

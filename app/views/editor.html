@@ -1,35 +1,4 @@
 
-<!--<navbar></navbar>-->
-<!--<div class="header">
-  <div class="navbar navbar-default" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-
-        <a class="navbar-brand nav-link">mdWriter</a>
-      </div>
-
-      <div class="collapse navbar-collapse" id="js-navbar-collapse">
-
-        <ul class="nav navbar-nav">
-          <li class="active">
-            <a href="#/editor" class="nav-link">Editor</a>
-          </li>
-          <li>
-            <a href="#/preview" class="nav-link">Preview</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>-->
-
 <!-- title -->
 <form>
   <div class="form-group">
@@ -37,11 +6,10 @@
   </div>
 </form>
 
-<div class="nano editor">
-  <div class="nano-content">
-    <div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model=markdown ng-change="onEditorChange()"></div>
+<scrollable>
+  <div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model="markdown" ng-change="onEditorChange()">
   </div>
-</div>
+</scrollable>
 
 <p>
 

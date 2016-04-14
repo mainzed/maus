@@ -4,21 +4,28 @@
     <ul>
       <li ng-repeat="file in files | orderBy: 'updated_at':false" class="file">
         <a ng-href="#/editor/{{file._id}}" class="titles">
-          <strong>{{ file.title }}</strong><i> by {{ file.author }}</i>
+          <strong>{{ file.title }}</strong>
         </a>
+
+        <i> by {{ file.author }}</i>
+        
         <a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links pull-right">
           <span class="glyphicon glyphicon-trash"></span> 
         </a>
         <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)">
           <span class="glyphicon glyphicon-download-alt"></span>
         </a>
-      </li> 
+      </li>
+      
+      <!-- create new -->
+      <li class="file" ng-click="onCreateNewFile()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create new
+      </li>
     </ul>
   </div>
 </div>
 
 
-<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>
+<!--<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>-->
 
 
 

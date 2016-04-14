@@ -12,24 +12,24 @@
 <!-- OLAT -->
 
 <!--<div class="panel panel-default" style="padding-left: 10px; padding-top: 10px;" ng-show="choice === 'OLAT'">-->
-<div class="nano preview">
+<scrollable>
   <!-- <div class="preview nano-content" ng-bind-html=html ng-show="choice === 'OLAT'">-->
-  <div class="nano-content" ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
-</div>
+  <div ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
+</scrollable>
 
 <!-- raw HTML -->
 <div ng-show="choice === 'Raw HTML'" class="panel panel-default">
   <div class="preview" ng-bind=html style="padding-left: 10px;"></div>
 </div>
 
-<!-- preview button -->
-<button class="btn btn-primary
-   btn-sm" ng-click="onEditorClick()">
-  <i class="fa fa-edit"> editor</i>
-</button>
+<div id="preview-buttons">
+  <!-- preview button -->
+  <button class="btn btn-primary
+     btn-sm" ng-click="onEditorClick()">
+    <i class="fa fa-edit"> editor</i>
+  </button>
 
-<!-- save button -->
-<div class="btn-group editor-tools" role="group"> 
+  <!-- save button -->
   <button ng-show="choice === 'OLAT'" class="btn btn-default
    btn-sm" ng-click="onOlatClick()">
     <i class="fa fa-share-square-o"> export</i>

@@ -24,7 +24,7 @@ angular.module('meanMarkdownApp')
         $scope.editor = _editor;  // for global settings
         $scope.doc = _editor.getDoc();  // access to the editor content
 
-        fitEditorHeight();
+        //fitEditorHeight();
     };
 
     // define before get request
@@ -62,9 +62,9 @@ angular.module('meanMarkdownApp')
         mode: 'markdown',  // CurlyBraceWrappedText
         showTrailingSpace: false,
         showMarkdownLineBreaks: true,  // custom
-        showOlatMarkdown: true  // custom OLAT
+        showOlatMarkdown: true, // custom OLAT
+        scrollbarStyle: null
     };
-
 
     // listeners
 
@@ -261,7 +261,7 @@ angular.module('meanMarkdownApp')
     });
 
     $(window).resize(function () {
-        fitEditorHeight();
+        //fitEditorHeight();
     });
 
     function fitEditorHeight() {
