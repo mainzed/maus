@@ -222,7 +222,8 @@ angular.module('meanMarkdownApp')
      */
     $scope.enableSaveButton = false;
     $scope.onEditorChange = function() {
-    	temporaryService.setMarkdown($scope.markdown);
+        var markdown = $scope.editor.getValue();
+    	temporaryService.setMarkdown(markdown);
         $scope.enableSaveButton = true; // enable button when code was changed
     };
 

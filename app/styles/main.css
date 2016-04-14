@@ -88,3 +88,6 @@ body {
   margin-top: 30px;
 }
 
+#create-new {
+  cursor: pointer;
+}

@@ -29,12 +29,13 @@ angular.module('meanMarkdownApp')
         var headings = [];
 		var counter = 0;
 		customRenderer.heading = function (text, level) {
+            counter++;
 		 	var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-		 	counter++;
 
             headings.push({
                 text: text,
-                level: level
+                level: level,
+                counter: counter
             });
 
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
@@ -341,11 +342,12 @@ angular.module('meanMarkdownApp')
             // create html
             headings.forEach(function(heading) {
                 if (heading.level === 1) {  // skip all but h1
-                    html += "<li>" + 
+                    html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" + 
                         heading.text +  
-                        "</li>";
+                        "</a></li>";
                 }
             });
+
         }
         html += "</ul>\n</div>\n";
         return html;
@@ -382,7 +384,9 @@ angular.module('meanMarkdownApp')
                         '<link rel="stylesheet" href="style/olat.css" />\n' +
                         "  </head>\n"+
                         "  <body>\n" +
-                        $scope.html + 
+                        $scope.html +
+                        "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
+                        "<script src=\"javascript/olat.js\"></script>\n" +
                         "  </body>\n"+
                         "</html>\n";
 
