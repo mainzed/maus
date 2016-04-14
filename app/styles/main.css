@@ -54,3 +54,22 @@ div .preview {
   color: black;
   text-decoration: none;
 }
+
+.list-group-item:hover {
+  background-color: gray;
+}
+
+.file {
+  list-style: none;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.file:hover {
+  background-color: #f6f6f6;
+}
+
+
+
