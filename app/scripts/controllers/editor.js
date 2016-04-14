@@ -23,6 +23,8 @@ angular.module('meanMarkdownApp')
         // Editor part
         $scope.editor = _editor;  // for global settings
         $scope.doc = _editor.getDoc();  // access to the editor content
+
+        fitEditorHeight();
     };
 
     // define before get request
@@ -35,7 +37,7 @@ angular.module('meanMarkdownApp')
 		// existing file
 		//console.log("getting file with ID: " + id);
 		fileService.get({id: id}, function(file) {
-            console.log("loading: " + file.title);
+            //console.log("loading: " + file.title);
 
 			//markdownService.setMarkdown(file.markdown);
             //markdownService.setCurrentFileId(file._id);
@@ -67,9 +69,6 @@ angular.module('meanMarkdownApp')
     // listeners
 
     $scope.onSaveClick = function() {
-        var w = window.innerWidth / 100 * 90;
-        console.log("90% of screen: " + w);
-
         //var images = $scope.getImages(marked(temporaryService.getMarkdown()));
         //console.log(images);
         
@@ -198,6 +197,10 @@ angular.module('meanMarkdownApp')
     $scope.onRedoClick = function() {
         $scope.editor.redo();
     };
+
+    $scope.onPreviewClick = function() {
+        $location.path("/preview");
+    };
     
     /*$scope.onMarkdownClick = function() {
         if (markdownService.getMarkdown().length > 0) {
@@ -257,5 +260,13 @@ angular.module('meanMarkdownApp')
         }
     });
 
+    $(window).resize(function () {
+        fitEditorHeight();
+    });
+
+    function fitEditorHeight() {
+        var height = window.innerHeight / 100 * 85;  // get 70% of screen height
+        $scope.editor.setSize("",  height);  // empty string as workaround
+    }
 
   });

@@ -32,7 +32,7 @@ angular.module('meanMarkdownApp')
             definitionService.update({id: $scope.definition._id}, $scope.definition, function() {
                 
                 //console.log("updating definition successfull!");
-                $location.path('/#/definitions');
+                $location.path('/definitions');
             });
         } else {  // doesnt exist, create new!
             //console.log("create new!");

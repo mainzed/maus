@@ -7,6 +7,7 @@
 
 body {
   padding: 0;
+  height: 100%;
 }
 
 .editor-tools {
@@ -27,7 +28,7 @@ body {
 }
 
 .file-links {
-	margin-right: 5px;
+	margin-left: 5px;
 }
 
 .save-text {
@@ -37,4 +38,19 @@ body {
 
 .file-group {
   margin-top: 10px;
+}
+
+div .preview {
+  overflow-y: scroll;
+}
+
+.titles {
+  color: black;
+  text-decoration: none;
+
+}
+
+.titles:hover {
+  color: black;
+  text-decoration: none;
 }

@@ -8,8 +8,8 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, temporaryService, fileService, definitionService, cssInjector) {  // cssInjector
-
+  .controller('PreviewCtrl', function ($scope, $location, temporaryService, fileService, definitionService, cssInjector) {  // cssInjector
+    fitPanelHeight();
     $scope.test = "hello";
 
   	$scope.file = {};
@@ -25,10 +25,16 @@ angular.module('meanMarkdownApp')
 		var customRenderer = new marked.Renderer();
 
 		// custom heading renderer
+        var headings = [];
 		var counter = 0;
 		customRenderer.heading = function (text, level) {
 		 	var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 		 	counter++;
+
+            headings.push({
+                text: text,
+                level: level
+            });
 
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
 		};
@@ -55,10 +61,12 @@ angular.module('meanMarkdownApp')
             });
             //var html = "";
 
-            return "<figure>\n" + 
+            return '<figure id="' + alt + '">\n' + 
                     "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
                     "<figcaption>\n" + 
+                    "<a href=\"#images-table\">\n" + 
                     caption + " (Quelle: " + source + ", Autor: " + author + " © " + license + ")\n" +
+                    "</a>\n" +
                     "</figcaption>\n" + 
                     "</figure>\n";
         };
@@ -83,10 +91,15 @@ angular.module('meanMarkdownApp')
         
         appendLinkTable($scope.html);
 
-        // add table of images
-        //var images = getImages($scope.html);
-        //console.log(images);
+        // add table of images to end of file
         $scope.html += createImagesTable(images);
+
+        // add table of content to beginning of file
+        $scope.html = createTableOfContent(headings) + $scope.html;
+
+        // add title to beginning of filee
+        var title = temporaryService.getTitle();
+        $scope.html = createPageTitle(title) + $scope.html;
 
     } else {
     	$scope.html = "<p>Nothing to preview!</p>";
@@ -110,7 +123,7 @@ angular.module('meanMarkdownApp')
                         if (definition.word === word.replace("{", "").replace("}", "")) {
                             //console.log(definition.word);
                             //console.log($scope.html);
-                            var snippet = "<a href=\"" + definition.url +  "\" title=\"" + definition.text + "\">" + definition.word + "</a>";
+                            var snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
                             var html = $scope.html;
                             //console.log("replacing: " + word + " with: " + snippet);
                             
@@ -126,17 +139,15 @@ angular.module('meanMarkdownApp')
                             //appendTables($scope.html);
                         
                             // on last word -> create definitions table
-                            //console.log(index + " of " + words.length);
                             if (index === words.length - 1) {  // last word
                                 
-                                //console.log(word + " is last word!");
 
-                                var links = getLinks($scope.html);
+                                var defs = getDefinitions($scope.html);
+                                console.log(defs);
                                 //console.log(links);
-                                if (links.length) {
-                                    
-                                    var definitionsTable = createDefinitionsTable(links);
-                                    $scope.html += definitionsTable;
+                                if (defs.length) {
+                                    // append to end of file
+                                    $scope.html += createDefinitionsTable(defs);
                                 }
 
                             }
@@ -174,14 +185,14 @@ angular.module('meanMarkdownApp')
 	function createLinksTable(links) {
 		var counter = 0;
 		var html = "";
-		html += "<div class=\"links-table\"><h4>Links</h4><ul>";
+		html += "<div id=\"links-table\" class=\"links-table\"><h4>Links</h4><ul>";
 		for (var key in links) {
 			var link = links[key];
 			var title = link[3];
 			var text = link[2];
 			var url = link[1];
 			if (!title && url !== "definition") {  // skip links with titles (definitions)
-				html += "<li><a href='" + url + "'>" + text + "</a></li>\n";
+				html += "<li><a href='" + url + "' target='_blank'>" + text + "</a></li>\n";
 				counter++;
 			}
 		}
@@ -194,11 +205,11 @@ angular.module('meanMarkdownApp')
 		}
 	}
 
-	function createDefinitionsTable(links) {
+	/*function createDefinitionsTable(definitions) {
 		var counter = 0; 
         var wordsInTable = [];  // skip duplicates
 		var html = "";
-		html += "<div class=\"definitions-table\"><h4>Definitions</h4><ul>";
+		html += "<div id=\"definitions-table\" class=\"definitions-table\"><h4>Definitions</h4><ul>";
 		for (var key in links) {
 			var link = links[key];
 			var tooltip = link[3];
@@ -220,7 +231,32 @@ angular.module('meanMarkdownApp')
             result = html;
 		}
         return result;
-	}
+	}*/
+
+    function getDefinitions(html) {
+        var container = document.createElement("p");
+        container.innerHTML = html;
+
+        var anchors = container.getElementsByTagName("a");
+        var list = [];
+
+        for (var i = 0; i < anchors.length; i++) {
+
+            var href = anchors[i].href;
+            var title = anchors[i].title;
+            var text = anchors[i].textContent;
+
+            if (title) {  // only links that have a tooltip aka definitions
+                list.push({
+                    href: href,
+                    title: title,
+                    text: text
+                });
+            }
+        }
+
+        return list;
+    }
 
 	function getLinks(html) {
 	    var container = document.createElement("p");
@@ -230,27 +266,32 @@ angular.module('meanMarkdownApp')
 	    var list = [];
 
 	    for (var i = 0; i < anchors.length; i++) {
-	        var href = anchors[i].href;
-	        var title = anchors[i].title;
-	        var text = anchors[i].textContent;
 
-	        if (text === undefined) text = anchors[i].innerText;
+            var href = anchors[i].href;
+            var title = anchors[i].title;
+            var text = anchors[i].textContent;
 
-	        list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
+            if (text === undefined) text = anchors[i].innerText;
+            
+            if (href.indexOf("http://localhost:3000") === -1) {  // ignore in-site links to images-table etc
+                list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
+            }
+
+	        
 	    }
 
 	    return list;
 	}
 
     /**
-     * returns a html div element containing and 
+     * returns a html div element containing an 
      * unordered list with all images. 
      * requires a list of image objects
      */
     function createImagesTable(images) {
-        var html = "<div class=\"images-table\">\n<h4>Images</h4>\n<ul>";
+        var html = "";
         if (images.length) {
-
+            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Images</h4>\n<ul>";
             // create html
             images.forEach(function(image) {
                 html += "<li>" + 
@@ -262,6 +303,54 @@ angular.module('meanMarkdownApp')
         }
         html += "</ul>\n</div>\n";
         return html;
+    }
+
+    /**
+     * returns a html div element containing an 
+     * unordered list with all definitions. 
+     * requires a list of definition objects
+     */
+    function createDefinitionsTable(definitions) {
+        var html = "";
+        if (definitions.length) {
+            html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Definitions</h4>\n<ul>";
+            // create html
+            definitions.forEach(function(definition) {
+                html += "<li>" + 
+                        definition.text + ", " +  
+                        definition.title +  
+                        //definition.href + ", " +  
+                        "</li>";
+            });
+        }
+        html += "</ul>\n</div>\n";
+        return html;
+    }
+
+    /**
+     * returns a html div element containing an 
+     * unordered list with all level 1 headings. 
+     * requires a list of heading objects
+     */
+    function createTableOfContent(headings) {
+        var html = "";
+        if (headings.length) {
+            html += "<div id=\"headings-table\" class=\"headings-table\">\n<h4>Content</h4>\n<ul>";
+            // create html
+            headings.forEach(function(heading) {
+                if (heading.level === 1) {  // skip all but h1
+                    html += "<li>" + 
+                        heading.text +  
+                        "</li>";
+                }
+            });
+        }
+        html += "</ul>\n</div>\n";
+        return html;
+    }
+
+    function createPageTitle(title) {
+        return "<h1 class=\"page-title\">" + title + "</h1>";
     }
 
 	$scope.onOlatClick = function() {
@@ -278,6 +367,10 @@ angular.module('meanMarkdownApp')
             });
         }
         
+    };
+
+    $scope.onEditorClick = function() {
+        $location.path("/editor");
     };
   	
     function startDownload(filename) {
@@ -327,6 +420,15 @@ angular.module('meanMarkdownApp')
            window.location.href = "/#/editor";
         }
     });
+
+    $(window).resize(function () {
+        fitPanelHeight();
+    });
+
+    function fitPanelHeight() {
+        var h = window.innerHeight / 100 * 85;  // get 70% of screen height
+        $(".preview").css("height", h);
+    }
 
   });
 

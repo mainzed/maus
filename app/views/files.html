@@ -1,32 +1,68 @@
-<div class="panel panel-default file-group" ng-repeat="file in files | orderBy: 'updated_at':false">
-  <div class="panel-body">
-    <h3>{{ file.title }}</h4>
-    <p>last edited on {{ file.updated_at | limitTo:10 }} by {{ file.author }} </p>
-    <p>
-    	<a ng-href="#/editor/{{file._id}}" class="file-links">
-    		<span class="glyphicon glyphicon-pencil"></span> Edit
-    	</a>
-
-      <a ng-href="#" target="_self" class="file-links" ng-click="onDownloadClick(file._id)">
-        <span class="glyphicon glyphicon-download-alt"></span> Download
+<div class="col-md-8">
+  <div class="panel panel-default file-group" ng-repeat="file in files | orderBy: 'updated_at':false">
+    <div class="panel-heading">
+      <!-- clickable title -->
+      <a ng-href="#/editor/{{file._id}}" class="titles">
+        <strong>{{ file.title }}</strong> by {{ file.author }} ({{ file.updated_at | limitTo:10 }})
       </a>
 
-    	<a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links">
-    	<span class="glyphicon glyphicon-trash"></span> Delete 
-    	</a>
-    </p>
+      <a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links pull-right">
+      <span class="glyphicon glyphicon-trash"></span> 
+      </a>
+
+      <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)">
+        <span class="glyphicon glyphicon-download-alt"></span>
+      </a>
+
+      <!--<a ng-href="#/editor/{{file._id}}" class="file-links pull-right">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </a>-->
+
+    </div>
+    <div class="panel-body">
+      
+      <a ng-href="#/editor/{{file._id}}" class="titles">{{ file.markdown | limitTo:160 }} ...</a>
+
+      <!--<p>last edited on {{ file.updated_at | limitTo:10 }} by {{ file.author }} </p>-->
+      	<!--<a ng-href="#/editor/{{file._id}}" class="file-links">
+      		<span class="glyphicon glyphicon-pencil"></span> Edit
+      	</a>
+
+        <a ng-href="#" target="_self" class="file-links" ng-click="onDownloadClick(file._id)">
+          <span class="glyphicon glyphicon-download-alt"></span> Download
+        </a>
+
+      	<a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links">
+      	<span class="glyphicon glyphicon-trash"></span> Delete 
+      	</a>-->
+      
+    </div>
   </div>
+
+  <ul class="list-group file-group">
+    <li class="list-group-item" ng-repeat="file in files | orderBy: 'updated_at':false" >
+      <a ng-href="#/editor/{{file._id}}" class="titles">
+        <strong>{{ file.title }}</strong><i> by {{ file.author }}</i>
+      </a>
+      <a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links pull-right">
+        <span class="glyphicon glyphicon-trash"></span> 
+      </a>
+      <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)">
+        <span class="glyphicon glyphicon-download-alt"></span>
+      </a>
+    </li> 
+  </ul>
+
+
+  <div class="list-group">
+    <button type="button" class="list-group-item" ng-repeat="file in files | orderBy: 'updated_at':false">
+      <strong>{{ file.title }}</strong><i> by {{ file.author }}</i>
+    </button>
+  </div>
+
+
+
+  <button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>
+
 </div>
-
-<!--<div class="list-group file-group">
-  <a ng-repeat="file in files | orderBy: 'updated_at':false" ng-href="#/editor/{{file._id}}" class="list-group-item">
-    {{ file.title }} <i>by {{ file.author }}</i>
-  </a>
-  
-</div>-->
-
-<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>
-<!--<a type="button" href="#/definitions" class="btn btn-default btn-sm">definitions</a>-->
-
-
 
