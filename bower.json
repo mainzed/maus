@@ -16,7 +16,8 @@
     "bootstrap": "3.3.6",
     "ng-dialog": "0.5.9",
     "ngcssinjector": "*",
-    "angular-css": "^1.0.7"
+    "angular-css": "^1.0.7",
+    "angular-nanoscroller": "0.2.1"
   },
   "resolutions": {
     "angular": "^1.4.0"

@@ -10,13 +10,12 @@
 </div>
 
 <!-- OLAT -->
-<div class="panel panel-default" style="padding-left: 10px; padding-top: 10px;" ng-show="choice === 'OLAT'">
-  <div class="preview" ng-bind-html=html></div>
-    <!--<div id="links" ng-bind-html=tableOfLinks></div>-->
-  </div>
+
+<!--<div class="panel panel-default" style="padding-left: 10px; padding-top: 10px;" ng-show="choice === 'OLAT'">-->
+<div class="nano preview">
+  <!-- <div class="preview nano-content" ng-bind-html=html ng-show="choice === 'OLAT'">-->
+  <div class="nano-content" ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
 </div>
-
-
 
 <!-- raw HTML -->
 <div ng-show="choice === 'Raw HTML'" class="panel panel-default">

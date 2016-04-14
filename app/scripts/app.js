@@ -18,7 +18,8 @@ angular
     'ngTouch',
     'ui.codemirror',
     'ngDialog',
-    'ngCssInjector'
+    'ngCssInjector',
+    'sun.scrollable'
   ])
   .config(function ($routeProvider) {
     $routeProvider

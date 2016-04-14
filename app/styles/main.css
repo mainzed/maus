@@ -40,10 +40,6 @@ body {
   margin-top: 10px;
 }
 
-div .preview {
-  overflow-y: scroll;
-}
-
 .titles {
   color: black;
   text-decoration: none;
@@ -70,6 +66,17 @@ div .preview {
 .file:hover {
   background-color: #f6f6f6;
 }
+
+
+
+.nano { height: 200px; width: 200px; }
+
+.nano.preview { height: 600px; width: 800px; }
+.nano.editor { height: 600px; width: 800px; }
+
+.nano .nano-content { padding: 10px; }
+.nano .nano-pane   { background: ghostwhite; }
+.nano .nano-slider { background: #111; }
 
 
 
