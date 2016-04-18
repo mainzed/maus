@@ -19,7 +19,7 @@
   
   <!-- undo and redo buttons -->
   <div class="btn-group editor-tools" role="group"> 
-    <button class="btn btn-default btn-sm editor-button" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
+    <button class="btn btn-default btn-sm editor-button" data-toggle="tooltip" title="Ctrl + Z" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
     <button class="btn btn-default btn-sm editor-button" ng-click="onRedoClick()"><i class="fa fa-repeat"></i></button>
   </div>
   
@@ -32,7 +32,7 @@
   <div class="btn-group editor-tools" role="group"> 
     
     <!-- image button -->
-    <button class="btn btn-default btn-sm" ng-click="onImageClick()"><i class="fa fa-picture-o"></i></button>
+    <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Ctrl + I"><i class="fa fa-picture-o"></i></button>
 
     <!-- link button -->
     <div class="btn-group dropup" role="group">
@@ -42,7 +42,7 @@
       <ul class="dropdown-menu">
         
         <li>
-          <button class="btn btn-link" ng-click="onLinkClick()">
+          <button class="btn btn-link" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
             <i class="fa fa-link"> Link</i>
           </button>
           <!-- shortcut -->
@@ -69,9 +69,11 @@
   <!-- save button -->
   <div class="btn-group editor-tools" role="group"> 
     <button class="btn btn-success
-     btn-sm" ng-click="onSaveClick()">
+     btn-sm" ng-click="onSaveClick()" data-toggle="tooltip" title="Ctrl + S">
       <i class="fa fa-floppy-o"> save</i>
     </button>
+    
+
   </div>
   <span class="save-text" ng-show="showSuccess === true">... saved!</span>
   <span class="save-text" ng-show="showError === true">... someting went wrong!</span>

@@ -17,8 +17,19 @@ angular.module('meanMarkdownApp')
 
     $scope.awesomeThings = [1, 2, 3];
 
+    console.log($scope.previousChoice);
+
+    // set default value for preview
+    if (temporaryService.getChoice()) {
+        $scope.choice = temporaryService.getChoice();
+    } else {
+        $scope.choice = "Bootstrap";
+        temporaryService.setChoice($scope.choice);
+    }
+    
+
     // fills title, id and markdown if cookie exists
-    temporaryService.getCookies();
+    //temporaryService.getCookies();
 
     if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
@@ -83,12 +94,20 @@ angular.module('meanMarkdownApp')
 		var markdown = temporaryService.getMarkdown();
 
  		var html = marked(markdown, { renderer: customRenderer });
- 
+        
+        createOlatHtml(html);
+
+        //createBootstrapHtml(html); 
+
+    } else {
+    	$scope.html = "<p>Nothing to preview!</p>";
+    }
+    
+    function createOlatHtml(html) {
         html = replaceStoryTags(html);
+        
+        $scope.html = html;
 
- 		$scope.html = html;
-
-        // appends tables after last definition was changed
         replaceDefinitionTags($scope.html);
         
         appendLinkTable($scope.html);
@@ -101,12 +120,21 @@ angular.module('meanMarkdownApp')
 
         // add title to beginning of filee
         var title = temporaryService.getTitle();
+
         $scope.html = createPageTitle(title) + $scope.html;
 
-    } else {
-    	$scope.html = "<p>Nothing to preview!</p>";
     }
-    
+
+    function createBootstrapHtml(html) {
+        $scope.html = html;
+         // add table of content to beginning of file
+        $scope.html = createTableOfContent(headings) + $scope.html;
+
+        // add title to beginning of filee
+        var title = temporaryService.getTitle();
+        $scope.html = createPageTitle(title) + $scope.html;
+    }
+
     function replaceDefinitionTags() {
         // convert definitions
         // convert definition
@@ -412,10 +440,17 @@ angular.module('meanMarkdownApp')
     // dynamically adds and removes css styles according to preview choice
     $scope.$watch('choice', function (newValue, oldValue) {
         if (newValue === "OLAT") {
+            cssInjector.disable("/styles/normal.css");
             cssInjector.add("/styles/olat.css");
+        } else if (newValue === "Bootstrap") {
+            cssInjector.disable("/styles/olat.css");
+            cssInjector.add("/styles/normal.css");
         } else {
             cssInjector.disable("/styles/olat.css");
         }
+
+        // remember
+        temporaryService.setChoice(newValue);
     });
 
     $(document).keydown(function (e) {
@@ -427,9 +462,9 @@ angular.module('meanMarkdownApp')
         }
     });
 
-    $(window).resize(function () {
+    /*$(window).resize(function () {
         fitPanelHeight();
-    });
+    });*/
 
     function fitPanelHeight() {
         //var h = window.innerHeight / 100 * 85;  // get 70% of screen height

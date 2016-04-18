@@ -1,21 +1,25 @@
 
 <div class="row">
-  <div class="form-group col-sm-3" ng-init="choice='OLAT'">
+  <div class="form-group col-sm-3">
     <select class="form-control" ng-model="choice">
       <!--<option value="" selected disabled>Select template</option>-->
+      <option>Bootstrap</option>
       <option>OLAT</option>
       <option>Raw HTML</option>
     </select>
   </div>
 </div>
 
-<!-- OLAT -->
 
-<!--<div class="panel panel-default" style="padding-left: 10px; padding-top: 10px;" ng-show="choice === 'OLAT'">-->
 <scrollable>
-  <!-- <div class="preview nano-content" ng-bind-html=html ng-show="choice === 'OLAT'">-->
+  <!-- OLAT -->
   <div ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
+
+  <!-- Bootstrap Layout -->
+  <div ng-bind-html="html" ng-show="choice === 'Bootstrap'"></div>
 </scrollable>
+
+
 
 <!-- raw HTML -->
 <div ng-show="choice === 'Raw HTML'" class="panel panel-default">

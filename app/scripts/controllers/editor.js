@@ -24,12 +24,18 @@ angular.module('meanMarkdownApp')
         $scope.editor = _editor;  // for global settings
         $scope.doc = _editor.getDoc();  // access to the editor content
 
+        // set cursor to end of document and activate it
+        //$scope.editor.goDocEnd;
+        //$scope.editor.replaceSelection("");  // workaround since goDocEnd doesnt work
+        //$scope.editor.focus();
+
         //fitEditorHeight();
     };
 
     // define before get request
     $scope.markdown = temporaryService.getMarkdown();
     $scope.title = temporaryService.getTitle();
+    $scope.author = temporaryService.getAuthor();
 
  	// get file if id provided
   	var id = $routeParams.id;
@@ -48,10 +54,12 @@ angular.module('meanMarkdownApp')
             temporaryService.setMarkdown(file.markdown);
             temporaryService.setTitle(file.title);
             temporaryService.setCurrentFileId(file._id);
+            temporaryService.setAuthor(file.author);
 
             // overwrite default data set earlier, once it has loaded
             $scope.markdown = temporaryService.getMarkdown();
             $scope.title = temporaryService.getTitle();
+            $scope.author = temporaryService.getAuthor();
         });
 	} 
 
@@ -105,12 +113,16 @@ angular.module('meanMarkdownApp')
 
         } else {  // existing file
             console.log("updating existing!");
+
+
+
             var newFile = {
-                author: "John Doe",
+                author: $scope.author,
                 markdown: $scope.markdown,
                 title: $scope.title
             };
 
+            console.log(newFile);
             fileService.update({ id: id }, newFile, function() {
                 // success
                 $scope.showSuccess = true;
@@ -167,7 +179,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onImageClick = function() {
-        var snippet = "![image-alt](bilder/filname.jpg \"caption, source, author, license\")\n";
+        var snippet = "![image-alt](bilder/filname.jpg \"caption, source, author, license\")";
         $scope.addSnippet(snippet);
     };
 
@@ -199,6 +211,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
+        console.log("trigger preview!");
         $location.path("/preview");
     };
     
@@ -224,6 +237,7 @@ angular.module('meanMarkdownApp')
     $scope.onEditorChange = function() {
         var markdown = $scope.editor.getValue();
     	temporaryService.setMarkdown(markdown);
+        $scope.markdown = markdown;
         $scope.enableSaveButton = true; // enable button when code was changed
     };
 
@@ -237,27 +251,62 @@ angular.module('meanMarkdownApp')
     };
 
     // listener shortcuts
-    $(document).keydown(function (e) {
+
+    // preview hotkey
+    /*$(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
-        if(e.ctrlKey && code === 80) { // Shift + P 
-            $location.path('/preview');
+        if(e.ctrlKey && code === 69) { // Shift + E 
+            console.log("Ctrl + E");
+            console.log($location.path());
+            
+            //if ()
+            e.preventDefault();  // stop print action
+            $scope.onPreviewClick();
         }
-    });
+    });*/
 
+    // link hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 76) { // Shift + L 
-           $scope.onLinkClick();
+            console.log("Ctrl + L");
+            e.preventDefault();  // stop save action
+            $scope.onLinkClick();
         }
     });
 
+    // image hotkey
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.ctrlKey && code === 73) {
+            console.log("Ctrl + I");
+            e.preventDefault();  // stop save action
+            $scope.onImageClick();
+        }
+    });
+
+    // save hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 83) { // Shift + S 
-           $scope.onStoryScriptClick();
+            console.log("Ctrl + S");
+            e.preventDefault();  // stop save action
+            $scope.onSaveClick();
+        }
+    });
+
+    // undo hotkey
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        // shiftKey ctrlKey
+        if(e.ctrlKey && code === 90) {
+            console.log("Ctrl + Z");
+            e.preventDefault();
+            $scope.onUndoClick();
         }
     });
 
