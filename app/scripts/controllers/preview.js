@@ -57,7 +57,7 @@ angular.module('meanMarkdownApp')
         var counter = 0;
         customRenderer.image = function (src, title, alt) {
             // used title attr for caption, author etc
-            var tokens = title.split(", ");
+            var tokens = title.split("; ");
             var caption = tokens[0];
             var source = tokens[1];
             var author = tokens[2];
@@ -270,19 +270,20 @@ angular.module('meanMarkdownApp')
 
         var anchors = container.getElementsByTagName("a");
         var list = [];
-
+        var titles = []; // avoid duplicates
         for (var i = 0; i < anchors.length; i++) {
 
             var href = anchors[i].href;
             var title = anchors[i].title;
             var text = anchors[i].textContent;
 
-            if (title) {  // only links that have a tooltip aka definitions
+            if (title && titles.indexOf(title) === -1) {  // only links that have a tooltip aka definitions
                 list.push({
                     href: href,
                     title: title,
                     text: text
                 });
+                titles.push(title);
             }
         }
 
@@ -447,20 +448,21 @@ angular.module('meanMarkdownApp')
             cssInjector.add("/styles/normal.css");
         } else {
             cssInjector.disable("/styles/olat.css");
+            cssInjector.disable("/styles/normal.css");
         }
 
         // remember
         temporaryService.setChoice(newValue);
     });
 
-    $(document).keydown(function (e) {
+    /*$(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
         if(e.shiftKey && code === 80) { // Crel + P 
 
            window.location.href = "/#/editor";
         }
-    });
+    });*/
 
     /*$(window).resize(function () {
         fitPanelHeight();

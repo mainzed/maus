@@ -179,7 +179,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onImageClick = function() {
-        var snippet = "![image-alt](bilder/filname.jpg \"caption, source, author, license\")";
+        var snippet = "![image-alt](bilder/filname.jpg \"caption; source; author; license\")";
         $scope.addSnippet(snippet);
     };
 

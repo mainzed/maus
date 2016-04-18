@@ -113,7 +113,7 @@ angular.module('meanMarkdownApp')
         //appendLinkTable($scope.html);
 
         return html;
-    }
+    };
 
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
@@ -123,7 +123,7 @@ angular.module('meanMarkdownApp')
 
         return html.replace(/<p>story{/g, '<div class="story">').replace(/}story<\/p>/g, "</div>");
         //html = html.replace(/\n§{/g, '<div class="story">');
-    }
+    };
 
     $scope.getLinks = function(html) {
         var container = document.createElement("p");
@@ -142,7 +142,7 @@ angular.module('meanMarkdownApp')
             list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
         }
         return list;
-    }
+    };
 
   });
 
