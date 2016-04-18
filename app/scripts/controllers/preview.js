@@ -297,7 +297,7 @@ angular.module('meanMarkdownApp')
 
             if (text === undefined) text = anchors[i].innerText;
             
-            if (href.indexOf("http://localhost:3000") === -1) {  // ignore in-site links to images-table etc
+            if (href.indexOf("http://localhost:3000") === -1 || href.indexOf("#images-table")) {  // ignore in-site links to images-table etc
                 list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
             }
 
