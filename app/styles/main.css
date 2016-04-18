@@ -14,8 +14,9 @@ body {
   height: 100%;
 }
 
-.editor-tools {
-    margin-right: 10px;
+#editor-tools {
+  padding-top: 10px;
+  height: 50px;
 }
 
 .dropup-button {
@@ -72,10 +73,8 @@ body {
   background-color: #f6f6f6;
 }
 
-
-
 .nano { 
-  height: 700px; 
+  height: 400px; 
   width: 850px; 
 }
 

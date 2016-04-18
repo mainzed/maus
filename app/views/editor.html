@@ -13,68 +13,70 @@
 
 <p>
 
-  <div class="btn-group editor-tools" role="group"> 
-    <button class="btn btn-default btn-sm editor-button" ng-click="onFilesClick()">back to files</button>
-  </div>
-  
-  <!-- undo and redo buttons -->
-  <div class="btn-group editor-tools" role="group"> 
-    <button class="btn btn-default btn-sm editor-button" data-toggle="tooltip" title="Ctrl + Z" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
-    <button class="btn btn-default btn-sm editor-button" ng-click="onRedoClick()"><i class="fa fa-repeat"></i></button>
-  </div>
-  
-  <!-- help button-->
-  <div class="btn-group editor-tools" role="group"> 
-    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button"><i class="fa fa-question"></i></a>
-  </div>
-  
-  <!-- image, links & storyscript buttons -->
-  <div class="btn-group editor-tools" role="group"> 
+  <div id="editor-tools">
+    <div class="btn-group" role="group"> 
+      <button class="btn btn-default btn-sm" ng-click="onFilesClick()">back to files</button>
+    </div>
     
-    <!-- image button -->
-    <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Ctrl + I"><i class="fa fa-picture-o"></i></button>
+    <!-- undo and redo buttons -->
+    <div class="btn-group" role="group"> 
+      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Ctrl + Z" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
+      <button class="btn btn-default btn-sm" ng-click="onRedoClick()"><i class="fa fa-repeat"></i></button>
+    </div>
+    
+    <!-- help button-->
+    <div class="btn-group" role="group"> 
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button"><i class="fa fa-question"></i></a>
+    </div>
+    
+    <!-- image, links & storyscript buttons -->
+    <div class="btn-group" role="group"> 
+      
+      <!-- image button -->
+      <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Ctrl + I"><i class="fa fa-picture-o"></i></button>
 
-    <!-- link button -->
-    <div class="btn-group dropup" role="group">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-link"></i>
-      </button>
-      <ul class="dropdown-menu">
-        
-        <li>
-          <button class="btn btn-link" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
-            <i class="fa fa-link"> Link</i>
-          </button>
-          <!-- shortcut -->
-          <!--
-          <span class="glyphicon glyphicon glyphicon-arrow-up" aria-hidden="true"></span> + L
-          -->
-        </li>
-        
-        <li><button class="btn btn-link" ng-click="onLabelClick()"><i class="fa fa-tag"> Label</i></button></li>
-        <li><button class="btn btn-link" ng-click="onTooltipLinkClick()"><i class="fa fa-commenting-o"> Definition</i></button></li>
-      </ul>
+      <!-- link button -->
+      <div class="btn-group dropup" role="group">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+          <i class="fa fa-link"></i>
+        </button>
+        <ul class="dropdown-menu">
+          
+          <li>
+            <button class="btn btn-link" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
+              <i class="fa fa-link"> Link</i>
+            </button>
+            <!-- shortcut -->
+            <!--
+            <span class="glyphicon glyphicon glyphicon-arrow-up" aria-hidden="true"></span> + L
+            -->
+          </li>
+          
+          <li><button class="btn btn-link" ng-click="onLabelClick()"><i class="fa fa-tag"> Label</i></button></li>
+          <li><button class="btn btn-link" ng-click="onTooltipLinkClick()"><i class="fa fa-commenting-o"> Definition</i></button></li>
+        </ul>
+      </div>
+
+      <!-- storyscript button -->
+      <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()"><i class="fa fa-book"></i></button>
     </div>
 
-    <!-- storyscript button -->
-    <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()"><i class="fa fa-book"></i></button>
-  </div>
-
-  <!-- preview button -->
-  <button class="btn btn-primary
-     btn-sm" ng-click="onPreviewClick()">
-      <i class="fa fa-play-circle-o"> preview</i>
-  </button>
-
-  <!-- save button -->
-  <div class="btn-group editor-tools" role="group"> 
-    <button class="btn btn-success
-     btn-sm" ng-click="onSaveClick()" data-toggle="tooltip" title="Ctrl + S">
-      <i class="fa fa-floppy-o"> save</i>
+    <!-- preview button -->
+    <button class="btn btn-primary
+       btn-sm" ng-click="onPreviewClick()">
+        <i class="fa fa-play-circle-o"> preview</i>
     </button>
-    
 
+    <!-- save button -->
+    <div class="btn-group" role="group"> 
+      <button class="btn btn-success
+       btn-sm" ng-click="onSaveClick()" data-toggle="tooltip" title="Ctrl + S">
+        <i class="fa fa-floppy-o"> save</i>
+      </button>
+      
+
+    </div>
+    <span class="save-text" ng-show="showSuccess === true">... saved!</span>
+    <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
   </div>
-  <span class="save-text" ng-show="showSuccess === true">... saved!</span>
-  <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
 </p> 

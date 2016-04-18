@@ -29,7 +29,7 @@ angular.module('meanMarkdownApp')
         //$scope.editor.replaceSelection("");  // workaround since goDocEnd doesnt work
         //$scope.editor.focus();
 
-        //fitEditorHeight();
+        fitEditorHeight();
     };
 
     // define before get request
@@ -311,12 +311,17 @@ angular.module('meanMarkdownApp')
     });
 
     $(window).resize(function () {
-        //fitEditorHeight();
+        fitEditorHeight();
     });
 
     function fitEditorHeight() {
-        var height = window.innerHeight / 100 * 85;  // get 70% of screen height
-        $scope.editor.setSize("",  height);  // empty string as workaround
+        var height = window.innerHeight - 130;
+        //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
+        //editor.setSize("",  height);  // empty string as workaround
+        
+        $(".nano").css("height", height); 
+
+        console.log("set height to " + height);
     }
 
   });
