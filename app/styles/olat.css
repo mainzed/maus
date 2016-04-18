@@ -1,44 +1,43 @@
 h1 {
-    color: red;
+    /*color: red;*/
 }
 
 h1.page-title {
-    color: red;
-    background-color: cyan;
+    font-weight: bold;
 }
 
 .story {
-    background-color: orange;
+    background-color: aliceblue;
 }
 
 .links-table {
-    background-color: blue;
+    background-color: aliceblue;
 }
 
 .definitions-table {
-    background-color: yellow;
+    background-color: aliceblue;
 }
 
 .images-table {
-    background-color: fuchsia;
+    background-color: aliceblue;
 }
 
 .headings-table {
-    background-color: cadetblue;
+    background-color: aliceblue;
 }
 
 figure {
-	background-color: seagreen; 
+	/*background-color: seagreen;*/
 }
 
 img {
-	background-color: lime; 
+	background-color: aliceblue; 
 }
 
 figcaption {
-	background-color: palegreen;
+	background-color: aliceblue;
 }
 
 a.definition {
-	background-color: yellow;
+	background-color: aliceblue;
 }

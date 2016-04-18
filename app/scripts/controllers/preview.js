@@ -17,13 +17,13 @@ angular.module('meanMarkdownApp')
 
     $scope.awesomeThings = [1, 2, 3];
 
-    console.log($scope.previousChoice);
+    //console.log($scope.previousChoice);
 
     // set default value for preview
     if (temporaryService.getChoice()) {
         $scope.choice = temporaryService.getChoice();
     } else {
-        $scope.choice = "Bootstrap";
+        $scope.choice = "OLAT";
         temporaryService.setChoice($scope.choice);
     }
     
@@ -248,15 +248,7 @@ angular.module('meanMarkdownApp')
 			var url = link[1];
 
             // skip links without title attribute (tooltip) and
-            // definitions already in table
-			if (tooltip && wordsInTable.indexOf(word) < 0) {  
-				html += "<li>" + word + ": " + tooltip + "</li>\n";
-				wordsInTable.push(word);
-                counter++;
-			}
-		}
-		html += "</ul>\n</div>";
-
+            // definitions already in table 
 		var result = "";
 		if (counter > 0) {
             result = html;
@@ -464,14 +456,21 @@ angular.module('meanMarkdownApp')
         }
     });*/
 
-    /*$(window).resize(function () {
+  
+    $(window).resize(function () {
         fitPanelHeight();
-    });*/
+    });
 
     function fitPanelHeight() {
-        //var h = window.innerHeight / 100 * 85;  // get 70% of screen height
-        //$(".preview").css("height", h);
+        var height = window.innerHeight - 130;
+        //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
+        //editor.setSize("",  height);  // empty string as workaround
+        
+        $(".nano").css("height", height); 
+
+        console.log("set height to " + height);
     }
+
 
   });
 
