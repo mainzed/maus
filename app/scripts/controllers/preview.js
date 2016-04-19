@@ -392,6 +392,13 @@ angular.module('meanMarkdownApp')
             });
 
         }
+
+        // add images, links and definition references
+        // TODO: only add references if they exist
+        html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
+        html += "<li><a href=\"#links-table\">Links</a></li>\n";
+        html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
+
         html += "</ul>\n</div>\n";
         return html;
     }
