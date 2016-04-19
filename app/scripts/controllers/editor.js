@@ -233,13 +233,17 @@ angular.module('meanMarkdownApp')
             console.log("exists! update!");
             definitionService.update({id: definition._id}, definition, function() {
                 // success
+                $scope.getDefinitions();
+                $scope.editMode = false;  // changes view
             });
         } else {  // doesnt exist, create new!
             console.log("create new!");
-            definitionService.save(definition);
-            $scope.getDefinitions();
+            definitionService.save(definition, function() {
+                // success
+                $scope.getDefinitions();
+                $scope.editMode = false;  // changes view
+            });
         }
-        $scope.editMode = false;  // changes view
     };
     
     $scope.onRemoveDefinitionClick = function(id) {

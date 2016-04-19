@@ -150,18 +150,28 @@ angular.module('meanMarkdownApp')
                 
                 var definitions = definitionService.query(function() {
                     definitions.forEach(function(definition) {
+
+                        var content = word.replace("{", "").replace("}", ""); // bracket content 
+                        var mainWord;  // e.g. Geld
+                        var extraWord;
+                        // check if extra word was used {Cash: Money} instead of {Money}
+                        if (content.indexOf(":") > -1) {  // defferent word was used 
+                            extraWord = content.split(":")[0];
+                            mainWord = content.split(":")[1].trim();
+                        } else {  // normal mode
+                            mainWord = content;
+                        }
                         
-                        if (definition.word === word.replace("{", "").replace("}", "")) {
-                            //console.log(definition.word);
-                            //console.log($scope.html);
-                            var snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
-                            var html = $scope.html;
-                            //console.log("replacing: " + word + " with: " + snippet);
+                        if (definition.word === mainWord) {
+                            var snippet;
+                            if (extraWord) {  // use extra word as link
+                                snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + extraWord + "</a>";
+                            } else {  // use definition mai word as link
+                                snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
+                            }
                             
-                            //console.log(html.replace(word, snippet));
-                            //console.log($scope.html);
-                            //console.log(word);
-                            // convert to anchors
+                            var html = $scope.html;
+
                             $scope.html = html.replace(word, snippet);
                             //console.log($scope.html);
                             
