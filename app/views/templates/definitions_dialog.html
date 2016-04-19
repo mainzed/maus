@@ -20,32 +20,34 @@
 
 <div ng-hide="editMode">
   <h4>Definitions</h4>
-  <table class="table table-condensed" ng-init="getDefinitions()"> 
-    <tbody> 
-      <tr ng-repeat="definition in definitions"> 
-        <th scope="row">{{$index + 1}}</th>
-        <td>
-          <button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
-            {{ definition.word }}
-          </button>
-        </td> 
+  <scrollable class="definitons-table">
+    <table class="table table-condensed" ng-init="getDefinitions()"> 
+      <tbody> 
+        <tr ng-repeat="definition in definitions"> 
+          <th scope="row">{{$index + 1}}</th>
+          <td>
+            <button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
+              {{ definition.word }}
+            </button>
+          </td> 
 
-        <td>
-          <!--<a ng-href="#/definitions/{{definition._id}}">
-            <span class="glyphicon glyphicon-pencil"></span>
-          </a>-->
-          <button class="btn btn-link pull-right" ng-click="onRemoveDefinitionClick(definition._id)">
-             <span class="glyphicon glyphicon-trash"></span>
-          </button>
-          <button class="btn btn-link pull-right" ng-click="onDefinitionEditClick(definition)">
-            <span class="glyphicon glyphicon-pencil"></span>
-          </button>
+          <td>
+            <!--<a ng-href="#/definitions/{{definition._id}}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>-->
+            <button class="btn btn-link pull-right" ng-click="onRemoveDefinitionClick(definition._id)">
+               <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <button class="btn btn-link pull-right" ng-click="onDefinitionEditClick(definition)">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
 
-        </td>
-      </tr> 
+          </td>
+        </tr> 
 
-    </tbody> 
-  </table>
+      </tbody> 
+    </table>
+  </scrollable>
   <button class="btn btn-default btn-sm" ng-click="onDefinitionCreateClick()">
     <i class="fa fa-plus-circle" aria-hidden="true"></i>
     new

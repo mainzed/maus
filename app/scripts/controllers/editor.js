@@ -217,6 +217,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onDefinitionCreateClick = function() {
+        $scope.definition = {};  // reset
         $scope.editMode = true;
     };
 
@@ -234,7 +235,7 @@ angular.module('meanMarkdownApp')
                 // success
             });
         } else {  // doesnt exist, create new!
-            //console.log("create new!");
+            console.log("create new!");
             definitionService.save(definition);
             $scope.getDefinitions();
         }
