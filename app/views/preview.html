@@ -1,41 +1,45 @@
 
 <div class="row">
-  <div class="form-group col-sm-3">
-    <select class="form-control" ng-model="choice">
-      <!--<option value="" selected disabled>Select template</option>-->
-      <option>Bootstrap</option>
-      <option>OLAT</option>
-      <option>Raw HTML</option>
-    </select>
-  </div>
-</div>
+  <div class="col-lg-9">
+    <div id="title-placeholder"></div>
+    
+    <scrollable>
+      <!-- OLAT -->
+      <div ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
+
+      <!-- Bootstrap Layout -->
+      <div ng-bind-html="html" ng-show="choice === 'Bootstrap'"></div>
+
+      <!-- raw HTML -->
+      <div ng-bind="html" ng-show="choice === 'Raw HTML'"></div>
+    </scrollable>
 
 
-<scrollable>
-  <!-- OLAT -->
-  <div ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
+    <div id="editor-tools">
 
-  <!-- Bootstrap Layout -->
-  <div ng-bind-html="html" ng-show="choice === 'Bootstrap'"></div>
-</scrollable>
+      <!-- preview button -->
+      <button class="btn btn-default
+        btn-sm" ng-click="onEditorClick()">
+        back to editor
+      </button>
+
+      <!-- layout selector -->
+      <select class="btn btn-default btn-mini" ng-model="choice" data-toggle="tooltip" title="Select Layout">
+        <option>Bootstrap</option>
+        <option>OLAT</option>
+        <option>Raw HTML</option>
+      </select>
+
+      <!-- export button -->
+      <button ng-show="choice === 'OLAT'" class="btn btn-default
+       btn-sm" ng-click="onOlatClick()" data-toggle="tooltip" title="Export HTML">
+        <i class="fa fa-share-square-o"></i>
+      </button>
+    
+    </div>
+
+  </div><!-- col-lg-9 --> 
+</div><!-- row -->
 
 
 
-<!-- raw HTML -->
-<div ng-show="choice === 'Raw HTML'" class="panel panel-default">
-  <div class="preview" ng-bind=html style="padding-left: 10px;"></div>
-</div>
-
-<div id="editor-tools">
-  <!-- preview button -->
-  <button class="btn btn-default
-    btn-sm" ng-click="onEditorClick()">
-    back to editor
-  </button>
-
-  <!-- save button -->
-  <button ng-show="choice === 'OLAT'" class="btn btn-default
-   btn-sm" ng-click="onOlatClick()">
-    <i class="fa fa-share-square-o"> export</i>
-  </button>
-</div>

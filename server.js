@@ -135,15 +135,17 @@ app.put('/api/v1/definitions/:id', function (req, res) {
     });
 });
 
-/*app.delete('/api/v1/files/:id', function (req, res) {
+app.delete('/api/v1/definitions/:id', function (req, res) {
     var id = req.params.id;
-    File.deleteFile(id, function(err, file) {
+
+    Definition.remove({_id: id}, function(err, definition) {
         if (err) {
             throw err;
         }
-        res.json(file);
+        res.json(definition);
     });
-});*/
+
+});
 
 app.listen(port, function () {
     console.log('Server listening on port ' + port + "!");

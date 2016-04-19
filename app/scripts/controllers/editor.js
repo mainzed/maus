@@ -12,6 +12,7 @@ angular.module('meanMarkdownApp')
 
     $scope.showSuccess = false;
     $scope.showError = false;
+    $scope.editMode = false;  // used in definitions dialog
 
     // fills title, id and markdown if cookie exists
     temporaryService.getCookies();
@@ -214,7 +215,40 @@ angular.module('meanMarkdownApp')
         console.log("trigger preview!");
         $location.path("/preview");
     };
+
+    $scope.onDefinitionCreateClick = function() {
+        $scope.editMode = true;
+    };
+
+    $scope.onDefinitionEditClick = function(definition) {
+        console.log("edit!");
+        $scope.definition = definition;
+        $scope.editMode = true;
+    };
+
+    $scope.onDefinitionSaveClick = function(definition) {
+        console.log("save!");
+        if (definition._id) {  // already exists, update!
+            console.log("exists! update!");
+            definitionService.update({id: definition._id}, definition, function() {
+                // success
+            });
+        } else {  // doesnt exist, create new!
+            //console.log("create new!");
+            definitionService.save(definition);
+            $scope.getDefinitions();
+        }
+        $scope.editMode = false;  // changes view
+    };
     
+    $scope.onRemoveDefinitionClick = function(id) {
+        definitionService.remove({id: id}, function() {
+            // success
+            console.log("definition removed successfull!");
+            $scope.getDefinitions();
+        });
+    };
+
     /*$scope.onMarkdownClick = function() {
         if (markdownService.getMarkdown().length > 0) {
             var markdown = markdownService.getMarkdown();
@@ -272,8 +306,9 @@ angular.module('meanMarkdownApp')
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 76) { // Shift + L 
             console.log("Ctrl + L");
-            e.preventDefault();  // stop save action
             $scope.onLinkClick();
+            e.preventDefault();  // stop save action
+            
         }
     });
 
@@ -283,8 +318,9 @@ angular.module('meanMarkdownApp')
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 73) {
             console.log("Ctrl + I");
-            e.preventDefault();  // stop save action
             $scope.onImageClick();
+            e.preventDefault();  // stop save action
+            
         }
     });
 
@@ -294,8 +330,9 @@ angular.module('meanMarkdownApp')
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 83) { // Shift + S 
             console.log("Ctrl + S");
-            e.preventDefault();  // stop save action
             $scope.onSaveClick();
+            e.preventDefault();  // stop save action
+            
         }
     });
 
@@ -305,8 +342,8 @@ angular.module('meanMarkdownApp')
         // shiftKey ctrlKey
         if(e.ctrlKey && code === 90) {
             console.log("Ctrl + Z");
-            e.preventDefault();
             $scope.onUndoClick();
+            e.preventDefault();
         }
     });
 
@@ -315,13 +352,11 @@ angular.module('meanMarkdownApp')
     });
 
     function fitEditorHeight() {
-        var height = window.innerHeight - 130;
+        var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
         //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
         //editor.setSize("",  height);  // empty string as workaround
         
         $(".nano").css("height", height); 
-
-        console.log("set height to " + height);
     }
 
   });

@@ -16,5 +16,5 @@
     <label for="exampleInputEmail1">Tooltip</label>
     <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Definition" ng-model="definition.text">
   </div>
-  <button type="submit" class="btn btn-default" ng-click="onSaveClick()">Save</button>
+  <button type="submit" class="btn btn-default" ng-click="onSaveClick()" ng-disabled="!definition.word">Save</button>
 </form>

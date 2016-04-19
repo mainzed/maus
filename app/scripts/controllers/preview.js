@@ -139,9 +139,10 @@ angular.module('meanMarkdownApp')
         // convert definitions
         // convert definition
         var words = $scope.html.match(/\{(.*?)\}/g);
-
+        
         if (words) {
             //console.log(words.length);
+            var defs = {};  // keep track of definitions
             words.forEach(function(word, index) {
                 //console.log("index: " + index);
                 
@@ -163,6 +164,15 @@ angular.module('meanMarkdownApp')
                             // convert to anchors
                             $scope.html = html.replace(word, snippet);
                             //console.log($scope.html);
+                            
+                            /*if (defs.indexOf(definition) === -1) {  // skip duplicates
+                                console.log(defs.indexOf(definition));
+                                defs.push(definition);
+                            }*/
+                            if (!defs.hasOwnProperty(definition.word)) {  // skip duplicates
+                                defs[definition.word] = definition;
+                            }
+                            
 
                             // TODO: gets run again for evey word, unneccessary
                             //console.log("append tables!");
@@ -170,12 +180,13 @@ angular.module('meanMarkdownApp')
                         
                             // on last word -> create definitions table
                             if (index === words.length - 1) {  // last word
-                                
 
-                                var defs = getDefinitions($scope.html);
-                                console.log(defs);
+                                //console.log(defs);
+                                //var defs = getDefinitions($scope.html);
+                                //console.log(defs);
                                 //console.log(links);
-                                if (defs.length) {
+
+                                if (Object.keys(defs).length) {
                                     // append to end of file
                                     $scope.html += createDefinitionsTable(defs);
 
@@ -256,7 +267,7 @@ angular.module('meanMarkdownApp')
         return result;
 	}*/
 
-    function getDefinitions(html) {
+    /*function getDefinitions(html) {
         var container = document.createElement("p");
         container.innerHTML = html;
 
@@ -278,9 +289,8 @@ angular.module('meanMarkdownApp')
                 titles.push(title);
             }
         }
-
         return list;
-    }
+    }*/
 
 	function getLinks(html) {
 	    var container = document.createElement("p");
@@ -315,7 +325,7 @@ angular.module('meanMarkdownApp')
     function createImagesTable(images) {
         var html = "";
         if (images.length) {
-            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Images</h4>\n<ul>";
+            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Abbildungen</h4>\n<ul>";
             // create html
             images.forEach(function(image) {
                 html += "<li>" + 
@@ -332,22 +342,24 @@ angular.module('meanMarkdownApp')
     /**
      * returns a html div element containing an 
      * unordered list with all definitions. 
-     * requires a list of definition objects
+     * requires a an object of definition objects
      */
     function createDefinitionsTable(definitions) {
         var html = "";
-        if (definitions.length) {
-            html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Definitions</h4>\n<ul>";
-            // create html
-            definitions.forEach(function(definition) {
-                html += "<li>" + 
-                        definition.text + ", " +  
-                        definition.title +  
-                        //definition.href + ", " +  
-                        "</li>";
-            });
+
+        html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Glossar</h4>\n<ul>";
+
+        for (var key in definitions) {
+            var definition = definitions[key];
+            html += "<li>" + 
+                    definition.word + ": " +  
+                    definition.text + ", " +
+                    definition.url +
+                    "</li>";
         }
+
         html += "</ul>\n</div>\n";
+
         return html;
     }
 
@@ -462,15 +474,9 @@ angular.module('meanMarkdownApp')
     });
 
     function fitPanelHeight() {
-        var height = window.innerHeight - 130;
-        //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
-        //editor.setSize("",  height);  // empty string as workaround
-        
+        var height = window.innerHeight - 54 - 10;
         $(".nano").css("height", height); 
-
-        console.log("set height to " + height);
     }
-
 
   });
 
