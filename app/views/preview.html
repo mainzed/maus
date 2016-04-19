@@ -5,10 +5,10 @@
     
     <scrollable>
       <!-- OLAT -->
-      <div ng-bind-html="html" ng-show="choice === 'OLAT'"></div>
+      <div ng-bind-html="html" ng-show="choice === 'OLAT'" id="olat-content"></div>
 
       <!-- Bootstrap Layout -->
-      <div ng-bind-html="html" ng-show="choice === 'Bootstrap'"></div>
+      <div ng-bind-html="html" ng-show="choice === 'Bootstrap'" id="bootstrap-content"></div>
 
       <!-- raw HTML -->
       <div ng-bind="html" ng-show="choice === 'Raw HTML'"></div>
@@ -31,10 +31,16 @@
       </select>
 
       <!-- export button -->
-      <button ng-show="choice === 'OLAT'" class="btn btn-default
-       btn-sm" ng-click="onOlatClick()" data-toggle="tooltip" title="Export HTML">
+      <button ng-show="choice === 'OLAT'" ng-disabled="!olatDownloadEnabled" class="btn btn-default
+       btn-sm" ng-click="onOlatClick()" data-toggle="tooltip" title="Export as HTML">
         <i class="fa fa-share-square-o"></i>
       </button>
+
+      <!-- pdf downlaod -->
+      <!--<button ng-show="choice === 'Bootstrap'" class="btn btn-default
+       btn-sm" ng-click="onPdfClick('bootstrap-content')" data-toggle="tooltip" title="Export as PDF">
+        <i class="fa fa-file-pdf-o"></i>
+      </button>-->
     
     </div>
 

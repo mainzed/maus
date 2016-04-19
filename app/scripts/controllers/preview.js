@@ -17,6 +17,8 @@ angular.module('meanMarkdownApp')
 
     $scope.awesomeThings = [1, 2, 3];
 
+    $scope.olatDownloadEnabled = false;  // gets enabled when download is ready
+
     //console.log($scope.previousChoice);
 
     // set default value for preview
@@ -199,6 +201,9 @@ angular.module('meanMarkdownApp')
                                 if (Object.keys(defs).length) {
                                     // append to end of file
                                     $scope.html += createDefinitionsTable(defs);
+
+                                    // unlock export button!
+                                    $scope.olatDownloadEnabled = true;
 
                                 }
 
@@ -446,7 +451,18 @@ angular.module('meanMarkdownApp')
         downloadLink.attr('href', window.URL.createObjectURL(blob));
         downloadLink.attr('download', filename);
         downloadLink[0].click();  
+
     }
+
+    $scope.onPdfClick = function(divId) {
+
+        var doc = new jsPDF();
+        doc.fromHTML($("#" + divId).html(), 15, 15, {
+            'width': 170
+        });
+
+        doc.save(divId + '.pdf');
+    };
 
     function getDefinitionByName(word) {
         var definitions = definitionService.query();
