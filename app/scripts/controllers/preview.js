@@ -54,6 +54,18 @@ angular.module('meanMarkdownApp')
 		  	return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
 		};
 
+        // custom link renderer
+        var links = [];
+        customRenderer.link = function (linkUrl, noIdea, text) {
+
+            links.push({
+                url: linkUrl,
+                text: text
+            });
+            
+            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+        };
+
         // custom image renderer
         var images = []; // save images here to use them for the images-table
         var counter = 0;
@@ -86,13 +98,6 @@ angular.module('meanMarkdownApp')
                     "</figure>\n";
         };
 
-        // change renderer to export figure instead of img + em
-        // <figure>
-        // <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
-        // <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
-        // </figure>
-
-		// create OLAT
 		var markdown = temporaryService.getMarkdown();
 
  		var html = marked(markdown, { renderer: customRenderer });
@@ -262,51 +267,6 @@ angular.module('meanMarkdownApp')
 		}
 	}
 
-	/*function createDefinitionsTable(definitions) {
-		var counter = 0; 
-        var wordsInTable = [];  // skip duplicates
-		var html = "";
-		html += "<div id=\"definitions-table\" class=\"definitions-table\"><h4>Definitions</h4><ul>";
-		for (var key in links) {
-			var link = links[key];
-			var tooltip = link[3];
-			var word = link[2];
-			var url = link[1];
-
-            // skip links without title attribute (tooltip) and
-            // definitions already in table 
-		var result = "";
-		if (counter > 0) {
-            result = html;
-		}
-        return result;
-	}*/
-
-    /*function getDefinitions(html) {
-        var container = document.createElement("p");
-        container.innerHTML = html;
-
-        var anchors = container.getElementsByTagName("a");
-        var list = [];
-        var titles = []; // avoid duplicates
-        for (var i = 0; i < anchors.length; i++) {
-
-            var href = anchors[i].href;
-            var title = anchors[i].title;
-            var text = anchors[i].textContent;
-
-            if (title && titles.indexOf(title) === -1) {  // only links that have a tooltip aka definitions
-                list.push({
-                    href: href,
-                    title: title,
-                    text: text
-                });
-                titles.push(title);
-            }
-        }
-        return list;
-    }*/
-
 	function getLinks(html) {
 	    var container = document.createElement("p");
 	    container.innerHTML = html;
@@ -328,6 +288,7 @@ angular.module('meanMarkdownApp')
 
 	        
 	    }
+        console.log("new!");
         console.log(list);
 	    return list;
 	}
@@ -366,10 +327,9 @@ angular.module('meanMarkdownApp')
 
         for (var key in definitions) {
             var definition = definitions[key];
+
             html += "<li>" + 
-                    definition.word + ": " +  
-                    definition.text + ", " +
-                    definition.url +
+                    "<a href=\"#\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>" +
                     "</li>";
         }
 
@@ -386,7 +346,7 @@ angular.module('meanMarkdownApp')
     function createTableOfContent(headings) {
         var html = "";
         if (headings.length) {
-            html += "<div id=\"headings-table\" class=\"headings-table\">\n<h4>Content</h4>\n<ul>";
+            html += "<div id=\"headings-table\" class=\"headings-table\">\n<ul>";
             // create html
             headings.forEach(function(heading) {
                 if (heading.level === 1) {  // skip all but h1
@@ -400,6 +360,7 @@ angular.module('meanMarkdownApp')
 
         // add images, links and definition references
         // TODO: only add references if they exist
+        html += "<li class=\"seperator\"></li>\n";
         html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
         html += "<li><a href=\"#links-table\">Links</a></li>\n";
         html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";

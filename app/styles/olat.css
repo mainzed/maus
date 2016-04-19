@@ -41,3 +41,9 @@ figcaption {
 a.definition {
 	background-color: aliceblue;
 }
+
+li.seperator {
+    list-style: none;
+    border: solid 1px;
+    opacity: 0.2;
+}
