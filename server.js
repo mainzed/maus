@@ -89,12 +89,14 @@ app.delete('/api/v1/files/:id', function (req, res) {
 
 // definitions
 app.get('/api/v1/definitions', function (req, res) {
-    Definition.find(function(err, definitions) {
+    
+    Definition.find().sort('word').exec(function(err, definitions) {
         if (err) {
             throw err;
         }
         res.json(definitions);
     });
+
 });
 
 app.get('/api/v1/definitions/:id', function (req, res) {

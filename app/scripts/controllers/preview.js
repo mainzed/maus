@@ -19,6 +19,8 @@ angular.module('meanMarkdownApp')
 
     $scope.olatDownloadEnabled = false;  // gets enabled when download is ready
 
+    // keep track of images, links etc
+
     //console.log($scope.previousChoice);
 
     // set default value for preview
@@ -57,12 +59,13 @@ angular.module('meanMarkdownApp')
         // custom link renderer
         var links = [];
         customRenderer.link = function (linkUrl, noIdea, text) {
+            if (linkUrl.indexOf("www.") > -1) {  // skip local links
 
-            links.push({
-                url: linkUrl,
-                text: text
-            });
-            
+                links.push({
+                    url: linkUrl,
+                    text: text
+                });
+            }
             return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
         };
 
@@ -101,7 +104,7 @@ angular.module('meanMarkdownApp')
 		var markdown = temporaryService.getMarkdown();
 
  		var html = marked(markdown, { renderer: customRenderer });
-        
+
         createOlatHtml(html);
 
         //createBootstrapHtml(html); 
@@ -111,24 +114,28 @@ angular.module('meanMarkdownApp')
     }
     
     function createOlatHtml(html) {
+
+        var stories = getStories(html);
         html = replaceStoryTags(html);
         
         $scope.html = html;
 
         replaceDefinitionTags($scope.html);
         
-        appendLinkTable($scope.html);
+        $scope.html += createLinksTable(links);
 
         // add table of images to end of file
         $scope.html += createImagesTable(images);
 
         // add table of content to beginning of file
-        $scope.html = createTableOfContent(headings) + $scope.html;
+        $scope.html = createTableOfContent(headings, stories) + $scope.html;
 
         // add title to beginning of filee
         var title = temporaryService.getTitle();
 
         $scope.html = createPageTitle(title) + $scope.html;
+
+        // append to table of content
 
     }
 
@@ -221,76 +228,68 @@ angular.module('meanMarkdownApp')
         }
     }
 
+    /**
+     * counts the numer of stories. returns list
+     */
+    function getStories(html) {
+
+        var stories = [];
+        var matches = html.match(/story{/g);
+        var counter = 1;
+        //console.log(matches);
+        if (matches) {
+            matches.forEach(function(match) {
+                console.log(counter);
+                stories.push({
+                    counter: counter,
+                    name: "Story Teil " + counter
+                });
+                counter++;
+            });
+        }
+
+        return stories;
+    }
+
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
     function replaceStoryTags(html) {
         //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
         //var stories = markdown.match(reg);  // store them for later
 
-        return html.replace(/<p>story{/g, '<div class="story">').replace(/}story<\/p>/g, "</div>");
-        //html = html.replace(/\n§{/g, '<div class="story">');
-    } 
+        // get count of replacements to add ID
+        var matches = html.match(/story{/g);
 
-    function appendLinkTable(html) {
-        var links = getLinks(html);
-        //console.log(html);
-        //console.log(links);
-        if (links.length) {
-            var linksTable = createLinksTable(links);
-            //var definitionsTable = createDefinitionsTable(links);
-            $scope.html = html + linksTable;  // + definitionsTable;
+        // replace one by one to add custom ID for each
+        if (matches) {
+            for (var i = 0; i < matches.length; i++) {
+                console.log("replacing!");
+                //console.log()
+                html = html.replace(/<p>story{/, '<div class="story" id="story-' + (i + 1) + '">');
+            }
         }
-    }
+        
+        // replace closing tags all at once -> no id needed
+        html = html.replace(/}story<\/p>/g, "</div>");
+   
+        return html;
+    } 
 
     // returns html containing table of links
     // requires array containing link objects
 	function createLinksTable(links) {
-		var counter = 0;
-		var html = "";
-		html += "<div id=\"links-table\" class=\"links-table\"><h4>Links</h4><ul>";
-		for (var key in links) {
-			var link = links[key];
-			var title = link[3];
-			var text = link[2];
-			var url = link[1];
-			if (!title && url !== "definition") {  // skip links with titles (definitions)
-				html += "<li><a href='" + url + "' target='_blank'>" + text + "</a></li>\n";
-				counter++;
-			}
-		}
-		html += "</ul>\n</div>";
-        //console.log(html);
-		if (counter < 1) {
-			return "";
-		} else {
-			return html;
-		}
-	}
-
-	function getLinks(html) {
-	    var container = document.createElement("p");
-	    container.innerHTML = html;
-
-	    var anchors = container.getElementsByTagName("a");
-	    var list = [];
-
-	    for (var i = 0; i < anchors.length; i++) {
-
-            var href = anchors[i].href;
-            var title = anchors[i].title;
-            var text = anchors[i].textContent;
-
-            if (text === undefined) text = anchors[i].innerText;
-            
-            if (href.indexOf("http://localhost:3000") === -1 && href.indexOf("#images-table") === -1) {  // ignore in-site links to images-table etc
-                list.push(['<a href="' + href + '">' + text + '</a>', href, text, title]);
-            }
-
-	        
-	    }
-        console.log("new!");
-        console.log(list);
-	    return list;
+        var html = "";
+		if (links.length) {
+    		
+            html += "<div id=\"links-table\" class=\"links-table\"><h4>Links</h4><ul>";
+    		
+            for (var key in links) {
+    			var link = links[key];
+    			html += "<li><a href='" + link.url + "' target='_blank'>" + link.text + "</a></li>\n";
+    		}
+    		html += "</ul>\n</div>"; 
+        }
+        return html;
 	}
 
     /**
@@ -325,13 +324,15 @@ angular.module('meanMarkdownApp')
 
         html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Glossar</h4>\n<ul>";
 
-        for (var key in definitions) {
+        // sort keys by alphabet
+        Object.keys(definitions).sort().forEach(function(key) {
             var definition = definitions[key];
 
             html += "<li>" + 
                     "<a href=\"#\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>" +
                     "</li>";
-        }
+
+        });
 
         html += "</ul>\n</div>\n";
 
@@ -343,10 +344,18 @@ angular.module('meanMarkdownApp')
      * unordered list with all level 1 headings. 
      * requires a list of heading objects
      */
-    function createTableOfContent(headings) {
+    function createTableOfContent(headings, stories) {
+        var stories = stories || false;
         var html = "";
+        
+        html += "<div id=\"headings-table\" class=\"headings-table\">\n<h4>Inhalt</h4>\n<ul>";
+
+        // link to top
+        html += "<li><a href=\"#page-title\">Top</a></li>\n";
+        html += "<li class=\"seperator\"></li>\n";
+
+        // headings
         if (headings.length) {
-            html += "<div id=\"headings-table\" class=\"headings-table\">\n<ul>";
             // create html
             headings.forEach(function(heading) {
                 if (heading.level === 1) {  // skip all but h1
@@ -358,10 +367,21 @@ angular.module('meanMarkdownApp')
 
         }
 
+        // add stories
+        if (stories) {
+            html += "<li class=\"seperator\"></li>\n";
+            stories.forEach(function(story) {
+                html += "<li><a href=\"#story-" + story.counter + "\">" + story.name + "</a></li>\n";
+            });
+        }
+
         // add images, links and definition references
         // TODO: only add references if they exist
         html += "<li class=\"seperator\"></li>\n";
-        html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
+        if (images.length) {
+            html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
+        }
+        
         html += "<li><a href=\"#links-table\">Links</a></li>\n";
         html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
 
@@ -370,7 +390,7 @@ angular.module('meanMarkdownApp')
     }
 
     function createPageTitle(title) {
-        return "<h1 class=\"page-title\">" + title + "</h1>";
+        return "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>";
     }
 
 	$scope.onOlatClick = function() {
