@@ -115,17 +115,17 @@ angular.module('meanMarkdownApp')
     
     function createOlatHtml(html) {
 
-        var stories = getStories(html);
+        var stories = getStories(html);  // needed for table of content
+
         html = replaceStoryTags(html);
         
         $scope.html = html;
 
         replaceDefinitionTags($scope.html);
         
-        $scope.html += createLinksTable(links);
-
-        // add table of images to end of file
+        // add tables of images and links
         $scope.html += createImagesTable(images);
+        $scope.html += createLinksTable(links);
 
         // add table of content to beginning of file
         $scope.html = createTableOfContent(headings, stories) + $scope.html;
@@ -348,7 +348,7 @@ angular.module('meanMarkdownApp')
         var stories = stories || false;
         var html = "";
         
-        html += "<div id=\"headings-table\" class=\"headings-table\">\n<h4>Inhalt</h4>\n<ul>";
+        html += "<div id=\"headings-table\" class=\"headings-table\">\n<ul>";
 
         // link to top
         html += "<li><a href=\"#page-title\">Top</a></li>\n";
@@ -371,7 +371,7 @@ angular.module('meanMarkdownApp')
         if (stories) {
             html += "<li class=\"seperator\"></li>\n";
             stories.forEach(function(story) {
-                html += "<li><a href=\"#story-" + story.counter + "\">" + story.name + "</a></li>\n";
+                html += "<li class=\"story\"><a href=\"#story-" + story.counter + "\">" + story.name + "</a></li>\n";
             });
         }
 
