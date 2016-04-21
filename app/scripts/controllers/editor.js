@@ -37,6 +37,7 @@ angular.module('meanMarkdownApp')
     $scope.markdown = temporaryService.getMarkdown();
     $scope.title = temporaryService.getTitle();
     $scope.author = temporaryService.getAuthor();
+    $scope.type = temporaryService.getType();
 
  	// get file if id provided
   	var id = $routeParams.id;
@@ -56,11 +57,14 @@ angular.module('meanMarkdownApp')
             temporaryService.setTitle(file.title);
             temporaryService.setCurrentFileId(file._id);
             temporaryService.setAuthor(file.author);
+            temporaryService.setType(file.type);
 
             // overwrite default data set earlier, once it has loaded
             $scope.markdown = temporaryService.getMarkdown();
             $scope.title = temporaryService.getTitle();
             $scope.author = temporaryService.getAuthor();
+            $scope.type = temporaryService.getType();
+
         });
 	} 
 
@@ -83,7 +87,7 @@ angular.module('meanMarkdownApp')
         
         var id = temporaryService.getCurrentFileId();
 
-        // isnt needed currently
+        // isnt needed currently -> should not be run
         if (id === -1) {  // new file
             console.log("saving as new file!");
 
@@ -115,15 +119,13 @@ angular.module('meanMarkdownApp')
         } else {  // existing file
             console.log("updating existing!");
 
-
-
             var newFile = {
                 author: $scope.author,
                 markdown: $scope.markdown,
+                type: $scope.type,
                 title: $scope.title
             };
 
-            console.log(newFile);
             fileService.update({ id: id }, newFile, function() {
                 // success
                 $scope.showSuccess = true;
@@ -199,9 +201,9 @@ angular.module('meanMarkdownApp')
         $scope.definitions = definitionService.query();
     };
 
-    $scope.onDefinitionsEditClick = function() {
+    /*$scope.onDefinitionsEditClick = function() {
         $location.path("/definitions");
-    };
+    };*/
 
     $scope.onUndoClick = function() {
         $scope.editor.undo();

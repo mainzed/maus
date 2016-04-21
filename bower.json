@@ -17,7 +17,8 @@
     "ng-dialog": "0.5.9",
     "ngcssinjector": "*",
     "angular-css": "^1.0.7",
-    "angular-nanoscroller": "0.2.1"
+    "angular-nanoscroller": "0.2.1",
+    "angular-leaflet-directive": "0.10.0"
   },
   "resolutions": {
     "angular": "^1.4.0"

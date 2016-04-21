@@ -1,19 +1,27 @@
 
 <div class="row files-top">
-  <div class="col-xs-7">
+  <div class="col-md-8">
     <ul>
       <li ng-repeat="file in files | orderBy: 'updated_at':false" class="file">
         <a ng-href="#/editor/{{file._id}}" class="titles">
           <strong>{{ file.title }}</strong>
         </a>
-
+        ({{ file.type }})
         <i> by {{ file.author }}</i>
         
+        <!-- delete -->
         <a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links pull-right">
           <span class="glyphicon glyphicon-trash"></span> 
         </a>
+
+        <!-- download -->
         <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)">
           <span class="glyphicon glyphicon-download-alt"></span>
+        </a>
+
+        <!-- edit -->
+        <button class="btn btn-link file-links pull-right" ng-click="onEditClick(file._id)">
+          <span class="glyphicon glyphicon-pencil"></span>
         </a>
       </li>
       

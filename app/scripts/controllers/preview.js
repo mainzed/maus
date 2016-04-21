@@ -76,26 +76,29 @@ angular.module('meanMarkdownApp')
             // used title attr for caption, author etc
             var tokens = title.split("; ");
             var caption = tokens[0];
-            var source = tokens[1];
-            var author = tokens[2];
-            var license = tokens[3];
+            var author = tokens[1];
+            var license = tokens[2];
+            var url = tokens[3];
             var title = alt;
+            var preCaption = "Abb." + counter;
 
             // not needed for rendering, but to access them later
             images.push({
-                source: source,
+                url: url,
                 caption: caption,
                 author: author,
                 license: license,
-                title: title
+                title: title,
+                preCaption: preCaption
             });
             //var html = "";
 
             return '<figure id="' + alt + '">\n' + 
                     "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
                     "<figcaption>\n" + 
+                    preCaption + "<br>" + caption + "<br>" + 
                     "<a href=\"#images-table\">\n" + 
-                    caption + " (Quelle: " + source + ", Autor: " + author + " © " + license + ")\n" +
+                    "(Quelle)\n" +
                     "</a>\n" +
                     "</figcaption>\n" + 
                     "</figure>\n";
@@ -136,6 +139,10 @@ angular.module('meanMarkdownApp')
         $scope.html = createPageTitle(title) + $scope.html;
 
         // append to table of content
+        //replaceMaps();
+        console.log($scope.html);
+
+        
 
     }
 
@@ -225,6 +232,9 @@ angular.module('meanMarkdownApp')
 
                 });
             });    
+        } else {
+            // no definitions in text, unlock download right away
+            $scope.olatDownloadEnabled = true;
         }
     }
 
@@ -261,11 +271,13 @@ angular.module('meanMarkdownApp')
         var matches = html.match(/story{/g);
 
         // replace one by one to add custom ID for each
+        var counter = 1;
         if (matches) {
             for (var i = 0; i < matches.length; i++) {
                 console.log("replacing!");
                 //console.log()
-                html = html.replace(/<p>story{/, '<div class="story" id="story-' + (i + 1) + '">');
+                html = html.replace(/<p>story{/, '<div class="story" id="story-' + counter + '">');
+                counter++;
             }
         }
         
@@ -303,11 +315,17 @@ angular.module('meanMarkdownApp')
             html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Abbildungen</h4>\n<ul>";
             // create html
             images.forEach(function(image) {
-                html += "<li>" + 
-                        image.title + ", " +  
-                        image.author + ", " +  
-                        image.license + ", " +  
-                        "</li>";
+                html += "<li>";
+                html += image.preCaption + "<br>"; 
+                html += image.title + "<br>";
+                html += image.author + "<br>";
+                html += "CC " + image.license + "<br>";
+                
+                if (image.url !== undefined) {
+                    html += "<a href=\"" + image.url + "\">Quelle</a>";  
+                }
+
+                html += "</li>";
             });
         }
         html += "</ul>\n</div>\n";
@@ -454,6 +472,30 @@ angular.module('meanMarkdownApp')
             }
         });
     }
+
+    // replace map-images with openlayersmap
+    function replaceMaps() {
+
+        //<div id="map" class="map"></div>
+
+        /*$('img[alt="map-1"]').load(function() {
+            Pixastic.process(img, "desaturate", {average : false});
+        });*/
+        console.log("adding maps!");
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+              new ol.layer.Tile({
+                source: new ol.source.MapQuest({layer: 'sat'})
+              })
+            ],
+            view: new ol.View({
+              center: ol.proj.fromLonLat([37.41, 8.82]),
+              zoom: 4
+            })
+        });
+    }
+    
 
     // triggers when choice changes
     // dynamically adds and removes css styles according to preview choice

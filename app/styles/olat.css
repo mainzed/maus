@@ -47,3 +47,8 @@ li.seperator {
     border: solid 1px;
     opacity: 0.2;
 }
+
+.map {
+    height: 400px;
+    width: 100%;
+}

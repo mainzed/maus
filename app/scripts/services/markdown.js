@@ -18,6 +18,7 @@ angular.module('meanMarkdownApp')
     var html = "";
     var choice = "";
     var author = "";
+    var type = "";
 
 
     // check for cookies
@@ -67,6 +68,14 @@ angular.module('meanMarkdownApp')
 
     service.getTitle = function() {
       return title;
+    };
+
+    service.setType = function(newType) {
+        type = newType;
+    };
+
+    service.getType = function() {
+      return type;
     };
 
     service.setCurrentFileId = function(id) {

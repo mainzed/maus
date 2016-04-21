@@ -112,3 +112,10 @@ select.btn-mini {
 .nano.definitons-table {
   width: 420px;
 }
+
+.map {
+    height: 400px;
+    width: 100%;
+}
+
+#mapid { height: 180px; }

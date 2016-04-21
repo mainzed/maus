@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, fileService, temporaryService, ngDialog) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, ngDialog) {
   	
     
     $scope.awesomeThings = [1, 2, 3];
@@ -18,6 +18,13 @@ angular.module('meanMarkdownApp')
 
     $scope.files = fileService.query();
     $scope.newFile = {};  // filled by dialog
+
+    /*$scope.getFile = function(id) {
+        var id = $routeParams.id;
+        fileService.get({id: id}, function(file) {
+            $scope.file = file;
+        });
+    };*/
 
     // listeners
     $scope.onCreateNewFile = function() {
@@ -39,12 +46,12 @@ angular.module('meanMarkdownApp')
 
     // within dialog, click on create
     $scope.onCreateConfirm = function() {
-        console.log("create!");
 
         // save as new file
         var file = {
             author: $scope.newFile.author,
             title: $scope.newFile.title,
+            type: $scope.newFile.type,
             markdown: "This is **markdown**."
         };
 
@@ -54,6 +61,7 @@ angular.module('meanMarkdownApp')
             temporaryService.setCurrentFileId(file._id);
             temporaryService.setTitle(file.author);
             temporaryService.setMarkdown(file.markdown);
+            temporaryService.setType(file.type);
 
             $location.path("/editor/" + file._id);
 
@@ -61,14 +69,13 @@ angular.module('meanMarkdownApp')
             // error
             console.log("could not create new file!");
         });
-
-
     };
 
     $scope.onRemoveClick = function(id) {
         fileService.remove({id: id}, function() {
             // success
             console.log("file remove successfull!");
+            $scope.files = fileService.query();
         });
     };
     
@@ -82,6 +89,26 @@ angular.module('meanMarkdownApp')
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', 'export.md');
             downloadLink[0].click();
+        });
+    };
+
+    $scope.onEditClick = function(id) {
+        fileService.get({id: id}, function(file) {
+            $scope.file = file;
+            
+            ngDialog.open({
+                template: "./views/templates/dialog_edit_file.html",
+                scope: $scope
+            });
+        });
+    };
+
+    $scope.onSaveClick = function(file) {
+        console.log(file);
+        fileService.update({id: file._id}, file, function() {
+            console.log("file updated successfully!");
+        }, function() {
+            console.log("could not update file!");
         });
     };
 
