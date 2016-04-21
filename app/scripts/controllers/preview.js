@@ -71,7 +71,7 @@ angular.module('meanMarkdownApp')
 
         // custom image renderer
         var images = []; // save images here to use them for the images-table
-        var counter = 0;
+        var ImageCounter = 1;
         customRenderer.image = function (src, title, alt) {
             // used title attr for caption, author etc
             var tokens = title.split("; ");
@@ -80,7 +80,7 @@ angular.module('meanMarkdownApp')
             var license = tokens[2];
             var url = tokens[3];
             var title = alt;
-            var preCaption = "Abb." + counter;
+            var preCaption = "Abb." + ImageCounter;
 
             // not needed for rendering, but to access them later
             images.push({
@@ -92,6 +92,8 @@ angular.module('meanMarkdownApp')
                 preCaption: preCaption
             });
             //var html = "";
+
+            ImageCounter++;
 
             return '<figure id="' + alt + '">\n' + 
                     "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
