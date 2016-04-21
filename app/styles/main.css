@@ -118,4 +118,10 @@ select.btn-mini {
     width: 100%;
 }
 
-#mapid { height: 180px; }
+#mapid { 
+  height: 180px; 
+}
+
+a[ng-click]{
+    cursor: pointer;
+}

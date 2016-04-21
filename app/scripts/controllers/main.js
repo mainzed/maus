@@ -81,7 +81,6 @@ angular.module('meanMarkdownApp')
     
     $scope.onDownloadClick = function(id) {
         fileService.get({id: id}, function(file) {
-            console.log(file);
             
             // trigger download
             var blob = new Blob([file.markdown], { type:"data:text/plain;charset=utf-8;" });           
@@ -104,9 +103,9 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onSaveClick = function(file) {
-        console.log(file);
         fileService.update({id: file._id}, file, function() {
             console.log("file updated successfully!");
+            $scope.files = fileService.query();
         }, function() {
             console.log("could not update file!");
         });
