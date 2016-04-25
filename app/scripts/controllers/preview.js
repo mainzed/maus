@@ -329,7 +329,7 @@ angular.module('meanMarkdownApp')
                 html += "CC " + image.license + "<br>";
                 
                 if (image.url !== undefined) {
-                    html += "<a href=\"" + image.url + "\">Quelle</a>";  
+                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>";  
                 }
 
                 html += "</li>";
