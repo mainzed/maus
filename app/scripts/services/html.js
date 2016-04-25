@@ -48,13 +48,12 @@ angular.module('meanMarkdownApp')
         // custom link renderer
         var links = [];
         customRenderer.link = function (linkUrl, noIdea, text) {
-            if (linkUrl.indexOf("www.") > -1) {  // skip local links
 
-                links.push({
-                    url: linkUrl,
-                    text: text
-                });
-            }
+            links.push({
+                url: linkUrl,
+                text: text
+            });
+
             return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
         };
 
