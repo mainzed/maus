@@ -63,7 +63,7 @@ angular.module('meanMarkdownApp')
         customRenderer.image = function (src, title, alt) {
             // used title attr for caption, author etc
             var tokens = title.split("; ");
-            var caption = tokens[0];
+            var caption = tokens[0].replace(/\\/g, "");
             var author = tokens[1];
             var license = tokens[2];
             var url = tokens[3];
