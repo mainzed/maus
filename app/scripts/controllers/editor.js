@@ -207,28 +207,27 @@ angular.module('meanMarkdownApp')
     $scope.onExportClick = function() {
 
         $scope.filename = temporaryService.getTitle().replace(" ", "_") + ".html";
-
-        ngDialog.openConfirm({ 
+        
+        ngDialog.open({ 
             template: "./views/templates/export_dialog.html",
             scope: $scope
-        }).then(function (filename) {
-            console.log(filename);
+        });
 
-            var config = {
-                contentTable: false
-            };
-            console.log($scope.check1);
-            HTMLService.getOlat(config, function(html) {
-                //console.log($scope.filename);
-                // new!
-                startOlatDownload(filename, html);
-                
-            });
+    };
 
+    $scope.onDownloadConfirm = function(filename, addTitle, includeTable) {
 
-        }, function (error) {
-            // Error logic here
-            console.log("CANCELLED EXPORT!");
+        var config = {
+            title: addTitle,
+            contentTable: includeTable
+        };
+
+        HTMLService.getOlat(config, function(html) {
+            //console.log($scope.filename);
+            // new!
+            //console.log(html);
+            startOlatDownload(filename, html);
+            
         });
     };
 

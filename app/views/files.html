@@ -5,6 +5,13 @@
       <li ng-repeat="file in files | orderBy: 'updated_at':false" class="file">
         <a ng-href="#/editor/{{file._id}}">
           <!--<img src="/images/infinity.png" />-->
+          
+          <i ng-show="file.type === 'Presentation'" class="fa fa-television" aria-hidden="true"></i>
+          <i ng-show="file.type === 'OLAT'" class="fa fa-graduation-cap" aria-hidden="true"></i>
+
+          <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
+          
+
           <strong>{{ file.title }}</strong>
         </a><!--({{ file.type }})-->
         <i> by {{ file.author }}</i>

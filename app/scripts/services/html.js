@@ -15,9 +15,9 @@ angular.module('meanMarkdownApp')
      * HTML as parameter
      */
     this.getOlat = function(config, callback) {
-        console.log("config: " + config);
         //console.log(callback);
         var config = config || {
+            title: true,
             contentTable: true
         };
 
@@ -113,12 +113,14 @@ angular.module('meanMarkdownApp')
         if (config.contentTable === true) {
             console.log("add table of content!");
             html = createTableOfContent(headings, stories, images) + html;
+            //console.log(html);
         }
         
         // add title to beginning of filee
         
-
-        html = createPageTitle(title) + html;
+        if (config.title === true) {
+            html = createPageTitle(title) + html;
+        }
 
         // do last since its async
         replaceDefinitionTags(html, function(html) {
@@ -259,7 +261,7 @@ angular.module('meanMarkdownApp')
             for (var i = 0; i < matches.length; i++) {
                 //console.log("replacing!");
                 //console.log()
-                html = html.replace(/<p>story{/, '<div class="story" id="story-' + counter + '">');
+                html = html.replace(/<p>story{/, '<div class="story" id="story' + counter + '">');
                 counter++;
             }
         }
@@ -302,7 +304,7 @@ angular.module('meanMarkdownApp')
                 html += image.preCaption + "<br>"; 
                 html += image.title + "<br>";
                 html += image.author + "<br>";
-                html += "CC " + image.license + "<br>";
+                html += image.license + "<br>";
                 
                 if (image.url !== undefined) {
                     html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>";  
@@ -377,7 +379,7 @@ angular.module('meanMarkdownApp')
         if (stories) {
             html += "<li class=\"seperator\"></li>\n";
             stories.forEach(function(story) {
-                html += "<li class=\"story\"><a href=\"#story-" + story.counter + "\">" + story.name + "</a></li>\n";
+                html += "<li class=\"story\"><a href=\"#story" + story.counter + "\">" + story.name + "</a></li>\n";
             });
         }
 

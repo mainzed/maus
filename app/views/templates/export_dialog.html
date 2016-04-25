@@ -1,5 +1,5 @@
 
-<form>
+<form ng-init="includeTable = true; addTitle = true">
   <div class="form-group">
     <label for="inputTitle">Filename</label>
     <input type="text" class="form-control" id="inputTitle" placeholder="export.html" ng-model="filename">
@@ -7,10 +7,16 @@
 
   <div class="checkbox">
     <label>
-      <input type="checkbox" ng-model="check1"> Include Table of Content
+      <input type="checkbox" ng-model="addTitle"> Add Title
     </label>
   </div>
-  
-  <button type="button" class="btn btn-default" ng-click="confirm(filename)" ng-disabled="!filename">Export</button>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="includeTable"> Add Table of Content
+    </label>
+  </div>
+
+  <button type="button" class="btn btn-default" ng-click="onDownloadConfirm(filename, addTitle, includeTable) || closeThisDialog()" ng-disabled="!filename">Export</button>
 
 </form>

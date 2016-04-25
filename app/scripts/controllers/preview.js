@@ -42,7 +42,7 @@ angular.module('meanMarkdownApp')
 
     if (temporaryService.getMarkdown().length > 0) {  // markdown exists
 
-        HTMLService.getOlat(function(html) {
+        HTMLService.getOlat(false, function(html) {
             // success
             //console.log(html);
             $scope.html = html;
