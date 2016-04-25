@@ -72,11 +72,28 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onRemoveClick = function(id) {
-        fileService.remove({id: id}, function() {
-            // success
-            console.log("file remove successfull!");
-            $scope.files = fileService.query();
+        
+        ngDialog.openConfirm({
+            template: "./views/templates/dialog_confirm_delete.html",
+            scope: $scope
+        }).then(function (success) {
+            console.log("DELETE!");
+            fileService.remove({id: id}, function() {
+                console.log("file remove successfull!");
+                $scope.files = fileService.query();
+
+                // close open dialogs
+                //var openDialogs = ngDialog.getOpenDialogs(); 
+                //console.log(openDialogs);
+                ngDialog.close("ngdialog1");
+            });
+
+        }, function (error) {
+            // Error logic here
+            console.log("CANCELLED!");
         });
+
+        
     };
     
     $scope.onDownloadClick = function(id) {

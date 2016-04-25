@@ -24,11 +24,16 @@ angular.module('meanMarkdownApp')
     //console.log($scope.previousChoice);
 
     // set default value for preview
-    if (temporaryService.getChoice()) {
+    /*if (temporaryService.getChoice()) {
         $scope.choice = temporaryService.getChoice();
     } else {
         $scope.choice = "OLAT";
         temporaryService.setChoice($scope.choice);
+    }*/
+
+    // set choice based on filetype
+    if (temporaryService.getType()) {
+        $scope.choice = temporaryService.getType();
     }
     
 

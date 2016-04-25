@@ -56,6 +56,10 @@ angular
           templateUrl: './views/html.html',
           controller: 'PreviewCtrl'
       })
+      .when('/impressim', {
+          templateUrl: './views/impressum.html',
+          controller: 'MainCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

@@ -3,25 +3,19 @@
   <div class="col-md-8">
     <ul>
       <li ng-repeat="file in files | orderBy: 'updated_at':false" class="file">
-        <a ng-href="#/editor/{{file._id}}" class="titles">
+        <a ng-href="#/editor/{{file._id}}">
+          <!--<img src="/images/infinity.png" />-->
           <strong>{{ file.title }}</strong>
-        </a>
-        ({{ file.type }})
+        </a><!--({{ file.type }})-->
         <i> by {{ file.author }}</i>
-        
-        <!-- delete -->
-        <a ng-href="#" target="_self" ng-click="onRemoveClick(file._id)" class="file-links pull-right">
-          <span class="glyphicon glyphicon-trash"></span> 
-        </a>
-
         <!-- download -->
-        <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)">
+        <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
           <span class="glyphicon glyphicon-download-alt"></span>
         </a>
 
         <!-- edit -->
-        <a class="file-links pull-right" ng-click="onEditClick(file._id)">
-          <span class="glyphicon glyphicon-pencil"></span>
+        <a class="file-links pull-right" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
+          <span class="glyphicon glyphicon-cog"></span>
         </a>
 
       </li>
@@ -35,6 +29,3 @@
 
 
 <!--<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>-->
-
-
-

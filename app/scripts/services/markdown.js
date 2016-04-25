@@ -111,5 +111,12 @@ angular.module('meanMarkdownApp')
       return choice;
     };
 
+    /**
+     * takes markdown of temporaryservice and creates olat html
+     */ 
+    service.getOlatHtml = function() {
+
+    };
+
     return service;
   });

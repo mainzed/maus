@@ -52,3 +52,8 @@ li.seperator {
     height: 400px;
     width: 100%;
 }
+
+a.definition {
+    /*pointer-events: none;*/
+    cursor: help;
+}

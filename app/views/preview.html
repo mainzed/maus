@@ -23,24 +23,24 @@
         back to editor
       </button>
 
-      <!-- layout selector -->
+      <!-- layout selector. currently disabled. gets set based on file type -->
+      <!--
       <select class="btn btn-default btn-mini" ng-model="choice" data-toggle="tooltip" title="Select Layout">
         <option>Bootstrap</option>
         <option>OLAT</option>
         <option>Raw HTML</option>
-      </select>
+      </select>-->
 
-      <!-- export button -->
       <button ng-show="choice === 'OLAT'" ng-disabled="!olatDownloadEnabled" class="btn btn-default
        btn-sm" ng-click="onOlatClick()" data-toggle="tooltip" title="Export as HTML">
         <i class="fa fa-share-square-o"></i>
       </button>
 
       <!-- pdf downlaod -->
-      <button ng-show="choice === 'Bootstrap'" class="btn btn-default
+      <!--<button ng-show="choice === 'Bootstrap'" class="btn btn-default
        btn-sm" ng-click="onPdfClick('bootstrap-content')" data-toggle="tooltip" title="Export as PDF">
         <i class="fa fa-file-pdf-o"></i>
-      </button>
+      </button>-->
     
     </div>
 
