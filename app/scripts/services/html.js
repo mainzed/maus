@@ -9,12 +9,17 @@
  */
 angular.module('meanMarkdownApp')
   .service('HTMLService', function (temporaryService, definitionService) {
-
+    
     /**
      * generates OLAT html from markdown. provides a callback with the generated
      * HTML as parameter
      */
-    this.getOlat = function(callback) {
+    this.getOlat = function(config, callback) {
+        console.log("config: " + config);
+        //console.log(callback);
+        var config = config || {
+            contentTable: true
+        };
 
         // get data
         var markdown = temporaryService.getMarkdown();
@@ -105,8 +110,11 @@ angular.module('meanMarkdownApp')
         html += createLinksTable(links);
 
         // add table of content to beginning of file
-        html = createTableOfContent(headings, stories, images) + html;
-
+        if (config.contentTable === true) {
+            console.log("add table of content!");
+            html = createTableOfContent(headings, stories, images) + html;
+        }
+        
         // add title to beginning of filee
         
 

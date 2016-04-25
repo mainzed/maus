@@ -58,6 +58,12 @@
     <!-- storyscript button -->
     <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag"><i class="fa fa-book"></i></button>
   </div>
+  
+  <!-- export -->
+  <button class="btn btn-warning
+     btn-sm" ng-click="onExportClick()">
+      <i class="fa fa-share-square-o"> export</i>
+  </button>
 
   <!-- preview button -->
   <button class="btn btn-primary
@@ -71,10 +77,10 @@
      btn-sm" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)">
       <i class="fa fa-floppy-o"> save</i>
     </button>
-    
-
   </div>
   <span class="save-text" ng-show="showSuccess === true">... saved!</span>
   <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
+
+
 </div>
 

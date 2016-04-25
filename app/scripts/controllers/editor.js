@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, $document, fileService, temporaryService, ngDialog, definitionService) {
+  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, temporaryService, ngDialog, definitionService) {
 
     $scope.showSuccess = false;
     $scope.showError = false;
@@ -204,6 +204,34 @@ angular.module('meanMarkdownApp')
         $scope.definitions = definitionService.query();
     };
 
+    $scope.onExportClick = function() {
+
+        $scope.filename = temporaryService.getTitle().replace(" ", "_") + ".html";
+
+        ngDialog.openConfirm({ 
+            template: "./views/templates/export_dialog.html",
+            scope: $scope
+        }).then(function (filename) {
+            console.log(filename);
+
+            var config = {
+                contentTable: false
+            };
+            console.log($scope.check1);
+            HTMLService.getOlat(config, function(html) {
+                //console.log($scope.filename);
+                // new!
+                startOlatDownload(filename, html);
+                
+            });
+
+
+        }, function (error) {
+            // Error logic here
+            console.log("CANCELLED EXPORT!");
+        });
+    };
+
     /*$scope.onDefinitionsEditClick = function() {
         $location.path("/definitions");
     };*/
@@ -273,6 +301,27 @@ angular.module('meanMarkdownApp')
             console.log("no markdown available! start editing something or choose existing file");
         }
     };*/
+    function startOlatDownload(filename, html) {
+        var content =   "<html>\n" +
+                        "  <head>\n" +
+                        '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
+                        '<link rel="stylesheet" href="style/olat.css" />\n' +
+                        "  </head>\n"+
+                        "  <body>\n" +
+                        html +
+                        "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
+                        "<script src=\"javascript/olat.js\"></script>\n" +
+                        "  </body>\n"+
+                        "</html>\n";
+
+        // trigger download
+        var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
+        var downloadLink = angular.element('<a></a>');
+        downloadLink.attr('href', window.URL.createObjectURL(blob));
+        downloadLink.attr('download', filename);
+        downloadLink[0].click();  
+    }
+
 
     /**
      * update markdown service when editor changes

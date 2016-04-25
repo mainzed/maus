@@ -1,0 +1,16 @@
+
+<form>
+  <div class="form-group">
+    <label for="inputTitle">Filename</label>
+    <input type="text" class="form-control" id="inputTitle" placeholder="export.html" ng-model="filename">
+  </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="check1"> Include Table of Content
+    </label>
+  </div>
+  
+  <button type="button" class="btn btn-default" ng-click="confirm(filename)" ng-disabled="!filename">Export</button>
+
+</form>
