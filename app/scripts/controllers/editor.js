@@ -191,10 +191,13 @@ angular.module('meanMarkdownApp')
         $scope.addSnippet(snippet);
     };
 
-    $scope.onTooltipLinkClick = function() {
+    $scope.onDefinitionClick = function() {
         ngDialog.open({ 
             template: "./views/templates/definitions_dialog.html",
-            scope: $scope
+            scope: $scope,
+            preCloseCallback: function() {
+                $scope.editMode = false;
+            }
         });
     };
     $scope.getDefinitions = function() {
