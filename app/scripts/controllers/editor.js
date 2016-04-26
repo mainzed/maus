@@ -206,7 +206,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onExportClick = function() {
 
-        $scope.filename = temporaryService.getTitle().replace(" ", "_") + ".html";
+        $scope.filename = temporaryService.getTitle().replace(/\s/g, "_") + ".html";
         
         ngDialog.open({ 
             template: "./views/templates/export_dialog.html",
@@ -223,17 +223,15 @@ angular.module('meanMarkdownApp')
         };
 
         HTMLService.getOlat(config, function(html) {
-            //console.log($scope.filename);
-            // new!
-            //console.log(html);
-            startOlatDownload(filename, html);
-            
+            // success
+            //startOlatDownload(filename, html);
+            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
+            var downloadLink = angular.element('<a></a>');
+            downloadLink.attr('href', window.URL.createObjectURL(blob));
+            downloadLink.attr('download', filename);
+            downloadLink[0].click();  
         });
     };
-
-    /*$scope.onDefinitionsEditClick = function() {
-        $location.path("/definitions");
-    };*/
 
     $scope.onUndoClick = function() {
         $scope.editor.undo();
@@ -244,7 +242,6 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
-        console.log("trigger preview!");
         $location.path("/preview");
     };
 
@@ -254,13 +251,11 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onDefinitionEditClick = function(definition) {
-        console.log("edit!");
         $scope.definition = definition;
         $scope.editMode = true;
     };
 
     $scope.onDefinitionSaveClick = function(definition) {
-        console.log("save!");
         if (definition._id) {  // already exists, update!
             console.log("exists! update!");
             definitionService.update({id: definition._id}, definition, function() {
@@ -285,32 +280,6 @@ angular.module('meanMarkdownApp')
             $scope.getDefinitions();
         });
     };
-
-    /*$scope.onMarkdownClick = function() {
-        if (markdownService.getMarkdown().length > 0) {
-            var markdown = markdownService.getMarkdown();
-            if (markdown !== undefined) {
-                var anchor = document.querySelector('#exportMarkdown');
-                anchor.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(markdown);
-                // trigger download
-                anchor.download = 'export.md';
-            }
-
-        } else {
-            console.log("no markdown available! start editing something or choose existing file");
-        }
-    };*/
-    function startOlatDownload(filename, html) {
-        console.log(html);
-
-        // trigger download
-        var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
-        var downloadLink = angular.element('<a></a>');
-        downloadLink.attr('href', window.URL.createObjectURL(blob));
-        downloadLink.attr('download', filename);
-        downloadLink[0].click();  
-    }
-
 
     /**
      * update markdown service when editor changes
