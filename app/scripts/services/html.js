@@ -49,10 +49,12 @@ angular.module('meanMarkdownApp')
         var links = [];
         customRenderer.link = function (linkUrl, noIdea, text) {
 
-            links.push({
-                url: linkUrl,
-                text: text
-            });
+            if (!linkUrl.startsWith("#")) {  // skipp local links
+                links.push({
+                    url: linkUrl,
+                    text: text
+                });
+            }
 
             return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
         };
@@ -302,8 +304,14 @@ angular.module('meanMarkdownApp')
                 html += "<li>";
                 html += image.preCaption + "<br>"; 
                 html += image.title + "<br>";
-                html += image.author + "<br>";
-                html += image.license + "<br>";
+                
+                if (image.author !== undefined) {
+                    html += image.author + "<br>";
+                }
+                
+                if (image.license !== undefined) {
+                    html += image.license + "<br>";
+                }
                 
                 if (image.url !== undefined) {
                     html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>";  
