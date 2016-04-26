@@ -47,6 +47,13 @@ function storyTag(stream) {
     return "markdown-definition";
   }
 
+  // html comments
+  if (stream.match(/<!--(.*?)-->/)) {
+
+    return "html-comment";
+  }
+
+
   stream.eat(/./);
 }
 

@@ -8,3 +8,7 @@
   font-style: italic;
   color: red;
 }
+
+.cm-html-comment {
+  color: gray;
+}
