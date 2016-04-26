@@ -1,18 +1,18 @@
 'use strict';
 
-describe('Service: HTML', function () {
+describe('HTMLService Tests', function () {
+    var HTMLService;
 
-  // load the service's module
-  beforeEach(module('meanMarkdownApp'));
+    // load the service's module
+    beforeEach(module('meanMarkdownApp'));
 
-  // instantiate service
-  var HTML;
-  beforeEach(inject(function (_HTML_) {
-    HTML = _HTML_;
-  }));
+    // instantiate service
+    beforeEach(inject(function (_HTMLService_) {
+        HTMLService = _HTMLService_;
+    }));
 
-  it('should do something', function () {
-    expect(!!HTML).toBe(true);
-  });
+    it('should contain HTMLService', function () {
+        expect(HTMLService).not.to.equal(null);
+    });
 
 });

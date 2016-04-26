@@ -1,6 +1,10 @@
-npm install karma --save-dev
+npm install karma -g --save-dev
 npm install karma-jasmine jasmine-core --save-dev
 npm install karma-chrome-launcher --save-dev
+
+
+
+
 
 karma init
 
@@ -13,3 +17,6 @@ add all javascript files in tests for testing -> test/**/*.js
 // watch files on change : yes
 
 // jasmine core fehlt noch -> has to be installed globally -> seems like it
+
+
+karma has to be installed locally
