@@ -301,20 +301,10 @@ angular.module('meanMarkdownApp')
         }
     };*/
     function startOlatDownload(filename, html) {
-        var content =   "<html>\n" +
-                        "  <head>\n" +
-                        '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
-                        '<link rel="stylesheet" href="style/olat.css" />\n' +
-                        "  </head>\n"+
-                        "  <body>\n" +
-                        html +
-                        "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
-                        "<script src=\"javascript/olat.js\"></script>\n" +
-                        "  </body>\n"+
-                        "</html>\n";
+        console.log(html);
 
         // trigger download
-        var blob = new Blob([content], { type:"data:text/plain;charset=utf-8;" });           
+        var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
         var downloadLink = angular.element('<a></a>');
         downloadLink.attr('href', window.URL.createObjectURL(blob));
         downloadLink.attr('download', filename);

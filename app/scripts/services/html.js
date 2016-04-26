@@ -131,9 +131,30 @@ angular.module('meanMarkdownApp')
             //$scope.olatDownloadEnabled = true;
             //return html;
             //console.log(html);
+
+            // wrap html with header and thml tags
+            html = wrapHTML(html, "Test1");
+
             callback(html);
         });
     };
+
+    function wrapHTML(html, title) {
+        return "<!DOCTYPE html>\n" + 
+                "<html lang=\"de\">" +
+                "<head>\n" +
+                "<title>" + title + "</title>" +
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" +
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />" + 
+                '<link rel="stylesheet" href="style/olat.css">\n' +
+                "</head>\n"+
+                "<body>\n" +
+                html +
+                "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
+                "<script src=\"javascript/olat.js\"></script>\n" +
+                "</body>\n"+
+                "</html>\n";
+    }
 
     function replaceDefinitionTags(html, cb) {
         // convert definitions
@@ -254,6 +275,8 @@ angular.module('meanMarkdownApp')
         //var stories = markdown.match(reg);  // store them for later
 
         // get count of replacements to add ID
+        console.log("before!");
+        console.log(html);
         var matches = html.match(/story{/g);
 
         // replace one by one to add custom ID for each
@@ -262,13 +285,16 @@ angular.module('meanMarkdownApp')
             for (var i = 0; i < matches.length; i++) {
                 //console.log("replacing!");
                 //console.log()
-                html = html.replace(/<p>story{/, '<div class="story" id="story' + counter + '">');
+                html = html.replace(/<p>story{<\/p>/, '<div class="story" id="story' + counter + '">');
                 counter++;
             }
         }
         
         // replace closing tags all at once -> no id needed
-        html = html.replace(/}story<\/p>/g, "</div>");
+        html = html.replace(/<p>}story<\/p>/g, "</div>");
+
+        console.log("after");
+        console.log(html);
    
         return html;
     } 
