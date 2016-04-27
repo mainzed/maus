@@ -1,6 +1,6 @@
 
 <div class="row files-top">
-  <div class="col-md-8">
+  <div class="listcontainer">
     <ul>
       <li ng-repeat="file in files | orderBy: 'updated_at':false" class="file">
         <a ng-href="#/editor/{{file._id}}">
@@ -33,6 +33,8 @@
     </ul>
   </div>
 </div>
+<div id="maustext">maus version 0.01</div>
+<img id="maus" src="../images/Mouse-icon.png" />
 
 
 <!--<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>-->

@@ -1,5 +1,8 @@
 * {
   font-family: 'Cousine';
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: 0.01em;
 }
 
 .browsehappy {
@@ -9,20 +12,29 @@
   padding: 0.2em 0;
 }
 
+.container {width: 100%; padding: 0;}
+
 body {
   padding: 0;
   height: 100%;
+  background: #f9f9f9;
 }
 
 #editor-title {
   padding-top: 10px;
   width: 850px;
+  opacity: 0;
 }
 
+#editor-title:hover {opacity: 1;}
+
 #editor-tools {
-  padding-top: 10px;
+  padding: 10px 20%;
   height: 50px;
+  opacity: 0.3;
 }
+
+#editor-tools:hover {opacity: 1;}
 
 #title-placeholder {
   padding-top: 10px;
@@ -84,7 +96,7 @@ body {
 
 .nano { 
   height: 400px; 
-  width: 850px; 
+  width: 100%; 
 }
 .nano .nano-content { 
   padding-right: 10px; 
@@ -125,3 +137,8 @@ select.btn-mini {
 a[ng-click]{
     cursor: pointer;
 }
+
+img {background: none;}
+
+#maus, #maustext {position: absolute; bottom: 50px; left: 50%; margin-left: -25px; width: 50px;}
+#maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px;}

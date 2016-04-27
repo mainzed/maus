@@ -32,6 +32,9 @@
     
     <!-- image button -->
     <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)"><i class="fa fa-picture-o"></i></button>
+    <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
+      <i class="fa fa-commenting-o"></i>
+    </button>
 
     <!-- link button -->
     <div class="btn-group dropup" role="group">
@@ -50,8 +53,8 @@
           -->
         </li>
         
-        <li><button class="btn btn-link" ng-click="onLabelClick()"><i class="fa fa-tag"> Label</i></button></li>
-        <li><button class="btn btn-link" ng-click="onDefinitionClick()"><i class="fa fa-commenting-o"> Definition</i></button></li>
+        
+        
       </ul>
     </div>
 
@@ -62,22 +65,22 @@
   </div>
   
   <!-- export -->
-  <button class="btn btn-warning
+  <button class="btn btn-default
      btn-sm" ng-click="onExportClick()">
-      <i class="fa fa-share-square-o"> export</i>
+      export
   </button>
 
   <!-- preview button -->
-  <button class="btn btn-primary
+  <button class="btn btn-default
      btn-sm" ng-click="onPreviewClick()">
-      <i class="fa fa-play-circle-o"> preview</i>
+      preview
   </button>
 
   <!-- save button -->
-  <div class="btn-group" role="group"> 
-    <button class="btn btn-success
-     btn-sm" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)">
-      <i class="fa fa-floppy-o"> save</i>
+  <div class="btn-group pull-right" role="group"> 
+    <button class="btn btn-default
+     btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)">
+      save
     </button>
   </div>
   <span class="save-text" ng-show="showSuccess === true">... saved!</span>
