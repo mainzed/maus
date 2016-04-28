@@ -15,9 +15,15 @@
           <strong>{{ file.title }}</strong>
         </a><!--({{ file.type }})-->
         <i> by {{ file.author }}</i>
+        
         <!-- download -->
         <a ng-href="#" target="_self" class="file-links pull-right" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
           <span class="glyphicon glyphicon-download-alt"></span>
+        </a>
+
+        <!-- history -->
+        <a ng-href="#/history/{{file._id}}" target="_self" class="file-links pull-right" data-toggle="tooltip" title="Show History">
+          <i class="fa fa-history" aria-hidden="true"></i>
         </a>
 
         <!-- edit -->
@@ -33,8 +39,10 @@
     </ul>
   </div>
 </div>
+
 <div id="maustext">maus version 0.01</div>
 <img id="maus" src="../images/Mouse-icon.png" />
+
 
 
 <!--<button class="btn btn-primary btn-sm" ng-click="onCreateNewFile()">New</button>-->

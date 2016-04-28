@@ -9,7 +9,7 @@
  */
 angular.module('meanMarkdownApp')
   .factory('fileService', function($http, $resource) {
-		return $resource("/api/v1/files/:id", null, 
+		return $resource("/api/files/:id", null, 
 			{
 				'update': { method: 'PUT' }
 			});

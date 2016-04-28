@@ -8,9 +8,9 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, ngDialog) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, archivedFileService, ngDialog) {
   	
-    
+
     $scope.awesomeThings = [1, 2, 3];
     $scope.test = "hello!";
 
@@ -24,7 +24,6 @@ angular.module('meanMarkdownApp')
             template: "./views/templates/dialog_new_file.html",
             scope: $scope
         });
-
     };
 
     // within dialog, click on create
@@ -75,8 +74,7 @@ angular.module('meanMarkdownApp')
             // Error logic here
             console.log("CANCELLED!");
         });
-
-        
+   
     };
     
     $scope.onDownloadClick = function(id) {
@@ -100,6 +98,12 @@ angular.module('meanMarkdownApp')
                 scope: $scope
             });
         });
+    };
+
+
+    $scope.getArchivedFiles = function() {
+        var id = $routeParams.id;
+        $scope.archivedFiles = archivedFileService.query({id: id});
     };
 
     $scope.onSaveClick = function(file) {

@@ -52,12 +52,8 @@ angular
           templateUrl: './views/definition_details.html',
           controller: 'DefinitionsCtrl'
       })
-      .when('/html', {
-          templateUrl: './views/html.html',
-          controller: 'PreviewCtrl'
-      })
-      .when('/impressim', {
-          templateUrl: './views/impressum.html',
+      .when('/history/:id', {
+          templateUrl: './views/history.html',
           controller: 'MainCtrl'
       })
       .otherwise({

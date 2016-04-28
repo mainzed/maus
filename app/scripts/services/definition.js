@@ -9,7 +9,7 @@
  */
 angular.module('meanMarkdownApp')
   .factory('definitionService', function($http, $resource) {
-        return $resource("/api/v1/definitions/:id", null, 
+        return $resource("/api/definitions/:id", null, 
             {
                 'update': { method: 'PUT' }
             });

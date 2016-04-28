@@ -1,0 +1,12 @@
+<div ng-init="getArchivedFiles()">
+  archived files found for this document: {{ archivedFiles.length }}
+  <ul>
+    <li ng-repeat="archivedFile in archivedFiles">
+      123
+      {{ archivedFile.title }}   
+      {{ archivedFile.author }}       
+      {{ archivedFile.updated_at }}       
+      {{ archivedFile.type }}           
+    </li>
+  </ul>
+</div>
