@@ -1,9 +1,31 @@
+@font-face {
+    font-family: 'mdigital';
+    src: url('fonts/mdigitalread10-Medium.eot');
+    src: url('fonts/mdigitalread10-Medium.eot?#iefix') format('embedded-opentype'),
+         url('fonts/mdigitalread10-Medium.woff2') format('woff2'),
+         url('fonts/mdigitalread10-Medium.woff') format('woff');
+      
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
   font-family: 'Cousine';
-  font-size: 15px;
-  line-height: 22px;
+  font-size: 16px;
+  line-height: 28px;
   letter-spacing: 0.01em;
 }
+
+/* Code Mirror */
+.CodeMirror {background: none; padding: 0 20%;}
+.CodeMirror-scroll {overflow: hidden !important;}
+
+
+/* Bootstrap */
+
+
+/* lists */
+.listcontainer {width: 700px;}
 
 .browsehappy {
   margin: 0.2em 0;

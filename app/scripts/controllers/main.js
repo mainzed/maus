@@ -12,6 +12,7 @@ angular.module('meanMarkdownApp')
   	
 
     $scope.awesomeThings = [1, 2, 3];
+
     $scope.test = "hello!";
 
     //$scope.filesActive = false;
