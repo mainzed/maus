@@ -368,6 +368,19 @@ angular.module('meanMarkdownApp')
         fitEditorHeight();
     });
 
+    var timer;
+    var stoppedElement=document.getElementsByTagName("body")[0];   // store element for faster access
+
+    function mouseStopped(){                                 // the actual function that is called
+        $("#editor-tools").css("opacity", "0.4");
+    }
+
+    window.addEventListener("mousemove",function(){
+        $("#editor-tools").css("opacity", "1");
+        clearTimeout(timer);
+        timer=setTimeout(mouseStopped,800);
+    });
+
     function fitEditorHeight() {
         var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
         //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
@@ -376,4 +389,4 @@ angular.module('meanMarkdownApp')
         $(".nano").css("height", height); 
     }
 
-  });
+});
