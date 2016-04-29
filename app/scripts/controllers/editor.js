@@ -378,7 +378,7 @@ angular.module('meanMarkdownApp')
     window.addEventListener("mousemove",function(){
         $("#editor-tools").css("opacity", "1");
         clearTimeout(timer);
-        timer=setTimeout(mouseStopped,800);
+        timer=setTimeout(mouseStopped,1400);
     });
 
     function fitEditorHeight() {

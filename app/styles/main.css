@@ -9,19 +9,33 @@
     font-style: normal;
 }
 
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100');
+
+
 * {
-  font-family: 'Cousine';
+  font-family: 'Roboto Mono';
   font-size: 16px;
-  line-height: 31px;
-  letter-spacing: 0.02em;
+  line-height: 28px;
+  letter-spacing: 0;
   color: #1f1f1f;
+  border-radius: 0 !important;
+  margin: 0;
+  padding: 0;
 }
+
+.btn-default {border: none; background: none; padding: 5px 10px 5px 10px; color: #1f1f1f;}
+.line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
+
 
 /* Code Mirror */
 .CodeMirror {background: none; padding: 0 20%;}
 .CodeMirror-scroll {overflow: hidden !important;}
 .CodeMirror-cursor {border-left: 3px solid red; height: 12px;}
-.cm-s-default .cm-header {color: black; font-weight: bold; letter-spacing: 0; text-decoration: underline;}
+.cm-s-default .cm-header {color: black; font-weight: bold; letter-spacing: 0; }
+.cm-markdown-definition {color: tomato;}
+
+.cm-header-1 {}
+.cm-header-2 {font-style: italic;}
 
 /* Bootstrap */
 
@@ -36,7 +50,7 @@
   padding: 0.2em 0;
 }
 
-.container {width: 100%; padding: 0;}
+.container {width: 100%; padding: 0; margin: 0;}
 
 body {
   padding: 0;
@@ -55,12 +69,19 @@ body {
 #editor-tools {
   padding: 10px 20%;
   height: 50px;
- 
+  font-family: "Roboto";
+}
+
+#editor-tools button, #editor-tools a {
+  font-family: "Roboto";
+  letter-spacing: 0.03em;
 }
 
 #editor-tools:hover {
   opacity: 1 !important;
 }
+
+.btn-sm {font-size: 14px;}
 
 
 
@@ -173,5 +194,7 @@ a[ng-click]{
 
 img {background: none;}
 
-#maus, #maustext {position: absolute; bottom: 50px; left: 50%; margin-left: -25px; width: 50px;}
-#maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px;}
+.row {margin: 0;}
+
+#maus, #maustext {position: absolute; bottom: 50px; left: 50%; margin-left: -40px; width: 80px;}
+#maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px; display: none;}

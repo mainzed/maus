@@ -13,7 +13,11 @@
 
 <div id="editor-tools">
   <div class="btn-group" role="group"> 
-    <button class="btn btn-default btn-sm" ng-click="onFilesClick()">back to files</button>
+    <a class="btn btn-default btn-sm" ng-click="onFilesClick()">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </a>
   </div>
   
   <!-- undo and redo buttons -->
@@ -24,49 +28,38 @@
   
   <!-- help button-->
   <div class="btn-group" role="group"> 
-    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help"><i class="fa fa-question"></i></a>
+    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help">
+    help
+    </a>
   </div>
   
   <!-- image, links & storyscript buttons -->
   <div class="btn-group" role="group"> 
     
     <!-- image button -->
-    <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)"><i class="fa fa-picture-o"></i></button>
+    <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
+      image
+    </button>
     <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
-      <i class="fa fa-commenting-o"></i>
+      definition
     </button>
 
     <!-- link button -->
-    <div class="btn-group dropup" role="group">
-      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-link"></i>
+    <div class="btn-group" role="group">
+      <button class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
+        link
       </button>
-      <ul class="dropdown-menu">
-        
-        <li>
-          <button class="btn btn-link" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
-            <i class="fa fa-link"> Link</i>
-          </button>
-          <!-- shortcut -->
-          <!--
-          <span class="glyphicon glyphicon glyphicon-arrow-up" aria-hidden="true"></span> + L
-          -->
-        </li>
-        
-        
-        
-      </ul>
+     
     </div>
 
     <!-- storyscript button -->
     <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
-      <i class="fa fa-book"></i>
+      story
     </button>
   </div>
   
   <!-- export -->
-  <button class="btn btn-default
-     btn-sm" ng-click="onExportClick()">
+  <button class="btn btn-default btn-sm" ng-click="onExportClick()">
       export
   </button>
 
@@ -77,7 +70,7 @@
   </button>
 
   <!-- save button -->
-  <div class="btn-group pull-right" role="group"> 
+  <div class="btn-group" role="group"> 
     <button class="btn btn-default
      btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)">
       save

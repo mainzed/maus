@@ -116,6 +116,14 @@ angular.module('meanMarkdownApp')
         });
     };
 
+    $("#maus").hover(function(){
+       $(this).attr("src", "../images/maussmile.svg");
+    })
+
+     $("#maus").mouseleave(function(){
+       $(this).attr("src", "../images/maus.svg");
+    })
+
   });
 
 
