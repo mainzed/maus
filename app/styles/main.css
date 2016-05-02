@@ -27,9 +27,13 @@
 .btn-default {border: none; background: none; padding: 5px 10px 5px 10px; color: #1f1f1f;}
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 
-.filegroup {background: Lavender; margin-bottom: 20px; margin: 40px auto;}
-.filegroup td {min-width: 200px; padding: 2px 7px;}
+
+table {table-layout: fixed;}
+.filegroup {background: Lavender; margin-bottom: 20px; margin: 40px auto; width: 70%;}
+.filegroup td {padding: 2px 7px;}
 td.tableheader {font-size: 32px; padding: 20px 2px;  }
+.filegroup td.colfilestate {width: 20px;}
+.filegroup td.colfilename {width: 70%;}
 
 
 /* Code Mirror */

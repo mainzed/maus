@@ -1,17 +1,19 @@
 <table class="filegroup olat">
+   <colgroup>
+       <col span="1" style="width: 60%;">
+       <col span="1" style="width: 20%;">
+       <col span="1" style="width: 5%;">
+       <col span="1" style="width: 15%;">
+    </colgroup>
   <tr>
     <td class="tableheader">
-      <h3 ng-show="currentFileType === 'OLAT'">OLAT</h3>
-      <h3 ng-show="currentFileType === 'presentation'">Mainzed Presentation</h3>
-      <h3 ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</h3>
+      <span ng-show="currentFileType === 'OLAT'">OLAT</span>
+      <span ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
+      <span ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>
     </td>
   </tr>
   <tr ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: currentFileType}" ng-if="currentUser === file.author || currentUser !== file.author && !file.private" class="file">
-    <td>
-      <i ng-show="file.private" class="fa fa-lock" aria-hidden="true"></i>
-      <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
-    </td>
-    <td>
+    <td class="colfilename">
       <a ng-href="#/editor/{{file._id}}">
         <!--<img src="/images/infinity.png" />-->
         <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
@@ -21,7 +23,13 @@
     <td>
       {{ file.author }}
     </td>
-    <td>    
+    <td>  
+
+     <td class="colfilestate">
+      <i ng-show="file.private" class="fa fa-lock" aria-hidden="true"></i>
+      <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
+    </td> 
+    <td> 
 
     <div class="dropdown pull-right">
       <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
