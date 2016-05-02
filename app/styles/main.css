@@ -27,7 +27,7 @@
 .btn-default {border: none; background: none; padding: 5px 10px 5px 10px; color: #1f1f1f;}
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 
-.filegroup {background: Lavender; margin-bottom: 20px;}
+.filegroup {background: Lavender; margin-bottom: 20px; margin: 40px auto;}
 .filegroup td {min-width: 200px; padding: 2px 7px;}
 td.tableheader {font-size: 32px; padding: 20px 2px;  }
 
@@ -51,7 +51,7 @@ td.tableheader {font-size: 32px; padding: 20px 2px;  }
 
 
 /* lists */
-.listcontainer {width: 700px; padding: 20px;}
+.listcontainer {width: 100%; }
 
 
 .browsehappy {
@@ -210,3 +210,5 @@ img {background: none;}
 
 #maus, #maustext {position: absolute; bottom: 50px; left: 50%; margin-left: -40px; width: 80px;}
 #maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px; display: none;}
+.displayuser {position: fixed; left: 20px; bottom: 20px;}
+.underline {text-decoration: underline;}
