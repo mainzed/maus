@@ -10,6 +10,7 @@
 }
 
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic');
 
 
 * {
@@ -26,6 +27,8 @@
 .btn-default {border: none; background: none; padding: 5px 10px 5px 10px; color: #1f1f1f;}
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 
+.filegroup {background: AliceBlue;}
+
 
 /* Code Mirror */
 .CodeMirror {background: none; padding: 0 20%;}
@@ -40,8 +43,14 @@
 /* Bootstrap */
 
 
+/* version */
+.version {float: left; clear: left; font-family: "Arimo"; font-size: 14px; margin-bottom: 5px;}
+.version div {float: left; margin-right: 20px; font-family: "Arimo"; font-size: 16px; letter-spacing: 0.02em;}
+
+
 /* lists */
 .listcontainer {width: 700px;}
+
 
 .browsehappy {
   margin: 0.2em 0;
@@ -57,6 +66,8 @@ body {
   height: 100%;
   background: #f9f9f9;
 }
+
+.home {position: fixed; bottom: 10px; left: 10px;}
 
 #editor-title {
   padding-top: 10px;
@@ -133,10 +144,9 @@ body {
 
 .file {
   list-style: none;
-  padding: 10px 15px;
+  padding: 4px 15px;
   margin-bottom: -1px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  
 }
 
 .file:hover {
