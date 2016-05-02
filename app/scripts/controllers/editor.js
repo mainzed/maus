@@ -8,11 +8,17 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, temporaryService, ngDialog, definitionService) {
+  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, AuthService, temporaryService, ngDialog, definitionService) {
+    
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    }
 
     $scope.showSuccess = false;
     $scope.showError = false;
     $scope.editMode = false;  // used in definitions dialog
+
+
 
     // fills title, id and markdown if cookie exists
     temporaryService.getCookies();

@@ -4,15 +4,12 @@
     
     <ul class="filegroup olat">
       <h3>Olat</h3>
-      <li ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: 'OLAT'}" class="file">
+      <li class="file" ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: 'OLAT'}" ng-if="currentUser === file.author || currentUser !== file.author && !file.private">
+        
+        <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
+        <i ng-show="file.private" class="fa fa-lock" aria-hidden="true"></i>
+
         <a ng-href="#/editor/{{file._id}}">
-          <!--<img src="/images/infinity.png" />-->
-          
-          
-
-          <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
-          
-
           <strong>{{ file.title }}</strong>
         </a><!--({{ file.type }})-->
         <i> by {{ file.author }}</i>
@@ -53,14 +50,11 @@
 
     <ul class="filegroup mainzedpresentation">
       <h3>mainzed</h3>
-      <li ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: 'presentation'}" class="file">
-        <a ng-href="#/editor/{{file._id}}">
-          <!--<img src="/images/infinity.png" />-->
-          
-         
+      <li ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: 'presentation'}" class="file" ng-if="currentUser === file.author || currentUser !== file.author && !file.private">
+        <i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>
+        <i ng-show="file.private" class="fa fa-lock" aria-hidden="true"></i>
 
-          <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
-          
+        <a ng-href="#/editor/{{file._id}}">
 
           <strong>{{ file.title }}</strong>
         </a><!--({{ file.type }})-->
@@ -105,6 +99,9 @@
     
   </div>
 </div>
+
+<span ng-show="currentUser">{{currentUser}}, </span>
+<button type="button" class="btn btn-default" ng-click="onLogoutClick()">Logout</button>
 
 <div id="maustext">maus version 0.01</div>
 <img id="maus" src="../images/maus.svg" />

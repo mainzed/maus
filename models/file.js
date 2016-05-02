@@ -8,6 +8,7 @@ var fileSchema = new Schema({
     title: String,
     markdown: String,
     type: String,
+    private: { type: Boolean, default: false },
     updated_at: { type: Date, default: Date.now }
 });
 
@@ -41,7 +42,8 @@ module.exports.updateFile = function(id, file, callback) {
         author: file.author,
         title: file.title,
         type: file.type,
-        markdown: file.markdown
+        markdown: file.markdown,
+        private: file.private
     };
 
     File.findOneAndUpdate(query, update, callback);

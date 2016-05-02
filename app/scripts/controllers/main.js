@@ -8,8 +8,14 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, archivedFileService, ngDialog) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, archivedFileService, ngDialog, AuthService) {
   	
+    // check if already logged in, if not, redirect to login page
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    } else {
+        $scope.currentUser = AuthService.getUser();
+    }
 
     $scope.awesomeThings = [1, 2, 3];
 
@@ -34,11 +40,13 @@ angular.module('meanMarkdownApp')
 
         // save as new file
         var file = {
-            author: $scope.newFile.author,
+            author: $scope.currentUser,
             title: $scope.newFile.title,
             type: $scope.newFile.type,
-            markdown: "This is **markdown**."
+            markdown: "This is **markdown**.",
+            private: $scope.newFile.private
         };
+        console.log(file);
 
         fileService.save(file, function(file) {
 
@@ -174,6 +182,11 @@ angular.module('meanMarkdownApp')
         }, function() {
             console.log("could not update file!");
         });
+    };
+
+    $scope.onLogoutClick = function() {
+        AuthService.logout();
+        $location.path("/login");
     };
 
     $("#maus").hover(function(){

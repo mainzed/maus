@@ -56,7 +56,8 @@ router.put('/files/:id', function (req, res) {
         author: file.author,
         title: file.title,
         markdown: file.markdown,
-        type: file.type
+        type: file.type,
+        private: file.private
     };
 
     ArchivedFile.create(archivedFile, function(err) {

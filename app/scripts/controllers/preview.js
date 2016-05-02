@@ -8,7 +8,12 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('PreviewCtrl', function ($scope, $location, HTMLService, temporaryService, fileService, definitionService, cssInjector) {  // cssInjector
+  .controller('PreviewCtrl', function ($scope, $location, HTMLService, temporaryService, fileService, definitionService, cssInjector, AuthService) {  // cssInjector
+    
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    }
+
     fitPanelHeight();
 
     $scope.test = "hello";

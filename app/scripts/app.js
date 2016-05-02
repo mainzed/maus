@@ -24,9 +24,12 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        redirectTo: '/files'
+        redirectTo: '/login'
       })
-
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
+      })
       .when('/files', {
         templateUrl: 'views/files.html',
         controller: 'MainCtrl'
