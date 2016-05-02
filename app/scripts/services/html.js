@@ -50,13 +50,17 @@ angular.module('meanMarkdownApp')
         customRenderer.link = function (linkUrl, noIdea, text) {
 
             if (!linkUrl.startsWith("#")) {  // skipp local links
+
                 links.push({
                     url: linkUrl,
-                    text: text
+                    text: text.replace("!", "")  // replace ! for "weiterführende links"
                 });
             }
 
-            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+            if (!text.startsWith("!")) {  // ignore "weiterführende links" in text. but they have been pushed to list
+                return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+            }
+            
         };
 
         // custom image renderer
