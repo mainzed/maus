@@ -23,6 +23,8 @@ angular.module('meanMarkdownApp')
     $scope.onCreateNewFile = function() {
         ngDialog.open({ 
             template: "./views/templates/dialog_new_file.html",
+            disableAnimation: true,
+            closeByDocument: true,  // enable clicking on background to close dialog
             scope: $scope
         });
     };
@@ -58,6 +60,7 @@ angular.module('meanMarkdownApp')
         
         ngDialog.openConfirm({
             template: "./views/templates/dialog_confirm_delete.html",
+            disableAnimation: true,
             scope: $scope
         }).then(function (success) {
             console.log("DELETE!");
@@ -96,6 +99,7 @@ angular.module('meanMarkdownApp')
             
             ngDialog.open({
                 template: "./views/templates/dialog_edit_file.html",
+                disableAnimation: true,
                 scope: $scope
             });
         });

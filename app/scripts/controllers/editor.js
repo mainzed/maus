@@ -156,6 +156,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.addSnippet = function(snippet) {
+
         // add snippet at cursor position or replace selection
         $scope.editor.replaceSelection(snippet);
         $scope.editor.focus();
@@ -187,7 +188,15 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onStoryScriptClick = function() {
-        var snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n";
+        var snippet;
+        var selection = $scope.editor.getSelection();
+        
+        if (selection.length) {
+            snippet = "\nstory{\n\n" + selection + "\n\n}story\n";
+        } else {
+            snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n";
+        }
+        
         $scope.addSnippet(snippet);
     };
 
@@ -195,6 +204,7 @@ angular.module('meanMarkdownApp')
         ngDialog.open({ 
             template: "./views/templates/definitions_dialog.html",
             scope: $scope,
+            disableAnimation: true,
             preCloseCallback: function() {
                 $scope.editMode = false;
             }
