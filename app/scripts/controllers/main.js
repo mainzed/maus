@@ -111,23 +111,22 @@ angular.module('meanMarkdownApp')
         $scope.archivedFiles = archivedFileService.query({id: id});
     };
 
-    $scope.hasArchivedFiles = function(file) {
+    /*$scope.hasArchivedFiles = function(file) {
 
         $scope.archivedFiles = archivedFileService.query({id: id}, function(files) {
             if (files.length > 0) {
                 $scope.hasArchivedFiles = true;
             }
         });
-    };
+    };*/
 
     $scope.onOpenAsNewFileClick = function(archivedFile) {
-        console.log(archivedFile);
 
         // save archivedFile as a new file and open editor
         // save as new file
         var file = {
             author: archivedFile.author,
-            title: archivedFile.title,
+            title: archivedFile.title + " (restored)",
             type: archivedFile.type,
             markdown: archivedFile.markdown
         };
