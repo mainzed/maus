@@ -111,6 +111,63 @@ angular.module('meanMarkdownApp')
         $scope.archivedFiles = archivedFileService.query({id: id});
     };
 
+    $scope.hasArchivedFiles = function(file) {
+
+        $scope.archivedFiles = archivedFileService.query({id: id}, function(files) {
+            if (files.length > 0) {
+                $scope.hasArchivedFiles = true;
+            }
+        });
+    };
+
+    $scope.onOpenAsNewFileClick = function(archivedFile) {
+        console.log(archivedFile);
+
+        // save archivedFile as a new file and open editor
+        // save as new file
+        var file = {
+            author: archivedFile.author,
+            title: archivedFile.title,
+            type: archivedFile.type,
+            markdown: archivedFile.markdown
+        };
+
+        fileService.save(file, function(file) {
+
+            // success
+            temporaryService.setCurrentFileId(file._id);
+            temporaryService.setTitle(file.author);
+            temporaryService.setMarkdown(file.markdown);
+            temporaryService.setType(file.type);
+
+            $location.path("/editor/" + file._id);
+
+        }, function() {
+            // error
+            console.log("could not create new file!");
+        });
+    };
+
+    $scope.onRevertFileClick = function(archivedFile) {
+        
+        var file = {
+            author: archivedFile.author,
+            title: archivedFile.title,
+            type: archivedFile.type,
+            markdown: archivedFile.markdown
+        };
+
+        // updated file with content from archived File. use fileID to
+        // know which file to replace
+        fileService.update({id: archivedFile.fileID}, file, function() {
+            console.log("file updated successfully!");
+            $scope.files = fileService.query();
+            $location.path("/files");
+        }, function() {
+            console.log("could not update file!");
+        });
+    };
+
     $scope.onSaveClick = function(file) {
         fileService.update({id: file._id}, file, function() {
             console.log("file updated successfully!");
@@ -122,11 +179,11 @@ angular.module('meanMarkdownApp')
 
     $("#maus").hover(function(){
        $(this).attr("src", "../images/maussmile.svg");
-    })
+    });
 
      $("#maus").mouseleave(function(){
        $(this).attr("src", "../images/maus.svg");
-    })
+    });
 
   });
 

@@ -1,14 +1,18 @@
 <div ng-init="getArchivedFiles()">
-  archived files found for this document: {{ archivedFiles.length }}
+  <h3>history</h3>
+  <!--archived files found for this document: {{ archivedFiles.length }}-->
   <ul>
-    <li ng-repeat="archivedFile in archivedFiles">
-      <a ng-href="#/editor/{{ archivedFile.fileID }}">
-        123
-        {{ archivedFile.title }}   
-        {{ archivedFile.author }}       
-        {{ archivedFile.created_at }}       
-        {{ archivedFile.type }}           
-      </a>
+    
+    <li ng-repeat="archivedFile in archivedFiles | orderBy: 'created_at':true" ng-if="$index > 0"> <!-- ng-if skips first item -->
+      
+      <h5>{{ archivedFile.created_at.substring(0,10) }} {{ archivedFile.created_at.substring(11,16) }}</h5>
+
+      "{{ archivedFile.title }}"
+      changed by {{ archivedFile.author }}
+
+      <button type="button" class="btn btn-primary" ng-click="onOpenAsNewFileClick(archivedFile)">Open as new file</button>
+      <button type="button" class="btn btn-info" ng-click="onRevertFileClick(archivedFile)">Revert file back to this version</button>
     </li>
   </ul>
 </div>
+<a ng-href="#/files">back to files</a>
