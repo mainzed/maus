@@ -220,6 +220,7 @@ angular.module('meanMarkdownApp')
         
         ngDialog.open({ 
             template: "./views/templates/export_dialog.html",
+            disableAnimation: true,
             scope: $scope
         });
 

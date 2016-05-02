@@ -20,11 +20,15 @@
 
 <div ng-hide="editMode">
   <h4>Definitions</h4>
+
+  <!-- search box -->
+  <input type="text" class="form-control" placeholder="Filter by Name" ng-model="filterBox">
+
   <scrollable class="definitons-table">
     <table class="table table-condensed" ng-init="getDefinitions()"> 
       <tbody> 
-        <tr ng-repeat="definition in definitions"> 
-          <th scope="row">{{$index + 1}}</th>
+        <tr ng-repeat="definition in definitions | filter:filterBox"> 
+          <!--<th scope="row">{{$index + 1}}</th>-->
           <td>
             <button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
               {{ definition.word }}
