@@ -24,16 +24,23 @@
   padding: 0;
 }
 
+html, body {height: 100%;}
+
 .btn-default {border: none; background: none; padding: 5px 10px 5px 10px; color: #1f1f1f;}
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 
 
 table {table-layout: fixed;}
-.filegroup {background: Lavender; margin-bottom: 20px; margin: 40px auto; width: 70%;}
+.filegroup {background: #C4D6FF; margin-bottom: 20px; margin: 0 auto 20px auto; width: 70%;}
 .filegroup td {padding: 2px 7px;}
-td.tableheader {font-size: 32px; padding: 20px 2px;  }
+.filegroup th.tableheader span {font-size: 40px; font-weight: normal; }
+th.tableheader {font-size: 32px; padding: 8px 7px 20px;  }
 .filegroup td.colfilestate {width: 20px;}
 .filegroup td.colfilename {width: 70%;}
+tbody tr:nth-child(even) {
+   background-color: #CFDDFF;
+}
+
 
 
 /* Code Mirror */
@@ -55,7 +62,8 @@ td.tableheader {font-size: 32px; padding: 20px 2px;  }
 
 
 /* lists */
-.listcontainer {width: 100%; }
+.listcontainer {width: 100%; margin-top: 30px; height: 80%; }
+.row {height: 100%;}
 
 
 .browsehappy {
@@ -65,7 +73,7 @@ td.tableheader {font-size: 32px; padding: 20px 2px;  }
   padding: 0.2em 0;
 }
 
-.container {width: 100%; padding: 0; margin: 0;}
+.container {width: 100%; padding: 0; margin: 0; height: 100%;}
 
 body {
   padding: 0;
@@ -81,7 +89,7 @@ body {
   opacity: 0;
 }
 
-#editor-title:hover {opacity: 1;}
+
 
 #editor-tools {
   padding: 10px 20%;
@@ -155,16 +163,23 @@ body {
   
 }
 
+.createfile {
+  width: 70%;
+  margin: 20px auto;
+  text-align: center;
+  background: #ededed;
+}
+
 .file:hover {
   background-color: #f6f6f6;
 }
 
 .nano { 
-  height: 400px; 
+  min-height: 500px; 
   width: 100%; 
 }
 .nano .nano-content { 
-  padding-right: 10px; 
+  padding-right: 0px; 
 }
 .nano .nano-pane   { 
   background: ghostwhite; 
@@ -212,7 +227,13 @@ img {background: none;}
 
 .row {margin: 0;}
 
-#maus, #maustext {position: absolute; bottom: 50px; left: 50%; margin-left: -40px; width: 80px;}
+#maus, #maustext {position: fixed; bottom: 30px; left: 50%; margin-left: -40px; width: 80px;}
 #maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px; display: none;}
 .displayuser {position: fixed; left: 20px; bottom: 20px;}
 .underline {text-decoration: underline;}
+
+
+/* dialog */
+.ngdialog.ngdialog-theme-default {padding: 20px 0;}
+
+.view {height: 100%;}
