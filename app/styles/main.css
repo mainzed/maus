@@ -30,15 +30,19 @@ html, body {height: 100%;}
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 
 
+.filesection {width: 100%; }
 table {table-layout: fixed;}
-.filegroup {background: #C4D6FF; margin-bottom: 20px; margin: 0 auto 20px auto; width: 70%;}
-.filegroup td {padding: 2px 7px;}
-.filegroup th.tableheader span {font-size: 40px; font-weight: normal; }
-th.tableheader {font-size: 32px; padding: 8px 7px 20px;  }
+.filegroup {margin-bottom: 20px; margin: 0 auto 100px auto; width: 70%; }
+.filegroup:hover td {border-left: 1px solid gray;}
+.filegroup tr {border-top: 1px solid #e3e3e3;}
+.filegroup td {padding: 2px 7px; border-left: 1px solid transparent; letter-spacing: 0.03em;}
+.filegroup td a {letter-spacing: 0.03em;}
+.filegroup th.tableheader span {font-size: 43px; font-weight: 300; }
+span.tableheader {padding: 12px 7px 30px; width: 70%; margin: 0 auto; display: block; font-weight: bold; }
 .filegroup td.colfilestate {width: 20px;}
 .filegroup td.colfilename {width: 70%;}
 tbody tr:nth-child(even) {
-   background-color: #CFDDFF;
+   
 }
 
 
@@ -72,6 +76,9 @@ tbody tr:nth-child(even) {
   color: #000;
   padding: 0.2em 0;
 }
+
+
+
 
 .container {width: 100%; padding: 0; margin: 0; height: 100%;}
 
@@ -166,8 +173,8 @@ body {
 .createfile {
   width: 70%;
   margin: 20px auto;
-  text-align: center;
-  background: #ededed;
+  border: 1px solid gray;
+
 }
 
 .file:hover {
@@ -206,9 +213,6 @@ select.btn-mini {
   padding-top: 10px;
 }
 
-.nano.definitons-table {
-  width: 420px;
-}
 
 .map {
     height: 400px;
@@ -227,7 +231,7 @@ img {background: none;}
 
 .row {margin: 0;}
 
-#maus, #maustext {position: fixed; bottom: 30px; left: 50%; margin-left: -40px; width: 80px;}
+#maus, #maustext {position: fixed; bottom: 10px; left: 95%; margin-left: -30px; width: 60px;}
 #maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px; display: none;}
 .displayuser {position: fixed; left: 20px; bottom: 20px;}
 .underline {text-decoration: underline;}
@@ -235,5 +239,11 @@ img {background: none;}
 
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
+.ngdialog.ngdialog-theme-default .ngdialog-content { width: 800px;}
 
 .view {height: 100%;}
+
+/*definitions table */
+.table-condensed > tbody > tr > td {padding: 1px;}
+.definitons-table .nano-pane {right: 0; background: transparent;}
+.definitons-table.nano {min-height: 600px;}

@@ -1,3 +1,7 @@
+      <span class="tableheader" ng-show="currentFileType === 'OLAT'">OLAT</span>
+      <span class="tableheader" ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
+      <span class="tableheader" ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>
+
 <table class="filegroup olat">
    <colgroup>
        <col span="1" style="width: 60%;">
@@ -5,19 +9,15 @@
        <col span="1" style="width: 5%;">
        <col span="1" style="width: 15%;">
     </colgroup>
-  <tr>
-    <th class="tableheader" align="center">
-      <span ng-show="currentFileType === 'OLAT'">OLAT</span>
-      <span ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
-      <span ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>
-    </th>
-  </tr>
+  
+     
+  
   <tr ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: currentFileType}" ng-if="currentUser === file.author || currentUser !== file.author && !file.private" class="file">
     <td class="colfilename">
       <a ng-href="#/editor/{{file._id}}">
         <!--<img src="/images/infinity.png" />-->
         <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
-        <strong>{{ file.title }}</strong>
+        {{ file.title }}
       </a><!--({{ file.type }})-->
     </td>
     <td>
@@ -26,7 +26,7 @@
     <td>  
 
      <td class="colfilestate">
-      <i ng-show="file.private" class="fa fa-lock" aria-hidden="true"></i>
+      <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true"></i>
       <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
     </td> 
     <td> 
