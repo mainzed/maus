@@ -1,71 +1,91 @@
-      <span class="tableheader" ng-show="currentFileType === 'OLAT'">OLAT</span>
-      <span class="tableheader" ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
-      <span class="tableheader" ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>
 
-<table class="filegroup olat">
-   <colgroup>
-       <col span="1" style="width: 60%;">
-       <col span="1" style="width: 20%;">
-       <col span="1" style="width: 5%;">
-       <col span="1" style="width: 15%;">
-    </colgroup>
+<!--<span class="tableheader" ng-show="currentFileType === 'OLAT'">OLAT</span>
+<span class="tableheader" ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
+<span class="tableheader" ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>-->
+
+
+ 
+
+<div ng-repeat="(key, value) in files | groupBy: 'type'">
   
-     
-  
-  <tr ng-repeat="file in files | orderBy: 'updated_at':false | filter: {type: currentFileType}" ng-if="currentUser === file.author || currentUser !== file.author && !file.private" class="file">
-    <td class="colfilename">
-      <a ng-href="#/editor/{{file._id}}">
-        <!--<img src="/images/infinity.png" />-->
-        <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
-        {{ file.title }}
-      </a><!--({{ file.type }})-->
-    </td>
-    <td>
-      {{ file.author }}
-    </td>
-    <td>  
+  <span class="tableheader">{{ key }}</span>
+  <table class="filegroup">
+     <colgroup>
+         <col span="1" style="width: 60%;">
+         <col span="1" style="width: 20%;">
+         <col span="1" style="width: 5%;">
+         <col span="1" style="width: 15%;">
+      </colgroup>
+    
+      <!--<ul ng-repeat="(key, value) in players | groupBy: 'team'">
+    Group name: {{ key }}
+    <li ng-repeat="player in value">
+      player: {{ player.name }} 
+    </li>
+  </ul>-->
+    
+    <tr ng-repeat="file in value">
 
-     <td class="colfilestate">
-      <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true"></i>
-      <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
-    </td> 
-    <td> 
-
-    <div class="dropdown pull-right">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
-      </button>
+      <td class="colfilename">
+        <a ng-href="#/editor/{{file._id}}">
+          <!--<img src="/images/infinity.png" />-->
+          <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
+          {{ file.title }}
+        </a><!--({{ file.type }})-->
+      </td>
       
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <td>
+        {{ file.author }}
+      </td>
+      
+      <td>  
 
-      <!-- download -->
-      <li>
-        <a ng-href="#" target="_self" class="" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
-          Download
-       </a>
-      </li>
+       <td class="colfilestate">
+        <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true"></i>
+        <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
+      </td> 
+      
+      <td> 
 
-      <!-- history -->
-      <li>
-        <a ng-href="#/history/{{file._id}}" target="_self" class="" data-toggle="tooltip" title="Show History">
-          Frühere Versionen
-         </a>
-      </li>
+        <div class="dropdown pull-right">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+          </button>
+          
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+          <!-- download -->
+          <li>
+            <a ng-href="#" target="_self" class="" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
+              Download
+           </a>
+          </li>
+
+          <!-- history -->
+          <li>
+            <a ng-href="#/history/{{file._id}}" target="_self" class="" data-toggle="tooltip" title="Show History">
+              Frühere Versionen
+             </a>
+          </li>
 
 
-      <!-- edit -->
-      <li>
-        <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
-          Editieren
-        </a>
-      </li>
-       
-      </ul>
-    </div>
-    </td>
+          <!-- edit -->
+          <li>
+            <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
+              Editieren
+            </a>
+          </li>
+           
+          </ul>
+        </div>
+      
+      </td>
 
-  </tr>
+    </tr>
 
-</table>
+  </table>
+
+
+</div>

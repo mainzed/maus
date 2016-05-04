@@ -19,7 +19,8 @@ angular
     'ui.codemirror',
     'ngDialog',
     'ngCssInjector',
-    'sun.scrollable'
+    'sun.scrollable',
+    'angular.filter'
   ])
   .config(function ($routeProvider) {
     $routeProvider

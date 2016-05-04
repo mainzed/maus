@@ -16,6 +16,8 @@ angular.module('meanMarkdownApp')
       link: function postLink(scope, element, attrs) {
         
         scope.currentFileType = attrs.filetype;
+
+
         //element.text('this is the fileSection directive');
       }
     };

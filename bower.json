@@ -20,7 +20,8 @@
     "angular-nanoscroller": "0.2.1",
     "angular-leaflet-directive": "0.10.0",
     "jquery.mousestop": "^0.1.2",
-    "jquery": "^2.2.3"
+    "jquery": "^2.2.3",
+    "angular-filter": "^0.5.8"
   },
   "resolutions": {
     "angular": "^1.4.0",
