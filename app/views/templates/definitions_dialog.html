@@ -25,20 +25,20 @@
   <input type="text" class="form-control" placeholder="Filter by Name" ng-model="filterBox">
 
   <scrollable class="definitons-table">
-    <table class="table table-condensed" ng-init="getDefinitions()"> 
+    <table class="table filegroup fullwidth" ng-init="getDefinitions()"> 
       <tbody> 
         <tr ng-repeat="definition in definitions | filter:filterBox"> 
           <!--<th scope="row">{{$index + 1}}</th>-->
           <td>
-            <button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
+            <a ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
               {{ definition.word }}
-            </button>
+            </a>
           </td> 
-
+          <!--
           <td>
-            <!--<a ng-href="#/definitions/{{definition._id}}">
+           <a ng-href="#/definitions/{{definition._id}}">
               <span class="glyphicon glyphicon-pencil"></span>
-            </a>-->
+            </a>
             <button class="btn btn-link pull-right" ng-click="onRemoveDefinitionClick(definition._id)">
                <span class="icon-trash"></span>
             </button>
@@ -46,15 +46,14 @@
               <span class="icon-edit"></span>
             </button>
 
-          </td>
+          </td>-->
         </tr> 
 
       </tbody> 
     </table>
   </scrollable>
-  <button class="btn btn-default btn-sm" ng-click="onDefinitionCreateClick()">
-    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-    new
+  <button class="btn btn-default btn-sm toolbar" ng-click="onDefinitionCreateClick()">
+    Bearbeiten
   </button>
 </div>
 
