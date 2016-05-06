@@ -1,4 +1,4 @@
-<div ng-repeat="(key, value) in files | groupBy: 'type'">
+<div ng-repeat="(key, value) in files | groupBy: 'type'" ng-show="groupHasValidFiles(key)">
 
   <!-- custom section names -->
   <span class="tableheader" ng-show="key === 'opOlat'">OLAT</span>
@@ -8,37 +8,32 @@
 
 
   <table class="filegroup">
-     <colgroup>
-         <col span="1" style="width: 60%;">
-         <col span="1" style="width: 20%;">
-         <col span="1" style="width: 5%;">
-         <col span="1" style="width: 15%;">
-      </colgroup>
-    
-      <!--<ul ng-repeat="(key, value) in players | groupBy: 'team'">
-    Group name: {{ key }}
-    <li ng-repeat="player in value">
-      player: {{ player.name }} 
-    </li>
-  </ul>-->
-    
-    <tr ng-repeat="file in value">
+    <colgroup>
+      <col span="1" style="width: 60%;">
+      <col span="1" style="width: 15%;">
+      <col span="1" style="width: 10%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 10%;">
+    </colgroup>
+  
+    <!-- only show documents of the current user or documents that are not private -->
+    <tr ng-repeat="file in value" ng-show="file.author === currentUser || file.private === false">
 
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
-          <!--<img src="/images/infinity.png" />-->
-          <!--<img ng-show="file.type === 'OLAT'" src="/images/infinite.svg" />-->
           {{ file.title }}
-        </a><!--({{ file.type }})-->
+        </a>
       </td>
       
       <td>
+        {{ getFormattedDate(file.updated_at) }}
+      </td>
+
+      <td>
         {{ file.author }}
       </td>
-      
-      <td>  
 
-       <td class="colfilestate">
+      <td class="colfilestate">
         <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true"></i>
         <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
       </td> 
@@ -54,27 +49,27 @@
           
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
-          <!-- download -->
-          <li>
-            <a ng-href="#" target="_self" class="" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
-              Download
-           </a>
-          </li>
-
-          <!-- history -->
-          <li>
-            <a ng-href="#/history/{{file._id}}" target="_self" class="" data-toggle="tooltip" title="Show History">
-              Frühere Versionen
+            <!-- download -->
+            <li>
+              <a ng-href="#" target="_self" class="" ng-click="onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
+                Download
              </a>
-          </li>
+            </li>
+
+            <!-- history -->
+            <li>
+              <a ng-href="#/history/{{file._id}}" target="_self" class="" data-toggle="tooltip" title="Show History">
+                Frühere Versionen
+               </a>
+            </li>
 
 
-          <!-- edit -->
-          <li>
-            <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
-              Editieren
-            </a>
-          </li>
+            <!-- edit -->
+            <li>
+              <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
+                Editieren
+              </a>
+            </li>
            
           </ul>
         </div>
