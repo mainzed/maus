@@ -426,4 +426,12 @@ angular.module('meanMarkdownApp')
         $(".nano").css("height", height); 
     }
 
+    /**
+     * prompt when trying to refresh with unsaved changes
+     */
+    $(window).bind('beforeunload', function(){
+        if ($scope.unsavedChanges) {
+            return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
+        }
+    });
 });
