@@ -216,6 +216,7 @@ angular.module('meanMarkdownApp')
             }
         });
     };
+    
     $scope.getDefinitions = function() {
         $scope.definitions = definitionService.query();
     };
@@ -259,7 +260,23 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
-        $location.path("/preview");
+
+        HTMLService.getOlat(false, function(html) {
+            $scope.html = html;
+                            
+            // open dialog when html is fully loaded
+            ngDialog.open({ 
+                template: "./views/templates/dialog_preview.html",
+                disableAnimation: true,
+                closeByDocument: true,  // enable clicking on background to close dialog
+                scope: $scope
+            });
+
+        });
+
+        //TODO: hide rpeview button when editor is empty
+
+
     };
 
     $scope.onDefinitionCreateClick = function() {
@@ -274,14 +291,12 @@ angular.module('meanMarkdownApp')
 
     $scope.onDefinitionSaveClick = function(definition) {
         if (definition._id) {  // already exists, update!
-            console.log("exists! update!");
             definitionService.update({id: definition._id}, definition, function() {
                 // success
                 $scope.getDefinitions();
                 $scope.editMode = false;  // changes view
             });
         } else {  // doesnt exist, create new!
-            console.log("create new!");
             definitionService.save(definition, function() {
                 // success
                 $scope.getDefinitions();
@@ -293,7 +308,6 @@ angular.module('meanMarkdownApp')
     $scope.onRemoveDefinitionClick = function(id) {
         definitionService.remove({id: id}, function() {
             // success
-            console.log("definition removed successfull!");
             $scope.getDefinitions();
         });
     };
@@ -306,13 +320,13 @@ angular.module('meanMarkdownApp')
         var markdown = $scope.editor.getValue();
     	temporaryService.setMarkdown(markdown);
         $scope.markdown = markdown;
-        $scope.enableSaveButton = true; // enable button when code was changed
+        $scope.activeSaveButton = true; // enable button when code was changed
     };
 
     // also enable save button when title was changed
-    $scope.$watch('enableSaveButton', function (newValue, oldValue) {
+    /*$scope.$watch('enableSaveButton', function (newValue, oldValue) {
         $scope.enableSaveButton = true;
-    });
+    });*/
 
     $scope.onTitleChange = function() {
         temporaryService.setTitle($scope.title);

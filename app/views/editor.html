@@ -62,15 +62,14 @@
   </button>
 
   <!-- preview button -->
-  <button class="btn btn-default
-     btn-sm" ng-click="onPreviewClick()">
+  <button class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
       Preview
   </button>
 
   <!-- save button -->
   <div class="btn-group" role="group"> 
     <button class="btn btn-default
-     btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)">
+     btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)" ng-disabled="!activeSaveButton">
       Speichern
     </button>
   </div>

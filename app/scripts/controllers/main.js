@@ -139,6 +139,13 @@ angular.module('meanMarkdownApp')
             markdown: archivedFile.markdown
         };
 
+        // change legacy filetypes
+        if (file.type === "OLAT") {
+            file.type = "opOlat";
+        } else if (file.type === "presentation") {
+            file.type = "prMainzed";
+        }
+
         fileService.save(file, function(file) {
 
             // success
