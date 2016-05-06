@@ -40,14 +40,6 @@ angular
           templateUrl: './views/editor.html',
           controller: 'EditorCtrl'
       })
-      .when('/definitions', {
-          templateUrl: './views/definitions.html',
-          controller: 'DefinitionsCtrl'
-      })
-      .when('/definitions/:id', {
-          templateUrl: './views/definition_details.html',
-          controller: 'DefinitionsCtrl'
-      })
       .when('/history/:id', {
           templateUrl: './views/history.html',
           controller: 'MainCtrl'

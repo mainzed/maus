@@ -1,52 +1,24 @@
-<!--<div ng-init="getDefinitions()">
-  <h3>Available Definitions</h3>
-  <ul ng-repeat="definition in definitions"> 
-    <li>
-      <button class="btn btn-link" ng-click="closeThisDialog(); addDefinition(definition)">{{ definition.word }}</button>
-      <a ng-href="#/definitions/{{definition._id}}">
-        <span class="glyphicon glyphicon-pencil"></span> Edit
-      </a>
-    </li>
-  </ul>
-</div>-->
 
-<!--<div class="list-group file-group" ng-init="getDefinitions()">
-  <button type="button" class="list-group-item" ng-repeat="definition in definitions" ng-click="closeThisDialog(); addDefinition(definition)">
-    {{ definition.word }}
-  </button>
-</div>-->
+
+
 
 <!--<button class="btn btn-default btn-sm" ng-click="onDefinitionsEditClick(); closeThisDialog()">edit</button>-->
 
-<div ng-hide="editMode">
+<!--<div ng-hide="editMode">
   <h4>Definitions</h4>
 
-  <!-- search box -->
   <input type="text" class="form-control" placeholder="Filter by Name" ng-model="filterBox">
 
   <scrollable class="definitons-table">
     <table class="table filegroup fullwidth" ng-init="getDefinitions()"> 
       <tbody> 
         <tr ng-repeat="definition in definitions | filter: { word: filterBox }"> 
-          <!--<th scope="row">{{$index + 1}}</th>-->
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
               {{ definition.word }}
             </a>
           </td> 
-          <!--
-          <td>
-           <a ng-href="#/definitions/{{definition._id}}">
-              <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-            <button class="btn btn-link pull-right" ng-click="onRemoveDefinitionClick(definition._id)">
-               <span class="icon-trash"></span>
-            </button>
-            <button class="btn btn-link pull-right" ng-click="onDefinitionEditClick(definition)">
-              <span class="icon-edit"></span>
-            </button>
 
-          </td>-->
         </tr> 
 
       </tbody> 
@@ -55,10 +27,10 @@
   <button class="btn btn-default btn-sm toolbar" ng-click="onDefinitionCreateClick()">
     Bearbeiten
   </button>
-</div>
+</div>-->
 
 <!-- show when clicked edit -->
-<form ng-show="editMode">
+<!--<form ng-show="editMode">
   <div class="form-group">
     <label for="exampleInputEmail5">Word</label>
     <input type="text" class="form-control" id="exampleInputEmail5" placeholder="Word" ng-model="definition.word">
@@ -66,7 +38,6 @@
 
   <div class="form-group">
     <label for="exampleInputEmail1">Definition</label>
-    <!--<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Definition" ng-model="definition.text">-->
     <textarea class="form-control" rows="3" placeholder="Definition" ng-model="definition.text" required></textarea>
   </div>
 
@@ -85,4 +56,50 @@
   
   <button type="submit" class="btn btn-default" ng-click="onDefinitionSaveClick(definition)" ng-disabled="!definition.word">Save</button>
 
-</form>
+</form>-->
+
+<h3>Definitions</h3>
+<div class="container" ng-init="getDefinitions()">
+
+  <!-- search box -->
+  <input type="search" class="form-control" placeholder="Search" ng-model="filterBox">
+
+  <table class="table">
+    <thead> 
+      <tr> 
+        <th>Word</th>
+        <th>Definition</th>
+        <th>Source</th>
+        <th>Website</th>
+      </tr> 
+    </thead> 
+
+    <tbody> 
+      <tr ng-repeat="definition in definitions | filter:filterBox"> 
+        <td>
+          <button type="button" class="btn btn-default" ng-click="closeThisDialog(); addDefinition(definition)">
+            {{ definition.word }}
+          </button>
+
+
+        </td> 
+
+        <td>
+          <input type="text" class="form-control" placeholder="Definition" ng-model="definition.text" ng-class="activeForm" ng-dblclick="activeForm = ['form-control']" ng-readonly="!activeForm">
+        </td>
+
+        <td>
+          <input type="text" class="form-control" placeholder="Definition" ng-model="definition.author" ng-class="activeForm" ng-dblclick="activeForm = ['form-control']" ng-readonly="!activeForm">
+        </td>
+
+        <td>
+          <input type="text" class="form-control" placeholder="Definition" ng-model="definition.url" ng-class="activeForm" ng-dblclick="activeForm = ['form-control']" ng-readonly="!activeForm">
+        </td>
+
+      </tr> 
+    </tbody> 
+  </table>
+
+  <button class="btn btn-default btn-sm" ng-click="onApplyDefinitionChanges()">apply changes</a>
+  <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick()">create new</a>
+</div>
