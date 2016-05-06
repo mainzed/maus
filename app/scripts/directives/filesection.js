@@ -7,7 +7,7 @@
  * # fileSection
  */
 angular.module('meanMarkdownApp')
-  .directive('filesection', function () {
+  .directive('filesection', function ($filter) {
     return {
         templateUrl: '../views/templates/filesection.html',
         restrict: 'E',
@@ -36,10 +36,11 @@ angular.module('meanMarkdownApp')
              * uses DateJS to convert mongodb timestamp to nicely formatted string
              */
             scope.getFormattedDate = function(timestamp) {
-                var format = 'dd.MM.yyyy';
-                var date = Date.parse(timestamp).toString(format);
-                var today = Date.today().toString(format);
-                var yesterday = Date.today().add(-1).days().toString(format);
+                var format = "dd.MM.yyyy";
+
+                var date = $filter('date')(timestamp, format);
+                var today = $filter('date')(new Date(), format);
+                var yesterday = $filter('date')(new Date() - 1, format);
 
                 if (date === today) {
                     return "Heute";
@@ -48,7 +49,25 @@ angular.module('meanMarkdownApp')
                 } else {
                     return date;
                 }
-                
+            };
+
+            /**
+             * requires a query object like { author: some-model }
+             */
+            scope.setFilter = function(query) {
+                if (query["updated_at"]) {
+                    var timestamp = query["updated_at"];
+                    
+                    // 2016-04-18T14:08:49.213Z
+                    scope.currentFilter = { updated_at: timestamp.substring(0, 10) };  // ignore time and use date as filter
+
+                } else {
+                    scope.currentFilter = query;
+                }
+            };
+
+            scope.onResetClick = function() {
+                scope.currentFilter = undefined;
             };
 
 

@@ -6,6 +6,7 @@
   <span class="tableheader" ng-show="key === 'prMainzed'">Mainzed Presentation</span>
   <span class="tableheader" ng-show="key === 'prI3mainz'">i3mainz Presentation</span>
 
+ 
 
   <table class="filegroup">
     <colgroup>
@@ -15,9 +16,40 @@
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 10%;">
     </colgroup>
-  
+    
+    <!-- show button to reset filter as column header when a filter is active -->
+    <tr ng-show="currentFilter"> 
+      <!-- filename -->
+      <td>
+      </td>
+
+       <!-- date -->
+      <td>
+      <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['updated_at']" data-toggle="tooltip" title="Reset Filter">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+      </td>
+
+       <!-- author -->
+      <td>
+        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['author']" data-toggle="tooltip" title="Reset Filter">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </td>
+
+       <!-- private -->
+      <td>
+        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['private']" data-toggle="tooltip" title="Reset Filter">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </td>
+
+      <!-- menu -->
+      <td></td>
+    </tr>
+
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
-    <tr ng-repeat="file in value" ng-show="file.author === currentUser.name || file.private === false">
+    <tr ng-repeat="file in value | filter:currentFilter" ng-show="file.author === currentUser.name || file.private === false">
 
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
@@ -26,16 +58,21 @@
       </td>
       
       <td>
-        {{ getFormattedDate(file.updated_at) }}
+        <button type="button" class="btn btn-link" ng-click="setFilter({ updated_at: file.updated_at })" ng-disabled="currentFilter['updated_at']">
+          {{ getFormattedDate(file.updated_at) }}
+        </button> 
       </td>
 
       <td>
-        {{ file.author }}
+        <button type="button" class="btn btn-link" ng-click="setFilter({ author: file.author })" ng-disabled="currentFilter['author']">
+          {{ file.author }}
+        </button> 
       </td>
 
       <td class="colfilestate">
-        <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible for other users!"></i>
-        <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
+        <button type="button" class="btn btn-link" ng-click="setFilter({ private: true })" ng-disabled="currentFilter['private']">
+          <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible for other users!"></i>
+        </button>
       </td> 
       
       <td> 

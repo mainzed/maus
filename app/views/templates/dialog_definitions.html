@@ -27,7 +27,7 @@
   <scrollable class="definitons-table">
     <table class="table filegroup fullwidth" ng-init="getDefinitions()"> 
       <tbody> 
-        <tr ng-repeat="definition in definitions | filter:filterBox"> 
+        <tr ng-repeat="definition in definitions | filter: { word: filterBox }"> 
           <!--<th scope="row">{{$index + 1}}</th>-->
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
