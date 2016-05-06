@@ -40,13 +40,12 @@ angular.module('meanMarkdownApp')
 
         // save as new file
         var file = {
-            author: $scope.currentUser,
+            author: $scope.newFile.author,
             title: $scope.newFile.title,
             type: $scope.newFile.type,
             markdown: "This is **markdown**.",
             private: $scope.newFile.private
         };
-        console.log(file);
 
         fileService.save(file, function(file) {
 
@@ -71,7 +70,7 @@ angular.module('meanMarkdownApp')
             disableAnimation: true,
             scope: $scope
         }).then(function (success) {
-            console.log("DELETE!");
+
             fileService.remove({id: id}, function() {
                 console.log("file remove successfull!");
                 $scope.files = fileService.query();

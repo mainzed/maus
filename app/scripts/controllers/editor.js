@@ -109,6 +109,8 @@ angular.module('meanMarkdownApp')
                 console.log("success!");
                 temporaryService.setCurrentFileId(file._id);
                 
+                $scope.unsavedChanges = false;
+
                 // show success message for 2 seconds
                 $scope.showSuccess = true;
                 $timeout(function () { $scope.showSuccess = false; }, 3000);
@@ -134,6 +136,9 @@ angular.module('meanMarkdownApp')
 
             fileService.update({ id: id }, newFile, function() {
                 // success
+
+                $scope.unsavedChanges = false;
+                
                 $scope.showSuccess = true;
                 $timeout(function () { $scope.showSuccess = false; }, 3000);
             }, function() {
@@ -145,19 +150,20 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onFilesClick = function() {
-        
 
-        /*ngDialog.open({ 
-            template: "./views/templates/dialog_back_to_files.html",
-            scope: $scope
-        });*/
-        
-        /*ngDialog.openConfirm({
-            template: "./views/templates/dialog_back_to_files.html",
-            scope: $scope
-        });*/
-
-        $location.path("/files");
+        if ($scope.unsavedChanges) {
+            ngDialog.openConfirm({
+                template: "./views/templates/dialog_confirm_home.html",
+                scope: $scope
+            }).then(function(success) {
+                // user confirmed to go back to files
+                $location.path("/files");
+            }, function(error) {
+                // user cancelled
+            });
+        } else {  // no changes, go back without asking
+            $location.path("/files");
+        }
 
     };
 
@@ -315,12 +321,12 @@ angular.module('meanMarkdownApp')
     /**
      * update markdown service when editor changes
      */
-    $scope.enableSaveButton = false;
     $scope.onEditorChange = function() {
         var markdown = $scope.editor.getValue();
     	temporaryService.setMarkdown(markdown);
         $scope.markdown = markdown;
-        $scope.activeSaveButton = true; // enable button when code was changed
+
+        $scope.unsavedChanges = true;  // gets reset on save
     };
 
     // also enable save button when title was changed

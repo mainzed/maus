@@ -25,15 +25,12 @@ angular.module('meanMarkdownApp')
             scope.groupHasValidFiles = function(key) {
                 var hasValid = false;
                 scope.files.forEach(function(file) {
-                    if (file.type === key && (file.author === scope.currentUser || file.private === false)) {
+                    if (file.type === key && (file.author === scope.currentUser.name || file.private === false)) {
                         hasValid = true;
                     }
                 }); 
                 return hasValid;
             };
-
-            //console.log(Date.today());
-            //console.log(Date.today().add(-1).day());
 
             /** 
              * uses DateJS to convert mongodb timestamp to nicely formatted string

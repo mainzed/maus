@@ -8,23 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('LoginCtrl', function ($scope, AuthService, $location) {
-    var users = [
-        {
-            user: "axel",
-            password: "axel"
-        },{
-            user: "matthias",
-            password: "matthias"
-        },{
-            user: "anne",
-            password: "mainzed"
-        },{
-            user: "sarah",
-            password: "sarah"
-        }
-
-    ];
+  .controller('LoginCtrl', function ($scope, AuthService, $location, $timeout) {
 
     // check if already logged in, if yes redirect to files overview
     if (AuthService.isAuthenticated()) {
@@ -34,25 +18,30 @@ angular.module('meanMarkdownApp')
     $scope.onLoginSubmit = function() {
         $scope.validating = true;  // used to disable login button while validating
         
-        var isValid = false;
-        users.forEach(function(item) {
-            if (item.user === $scope.username) {
-
-                // check password
-                if (item.password === $scope.password) {
-                    isValid = true;
-                }
-            }
-        });
-
-        if (isValid) {
-            AuthService.setUser($scope.username);
+        AuthService.login($scope.username, $scope.password, function() {
+            // success
             $location.path("/files");
             $scope.validating = false;
-        } else {
+        }, function() {
+            // failure
             $scope.showError = true;
+            $timeout(function () { $scope.showError = false; }, 3000);
+
             $scope.validating = false;
-        }
+        });
     };
+
+    /**
+     * simulate a click when button is enabled and enter is pressed
+     */
+    $(document).keydown(function (e) {
+        var code = e.keyCode || e.which;
+        if(code === 13) {  // enter
+            // attr('disabled') returns 'disabled' or undefined
+            if (!$("#login-button").attr('disabled')) {  // skip when button is disabled
+                $("#login-button").click()
+            }
+        }
+    });
 
   });

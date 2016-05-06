@@ -16,8 +16,8 @@
       <col span="1" style="width: 10%;">
     </colgroup>
   
-    <!-- only show documents of the current user or documents that are not private -->
-    <tr ng-repeat="file in value" ng-show="file.author === currentUser || file.private === false">
+    <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
+    <tr ng-repeat="file in value" ng-show="file.author === currentUser.name || file.private === false">
 
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
@@ -34,7 +34,7 @@
       </td>
 
       <td class="colfilestate">
-        <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true"></i>
+        <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible for other users!"></i>
         <!--<i ng-show="!file.private" class="fa fa-globe" aria-hidden="true"></i>-->
       </td> 
       

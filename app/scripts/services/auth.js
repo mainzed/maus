@@ -10,8 +10,34 @@
 angular.module('meanMarkdownApp')
   .service('AuthService', function ($cookieStore) {
 
+    // groups/roles = ["admin", "look-diva", "mainzed"]
+    var users = [
+        {
+            name: "axel",
+            password: "axel",
+            group: "admin"
+        },{
+            name: "matthias",
+            password: "matthias",
+            group: "admin"
+        },{
+            name: "anne",
+            password: "mainzed",
+            group: "mainzed"
+        },{
+            name: "kai",
+            password: "mainzed",
+            group: "mainzed"
+        },{
+            name: "sarah",
+            password: "sarah",
+            group: "look-diva"
+        }
+
+    ];
+
     //var currentUser;
-    
+   
     this.setUser = function(username) {
         //currentUser = username;
         $cookieStore.put('currentUser', username);
@@ -29,8 +55,32 @@ angular.module('meanMarkdownApp')
         }
     };
 
-    this.login = function() {
+    /**
+     * takes callbacks for success and failure
+     */
+    this.login = function(username, password, success, failure) {
+        var me = this;
+        // TODO: replace this with actual server login        
+        var isValid = false;
+        users.forEach(function(item) {
+            if (item.name === username) {
 
+                // check password
+                if (item.password === password) {
+                    isValid = true;
+
+                    me.setUser({ 
+                        name: item.name,
+                        group: item.group 
+                    });
+                    success();
+                }
+            }
+        });
+
+        if (!isValid) {
+            failure();
+        }
     };
 
     this.logout = function() {
