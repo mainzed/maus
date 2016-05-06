@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, temporaryService, archivedFileService, ngDialog, AuthService) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService) {
   	
     // check if already logged in, if not, redirect to login page
     if (!AuthService.isAuthenticated()) {
@@ -48,12 +48,6 @@ angular.module('meanMarkdownApp')
         };
 
         fileService.save(file, function(file) {
-
-            // success
-            temporaryService.setCurrentFileId(file._id);
-            temporaryService.setTitle(file.author);
-            temporaryService.setMarkdown(file.markdown);
-            temporaryService.setType(file.type);
 
             $location.path("/editor/" + file._id);
 
@@ -135,6 +129,7 @@ angular.module('meanMarkdownApp')
             author: archivedFile.author,
             title: archivedFile.title + " (restored)",
             type: archivedFile.type,
+            private: archivedFile.private,
             markdown: archivedFile.markdown
         };
 
@@ -146,12 +141,6 @@ angular.module('meanMarkdownApp')
         }
 
         fileService.save(file, function(file) {
-
-            // success
-            temporaryService.setCurrentFileId(file._id);
-            temporaryService.setTitle(file.author);
-            temporaryService.setMarkdown(file.markdown);
-            temporaryService.setType(file.type);
 
             $location.path("/editor/" + file._id);
 
@@ -167,6 +156,7 @@ angular.module('meanMarkdownApp')
             author: archivedFile.author,
             title: archivedFile.title,
             type: archivedFile.type,
+            private: archivedFile.private,
             markdown: archivedFile.markdown
         };
 

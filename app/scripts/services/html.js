@@ -8,13 +8,14 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (temporaryService, definitionService) {
+  .service('HTMLService', function (definitionService) {
     
     /**
      * generates OLAT html from markdown. provides a callback with the generated
      * HTML as parameter
      */
-    this.getOlat = function(config, callback) {
+     // TODO: dont require file, but create EditorService
+    this.getOlat = function(file, config, callback) {
         //console.log(callback);
         var config = config || {
             title: true,
@@ -22,8 +23,9 @@ angular.module('meanMarkdownApp')
         };
 
         // get data
-        var markdown = temporaryService.getMarkdown();
-        var title = temporaryService.getTitle();
+        var markdown = file.markdown;
+        var title = file.title;
+        
 
 
         // convert markdown

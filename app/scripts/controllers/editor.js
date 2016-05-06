@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, AuthService, temporaryService, ngDialog, definitionService) {
+  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, AuthService, ngDialog, definitionService) {
     
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -18,10 +18,6 @@ angular.module('meanMarkdownApp')
     $scope.showError = false;
     $scope.editMode = false;  // used in definitions dialog
 
-
-
-    // fills title, id and markdown if cookie exists
-    temporaryService.getCookies();
 
     /**
      * makes editor available to rest of controller 
@@ -39,42 +35,13 @@ angular.module('meanMarkdownApp')
         fitEditorHeight();
     };
 
-    // define before get request
-    $scope.markdown = temporaryService.getMarkdown();
-    $scope.title = temporaryService.getTitle();
-    $scope.author = temporaryService.getAuthor();
-    $scope.type = temporaryService.getType();
 
- 	// get file if id provided
-  	var id = $routeParams.id;
-	if (id !== undefined) {  // new file
-		// existing file
-		//console.log("getting file with ID: " + id);
-		fileService.get({id: id}, function(file) {
-            //console.log("loading: " + file.title);
+    // get file based on id provided in address bar
+	fileService.get({ id: $routeParams.id }, function(file) {
+        $scope.file = file; 
+    });
 
-			//markdownService.setMarkdown(file.markdown);
-            //markdownService.setCurrentFileId(file._id);
-			//$scope.markdown = markdownService.getMarkdown();
-            $scope.file = file; // TODO: use $scope.file.markdown instead of $scope.markdown
-		    
-            // set markdown and title to file
-            temporaryService.setMarkdown(file.markdown);
-            temporaryService.setTitle(file.title);
-            temporaryService.setCurrentFileId(file._id);
-            temporaryService.setAuthor(file.author);
-            temporaryService.setType(file.type);
 
-            // overwrite default data set earlier, once it has loaded
-            $scope.markdown = temporaryService.getMarkdown();
-            $scope.title = temporaryService.getTitle();
-            $scope.author = temporaryService.getAuthor();
-            $scope.type = temporaryService.getType();
-
-        });
-	} 
-
-    
     $scope.editorOptions = {
         lineWrapping : true,
         lineNumbers: false,
@@ -88,65 +55,31 @@ angular.module('meanMarkdownApp')
     // listeners
 
     $scope.onSaveClick = function() {
-        //var images = $scope.getImages(marked(temporaryService.getMarkdown()));
-        //console.log(images);
+
         
-        var id = temporaryService.getCurrentFileId();
+        var id = $scope.file._id;
 
-        // isnt needed currently -> should not be run
-        if (id === -1) {  // new file
-            console.log("saving as new file!");
+        var newFile = {
+            author: $scope.file.author,
+            markdown: $scope.file.markdown,
+            type: $scope.file.type,
+            title: $scope.file.title,
+            private: $scope.file.private
+        };
 
-            var file = {
-                author: "John Doe",
-                markdown: $scope.markdown,
-                title: $scope.title
-            };
- 
-            // save as new file and set current id
-            fileService.save(file, function(file) {
-                // success
-                console.log("success!");
-                temporaryService.setCurrentFileId(file._id);
-                
-                $scope.unsavedChanges = false;
+        fileService.update({ id: id }, newFile, function() {
+            // success
 
-                // show success message for 2 seconds
-                $scope.showSuccess = true;
-                $timeout(function () { $scope.showSuccess = false; }, 3000);
-
+            $scope.unsavedChanges = false;
             
-            }, function() {
-                // error
-                // show success message for 2 seconds
-                $scope.showError = true;
-                $timeout(function () { $scope.showError = false; }, 3000);
-            });
+            $scope.showSuccess = true;
+            $timeout(function () { $scope.showSuccess = false; }, 3000);
+        }, function() {
+            //error
+            $scope.showError = true;
+            $timeout(function () { $scope.showError = false; }, 3000);
+        });
 
-
-        } else {  // existing file
-            console.log("updating existing!");
-
-            var newFile = {
-                author: $scope.author,
-                markdown: $scope.markdown,
-                type: $scope.type,
-                title: $scope.title
-            };
-
-            fileService.update({ id: id }, newFile, function() {
-                // success
-
-                $scope.unsavedChanges = false;
-                
-                $scope.showSuccess = true;
-                $timeout(function () { $scope.showSuccess = false; }, 3000);
-            }, function() {
-                //error
-                $scope.showError = true;
-                $timeout(function () { $scope.showError = false; }, 3000);
-            });
-        }
     };
 
     $scope.onFilesClick = function() {
@@ -172,10 +105,6 @@ angular.module('meanMarkdownApp')
         // add snippet at cursor position or replace selection
         $scope.editor.replaceSelection(snippet);
         $scope.editor.focus();
-
-        // update markdown-service for previews
-        var content = $scope.editor.getValue();
-        temporaryService.setMarkdown(content);
 
     };
 
@@ -229,8 +158,8 @@ angular.module('meanMarkdownApp')
 
     $scope.onExportClick = function() {
 
-        $scope.filename = temporaryService.getTitle().replace(/\s/g, "_") + ".html";
-        
+        $scope.filename = $scope.file.title.replace(/\s/g, "_") + ".html";
+
         ngDialog.open({ 
             template: "./views/templates/dialog_export.html",
             disableAnimation: true,
@@ -246,7 +175,7 @@ angular.module('meanMarkdownApp')
             contentTable: includeTable
         };
 
-        HTMLService.getOlat(config, function(html) {
+        HTMLService.getOlat($scope.file, config, function(html) {
             // success
             //startOlatDownload(filename, html);
             var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
@@ -267,7 +196,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onPreviewClick = function() {
 
-        HTMLService.getOlat(false, function(html) {
+        HTMLService.getOlat($scope.file, false, function(html) {
             $scope.html = html;
                             
             // open dialog when html is fully loaded
@@ -277,12 +206,7 @@ angular.module('meanMarkdownApp')
                 closeByDocument: true,  // enable clicking on background to close dialog
                 scope: $scope
             });
-
         });
-
-        //TODO: hide rpeview button when editor is empty
-
-
     };
 
     $scope.onDefinitionCreateClick = function() {
@@ -322,37 +246,11 @@ angular.module('meanMarkdownApp')
      * update markdown service when editor changes
      */
     $scope.onEditorChange = function() {
-        var markdown = $scope.editor.getValue();
-    	temporaryService.setMarkdown(markdown);
-        $scope.markdown = markdown;
+
+        //$scope.file.markdown = $scope.editor.getValue();  // TODO: set file.markdown as ng-model
 
         $scope.unsavedChanges = true;  // gets reset on save
     };
-
-    // also enable save button when title was changed
-    /*$scope.$watch('enableSaveButton', function (newValue, oldValue) {
-        $scope.enableSaveButton = true;
-    });*/
-
-    $scope.onTitleChange = function() {
-        temporaryService.setTitle($scope.title);
-    };
-
-    // listener shortcuts
-
-    // preview hotkey
-    /*$(document).keydown(function (e) {
-        var code = e.keyCode || e.which;
-        // shiftKey ctrlKey
-        if(e.ctrlKey && code === 69) { // Shift + E 
-            console.log("Ctrl + E");
-            console.log($location.path());
-            
-            //if ()
-            e.preventDefault();  // stop print action
-            $scope.onPreviewClick();
-        }
-    });*/
 
     // link hotkey
     $(document).keydown(function (e) {

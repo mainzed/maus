@@ -40,14 +40,6 @@ angular
           templateUrl: './views/editor.html',
           controller: 'EditorCtrl'
       })
-      .when('/editor', {
-          templateUrl: './views/editor.html',
-          controller: 'EditorCtrl'
-      })
-      .when('/preview', {
-          templateUrl: './views/preview.html',
-          controller: 'PreviewCtrl'
-      })
       .when('/definitions', {
           templateUrl: './views/definitions.html',
           controller: 'DefinitionsCtrl'
