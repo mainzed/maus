@@ -208,7 +208,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onDefinitionClick = function() {
         ngDialog.open({ 
-            template: "./views/templates/definitions_dialog.html",
+            template: "./views/templates/dialog_definitions.html",
             scope: $scope,
             disableAnimation: true,
             preCloseCallback: function() {
@@ -225,7 +225,7 @@ angular.module('meanMarkdownApp')
         $scope.filename = temporaryService.getTitle().replace(/\s/g, "_") + ".html";
         
         ngDialog.open({ 
-            template: "./views/templates/export_dialog.html",
+            template: "./views/templates/dialog_export.html",
             disableAnimation: true,
             scope: $scope
         });

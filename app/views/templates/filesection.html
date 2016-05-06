@@ -1,14 +1,12 @@
-
-<!--<span class="tableheader" ng-show="currentFileType === 'OLAT'">OLAT</span>
-<span class="tableheader" ng-show="currentFileType === 'presentation'">Mainzed Presentation</span>
-<span class="tableheader" ng-show="currentFileType === 'opMainzed'">Mainzed Jahresbericht</span>-->
-
-
- 
-
 <div ng-repeat="(key, value) in files | groupBy: 'type'">
-  
-  <span class="tableheader">{{ key }}</span>
+
+  <!-- custom section names -->
+  <span class="tableheader" ng-show="key === 'opOlat'">OLAT</span>
+  <span class="tableheader" ng-show="key === 'opMainzed'">Mainzed Jahresbericht</span>
+  <span class="tableheader" ng-show="key === 'prMainzed'">Mainzed Presentation</span>
+  <span class="tableheader" ng-show="key === 'prI3mainz'">i3mainz Presentation</span>
+
+
   <table class="filegroup">
      <colgroup>
          <col span="1" style="width: 60%;">
