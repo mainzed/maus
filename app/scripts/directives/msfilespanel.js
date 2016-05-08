@@ -7,11 +7,11 @@
  * # fileSection
  */
 angular.module('meanMarkdownApp')
-  .directive('filesection', function ($filter) {
+  .directive('msFilesPanel', function ($filter) {
     return {
-        templateUrl: '../views/templates/filesection.html',
+        templateUrl: '../views/templates/files-panel.html',
         restrict: 'E',
-        scope: true,  // isolated scope for each instance
+        //scope: true,  // isolated scope for each instance
 
         link: function postLink(scope, element, attrs) {
             

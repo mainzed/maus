@@ -8,7 +8,10 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function ($scope, $location, $timeout, $routeParams, HTMLService, $document, fileService, AuthService, ngDialog, definitionService) {
+  .controller('EditorCtrl', function (
+        $scope, $location, $timeout, $routeParams, HTMLService, 
+        $document, fileService, AuthService, ngDialog, 
+        definitionService, EditorService) {
     
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -23,16 +26,20 @@ angular.module('meanMarkdownApp')
      * makes editor available to rest of controller 
      */
     $scope.codemirrorLoaded = function(_editor){
+        EditorService.init(_editor);
+
+        $scope.editor = EditorService.getEditor();
+
         // Editor part
-        $scope.editor = _editor;  // for global settings
-        $scope.doc = _editor.getDoc();  // access to the editor content
+        //$scope.editor = _editor;  // for global settings
+        //$scope.doc = _editor.getDoc();  // access to the editor content
 
         // set cursor to end of document and activate it
         //$scope.editor.goDocEnd;
         //$scope.editor.replaceSelection("");  // workaround since goDocEnd doesnt work
         //$scope.editor.focus();
 
-        fitEditorHeight();
+        //fitEditorHeight();
     };
 
 

@@ -30,19 +30,26 @@ module.exports = function(config) {
       'app/bower_components/angular-touch/angular-touch.js',
       'app/bower_components/marked/lib/marked.js',
       'app/bower_components/codemirror/lib/codemirror.js',
-      'app/bower_components/codemirror/mode/markdown/markdown.js',
       'app/bower_components/angular-ui-codemirror/ui-codemirror.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/ng-dialog/js/ngDialog.js',
-      'app/bower_components/ngcssinjector/dist/ngcssinjector.js',
+      'app/bower_components/ngcssinjector/dist/ngcssinjector.min.js',
       'app/bower_components/angular-css/angular-css.js',
+      'app/bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js',
+      'app/bower_components/angular-nanoscroller/scrollable.js',
+      'app/bower_components/leaflet/dist/leaflet-src.js',
+      'app/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js',
+      'app/bower_components/jquery.mousestop/jquery.event.mousestop.js',
+      'app/bower_components/angular-filter/dist/angular-filter.min.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
-
       // endbower
       'app/scripts/**/*.js',
       //'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/services/*.js'  // replace services with ** later
     ],
+
+    // define custom reportes (use mocha-like reporter)
+    reporters: ['mocha'],
 
     // list of files / patterns to exclude
     exclude: [
@@ -67,6 +74,7 @@ module.exports = function(config) {
     plugins: [
       'karma-chrome-launcher',
       'karma-jasmine',
+      'karma-mocha-reporter',
       //'karma-junit-reporter',
       //'karma-firefox-launcher', 
       'karma-phantomjs-launcher'

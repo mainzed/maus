@@ -108,12 +108,12 @@ angular.module('meanMarkdownApp')
 
         var stories = getStories(html);  // needed for table of content
 
-        html = replaceStoryTags(html);
+        html = this.replaceStoryTags(html);
         
         
         // add tables of images and links
         html += createImagesTable(images);
-        html += createLinksTable(links);
+        html += this.createLinksTable(links);
 
         // add table of content to beginning of file
         if (config.contentTable === true) {
@@ -273,7 +273,7 @@ angular.module('meanMarkdownApp')
 
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
-    function replaceStoryTags(html) {
+    this.replaceStoryTags = function(html) {
         //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
         //var stories = markdown.match(reg);  // store them for later
 
@@ -295,24 +295,27 @@ angular.module('meanMarkdownApp')
         html = html.replace(/<p>}story<\/p>/g, "</div>");
    
         return html;
-    } 
+    }; 
 
     // returns html containing table of links
     // requires array containing link objects
-    function createLinksTable(links) {
+    this.createLinksTable = function(links) {
         var html = "";
         if (links.length) {
             
-            html += "<div id=\"links-table\" class=\"links-table\"><h4>Links</h4><ul>";
+            html += "<div id=\"links-table\" class=\"links-table\">\n" +
+                    "<h4>Links</h4>\n" + 
+                    "<ul>\n";
             
             for (var key in links) {
                 var link = links[key];
                 html += "<li><a href='" + link.url + "' target='_blank'>" + link.text + "</a></li>\n";
             }
-            html += "</ul>\n</div>"; 
+            html += "</ul>\n" +
+                    "</div>"; 
         }
         return html;
-    }
+    };
 
     /**
      * returns a html div element containing an 

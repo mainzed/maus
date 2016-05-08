@@ -11,8 +11,8 @@ describe('Service: archivedFile', function () {
     archivedFile = _archivedFile_;
   }));
 
-  it('should do something', function () {
+  /*it('should do something', function () {
     expect(!!archivedFile).toBe(true);
-  });
+  });*/
 
 });
