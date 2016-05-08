@@ -252,6 +252,42 @@ angular.module('meanMarkdownApp')
         $scope.unsavedChanges = true;  // gets reset on save
     };
 
+    /**
+     * saves all defintions in case they were changed
+     */
+    $scope.onApplyDefinitionChanges = function() {
+        $scope.hasChanges = false;
+        $scope.definitions.forEach(function(definition) {
+            definitionService.update({id: definition._id}, definition, function() {
+                // success
+            });
+        });
+        // if a new definition was created, save that as well
+        if ($scope.newDefinition) {
+            definitionService.save($scope.newDefinition, function() {
+                // success
+                $scope.newDefinition = false;
+                $scope.getDefinitions();
+                $scope.createNewMode = false;  // reset
+            });
+        }
+    };
+
+    $scope.onCreateDefinitionClick = function() {
+        $scope.newDefinition = {};
+        $scope.createNewMode = true;
+    };
+
+    $scope.onDeleteDefinitionClick = function(id) {
+        definitionService.remove({id: id}, function() {
+            $scope.getDefinitions();  // refresh
+        });
+    };
+
+    $scope.onDefinitionChange = function() {
+        $scope.hasChanges = true;
+    };
+
     // link hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;

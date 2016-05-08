@@ -14,7 +14,7 @@ app.use(compression());
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/app'));
 
-//app.use(express.static(__dirname));  // include bower_components
+
 app.use(bodyParser.json());
 
 require('./database.js');
