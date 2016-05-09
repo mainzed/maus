@@ -58,13 +58,20 @@
 
 </form>-->
 
-<h3>Definitions</h3>
+<span class="tableheader">Definitions</span>
 <div class="container" ng-init="getDefinitions()">
 
   <!-- search box -->
-  <input type="search" class="form-control" placeholder="Search by Word" ng-model="filterBox">
+  <input type="search" class="form-control definitionsearch" placeholder="Search by Word" ng-model="filterBox">
 
-  <table class="table">
+  <table class="filegroup nomargin fullwidth">
+     <colgroup>
+      <col span="1" style="width: 20%;">
+      <col span="1" style="width: 50%;">
+      <col span="1" style="width: 15%;">
+      <col span="1" style="width: 10%;">
+      <col span="1" style="width: 5%;">
+    </colgroup>
     <thead> 
       <tr> 
         <th>Word</th>
@@ -77,14 +84,18 @@
     <tbody> 
       <tr ng-repeat="definition in definitions | filter:filterBox | orderBy: 'updated_at'"> 
         <td>
-          <button type="button" class="btn btn-default" ng-click="closeThisDialog(); addDefinition(definition)">
+          <a ng-click="closeThisDialog(); addDefinition(definition)">
             {{ definition.word }}
-          </button>
+          </a>
 
         </td> 
 
         <td>
-          <input type="text" placeholder="Definition" ng-model="definition.text" ng-class="textClass" ng-init="textClass = ['def-table-entries']" ng-focus="textClass = ['form-control']" ng-blur="textClass = ['def-table-entries']" ng-change="onDefinitionChange()">
+          <span ng-blur="authorClass = ['def-table-entries']" ng-show="!showTextarea" ng-click="showTextarea = true">{{ definition.text }}</span> 
+         
+
+          <textarea ng-show="showTextarea" type="text" placeholder="Definition" ng-model="definition.text" class="form-control">
+          </textarea>
         </td>
 
         <td>
