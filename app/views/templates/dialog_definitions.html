@@ -66,14 +66,16 @@
 
   <table class="filegroup nomargin fullwidth">
      <colgroup>
+      <col span="1" style="width: 3%;">
       <col span="1" style="width: 20%;">
       <col span="1" style="width: 50%;">
       <col span="1" style="width: 15%;">
       <col span="1" style="width: 10%;">
-      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 3%;">
     </colgroup>
     <thead> 
       <tr> 
+        <th></th>
         <th>Word</th>
         <th>Definition</th>
         <th>Source</th>
@@ -82,20 +84,29 @@
     </thead> 
 
     <tbody> 
+
       <tr ng-repeat="definition in definitions | filter:filterBox | orderBy: 'updated_at'"> 
         <td>
-          <a ng-click="closeThisDialog(); addDefinition(definition)">
-            {{ definition.word }}
+          <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
+          
           </a>
+        </td>
+        <td>
+             <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showWord" ng-click="showWord = true; onTextareaChange()">{{ definition.word }}</span> 
+            
+            <textarea ng-show="showWord" type="text" placeholder="Definition" ng-model="definition.word" class="form-control" focus-on-visibility></textarea>
+          
+         
 
         </td> 
 
         <td>
-          <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showTextarea" ng-click="showTextarea = true; onTextareaChange()">{{ definition.text }}</span> 
+          <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showText" ng-click="showText = true; onTextareaChange()">{{ definition.text }}</span> 
          
 
-          <textarea ng-show="showTextarea" ng-focus="on" type="text" placeholder="Definition" ng-model="definition.text" class="form-control">
-          </textarea>
+
+          <textarea ng-show="showText" type="text" placeholder="Definition" ng-model="definition.text" class="form-control" focus-on-visibility></textarea>
+
 
         </td>
 
