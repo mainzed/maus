@@ -285,6 +285,19 @@ angular.module('meanMarkdownApp')
         $scope.hasChanges = true;
     };
 
+    $scope.onTextareaChange = function(){
+
+        $(".clickspan").next("textarea").css("display", "block");
+        $(".clickspan").next("textarea").focus();
+        //console.log("works!");
+    }
+
+    $scope.$watch("showTextarea", function(newValue, oldValue) {
+        console.log(newValue);
+        console.log(oldValue);
+    })
+
+
     // link hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
