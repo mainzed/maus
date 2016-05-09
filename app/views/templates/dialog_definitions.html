@@ -94,8 +94,8 @@
           <span ng-blur="authorClass = ['def-table-entries']" ng-show="!showTextarea" ng-click="showTextarea = true">{{ definition.text }}</span> 
          
 
-          <textarea ng-show="showTextarea" type="text" placeholder="Definition" ng-model="definition.text" class="form-control">
-          </textarea>
+          <textarea ng-show="showTextarea" type="text" placeholder="Definition" ng-model="definition.text" class="form-control" focus-on-visibility></textarea>
+
         </td>
 
         <td>
