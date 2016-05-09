@@ -52,7 +52,7 @@ describe('Service: HTMLService', function () {
                                 "</div>";
                 expect(service.replaceStoryTags(html)).toBe(result);
             });
-        }),
+        });
 
         describe('createLinksTable()', function() {
             
@@ -63,10 +63,10 @@ describe('Service: HTMLService', function () {
                     {
                         url: "www.google.de",
                         text: "Google"
-                    },{
+                    }, {
                         url: "www.google2.de",
                         text: "Google2"
-                    } 
+                    }
                 ];
                 var result =    "<div id=\"links-table\" class=\"links-table\">\n" + 
                                 "<h4>Links</h4>\n" + 
@@ -141,11 +141,70 @@ describe('Service: HTMLService', function () {
         
         });
 
+        describe('replaceDefinitionTags()', function() {
+
+            var $httpBackend;
+
+            beforeEach(inject(function ($injector) {
+
+                // mock api requests
+                $httpBackend = $injector.get("$httpBackend");
+                $httpBackend.when("GET", "/api/definitions/")
+                    .respond(200, {
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "definition",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the definition description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            });
+            }));
+
+            afterEach(function () {
+                $httpBackend.flush();
+                $httpBackend.verifyNoOutstandingExpectation();
+                $httpBackend.verifyNoOutstandingRequest();
+              });
+
+
+            it('should do nothing if definition does not exist', inject(function(definitionService) {
+                var inputHtml = "<p>This string doesnt contain a definition!</p>";
+                console.log(definitionService);
+                definitionService.query(function(definitions) {
+                    console.log(definitions);
+                    done();
+                });
+                /*setTimeout(function() {
+                    service.replaceDefinitionTags(inputHtml, function(html) {
+                        expect(html).toEqual(inputHtml);
+                        done();  // done has to be placed after an expect method
+                    });
+                }, 1);*/
+            }));
+
+            it('should replace definition', function(done) {
+                var inputHtml = "<p>This string with a {definition}!</p>";
+                var expected = "<p>This string with a <a href=\"#definition-table\">definition</a>!</p>";
+
+                setTimeout(function() {
+                    service.replaceDefinitionTags(inputHtml, function(html) {
+                        console.log(html);
+                        expect(html).toEqual(expected);
+                        done();
+                    });
+                }, 1);
+            });
+        });
+
+
         describe('getOlat()', function() {
             var file;
             var fileWithLinks;
+            var fileWithDefinitions;
 
             beforeEach(function() {
+
                 file = {
                     title: "Test File",
                     author: "John Doe",
@@ -163,9 +222,14 @@ describe('Service: HTMLService', function () {
                                 "[Google](www.google.de)" 
                 };
 
-
-
-
+                fileWithDefinitions = {
+                    title: "Test File",
+                    author: "John Doe",
+                    type: "opOlat",
+                    markdown:   "# heading 1\n" + 
+                                "This is {markdown}!\n\n" +
+                                "[Google](www.google.de)" 
+                };
             });
 
             it("should return markdown content as html", function(done) {
@@ -182,13 +246,13 @@ describe('Service: HTMLService', function () {
 
                 setTimeout(function() {
                     service.getOlat(file, config, function(html) {
-                        expect(html).toEqual(expected);
+                        expect(html).toBe(expected);
                         done();  // async
                     });
-                }, 1);
+                }, 5);
                 
             });
-
+        
             it("should add title to html", function(done) {
 
                 var config = {
@@ -207,7 +271,7 @@ describe('Service: HTMLService', function () {
                         expect(html).toEqual(expected);
                         done();
                     });
-                }, 1);
+                }, 5);
             });
 
             it("should add table of content to html", function(done) {
@@ -233,10 +297,46 @@ describe('Service: HTMLService', function () {
                         expect(html).toEqual(expected);
                         done();
                     });
-                }, 1);
+                }, 5);
             });
-
+        
             it("should add table of content with links to html", function(done) {
+
+                var config = {
+                    addTitle: false,
+                    addContentTable: true,
+                    addImagesTable: false,
+                    addLinksTable: true
+                };
+               
+                var expected =  '<div id="headings-table" class="headings-table">\n' +
+                                '<ul>\n' + 
+                                '<li><a href="#h1-1">heading 1</a></li>\n' +
+                                '<li class=\"seperator\"></li>\n' +
+                                '<li><a href="#links-table">Links</a></li>\n' + 
+                                '</ul>\n' +
+                                '</div>\n' +
+                                '<h1 id="h1-1">heading 1</h1>\n' + 
+                                '<p>This is <strong>markdown</strong>!</p>\n' + 
+                                '<p><a href="www.google.de" target="_blank">Google</a></p>\n' +
+                                // links table
+                                '<div id="links-table" class="links-table">\n' +
+                                '<h4>Links</h4>\n' +
+                                '<ul>\n' +
+                                '<li><a href="www.google.de" target="_blank">Google</a></li>\n' +
+                                '</ul>\n' +
+                                '</div>';
+
+                setTimeout(function() {
+                    service.getOlat(fileWithLinks, config, function(html) {
+                        expect(html).toEqual(expected);
+                        done();
+                    });
+                }, 5);
+
+            });
+        
+            /*it("should add table of definitions to html", function(done) {
 
                 var config = {
                     addTitle: false,
@@ -267,12 +367,12 @@ describe('Service: HTMLService', function () {
 
                 setTimeout(function() {
                     service.getOlat(fileWithLinks, config, function(html) {
-                        expect(html).toEqual(expected);
+                        expect(html).toEqual(false);
                         done();
                     });
-                }, 1);
-            });
+                }, 5);
 
+            });*/
 
         }); 
     });

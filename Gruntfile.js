@@ -446,15 +446,15 @@ module.exports = function (grunt) {
 
         // express server settings (use my custom server instead of default grunt serve)
         express: {
-            options: {
-                //port: 3000,
-                //debug: true
-            },
-            server: {
-                options: {
-                    script: 'server.js'
-                }
-            }
+          options: {
+              //port: 3000,
+              //debug: true
+          },
+          server: {
+              options: {
+                  script: 'server.js'
+              }
+          }
         }
     });
   
@@ -482,7 +482,7 @@ module.exports = function (grunt) {
         'wiredep',
         //'concurrent:test',
         //'postcss',
-        //'connect:test',
+        'connect:test',
         'karma'
     ]);
 
