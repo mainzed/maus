@@ -2,13 +2,15 @@
 
 describe('Service: HTMLService', function () {
     var service;
+    var httpBackend;
 
     // load the service's module
     beforeEach(module('meanMarkdownApp'));
 
     // instantiate service
-    beforeEach(inject(function (_HTMLService_) {
+    beforeEach(inject(function (_HTMLService_, _$httpBackend_) {
         service = _HTMLService_;
+        httpBackend = _$httpBackend_;
     }));
 
     it('should be defined', function () {
@@ -143,14 +145,22 @@ describe('Service: HTMLService', function () {
 
         describe('replaceDefinitionTags()', function() {
 
-            var $httpBackend;
+            afterEach(function() {
+                try {
+                    httpBackend.flush();
+                    httpBackend.verifyNoOutstandingExpectation();
+                    httpBackend.verifyNoOutstandingRequest();
+                } catch(e) {
+                    // statements
+                    //console.log(e);
+                }
+                
+            });   
 
-            beforeEach(inject(function ($injector) {
-
-                // mock api requests
-                $httpBackend = $injector.get("$httpBackend");
-                $httpBackend.when("GET", "/api/definitions/")
-                    .respond(200, {
+            it('should mock get request', inject(function(definitionService) {
+                // mock  request
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
                                     _id: "571725cd5c6b2bd90ed10b6e",
                                      word: "definition",
                                     __v: 0,
@@ -158,45 +168,67 @@ describe('Service: HTMLService', function () {
                                     text: "This is the definition description!",
                                     updated_at: "2016-04-20T06:46:37.887Z",
                                     author: "John Doe"
-                            });
-            }));
+                            }]);
 
-            afterEach(function () {
-                $httpBackend.flush();
-                $httpBackend.verifyNoOutstandingExpectation();
-                $httpBackend.verifyNoOutstandingRequest();
-              });
-
-
-            it('should do nothing if definition does not exist', inject(function(definitionService) {
-                var inputHtml = "<p>This string doesnt contain a definition!</p>";
-                console.log(definitionService);
                 definitionService.query(function(definitions) {
-                    console.log(definitions);
-                    done();
+                    // gets sync mocked, so no done() needed!
+                    expect(definitions.length).toEqual(1);
+                    expect(definitions[0].word).toEqual("definition");
+                    expect(definitions[0].text).toEqual("This is the definition description!");
                 });
-                /*setTimeout(function() {
-                    service.replaceDefinitionTags(inputHtml, function(html) {
-                        expect(html).toEqual(inputHtml);
-                        done();  // done has to be placed after an expect method
-                    });
-                }, 1);*/
+
             }));
+
+
+            it('should return input html when no definition in text', function(done) {
+                // mock  request
+                // mock  request
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "definition",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the definition description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }]);
+
+                var inputHtml = "<p>This string without a definition!what!</p>";
+
+                service.replaceDefinitionTags(inputHtml, function(html) {
+                    console.log(html);
+                    expect(html).toEqual(inputHtml);
+                    //done();
+                });
+                
+            });
 
             it('should replace definition', function(done) {
-                var inputHtml = "<p>This string with a {definition}!</p>";
-                var expected = "<p>This string with a <a href=\"#definition-table\">definition</a>!</p>";
+                
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "definition",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the definition description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }]);
 
+                var inputHtml = "<p>This string with a {definition}!</p>";
+                var expected = "<p>This string with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">definition</a>!</p>";
+                //console.log(window.jasmine.DEFAULT_TIMEOUT_INTERVAL);
                 setTimeout(function() {
                     service.replaceDefinitionTags(inputHtml, function(html) {
                         console.log(html);
                         expect(html).toEqual(expected);
-                        done();
                     });
-                }, 1);
+                }, 1000);
+
             });
         });
-
 
         describe('getOlat()', function() {
             var file;

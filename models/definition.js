@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var definitionSchema = new Schema({
-    author: { type: String, default: "John Doe" },
+    author: String,
     word: String, 
     url: String,
     text: String,

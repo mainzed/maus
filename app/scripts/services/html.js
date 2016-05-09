@@ -197,90 +197,104 @@ angular.module('meanMarkdownApp')
     };
 
     this.replaceDefinitionTags = function(html, cb) {
-        // convert definitions
-        // convert definition
-        var words = html.match(/\{(.*?)\}/g);
-        
-        if (words) {
-            //console.log(words.length);
-            var defs = {};  // keep track of definitions
+
+        function replace(definitions, words) {
+
+            // loop through all defined words and look up a definition in the database
             words.forEach(function(word, index) {
-                //console.log("index: " + index);
-                
-                //word = word.replace("{", "").replace("}", "");
-                
-                var definitions = definitionService.query(function() {
-                    definitions.forEach(function(definition) {
+                console.log("processing " + word);
 
-                        var content = word.replace("{", "").replace("}", ""); // bracket content 
-                        var mainWord;  // e.g. Geld
-                        var extraWord;
-                        // check if extra word was used {Cash: Money} instead of {Money}
-                        if (content.indexOf(":") > -1) {  // defferent word was used 
-                            extraWord = content.split(":")[0];
-                            mainWord = content.split(":")[1].trim();
-                        } else {  // normal mode
-                            mainWord = content;
+                // remove brackets
+                var content = word.replace("{", "").replace("}", ""); // bracket content 
+                var mainWord;  // e.g. Geld
+                var extraWord;
+                // check if extra word was used {Cash: Money} instead of {Money}
+                if (content.indexOf(":") > -1) {  // defferent word was used 
+                    extraWord = content.split(":")[0];
+                    mainWord = content.split(":")[1].trim();
+                } else {  // normal mode
+                    mainWord = content;
+                }
+                
+                var defs = {};
+                definitions.forEach(function(definition) {
+
+                    if (definition.word === mainWord) {
+                        var snippet;
+                        if (extraWord) {  // use extra word as link
+                            snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + extraWord + "</a>";
+                        } else {  // use definition mai word as link
+                            snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
                         }
                         
-                        if (definition.word === mainWord) {
-                            var snippet;
-                            if (extraWord) {  // use extra word as link
-                                snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + extraWord + "</a>";
-                            } else {  // use definition mai word as link
-                                snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
-                            }
-                            
-                            //var html = $scope.html;
+                        //var html = $scope.html;
 
-                            html = html.replace(word, snippet);
-                            //console.log($scope.html);
-                            
-                            /*if (defs.indexOf(definition) === -1) {  // skip duplicates
-                                console.log(defs.indexOf(definition));
-                                defs.push(definition);
-                            }*/
-                            if (!defs.hasOwnProperty(definition.word)) {  // skip duplicates
-                                defs[definition.word] = definition;
-                            }
-                            
-
-                            // TODO: gets run again for evey word, unneccessary
-                            //console.log("append tables!");
-                            //appendTables($scope.html);
+                        html = html.replace(word, snippet);
+                        //console.log($scope.html);
                         
-                            // on last word -> create definitions table
-                            if (index === words.length - 1) {  // last word
+                        /*if (defs.indexOf(definition) === -1) {  // skip duplicates
+                            console.log(defs.indexOf(definition));
+                            defs.push(definition);
+                        }*/
+                        if (!defs.hasOwnProperty(definition.word)) {  // skip duplicates
+                            defs[definition.word] = definition;
+                        }
+                        
 
-                                //console.log(defs);
-                                //var defs = getDefinitions($scope.html);
-                                //console.log(defs);
-                                //console.log(links);
+                        // TODO: gets run again for evey word, unneccessary
+                        //console.log("append tables!");
+                        //appendTables($scope.html);
+                    
+                        // on last word -> create definitions table
+                        if (index === words.length - 1) {  // last word
 
-                                if (Object.keys(defs).length) {
-                                    // append to end of file
-                                    html += this.createDefinitionsTable(defs);
-                                    
-                                    // call callback function and provide it the newly create html
-                                    cb(html);
-                                    // unlock export button!
-                                    //$scope.olatDownloadEnabled = true;
+                            //console.log(defs);
+                            //var defs = getDefinitions($scope.html);
+                            //console.log(defs);
+                            //console.log(links);
 
-                                }
+                            if (Object.keys(defs).length) {
+                                //console.log("HERE!");
+                                // append to end of file
+                                
+
+                                //html += this.createDefinitionsTable(defs);
+                                //console.log("AFTER");
+                                // call callback function and provide it the newly create html
+                                //console.log(html);
+                                cb(html);
+                                //console.log("more!");
+                                // unlock export button!
+                                //$scope.olatDownloadEnabled = true;
 
                             }
-                        }
-                    });
 
+                        }
+
+                        //break;
+                    }
                 });
-            });    
-        } else {
-            // no definitions in text, unlock download right away
-            console.log("no definitions found!");
+                
+            });  
 
-            cb(html);
-            //$scope.olatDownloadEnabled = true;
         }
+
+        // get all definitions, if no definitions exist, just return input html
+        definitionService.query(function(definitions) {
+            
+            var words = html.match(/\{(.*?)\}/g);  // get words defined in text
+
+            if (definitions.length && words) {
+                console.log(definitions.length);
+                console.log(words);
+                
+               replace(definitions, words);  // async callback
+            
+            } else {  // no definitions in database or no words in text
+                //cb(html);  // return input html
+            }
+        });
+
     };
 
     /**
@@ -394,7 +408,8 @@ angular.module('meanMarkdownApp')
      */
     this.createDefinitionsTable = function(definitions) {
         var html = "";
-
+        console.log("START!");
+        console.log(definitions);
         html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Glossar</h4>\n<ul>";
 
         // sort keys by alphabet
@@ -413,6 +428,7 @@ angular.module('meanMarkdownApp')
         });
 
         html += "</ul>\n</div>\n";
+        console.log("CREATED TABLE!");
 
         return html;
     };
