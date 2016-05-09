@@ -9,10 +9,10 @@
 angular.module('meanMarkdownApp')
   .directive('msEditorToolbar', function () {
     return {
-      template: '<div></div>',
+      templateUrl: '../views/templates/editor-toolbar.html',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
-        element.text('this is the msEditorToolbar directive');
+        //element.text('this is the msEditorToolbar directive');
       }
     };
   });

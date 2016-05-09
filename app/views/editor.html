@@ -7,75 +7,7 @@
 </form>
 
 <scrollable>
-  test123
-  <ms-editor></ms-editor>
+  <div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model="file.markdown" ng-change="onEditorChange()"></div>
 </scrollable>
 
-<div id="editor-tools">
-  <div class="btn-group" role="group"> 
-    <button class="btn btn-default btn-sm" ng-click="onFilesClick()">
-      <span class="icon-home"></span>
-    </button>
-  </div>
-  
-  <!-- undo and redo buttons -->
-  <div class="btn-group" role="group"> 
-    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Undo (Ctrl + Z)" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
-    <button class="btn btn-default btn-sm" ng-click="onRedoClick()" data-toggle="tooltip" title="Redo"><i class="fa fa-repeat"></i></button>
-  </div>
-  
-  <!-- help button-->
-  <div class="btn-group" role="group"> 
-    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help">
-      Spickzettel
-    </a>
-  </div>
-  
-  <!-- image, links & storyscript buttons -->
-  <div class="btn-group" role="group"> 
-    
-    <!-- image button -->
-    <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
-      Bild
-    </button>
-    <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
-      Glossareintrag
-    </button>
-
-    <!-- link button -->
-    <div class="btn-group" role="group">
-      <button class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
-        Link
-      </button>
-     
-    </div>
-
-    <!-- storyscript button -->
-    <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
-      Story
-    </button>
-  </div>
-  
-  <!-- export -->
-  <button class="btn btn-default btn-sm marginleft" ng-click="onExportClick()">
-      Export
-  </button>
-
-  <!-- preview button -->
-  <button class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
-      Preview
-  </button>
-
-  <!-- save button -->
-  <div class="btn-group" role="group"> 
-    <button class="btn btn-default
-     btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)" ng-disabled="!unsavedChanges">
-      Speichern
-    </button>
-  </div>
-  <span class="save-text" ng-show="showSuccess === true">... saved!</span>
-  <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
-
-
-</div>
-
+<ms-editor-toolbar></ms-editor-toolbar>

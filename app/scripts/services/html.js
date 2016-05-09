@@ -18,15 +18,15 @@ angular.module('meanMarkdownApp')
     this.getOlat = function(file, config, callback) {
         //console.log(callback);
         var config = config || {
-            title: true,
-            contentTable: true
+            addTitle: false,
+            addContentTable: false,
+            addImagesTable: false,
+            addLinksTable: false
         };
 
         // get data
         var markdown = file.markdown;
         var title = file.title;
-        
-
 
         // convert markdown
         var customRenderer = new marked.Renderer();
@@ -44,14 +44,16 @@ angular.module('meanMarkdownApp')
                 counter: counter
             });
 
-            return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>';
+            return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>\n';
         };
 
         // custom link renderer
         var links = [];
         customRenderer.link = function (linkUrl, noIdea, text) {
 
-            if (!linkUrl.startsWith("#")) {  // skipp local links
+            // workaround for linkUrl.startsWith
+            if (linkUrl.substring(0, 1) !== "#") {  // skip local links
+                //console.log("works!");
 
                 links.push({
                     url: linkUrl,
@@ -59,7 +61,7 @@ angular.module('meanMarkdownApp')
                 });
             }
 
-            if (!text.startsWith("!")) {  // ignore "weiterführende links" in text. but they have been pushed to list
+            if (text.substring(0, 1) !== "!") {  // ignore "weiterführende links" in text. but they have been pushed to list
                 return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
             }
             
@@ -106,45 +108,78 @@ angular.module('meanMarkdownApp')
         var html = marked(markdown, { renderer: customRenderer });
 
 
-        var stories = getStories(html);  // needed for table of content
+        var stories = this.getStories(html);  // needed for table of content
 
         html = this.replaceStoryTags(html);
         
-        
         // add tables of images and links
-        html += createImagesTable(images);
-        html += this.createLinksTable(links);
+        if (config.addImagesTable) {
+            html += this.createImagesTable(images);
+        }
+
+        if (config.addLinksTable) {
+            html += this.createLinksTable(links);
+        }
 
         // add table of content to beginning of file
-        if (config.contentTable === true) {
-            console.log("add table of content!");
-            html = createTableOfContent(headings, stories, images) + html;
+        // has to be executed after images and links table to be able
+        // to add references to them
+        if (config.addContentTable === true) {
+
+            //console.log("add table of content!");
+            html = this.createTableOfContent(html, headings, stories, images) + html;
             //console.log(html);
         }
         
         // add title to beginning of filee
-        
-        if (config.title === true) {
-            html = createPageTitle(title) + html;
+        if (config.addTitle === true) {
+            html =  "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>\n" + 
+                    html;
         }
 
         // do last since its async
-        replaceDefinitionTags(html, function(html) {
-            // everything is replaced
-            //console.log(html);
-            //html += createDefinitionsTable(defs);
-            //$scope.olatDownloadEnabled = true;
-            //return html;
-            //console.log(html);
+        /*this.replaceDefinitionTags(html, function(html) {
 
             // wrap html with header and thml tags
-            html = wrapHTML(html, title);
+            html = this.wrapHTML(html, title);
 
             callback(html);
-        });
+        });*/
+
+        callback(html);
     };
 
-    function wrapHTML(html, title) {
+    this.getMainzedPresentation = function(file) {
+        var customRenderer = new marked.Renderer();
+
+        // custom heading renderer
+        var headings = [];
+        var counter = 0;
+        customRenderer.heading = function (text, level) {
+            counter++;
+
+            var closeDiv = "";
+
+            if (counter > 1) {
+                closeDiv = "</div>";
+            }
+
+            return  '<div class="slide" id="slide' + counter + '">\n' +
+                    '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>\n';
+        };
+
+        var html = marked(file.markdown, { renderer: customRenderer });
+
+        // append last closing div tag
+        html += "</div>";
+
+        
+
+        return html;
+    };
+
+    this.wrapHTML = function(html, title) {
+        
         return "<!DOCTYPE html>\n" + 
                 "<html lang=\"de\">" +
                 "<head>\n" +
@@ -159,9 +194,9 @@ angular.module('meanMarkdownApp')
                 "<script src=\"javascript/olat.js\"></script>\n" +
                 "</body>\n"+
                 "</html>\n";
-    }
+    };
 
-    function replaceDefinitionTags(html, cb) {
+    this.replaceDefinitionTags = function(html, cb) {
         // convert definitions
         // convert definition
         var words = html.match(/\{(.*?)\}/g);
@@ -224,7 +259,7 @@ angular.module('meanMarkdownApp')
 
                                 if (Object.keys(defs).length) {
                                     // append to end of file
-                                    html += createDefinitionsTable(defs);
+                                    html += this.createDefinitionsTable(defs);
                                     
                                     // call callback function and provide it the newly create html
                                     cb(html);
@@ -246,12 +281,12 @@ angular.module('meanMarkdownApp')
             cb(html);
             //$scope.olatDownloadEnabled = true;
         }
-    }
+    };
 
     /**
      * counts the numer of stories. returns list
      */
-    function getStories(html) {
+    this.getStories = function(html) {
 
         var stories = [];
         var matches = html.match(/story{/g);
@@ -269,7 +304,7 @@ angular.module('meanMarkdownApp')
         }
 
         return stories;
-    }
+    };
 
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
@@ -309,7 +344,7 @@ angular.module('meanMarkdownApp')
             
             for (var key in links) {
                 var link = links[key];
-                html += "<li><a href='" + link.url + "' target='_blank'>" + link.text + "</a></li>\n";
+                html += "<li><a href=\"" + link.url + "\" target=\"_blank\">" + link.text + "</a></li>\n";
             }
             html += "</ul>\n" +
                     "</div>"; 
@@ -322,41 +357,42 @@ angular.module('meanMarkdownApp')
      * unordered list with all images. 
      * requires a list of image objects
      */
-    function createImagesTable(images) {
+    this.createImagesTable = function(images) {
         var html = "";
         if (images.length) {
-            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Abbildungen</h4>\n<ul>";
+            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Abbildungen</h4>\n<ul>\n";
             // create html
             images.forEach(function(image) {
-                html += "<li>";
-                html += image.preCaption + "<br>"; 
-                html += image.title + "<br>";
+                html += "<li>\n";
+                html += image.preCaption + "<br>\n"; 
+                html += image.title + "<br>\n";
                 
                 if (image.author !== undefined) {
-                    html += image.author + "<br>";
+                    html += image.author + "<br>\n";
                 }
                 
                 if (image.license !== undefined) {
-                    html += image.license + "<br>";
+                    html += image.license + "<br>\n";
                 }
                 
                 if (image.url !== undefined) {
-                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>";  
+                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>\n";  
                 }
 
-                html += "</li>";
+                html += "</li>\n";
             });
         }
-        html += "</ul>\n</div>\n";
+        html += "</ul>\n" + 
+                "</div>";
         return html;
-    }
+    };
 
     /**
      * returns a html div element containing an 
      * unordered list with all definitions. 
      * requires a an object of definition objects
      */
-    function createDefinitionsTable(definitions) {
+    this.createDefinitionsTable = function(definitions) {
         var html = "";
 
         html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Glossar</h4>\n<ul>";
@@ -379,61 +415,69 @@ angular.module('meanMarkdownApp')
         html += "</ul>\n</div>\n";
 
         return html;
-    }
+    };
 
     /**
      * returns a html div element containing an 
      * unordered list with all level 1 headings. 
      * requires a list of heading objects
      */
-    function createTableOfContent(headings, stories, images) {
+    this.createTableOfContent = function(bodyHtml, headings, stories, images) {
         var stories = stories || false;
         var html = "";
         
-        html += "<div id=\"headings-table\" class=\"headings-table\">\n<ul>";
+        html += "<div id=\"headings-table\" class=\"headings-table\">\n" +
+                "<ul>\n";
 
-        // link to top
-        html += "<li><a href=\"#page-title\">Top</a></li>\n";
-        html += "<li class=\"seperator\"></li>\n";
+        // link to top if page title exists
+        if (html.match("id=\"page-title\"")) {
+            html += "<li><a href=\"#page-title\">Top</a></li>\n";
+            html += "<li class=\"seperator\"></li>\n";
+        }
+        
 
         // headings
-        if (headings.length) {
+        if (headings.length > 0) {
             // create html
             headings.forEach(function(heading) {
                 if (heading.level === 1) {  // skip all but h1
                     html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" + 
                         heading.text +  
-                        "</a></li>";
+                        "</a></li>\n";
                 }
             });
-
         }
 
         // add stories
-        if (stories) {
+        if (stories.length > 0) {
             html += "<li class=\"seperator\"></li>\n";
             stories.forEach(function(story) {
                 html += "<li class=\"story\"><a href=\"#story" + story.counter + "\">" + story.name + "</a></li>\n";
             });
         }
 
-        // add images, links and definition references
-        // TODO: only add references if they exist
-        html += "<li class=\"seperator\"></li>\n";
-        if (images.length) {
+        if (bodyHtml.match("id=\"images-table\"") || bodyHtml.match("id=\"links-table\"") || bodyHtml.match("id=\"links-table\"")) {
+            html += "<li class=\"seperator\"></li>\n";
+        }
+
+        // add link to images-table if it exists
+        if (bodyHtml.match("id=\"images-table\"")) {
             html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
         }
         
-        html += "<li><a href=\"#links-table\">Links</a></li>\n";
-        html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
+        // add link to links-table if it exists
+        if (bodyHtml.match(/id=\"links-table\"/)) {
+            html += "<li><a href=\"#links-table\">Links</a></li>\n";
+        }
+
+        // add link to definitions-table if it exists
+        if (bodyHtml.match("id=\"definitions-table\"")) { 
+            html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
+        }
 
         html += "</ul>\n</div>\n";
         return html;
-    }
-
-    function createPageTitle(title) {
-        return "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>";
-    }
+    };
 
   });
 

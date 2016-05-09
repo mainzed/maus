@@ -30,6 +30,7 @@ module.exports = function(config) {
       'app/bower_components/angular-touch/angular-touch.js',
       'app/bower_components/marked/lib/marked.js',
       'app/bower_components/codemirror/lib/codemirror.js',
+      'app/bower_components/codemirror/mode/markdown/markdown.js',
       'app/bower_components/angular-ui-codemirror/ui-codemirror.js',
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/ng-dialog/js/ngDialog.js',

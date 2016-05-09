@@ -39,6 +39,18 @@
         "dist/css/bootstrap.css",
         "dist/js/bootstrap.js"
       ]
+    },
+    "font-awesome": {
+      "main": [
+          "css/font-awesome.css"
+      ]
+    },
+    "codemirror": {
+      "main": [
+          "lib/codemirror.css",
+          "lib/codemirror.js",
+          "mode/markdown/markdown.js"
+      ]
     }
   }
 }

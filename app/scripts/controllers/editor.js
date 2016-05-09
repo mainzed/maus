@@ -11,7 +11,7 @@ angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService, 
         $document, fileService, AuthService, ngDialog, 
-        definitionService, EditorService) {
+        definitionService) {
     
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -26,20 +26,11 @@ angular.module('meanMarkdownApp')
      * makes editor available to rest of controller 
      */
     $scope.codemirrorLoaded = function(_editor){
-        EditorService.init(_editor);
+        $scope.editor = _editor;  // for global settings
 
-        $scope.editor = EditorService.getEditor();
+        //$scope.editor = EditorService.getEditor();
 
-        // Editor part
-        //$scope.editor = _editor;  // for global settings
-        //$scope.doc = _editor.getDoc();  // access to the editor content
-
-        // set cursor to end of document and activate it
-        //$scope.editor.goDocEnd;
-        //$scope.editor.replaceSelection("");  // workaround since goDocEnd doesnt work
-        //$scope.editor.focus();
-
-        //fitEditorHeight();
+        fitEditorHeight();
     };
 
 
@@ -50,7 +41,7 @@ angular.module('meanMarkdownApp')
 
 
     $scope.editorOptions = {
-        lineWrapping : true,
+        lineWrapping: true,
         lineNumbers: false,
         mode: 'markdown',  // CurlyBraceWrappedText
         showTrailingSpace: false,
@@ -63,9 +54,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onSaveClick = function() {
 
-        
         var id = $scope.file._id;
-
         var newFile = {
             author: $scope.file.author,
             markdown: $scope.file.markdown,
@@ -210,6 +199,7 @@ angular.module('meanMarkdownApp')
             ngDialog.open({ 
                 template: "./views/templates/dialog_preview.html",
                 disableAnimation: true,
+                width: 300,
                 closeByDocument: true,  // enable clicking on background to close dialog
                 scope: $scope
             });

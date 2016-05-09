@@ -12,7 +12,8 @@ var apiRouter = require('./routes/api');
 // middleware
 app.use(compression());
 app.use(logger('dev'));
-app.use(express.static(__dirname + '/app'));
+app.use(express.static(__dirname + '/app'));  // development
+//app.use(express.static(__dirname + '/dist'));  // production
 
 
 app.use(bodyParser.json());
