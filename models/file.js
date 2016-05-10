@@ -9,6 +9,7 @@ var fileSchema = new Schema({
     markdown: String,
     type: String,
     private: { type: Boolean, default: false },
+    updated_by: { type: String, default: "author" },
     updated_at: { type: Date, default: Date.now }
 });
 
@@ -43,6 +44,7 @@ module.exports.updateFile = function(id, file, callback) {
         title: file.title,
         type: file.type,
         markdown: file.markdown,
+        updated_by: file.updated_by,
         private: file.private
     };
 

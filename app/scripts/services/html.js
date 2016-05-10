@@ -21,8 +21,8 @@ angular.module('meanMarkdownApp')
         var config = config || {
             addTitle: false,
             addContentTable: false,
-            addImagesTable: false,
-            addLinksTable: false
+            addImagesTable: false
+            //addLinksTable: false
         };
 
         // get data
@@ -53,18 +53,16 @@ angular.module('meanMarkdownApp')
         customRenderer.link = function (linkUrl, noIdea, text) {
 
             // workaround for linkUrl.startsWith
-            if (linkUrl.substring(0, 1) !== "#") {  // skip local links
-                //console.log("works!");
+            //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
+            
+            //console.log("works!");
+            links.push({
+                url: linkUrl,
+                text: text.replace("!", "")  // replace ! for "weiterführende links"
+            });
 
-                links.push({
-                    url: linkUrl,
-                    text: text.replace("!", "")  // replace ! for "weiterführende links"
-                });
-            }
-
-            if (text.substring(0, 1) !== "!") {  // ignore "weiterführende links" in text. but they have been pushed to list
-                return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-            } 
+            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+            
         };
 
         // custom image renderer
@@ -118,9 +116,9 @@ angular.module('meanMarkdownApp')
             html += this.createImagesTable(images);
         }
 
-        if (config.addLinksTable) {
+        /*if (config.addLinksTable) {
             html += this.createLinksTable(links);
-        }
+        }*/
 
         if (config.addDefinitionsTable) {
             html += this.createDefinitionsTable(definitions);

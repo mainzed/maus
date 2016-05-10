@@ -329,8 +329,6 @@ describe('Service: HTMLService', function () {
                     expect(outputHtml).toEqual(expected);
                 });
             }));
-
-
         });
 
         describe('getOlat()', function() {
@@ -461,7 +459,7 @@ describe('Service: HTMLService', function () {
                 });
             }));
 
-            it("should add table of content with links to html", inject(function(definitionService) {
+            /*it("should add table of content with links to html", inject(function(definitionService) {
 
                 var config = {
                     addTitle: false,
@@ -493,7 +491,7 @@ describe('Service: HTMLService', function () {
                     expect(definitions.length).toEqual(1);
                     expect(outputHtml).toEqual(expected);
                 });
-            }));
+            }));*/
 
             it("should add table of definitions to html", inject(function(definitionService) {
 

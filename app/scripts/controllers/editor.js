@@ -15,12 +15,13 @@ angular.module('meanMarkdownApp')
     
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
+    } else {
+        $scope.currentUser = AuthService.getUser();
     }
 
     $scope.showSuccess = false;
     $scope.showError = false;
     $scope.editMode = false;  // used in definitions dialog
-
 
     /**
      * makes editor available to rest of controller 
@@ -55,21 +56,29 @@ angular.module('meanMarkdownApp')
     $scope.onSaveClick = function() {
 
         var id = $scope.file._id;
+
+        // migration steps
+        if ($scope.file.type === "OLAT") {
+            $scope.file.type = "opOlat";
+        } else if ($scope.file.type === "presentation") {
+            $scope.file.type = "prMainzed";
+        }
+
         var newFile = {
             author: $scope.file.author,
             markdown: $scope.file.markdown,
             type: $scope.file.type,
             title: $scope.file.title,
-            private: $scope.file.private
+            private: $scope.file.private,
+            updated_by: $scope.currentUser.name
         };
 
         fileService.update({ id: id }, newFile, function() {
             // success
-
             $scope.unsavedChanges = false;
-            
             $scope.showSuccess = true;
             $timeout(function () { $scope.showSuccess = false; }, 3000);
+
         }, function() {
             //error
             $scope.showError = true;
@@ -167,7 +176,7 @@ angular.module('meanMarkdownApp')
             addTitle: addTitle,
             addContentTable: addContentTable,
             addImagesTable: addImages,
-            addLinksTable: addLinks,
+            //addLinksTable: addLinks,
             addDefinitionsTable: addDefinitions
         };
 
@@ -200,7 +209,7 @@ angular.module('meanMarkdownApp')
             addTitle: true,
             addContentTable: true,
             addImagesTable: true,
-            addLinksTable: true,
+            //addLinksTable: true,
             addDefinitionsTable: true
         };
 
@@ -301,16 +310,15 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onTextareaChange = function(){
-
         $(".clickspan").next("textarea").css("display", "block");
         $(".clickspan").next("textarea").focus();
         //console.log("works!");
-    }
+    };
 
     $scope.$watch("showTextarea", function(newValue, oldValue) {
         console.log(newValue);
         console.log(oldValue);
-    })
+    });
 
 
     // link hotkey

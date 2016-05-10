@@ -1,5 +1,5 @@
 <div ng-init="getArchivedFiles()">
-  <h3>{{archivedFiles[0].title}} - Archivierte Versionen</h3>
+  <h3>{{ archivedFiles[0].title }} by {{ archivedFiles[0].author }} - Archivierte Versionen</h3>
 
   <span ng-show="archivedFiles.length < 2">No archived versions exist for this file.</span>
 
@@ -8,10 +8,13 @@
   <!-- ng-if skips first item -->
     
     <div>{{ archivedFile.created_at.substring(0,10) }} {{ archivedFile.created_at.substring(11,16) }}</div>
-    <div>changed by {{ archivedFile.author }}</div>
+    
+    <div ng-show="!archivedFile.updated_by">changed by owner</div>
+    <div ng-show="archivedFile.updated_by === archivedFile.author">changed by {{ archivedFile.updated_by }}</div>
+    <div ng-show="archivedFile.updated_by && (archivedFile.updated_by !== archivedFile.author)">changed by {{ archivedFile.updated_by }} (owner: {{ archivedFile.author }})</div>
 
     <button type="button" class="btn" ng-click="onOpenAsNewFileClick(archivedFile)">Open as new file</button>
-    <button type="button" class="btn" ng-click="onRevertFileClick(archivedFile)">Revert file back to this version</button>
+    <button type="button" class="btn" ng-click="onRevertFileClick(archivedFile)" ng-disabled="currentUser.name !== archivedFile.author">Revert file back to this version</button>
   </div>
 </div>
 <a ng-href="#/files" class="home">back to files</a>

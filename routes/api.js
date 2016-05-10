@@ -57,14 +57,15 @@ router.put('/files/:id', function (req, res) {
         title: file.title,
         markdown: file.markdown,
         type: file.type,
-        private: file.private
+        private: file.private,
+        updated_by: file.updated_by
     };
 
     ArchivedFile.create(archivedFile, function(err) {
         if (err) {
             throw err;
         }
-        console.log("archived file!");
+        //console.log("archived file!");
     });
 
     // update

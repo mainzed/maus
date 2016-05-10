@@ -123,11 +123,12 @@ angular.module('meanMarkdownApp')
         // save archivedFile as a new file and open editor
         // save as new file
         var file = {
-            author: archivedFile.author,
-            title: archivedFile.title + " (restored)",
+            author: $scope.currentUser.name,
+            title: archivedFile.title + " (restored by " + $scope.currentUser.name + ")",
             type: archivedFile.type,
             private: archivedFile.private,
-            markdown: archivedFile.markdown
+            markdown: archivedFile.markdown,
+            updated_by: $scope.currentUser.name
         };
 
         // change legacy filetypes
