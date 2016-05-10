@@ -385,7 +385,7 @@ angular.module('meanMarkdownApp')
         });
 
         html += "</ul>\n</div>\n";
-
+        //console.log(html);
         return html;
     };
 

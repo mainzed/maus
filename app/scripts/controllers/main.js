@@ -19,9 +19,6 @@ angular.module('meanMarkdownApp')
 
     $scope.awesomeThings = [1, 2, 3];
 
-    $scope.test = "hello!";
-
-    //$scope.filesActive = false;
 
     $scope.files = fileService.query();
     $scope.newFile = {};  // filled by dialog

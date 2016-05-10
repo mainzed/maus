@@ -6,8 +6,6 @@
   <span class="tableheader" ng-show="key === 'prMainzed'">Mainzed Presentation</span>
   <span class="tableheader" ng-show="key === 'prI3mainz'">i3mainz Presentation</span>
 
- 
-
   <table class="filegroup">
     <colgroup>
       <col span="1" style="width: 60%;">
@@ -100,11 +98,17 @@
                </a>
             </li>
 
-
-            <!-- edit -->
-            <li>
-              <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings">
+            <!-- edit. only show when author -->
+            <li ng-show="currentUser.name === file.author">
+              <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings" >
                 Editieren
+              </a>
+            </li>
+
+            <!-- delete. only show when author -->
+            <li ng-show="currentUser.name === file.author">
+              <a class="" ng-click="onRemoveClick(file._id)" data-toggle="tooltip" title="File Settings" >
+                Löschen
               </a>
             </li>
            

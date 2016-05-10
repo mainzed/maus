@@ -227,6 +227,28 @@ describe('Service: HTMLService', function () {
                     expect(outputHtml).toEqual(expected);
                 }); 
             }));
+
+            /*it('should return empty string when no definition used in text', inject(function(definitionService) {
+                //var usedDefs = [];
+                var expected = "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+                                "<h4>Glossar</h4>\n" + 
+                                "<ul>\n" +
+                                // only duckduck
+                                "<li>\n" +
+                                "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"This is the duck description!\">duckduck</a>\n" +
+                                "</li>\n" +
+
+                                "</ul>\n" +
+                                "</div>\n";
+
+
+                definitionService.query(function(definitions) {
+                    expect(definitions.length).toEqual(2);
+                    var outputHtml = service.createDefinitionsTable(definitions);
+                    console.log(outerHTML);
+                    expect(outputHtml).toEqual(2);
+                }); 
+            }));*/
         });
 
         describe('replaceDefinitionTags()', function() {
