@@ -10,9 +10,10 @@ angular.module('meanMarkdownApp')
   .directive('focusOnVisibility', function ($timeout) {
     return {
       restrict: 'A',
-      link: function postLink(scope, element) {
-
-        scope.$watch("showTextarea", function(newValue) {
+      //scope: true,
+      link: function postLink(scope, element, attrs) {
+        //console.log(attrs.ngShow);
+        scope.$watch(attrs.ngShow, function(newValue) {
             if (newValue === true) {
                 $timeout(function() {
                     element.focus();

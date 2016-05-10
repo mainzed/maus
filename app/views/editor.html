@@ -1,11 +1,5 @@
 
 <!-- title -->
-<form>
-  <div class="form-group" id="editor-title">
-    <input type="text" class="form-control" placeholder="Title" ng-model="file.title">
-  </div>
-</form>
-
 <scrollable>
   <div id="codeMirrorEditor" ui-codemirror="{ onLoad : codemirrorLoaded }" ui-codemirror-opts="editorOptions" ng-model="file.markdown" ng-change="onEditorChange()"></div>
 </scrollable>
