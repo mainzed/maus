@@ -31,7 +31,7 @@ angular.module('meanMarkdownApp')
 
         //$scope.editor = EditorService.getEditor();
 
-        fitEditorHeight();
+        // fitEditorHeight();
     };
 
 
@@ -149,6 +149,7 @@ angular.module('meanMarkdownApp')
             scope: $scope,
             disableAnimation: true,
             preCloseCallback: function() {
+                $scope.onApplyDefinitionChanges();
                 $scope.editMode = false;
             }
         });
@@ -295,8 +296,14 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onCreateDefinitionClick = function() {
-        $scope.newDefinition = {};
-        $scope.createNewMode = true;
+        
+        $scope.onApplyDefinitionChanges();
+
+        definitionService.save({}, function() {
+            // success
+            $scope.getDefinitions();  // refresh
+        });
+
     };
 
     $scope.onDeleteDefinitionClick = function(id) {
@@ -369,28 +376,28 @@ angular.module('meanMarkdownApp')
     });
 
     $(window).resize(function () {
-        fitEditorHeight();
+        // fitEditorHeight();
     });
 
     var timer;
     var stoppedElement=document.getElementsByTagName("body")[0];   // store element for faster access
 
     function mouseStopped(){                                 // the actual function that is called
-        $("#editor-tools").css("opacity", "0.4");
+        //$("#editor-tools").css("opacity", "0.4");
     }
 
     window.addEventListener("mousemove",function(){
-        $("#editor-tools").css("opacity", "1");
-        clearTimeout(timer);
-        timer=setTimeout(mouseStopped,1400);
+        //$("#editor-tools").css("opacity", "1");
+        //clearTimeout(timer);
+        //timer=setTimeout(mouseStopped,1400);
     });
 
     function fitEditorHeight() {
-        var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
+        //var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
         //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
         //editor.setSize("",  height);  // empty string as workaround
         
-        $(".nano").css("height", height); 
+        //$(".nano").css("height", height); 
     }
 
     /**

@@ -1,63 +1,4 @@
 
-
-
-
-<!--<button class="btn btn-default btn-sm" ng-click="onDefinitionsEditClick(); closeThisDialog()">edit</button>-->
-
-<!--<div ng-hide="editMode">
-  <h4>Definitions</h4>
-
-  <input type="text" class="form-control" placeholder="Filter by Name" ng-model="filterBox">
-
-  <scrollable class="definitons-table">
-    <table class="table filegroup fullwidth" ng-init="getDefinitions()"> 
-      <tbody> 
-        <tr ng-repeat="definition in definitions | filter: { word: filterBox }"> 
-          <td>
-            <a ng-click="closeThisDialog(); addDefinition(definition)" data-toggle="tooltip" title="Insert this definition">
-              {{ definition.word }}
-            </a>
-          </td> 
-
-        </tr> 
-
-      </tbody> 
-    </table>
-  </scrollable>
-  <button class="btn btn-default btn-sm toolbar" ng-click="onDefinitionCreateClick()">
-    Bearbeiten
-  </button>
-</div>-->
-
-<!-- show when clicked edit -->
-<!--<form ng-show="editMode">
-  <div class="form-group">
-    <label for="exampleInputEmail5">Word</label>
-    <input type="text" class="form-control" id="exampleInputEmail5" placeholder="Word" ng-model="definition.word">
-  </div>
-
-  <div class="form-group">
-    <label for="exampleInputEmail1">Definition</label>
-    <textarea class="form-control" rows="3" placeholder="Definition" ng-model="definition.text" required></textarea>
-  </div>
-
-  
-
-
-  <div class="form-group">
-    <label for="exampleInputPassword1">Source</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Source" ng-model="definition.author">
-  </div>
-
-  <div class="form-group">
-    <label for="exampleInputPassword1">Website</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Website" ng-model="definition.url">
-  </div>
-  
-  <button type="submit" class="btn btn-default" ng-click="onDefinitionSaveClick(definition)" ng-disabled="!definition.word">Save</button>
-
-</form>-->
-
 <span class="tableheader">Definitions</span>
 <div class="container" ng-init="getDefinitions()">
 
@@ -65,93 +6,92 @@
   <input type="search" class="form-control definitionsearch" placeholder="Search by Word" ng-model="filterBox">
 
   <table class="filegroup nomargin fullwidth">
-     <colgroup>
-      <col span="1" style="width: 3%;">
+    <colgroup>
+      <col span="1" style="width: 5%;">
       <col span="1" style="width: 20%;">
-      <col span="1" style="width: 50%;">
+      <col span="1" style="width: 45%;">
       <col span="1" style="width: 15%;">
       <col span="1" style="width: 10%;">
-      <col span="1" style="width: 3%;">
+      <col span="1" style="width: 5%;">
     </colgroup>
-    <thead> 
-      <tr> 
-        <th></th>
-        <th>Word</th>
-        <th>Definition</th>
-        <th>Source</th>
-        <th>Website</th>
-      </tr> 
-    </thead> 
+      <thead> 
+        <tr class="noborder"> 
+          <th></th>
+          <th>Word</th>
+          <th>Definition</th>
+          <th>Source</th>
+          <th>Website</th>
+          <th></th>
+        </tr> 
+      </thead> 
+    </table> 
 
-    <tbody> 
-
-      <tr ng-repeat="definition in definitions | filter:filterBox | orderBy: 'updated_at'"> 
-        <td>
-          <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
-          
-          </a>
-        </td>
-        <td>
-             <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showWord" ng-click="showWord = true; onTextareaChange()">{{ definition.word }}</span> 
-            
-            <textarea ng-show="showWord" type="text" placeholder="Definition" ng-model="definition.word" class="form-control" focus-on-visibility></textarea>
-          
-         
-
-        </td> 
-
-        <td>
-          <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showText" ng-click="showText = true; onTextareaChange()">{{ definition.text }}</span> 
-         
-
-
-          <textarea ng-show="showText" type="text" placeholder="Definition" ng-model="definition.text" class="form-control" focus-on-visibility></textarea>
-
-
-        </td>
-
-        <td>
-          <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
-        </td>
-
-        <td>
-          <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
-        </td>
-
-        <!-- remove -->
-        <td>
-          <button type="button" class="btn btn-default" ng-click="onDeleteDefinitionClick(definition._id)">
-            <i class="fa fa-trash" aria-hidden="true"></i>
-          </button>
-        </td>
-
-      </tr><!-- end repeat -->
+  <scrollable>
+    <table class="filegroup nomargin fullwidth">
+       <colgroup>
+        <col span="1" style="width: 5%;">
+        <col span="1" style="width: 20%;">
+        <col span="1" style="width: 45%;">
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 5%;">
+      </colgroup>
       
-      <!-- new definition -->
-      <tr ng-show="createNewMode">
+
+      <tbody> 
+
+        <tr ng-repeat="definition in definitions | filter:filterBox | orderBy: '-updated_at'"> 
+          <td>
+            <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
+              <span class="icon-enter"></span>
+            </a>
+          </td>
+          <td>
+            
+            <!-- first column -->
+            <span ng-hide="$index === 0 && createdNew" class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showWord" ng-click="showWord = true; onTextareaChange()">{{ definition.word }}</span> 
+              
+            <textarea ng-show="showWord || ($index === 0 && createdNew)" type="text" placeholder="Word" ng-model="definition.word" class="form-control" focus-on-visibility></textarea>
+
+          </td> 
+
+          <td>
+            <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showText" ng-click="showText = true; onTextareaChange()">{{ definition.text }}</span> 
+           
+
+
+            <textarea ng-show="showText" type="text" placeholder="Definition" ng-model="definition.text" class="form-control" focus-on-visibility></textarea>
+
+
+          </td>
+
+          <td>
+            <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
+          </td>
+
+          <td>
+            <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
+          </td>
+
+          <!-- remove -->
+          <td>
+            <button type="button" class="btn btn-default" ng-click="onDeleteDefinitionClick(definition._id)">
+              <span class="icon-trash"></span>
+            </button>
+          </td>
+
+        </tr><!-- end repeat -->
         
-        <td>
-          <input type="text" class="form-control" placeholder="Word" ng-model="newDefinition.word" ng-change="onDefinitionChange()">
-        </td>
-
-        <td>
-          <input type="text" class="form-control" placeholder="Definition" ng-model="newDefinition.text" ng-change="onDefinitionChange()">
-        </td>
-
-        <td>
-          <input type="text" class="form-control" placeholder="Source" ng-model="newDefinition.author" ng-change="onDefinitionChange()">
-        </td>
-
-        <td>
-          <input type="text" class="form-control" placeholder="Website" ng-model="newDefinition.url" ng-change="onDefinitionChange()">
-        </td>
         
-      </tr>
 
-    </tbody> 
-  </table>
-  <div class="smalltoolbar">
-    <button class="btn btn-default btn-sm" ng-click="onApplyDefinitionChanges()" ng-disabled="!hasChanges">apply changes</a>
-    <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick()" ng-disabled="createNewMode">create new</a>
+      </tbody> 
+    </table>
+  </scrollable>
+ 
+  <div class="toolbarrelative">
+  <div class="toolbar">
+    <!--<button class="btn btn-default btn-sm" ng-click="onApplyDefinitionChanges()" ng-disabled="!hasChanges">apply changes</button>-->
+    <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick(); createdNew = true">create new</button>
+  </div>
   </div>
 </div>

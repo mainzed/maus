@@ -1,4 +1,6 @@
-<div ng-repeat="(key, value) in files | groupBy: 'type'" ng-show="groupHasValidFiles(key)">
+<!-- search box -->
+<input type="search" placeholder="Search" ng-model="filesFilterBox">
+<div ng-repeat="(key, value) in files | filter: filesFilterBox | groupBy: 'type'" ng-show="groupHasValidFiles(key)">
 
   <!-- custom section names -->
   <span class="tableheader" ng-show="key === 'opOlat'">OLAT</span>
