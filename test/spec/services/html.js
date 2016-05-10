@@ -80,7 +80,6 @@ describe('Service: HTMLService', function () {
 
                 expect(service.createLinksTable(linksArray)).toEqual(result);
             });
-        
         });
 
         describe('createImagesTable()', function() {
@@ -140,7 +139,94 @@ describe('Service: HTMLService', function () {
 
                 expect(service.createImagesTable(imagesArray)).toEqual(table);
             });
-        
+        });
+
+        describe('createDefinitionsTable()', function() {
+            beforeEach(function () {
+                // mock definitions request
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "google",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the google description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }, {
+                                    _id: "571725cd5c6b2bd90ed10b6f",
+                                     word: "duckduck",
+                                    __v: 0,
+                                    text: "This is the duck description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }]);
+            });
+
+            afterEach(function() {
+                try {
+                    httpBackend.flush();
+                    httpBackend.verifyNoOutstandingExpectation();
+                    httpBackend.verifyNoOutstandingRequest();
+                } catch(e) {
+                    // statements
+                    //console.log(e);
+                } 
+            });
+
+            it('should return div containing all definitions', inject(function(definitionService) {
+                var expected = "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+                                "<h4>Glossar</h4>\n" + 
+                                "<ul>\n" +
+
+                                // google
+                                "<li>\n" +
+                                "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"This is the google description!\">google</a> (<a href=\"www.google.de\" target=\"_blank\">website</a>)\n" +
+                                "</li>\n" +
+
+                                // duckduck
+                                "<li>\n" +
+                                "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"This is the duck description!\">duckduck</a>\n" +
+                                "</li>\n" +
+
+                                "</ul>\n" +
+                                "</div>\n";
+
+
+                definitionService.query(function(definitions) {
+                    
+                    var outputHtml = service.createDefinitionsTable(definitions, ["571725cd5c6b2bd90ed10b6e", "571725cd5c6b2bd90ed10b6f"]);
+
+                    expect(definitions[0].word).toEqual("google");
+                    expect(definitions[1].word).toEqual("duckduck");
+
+                    expect(outputHtml).toEqual(expected);
+                }); 
+            }));
+
+            it('should return only contain definitions used in text', inject(function(definitionService) {
+                var usedDefs = ["571725cd5c6b2bd90ed10b6f"];
+                var expected = "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+                                "<h4>Glossar</h4>\n" + 
+                                "<ul>\n" +
+                                // only duckduck
+                                "<li>\n" +
+                                "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"This is the duck description!\">duckduck</a>\n" +
+                                "</li>\n" +
+
+                                "</ul>\n" +
+                                "</div>\n";
+
+
+                definitionService.query(function(definitions) {
+                    
+                    var outputHtml = service.createDefinitionsTable(definitions, usedDefs);
+
+                    expect(definitions.length).toEqual(2);
+
+                    expect(outputHtml).toEqual(expected);
+                }); 
+            }));
         });
 
         describe('replaceDefinitionTags()', function() {
@@ -183,7 +269,6 @@ describe('Service: HTMLService', function () {
 
             }));
 
-
             it('should return input html when no definition in text', inject(function(definitionService) {
                                 
                 var inputHtml = "<p>This string without a definition!</p>";
@@ -211,15 +296,38 @@ describe('Service: HTMLService', function () {
                 });
             }));
 
+            it('should only replace existing definitions', inject(function(definitionService) {
+                                
+                var inputHtml = "<p>This {string} with a {definition}!</p>";  // string is not a defined definition
+                var expected = "<p>This {string} with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">definition</a>!</p>";
+                
+                definitionService.query(function(definitions) {
+                    var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
+                    expect(definitions[0].word).toEqual("definition");
+                    expect(outputHtml).toEqual(expected);
+                });
+            }));
+
 
         });
 
-        /*describe('getOlat()', function() {
+        describe('getOlat()', function() {
             var file;
             var fileWithLinks;
             var fileWithDefinitions;
 
-            beforeEach(function() {
+            beforeEach(function () {
+                // mock definitions request
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "definition",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the definition description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }]);
 
                 file = {
                     title: "Test File",
@@ -243,12 +351,23 @@ describe('Service: HTMLService', function () {
                     author: "John Doe",
                     type: "opOlat",
                     markdown:   "# heading 1\n" + 
-                                "This is {markdown}!\n\n" +
+                                "This is a {definition}!\n\n" +
                                 "[Google](www.google.de)" 
                 };
             });
 
-            it("should return markdown content as html", function(done) {
+            afterEach(function() {
+                try {
+                    httpBackend.flush();
+                    httpBackend.verifyNoOutstandingExpectation();
+                    httpBackend.verifyNoOutstandingRequest();
+                } catch(e) {
+                    // statements
+                    //console.log(e);
+                } 
+            }); 
+
+            it("should return markdown content as html", inject(function(definitionService) {
                  
                 var config = {
                     addTitle: false,
@@ -260,37 +379,40 @@ describe('Service: HTMLService', function () {
                 var expected =  '<h1 id="h1-1">heading 1</h1>\n' + 
                                 '<p>This is <strong>markdown</strong>!</p>\n';
 
-                setTimeout(function() {
-                    service.getOlat(file, config, function(html) {
-                        expect(html).toBe(expected);
-                        done();  // async
-                    });
-                }, 5);
-                
-            });
-        
-            it("should add title to html", function(done) {
+                definitionService.query(function(definitions) {
+                    // gets sync mocked, so no done() needed!
+                    
+                    var outputHtml = service.getOlat(file, definitions, config);
 
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });  
+            }));
+
+            it("should add title to html", inject(function(definitionService) {
+                 
                 var config = {
                     addTitle: true,
                     addContentTable: false,
                     addImagesTable: false,
                     addLinksTable: false
                 };
-               
+
                 var expected =  '<h1 class="page-title" id="page-title">Test File</h1>\n' +
                                 '<h1 id="h1-1">heading 1</h1>\n' + 
                                 '<p>This is <strong>markdown</strong>!</p>\n';
 
-                setTimeout(function() {
-                    service.getOlat(file, config, function(html) {
-                        expect(html).toEqual(expected);
-                        done();
-                    });
-                }, 5);
-            });
+                definitionService.query(function(definitions) {
+                    // gets sync mocked, so no done() needed!
+                    
+                    var outputHtml = service.getOlat(file, definitions, config);
 
-            it("should add table of content to html", function(done) {
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });  
+            }));
+        
+            it("should add table of content to html", inject(function(definitionService) {
 
                 var config = {
                     addTitle: false,
@@ -304,19 +426,20 @@ describe('Service: HTMLService', function () {
                                 '<li><a href="#h1-1">heading 1</a></li>\n' + 
                                 '</ul>\n' +
                                 '</div>\n' +
-
                                 '<h1 id="h1-1">heading 1</h1>\n' + 
                                 '<p>This is <strong>markdown</strong>!</p>\n';
 
-                setTimeout(function() {
-                    service.getOlat(file, config, function(html) {
-                        expect(html).toEqual(expected);
-                        done();
-                    });
-                }, 5);
-            });
-        
-            it("should add table of content with links to html", function(done) {
+                definitionService.query(function(definitions) {
+                    // gets sync mocked, so no done() needed!
+                    
+                    var outputHtml = service.getOlat(file, definitions, config);
+
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });
+            }));
+
+            it("should add table of content with links to html", inject(function(definitionService) {
 
                 var config = {
                     addTitle: false,
@@ -343,55 +466,117 @@ describe('Service: HTMLService', function () {
                                 '</ul>\n' +
                                 '</div>';
 
-                setTimeout(function() {
-                    service.getOlat(fileWithLinks, config, function(html) {
-                        expect(html).toEqual(expected);
-                        done();
-                    });
-                }, 5);
+                definitionService.query(function(definitions) {
+                    var outputHtml = service.getOlat(fileWithLinks, definitions, config);
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });
+            }));
 
-            });
-        
-            it("should add table of definitions to html", function(done) {
+            it("should add table of definitions to html", inject(function(definitionService) {
 
                 var config = {
                     addTitle: false,
                     addContentTable: true,
                     addImagesTable: false,
-                    addLinksTable: true
+                    addLinksTable: false,
+                    addDefinitionsTable: true
                 };
                
                 var expected =  '<div id="headings-table" class="headings-table">\n' +
                                 '<ul>\n' + 
                                 '<li><a href="#h1-1">heading 1</a></li>\n' + 
                                 '<li class=\"seperator\"></li>\n' +
-                                '<li><a href="#links-table">Links</a></li>\n' + 
+                                '<li><a href="#definitions-table">Glossar</a></li>\n' +
                                 '</ul>\n' +
                                 '</div>\n' +
 
                                 '<h1 id="h1-1">heading 1</h1>\n' + 
-                                '<p>This is <strong>markdown</strong>!</p>\n' + 
+                                '<p>This is a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">definition</a>!</p>\n' + 
                                 '<p><a href="www.google.de" target="_blank">Google</a></p>\n' +
 
-                                // links table
-                                '<div id="links-table" class="links-table">\n' +
-                                '<h4>Links</h4>\n' +
+                                // definitions table
+                                '<div id="definitions-table" class="definitions-table">\n' +
+                                '<h4>Glossar</h4>\n' +
                                 '<ul>\n' +
-                                '<li><a href="www.google.de" target="_blank">Google</a></li>\n' +
+                                '<li>\n' +
+                                '<a href="#" target="_blank" class="definition" title="This is the definition description!">definition</a> (<a href="www.google.de" target="_blank">website</a>)\n' +
+                                '</li>\n' +
                                 '</ul>\n' +
-                                '</div>';
+                                '</div>\n';
 
-                setTimeout(function() {
-                    service.getOlat(fileWithLinks, config, function(html) {
-                        expect(html).toEqual(false);
-                        done();
-                    });
-                }, 5);
+                definitionService.query(function(definitions) {
+                    var outputHtml = service.getOlat(fileWithDefinitions, definitions, config);
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });
+            }));
 
+            it("should only add used used definitions", inject(function(definitionService) {
+
+                /*var config = {
+                    addTitle: false,
+                    addContentTable: true,
+                    addImagesTable: false,
+                    addLinksTable: false,
+                    addDefinitionsTable: true
+                };
+               
+                var expected =  '<div id="headings-table" class="headings-table">\n' +
+                                '<ul>\n' + 
+                                '<li><a href="#h1-1">heading 1</a></li>\n' + 
+                                '<li class=\"seperator\"></li>\n' +
+                                '<li><a href="#definitions-table">Glossar</a></li>\n' +
+                                '</ul>\n' +
+                                '</div>\n' +
+
+                                '<h1 id="h1-1">heading 1</h1>\n' + 
+                                '<p>This is a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">definition</a>!</p>\n' + 
+                                '<p><a href="www.google.de" target="_blank">Google</a></p>\n' +
+
+                                // definitions table
+                                '<div id="definitions-table" class="definitions-table">\n' +
+                                '<h4>Glossar</h4>\n' +
+                                '<ul>\n' +
+                                '<li>\n' +
+                                '<a href="#" target="_blank" class="definition" title="This is the definition description!">definition</a> (<a href="www.google.de" target="_blank">website</a>)\n' +
+                                '</li>\n' +
+                                '</ul>\n' +
+                                '</div>\n';
+
+                definitionService.query(function(definitions) {
+                    var outputHtml = service.getOlat(fileWithDefinitions, definitions, config);
+                    expect(definitions.length).toEqual(1);
+                    expect(outputHtml).toEqual(expected);
+                });*/
+            }));
+        });  // end getOlat()
+
+        describe('wrapHtml()', function() {
+            it('should wrap content', function() {
+                var inputHtml = "<p>This is a paragraph</p>";
+                var title = "Test";
+                var expected = '<!DOCTYPE html>\n' +
+                                '<html lang="de">\n' + 
+                                '<head>\n' +
+                                '<title>Test</title>\n' +
+                                '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
+                                '<meta property="dc:creator" content="Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz" />\n' +
+                                '<link rel="stylesheet" href="style/olat.css">\n' +
+                                '</head>\n' +
+                                '<body>\n' +
+                                inputHtml + "\n" +
+                                '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>\n' +
+                                '<script src="javascript/olat.js"></script>\n' +
+                                '</body>\n' +
+                                '</html>';
+
+                var outputHtml = service.wrapHTML(inputHtml, title);
+
+                expect(outputHtml).toEqual(expected);
             });
-
-        });*/
-    });
+        });
+    }); // end OLAT
 
     describe('MainzedPresentation functions', function() {
 

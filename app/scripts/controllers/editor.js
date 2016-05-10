@@ -93,15 +93,12 @@ angular.module('meanMarkdownApp')
         } else {  // no changes, go back without asking
             $location.path("/files");
         }
-
     };
 
     $scope.addSnippet = function(snippet) {
-
         // add snippet at cursor position or replace selection
         $scope.editor.replaceSelection(snippet);
         $scope.editor.focus();
-
     };
 
     $scope.addDefinition = function(definition) {
@@ -164,21 +161,28 @@ angular.module('meanMarkdownApp')
 
     };
 
-    $scope.onDownloadConfirm = function(filename, addTitle, includeTable) {
+    $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions) {
 
         var config = {
-            title: addTitle,
-            contentTable: includeTable
+            addTitle: addTitle,
+            addContentTable: addContentTable,
+            addImagesTable: addImages,
+            addLinksTable: addLinks,
+            addDefinitionsTable: addDefinitions
         };
 
-        HTMLService.getOlat($scope.file, config, function(html) {
-            // success
-            //startOlatDownload(filename, html);
+        definitionService.query(function(definitions) {
+            
+            // convert markdown to html
+            var html = HTMLService.getOlat($scope.file, definitions, config);
+            html = HTMLService.wrapHTML(html, $scope.file.title);
+
+            // init download
             var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
             var downloadLink = angular.element('<a></a>');
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', filename);
-            downloadLink[0].click();  
+            downloadLink[0].click();
         });
     };
 
@@ -192,10 +196,21 @@ angular.module('meanMarkdownApp')
 
     $scope.onPreviewClick = function() {
 
-        HTMLService.getOlat($scope.file, false, function(html) {
-            $scope.html = html;
-                            
-            // open dialog when html is fully loaded
+        var config = {
+            addTitle: true,
+            addContentTable: true,
+            addImagesTable: true,
+            addLinksTable: true,
+            addDefinitionsTable: true
+        };
+
+        definitionService.query(function(definitions) {
+            
+            // convert markdown to html
+            $scope.html = HTMLService.getOlat($scope.file, definitions, config);
+            //html = HTMLService.wrapHTML(html, $scope.file.title);  // TODO: wrap html and save on server
+            
+            // open preview lightbox
             ngDialog.open({ 
                 template: "./views/templates/dialog_preview.html",
                 disableAnimation: true,
