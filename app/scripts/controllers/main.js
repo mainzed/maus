@@ -37,7 +37,7 @@ angular.module('meanMarkdownApp')
 
         // save as new file
         var file = {
-            author: $scope.newFile.author,
+            author: $scope.currentUser.name,
             title: $scope.newFile.title,
             type: $scope.newFile.type,
             markdown: "This is **markdown**.",
