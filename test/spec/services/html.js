@@ -145,6 +145,21 @@ describe('Service: HTMLService', function () {
 
         describe('replaceDefinitionTags()', function() {
 
+
+            beforeEach(function () {
+                // mock definitions request
+                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
+                    .respond(200, [{
+                                    _id: "571725cd5c6b2bd90ed10b6e",
+                                     word: "definition",
+                                    __v: 0,
+                                    url: "www.google.de",
+                                    text: "This is the definition description!",
+                                    updated_at: "2016-04-20T06:46:37.887Z",
+                                    author: "John Doe"
+                            }]);
+            });
+
             afterEach(function() {
                 try {
                     httpBackend.flush();
@@ -158,18 +173,7 @@ describe('Service: HTMLService', function () {
             });   
 
             it('should mock get request', inject(function(definitionService) {
-                // mock  request
-                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
-                    .respond(200, [{
-                                    _id: "571725cd5c6b2bd90ed10b6e",
-                                     word: "definition",
-                                    __v: 0,
-                                    url: "www.google.de",
-                                    text: "This is the definition description!",
-                                    updated_at: "2016-04-20T06:46:37.887Z",
-                                    author: "John Doe"
-                            }]);
-
+                
                 definitionService.query(function(definitions) {
                     // gets sync mocked, so no done() needed!
                     expect(definitions.length).toEqual(1);
@@ -180,57 +184,37 @@ describe('Service: HTMLService', function () {
             }));
 
 
-            it('should return input html when no definition in text', function(done) {
-                // mock  request
-                // mock  request
-                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
-                    .respond(200, [{
-                                    _id: "571725cd5c6b2bd90ed10b6e",
-                                     word: "definition",
-                                    __v: 0,
-                                    url: "www.google.de",
-                                    text: "This is the definition description!",
-                                    updated_at: "2016-04-20T06:46:37.887Z",
-                                    author: "John Doe"
-                            }]);
+            it('should return input html when no definition in text', inject(function(definitionService) {
+                                
+                var inputHtml = "<p>This string without a definition!</p>";
 
-                var inputHtml = "<p>This string without a definition!what!</p>";
+                definitionService.query(function(definitions) {
+                    // gets sync mocked, so no done() needed!
+                    var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
 
-                service.replaceDefinitionTags(inputHtml, function(html) {
-                    console.log(html);
-                    expect(html).toEqual(inputHtml);
-                    //done();
+                    expect(definitions[0].word).toEqual("definition");
+                    expect(outputHtml).toEqual(inputHtml);
                 });
-                
-            });
+            }));
 
-            it('should replace definition', function(done) {
-                
-                httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
-                    .respond(200, [{
-                                    _id: "571725cd5c6b2bd90ed10b6e",
-                                     word: "definition",
-                                    __v: 0,
-                                    url: "www.google.de",
-                                    text: "This is the definition description!",
-                                    updated_at: "2016-04-20T06:46:37.887Z",
-                                    author: "John Doe"
-                            }]);
-
+            it('should replace definition', inject(function(definitionService) {
+                                
                 var inputHtml = "<p>This string with a {definition}!</p>";
                 var expected = "<p>This string with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">definition</a>!</p>";
-                //console.log(window.jasmine.DEFAULT_TIMEOUT_INTERVAL);
-                setTimeout(function() {
-                    service.replaceDefinitionTags(inputHtml, function(html) {
-                        console.log(html);
-                        expect(html).toEqual(expected);
-                    });
-                }, 1000);
+                
+                definitionService.query(function(definitions) {
+                    // gets sync mocked, so no done() needed!
+                    var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
 
-            });
+                    expect(definitions[0].word).toEqual("definition");
+                    expect(outputHtml).toEqual(expected);
+                });
+            }));
+
+
         });
 
-        describe('getOlat()', function() {
+        /*describe('getOlat()', function() {
             var file;
             var fileWithLinks;
             var fileWithDefinitions;
@@ -368,7 +352,7 @@ describe('Service: HTMLService', function () {
 
             });
         
-            /*it("should add table of definitions to html", function(done) {
+            it("should add table of definitions to html", function(done) {
 
                 var config = {
                     addTitle: false,
@@ -404,9 +388,9 @@ describe('Service: HTMLService', function () {
                     });
                 }, 5);
 
-            });*/
+            });
 
-        }); 
+        });*/
     });
 
     describe('MainzedPresentation functions', function() {

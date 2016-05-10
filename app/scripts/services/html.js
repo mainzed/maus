@@ -15,7 +15,7 @@ angular.module('meanMarkdownApp')
      * HTML as parameter
      */
      // TODO: dont require file, but create EditorService
-    this.getOlat = function(file, config, callback) {
+    this.getOlat = function(file, definitions, config, callback) {
         //console.log(callback);
         var config = config || {
             addTitle: false,
@@ -63,8 +63,7 @@ angular.module('meanMarkdownApp')
 
             if (text.substring(0, 1) !== "!") {  // ignore "weiterführende links" in text. but they have been pushed to list
                 return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-            }
-            
+            } 
         };
 
         // custom image renderer
@@ -103,10 +102,8 @@ angular.module('meanMarkdownApp')
                     "</figcaption>\n" + 
                     "</figure>\n";
         };
-
         
         var html = marked(markdown, { renderer: customRenderer });
-
 
         var stories = this.getStories(html);  // needed for table of content
 
@@ -137,6 +134,10 @@ angular.module('meanMarkdownApp')
                     html;
         }
 
+        // definitions
+        this.replaceDefinitions(html, definitions);
+        
+
         // do last since its async
         /*this.replaceDefinitionTags(html, function(html) {
 
@@ -146,7 +147,7 @@ angular.module('meanMarkdownApp')
             callback(html);
         });*/
 
-        callback(html);
+        //callback(html);
     };
 
     this.getMainzedPresentation = function(file) {
@@ -196,14 +197,15 @@ angular.module('meanMarkdownApp')
                 "</html>\n";
     };
 
-    this.replaceDefinitionTags = function(html, cb) {
+    this.replaceDefinitionTags = function(html, definitions) {
 
-        function replace(definitions, words) {
+        // loop through all defined words and look up a definition in the database
+        var words = html.match(/\{(.*?)\}/g); 
 
-            // loop through all defined words and look up a definition in the database
+        if (definitions.length && words) {
+            //console.log("word and definition found!");
+
             words.forEach(function(word, index) {
-                console.log("processing " + word);
-
                 // remove brackets
                 var content = word.replace("{", "").replace("}", ""); // bracket content 
                 var mainWord;  // e.g. Geld
@@ -226,16 +228,9 @@ angular.module('meanMarkdownApp')
                         } else {  // use definition mai word as link
                             snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
                         }
-                        
-                        //var html = $scope.html;
 
                         html = html.replace(word, snippet);
-                        //console.log($scope.html);
-                        
-                        /*if (defs.indexOf(definition) === -1) {  // skip duplicates
-                            console.log(defs.indexOf(definition));
-                            defs.push(definition);
-                        }*/
+
                         if (!defs.hasOwnProperty(definition.word)) {  // skip duplicates
                             defs[definition.word] = definition;
                         }
@@ -246,55 +241,16 @@ angular.module('meanMarkdownApp')
                         //appendTables($scope.html);
                     
                         // on last word -> create definitions table
-                        if (index === words.length - 1) {  // last word
-
-                            //console.log(defs);
-                            //var defs = getDefinitions($scope.html);
-                            //console.log(defs);
-                            //console.log(links);
-
+                        /*if (index === words.length - 1) {  // last word
                             if (Object.keys(defs).length) {
-                                //console.log("HERE!");
-                                // append to end of file
-                                
-
-                                //html += this.createDefinitionsTable(defs);
-                                //console.log("AFTER");
-                                // call callback function and provide it the newly create html
-                                //console.log(html);
                                 cb(html);
-                                //console.log("more!");
-                                // unlock export button!
-                                //$scope.olatDownloadEnabled = true;
-
                             }
-
-                        }
-
-                        //break;
+                        }*/
                     }
-                });
-                
-            });  
-
+                });  
+            });
         }
-
-        // get all definitions, if no definitions exist, just return input html
-        definitionService.query(function(definitions) {
-            
-            var words = html.match(/\{(.*?)\}/g);  // get words defined in text
-
-            if (definitions.length && words) {
-                console.log(definitions.length);
-                console.log(words);
-                
-               replace(definitions, words);  // async callback
-            
-            } else {  // no definitions in database or no words in text
-                //cb(html);  // return input html
-            }
-        });
-
+        return html;
     };
 
     /**
