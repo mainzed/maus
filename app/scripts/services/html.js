@@ -10,12 +10,13 @@
 angular.module('meanMarkdownApp')
   .service('HTMLService', function (definitionService) {
     
+    var usedDefs;  // store IDs of actually used defs
     /**
      * generates OLAT html from markdown. provides a callback with the generated
      * HTML as parameter
      */
      // TODO: dont require file, but create EditorService
-    this.getOlat = function(file, config, callback) {
+    this.getOlat = function(file, definitions, config) {
         //console.log(callback);
         var config = config || {
             addTitle: false,
@@ -36,7 +37,7 @@ angular.module('meanMarkdownApp')
         var counter = 0;
         customRenderer.heading = function (text, level) {
             counter++;
-            var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+            //var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
             headings.push({
                 text: text,
@@ -63,8 +64,7 @@ angular.module('meanMarkdownApp')
 
             if (text.substring(0, 1) !== "!") {  // ignore "weiterführende links" in text. but they have been pushed to list
                 return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-            }
-            
+            } 
         };
 
         // custom image renderer
@@ -103,14 +103,15 @@ angular.module('meanMarkdownApp')
                     "</figcaption>\n" + 
                     "</figure>\n";
         };
-
         
         var html = marked(markdown, { renderer: customRenderer });
-
 
         var stories = this.getStories(html);  // needed for table of content
 
         html = this.replaceStoryTags(html);
+
+        //var usedDefs = [];
+        html = this.replaceDefinitionTags(html, definitions);
         
         // add tables of images and links
         if (config.addImagesTable) {
@@ -119,6 +120,10 @@ angular.module('meanMarkdownApp')
 
         if (config.addLinksTable) {
             html += this.createLinksTable(links);
+        }
+
+        if (config.addDefinitionsTable) {
+            html += this.createDefinitionsTable(definitions);
         }
 
         // add table of content to beginning of file
@@ -137,16 +142,7 @@ angular.module('meanMarkdownApp')
                     html;
         }
 
-        // do last since its async
-        /*this.replaceDefinitionTags(html, function(html) {
-
-            // wrap html with header and thml tags
-            html = this.wrapHTML(html, title);
-
-            callback(html);
-        });*/
-
-        callback(html);
+        return html;
     };
 
     this.getMainzedPresentation = function(file) {
@@ -181,7 +177,7 @@ angular.module('meanMarkdownApp')
     this.wrapHTML = function(html, title) {
         
         return "<!DOCTYPE html>\n" + 
-                "<html lang=\"de\">" +
+                "<html lang=\"de\">\n" +
                 "<head>\n" +
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
@@ -189,21 +185,24 @@ angular.module('meanMarkdownApp')
                 '<link rel="stylesheet" href="style/olat.css">\n' +
                 "</head>\n"+
                 "<body>\n" +
-                html +
+                html + "\n" +
                 "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
                 "<script src=\"javascript/olat.js\"></script>\n" +
                 "</body>\n"+
-                "</html>\n";
+                "</html>";
     };
 
-    this.replaceDefinitionTags = function(html, cb) {
+    this.replaceDefinitionTags = function(html, definitions) {
+        // reset used definitions
+        usedDefs = [];
 
-        function replace(definitions, words) {
+        // loop through all defined words and look up a definition in the database
+        var words = html.match(/\{(.*?)\}/g); 
 
-            // loop through all defined words and look up a definition in the database
+        if (definitions.length && words) {
+            //console.log("word and definition found!");
+
             words.forEach(function(word, index) {
-                console.log("processing " + word);
-
                 // remove brackets
                 var content = word.replace("{", "").replace("}", ""); // bracket content 
                 var mainWord;  // e.g. Geld
@@ -216,7 +215,7 @@ angular.module('meanMarkdownApp')
                     mainWord = content;
                 }
                 
-                var defs = {};
+                //var defs = {};
                 definitions.forEach(function(definition) {
 
                     if (definition.word === mainWord) {
@@ -226,18 +225,11 @@ angular.module('meanMarkdownApp')
                         } else {  // use definition mai word as link
                             snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
                         }
-                        
-                        //var html = $scope.html;
 
                         html = html.replace(word, snippet);
-                        //console.log($scope.html);
-                        
-                        /*if (defs.indexOf(definition) === -1) {  // skip duplicates
-                            console.log(defs.indexOf(definition));
-                            defs.push(definition);
-                        }*/
-                        if (!defs.hasOwnProperty(definition.word)) {  // skip duplicates
-                            defs[definition.word] = definition;
+
+                        if (usedDefs.indexOf(definition._id) === -1) {  // skip duplicates
+                            usedDefs.push(definition._id);
                         }
                         
 
@@ -246,55 +238,17 @@ angular.module('meanMarkdownApp')
                         //appendTables($scope.html);
                     
                         // on last word -> create definitions table
-                        if (index === words.length - 1) {  // last word
-
-                            //console.log(defs);
-                            //var defs = getDefinitions($scope.html);
-                            //console.log(defs);
-                            //console.log(links);
-
+                        /*if (index === words.length - 1) {  // last word
                             if (Object.keys(defs).length) {
-                                //console.log("HERE!");
-                                // append to end of file
-                                
-
-                                //html += this.createDefinitionsTable(defs);
-                                //console.log("AFTER");
-                                // call callback function and provide it the newly create html
-                                //console.log(html);
                                 cb(html);
-                                //console.log("more!");
-                                // unlock export button!
-                                //$scope.olatDownloadEnabled = true;
-
                             }
-
-                        }
-
-                        //break;
+                        }*/
                     }
-                });
-                
-            });  
-
+                });  
+            });
         }
 
-        // get all definitions, if no definitions exist, just return input html
-        definitionService.query(function(definitions) {
-            
-            var words = html.match(/\{(.*?)\}/g);  // get words defined in text
-
-            if (definitions.length && words) {
-                console.log(definitions.length);
-                console.log(words);
-                
-               replace(definitions, words);  // async callback
-            
-            } else {  // no definitions in database or no words in text
-                //cb(html);  // return input html
-            }
-        });
-
+        return html;
     };
 
     /**
@@ -407,28 +361,30 @@ angular.module('meanMarkdownApp')
      * requires a an object of definition objects
      */
     this.createDefinitionsTable = function(definitions) {
+        
         var html = "";
-        console.log("START!");
-        console.log(definitions);
-        html += "<div id=\"definitions-table\" class=\"definitions-table\">\n<h4>Glossar</h4>\n<ul>";
+        html += "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+                "<h4>Glossar</h4>\n" +
+                "<ul>\n";
 
         // sort keys by alphabet
         Object.keys(definitions).sort().forEach(function(key) {
             var definition = definitions[key];
-            if (definition.url) {
-                html += "<li>" + 
-                    "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a> (<a href=\"" + definition.url + "\" target=\"_blank\">website</a>)" +
-                "</li>";
-            } else {
-                html += "<li>" + 
-                    "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a>" +
-                "</li>";
-            }
+            //console.log(definition.word);
 
+            if (usedDefs.indexOf(definition._id) > -1 && definition.word) {  // definition was used in text and has a word
+
+                html += "<li>\n";
+                if (definition.url) {
+                    html += "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a> (<a href=\"" + definition.url + "\" target=\"_blank\">website</a>)\n";
+                } else {
+                    html += "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a>\n";
+                }
+                html += "</li>\n";
+            }
         });
 
         html += "</ul>\n</div>\n";
-        console.log("CREATED TABLE!");
 
         return html;
     };
@@ -439,7 +395,7 @@ angular.module('meanMarkdownApp')
      * requires a list of heading objects
      */
     this.createTableOfContent = function(bodyHtml, headings, stories, images) {
-        var stories = stories || false;
+        stories = stories || false;
         var html = "";
         
         html += "<div id=\"headings-table\" class=\"headings-table\">\n" +
@@ -472,7 +428,8 @@ angular.module('meanMarkdownApp')
             });
         }
 
-        if (bodyHtml.match("id=\"images-table\"") || bodyHtml.match("id=\"links-table\"") || bodyHtml.match("id=\"links-table\"")) {
+        // add seperator if images, links or definitions table exist
+        if (bodyHtml.match("id=\"images-table\"") || bodyHtml.match("id=\"links-table\"") || bodyHtml.match("id=\"definitions-table\"")) {
             html += "<li class=\"seperator\"></li>\n";
         }
 
