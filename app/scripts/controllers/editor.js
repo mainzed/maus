@@ -30,7 +30,7 @@ angular.module('meanMarkdownApp')
 
         //$scope.editor = EditorService.getEditor();
 
-        fitEditorHeight();
+        // fitEditorHeight();
     };
 
 
@@ -346,7 +346,7 @@ angular.module('meanMarkdownApp')
     });
 
     $(window).resize(function () {
-        fitEditorHeight();
+        // fitEditorHeight();
     });
 
     var timer;
@@ -363,11 +363,11 @@ angular.module('meanMarkdownApp')
     });
 
     function fitEditorHeight() {
-        var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
+        //var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
         //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
         //editor.setSize("",  height);  // empty string as workaround
         
-        $(".nano").css("height", height); 
+        //$(".nano").css("height", height); 
     }
 
     /**
