@@ -2,6 +2,8 @@
 
 var express = require('express');
 var router = express.Router();
+var fs = require('fs');  // write files
+var path = require('path');
 
 // mongoose models
 var File = require('../models/file');
@@ -199,6 +201,41 @@ router.delete('/archivedfiles/:id', function (req, res) {
         }
         res.json(archivedFile);
     });
+});
+
+// post html string and save it as preview.html
+router.post('/savepreview', function (req, res) {
+    var html = req.body.html;
+    var type = req.body.type;
+    var outputPath;
+
+    console.log(type);
+
+    if (type === "opOlat" || type === "opMainzed" || type === "prMainzed") {
+        console.log("found type!");
+        outputPath = "app/preview_files/" + type.toLowerCase() + "/preview.html";
+    } else {
+        res.status(500).send('Filetype ' + type + 'not supported!');
+    }
+
+    
+    //var finalPath =  path.join(__dirname, outputPath);
+    
+    //console.log(finalPath);
+
+    var options = { flag : 'w' };
+    fs.writeFile(outputPath , html, options, function(err) {
+        if(err) {
+            console.log(err);
+            res.status(500).send('Error while trying to save preview!');
+        }
+        //console.log("created " + outputPath);
+        //res.status(200);
+        res.json({
+            message: "success", 
+            previewPath: outputPath.substring(4)
+        });
+    }); 
 });
 
 module.exports = router;

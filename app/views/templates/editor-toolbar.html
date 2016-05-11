@@ -50,7 +50,7 @@
     </button>
 
     <!-- preview button -->
-    <button class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
+    <button ng-disabled="file.type !== 'opOlat'" class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
         Preview
     </button>
 
