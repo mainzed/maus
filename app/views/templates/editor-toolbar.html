@@ -1,5 +1,8 @@
 <div class="toolbarwrapper">
   <div id="editor-tools" class="toolbar six">
+    
+    
+    <!-- home button -->
     <div class="btn-group" role="group"> 
       <button class="btn btn-default btn-sm" ng-click="onFilesClick()">
         <span class="icon-home"></span>
@@ -63,6 +66,10 @@
     </div>
     <span class="save-text" ng-show="showSuccess === true">... saved!</span>
     <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
+
+    <!-- filename -->
+    <span class="filename">{{ file.title }} ({{ file.type }})</span>
+
 
   </div>
 </div>

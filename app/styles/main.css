@@ -133,9 +133,7 @@ body {
 
 /* toolbars */
 
-#editor-tools {
-  
-}
+
 
 #editor-tools button, #editor-tools a {
   font-family: "Roboto";
@@ -153,6 +151,8 @@ body {
 .toolbar {margin: 0 auto; padding-bottom: 15px; padding-top: 0px;}
 .seven {width: 70%;}
 .six {width: 60%;}
+
+.filename {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em; float: right; display: block;}
 
 
 
