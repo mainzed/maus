@@ -26,6 +26,7 @@ angular.module('meanMarkdownApp')
     $scope.onCreateNewFile = function() {
         ngDialog.open({ 
             template: "./views/templates/dialog_new_file.html",
+            className: "smalldialog",
             disableAnimation: true,
             closeByDocument: true,  // enable clicking on background to close dialog
             scope: $scope
