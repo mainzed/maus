@@ -10,7 +10,7 @@
 angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService, 
-        $document, fileService, AuthService, ngDialog, 
+        $document, $http, fileService, AuthService, ngDialog, 
         definitionService) {
     
     if (!AuthService.isAuthenticated()) {
@@ -28,12 +28,7 @@ angular.module('meanMarkdownApp')
      */
     $scope.codemirrorLoaded = function(_editor){
         $scope.editor = _editor;  // for global settings
-
-        //$scope.editor = EditorService.getEditor();
-
-        // fitEditorHeight();
     };
-
 
     // get file based on id provided in address bar
 	fileService.get({ id: $routeParams.id }, function(file) {
@@ -217,17 +212,32 @@ angular.module('meanMarkdownApp')
         definitionService.query(function(definitions) {
             
             // convert markdown to html
-            $scope.html = HTMLService.getOlat($scope.file, definitions, config);
-            //html = HTMLService.wrapHTML(html, $scope.file.title);  // TODO: wrap html and save on server
-            
-            // open preview lightbox
-            ngDialog.open({ 
-                template: "./views/templates/dialog_preview.html",
-                disableAnimation: true,
-                width: 300,
-                closeByDocument: true,  // enable clicking on background to close dialog
-                scope: $scope
+            var html = HTMLService.getOlat($scope.file, definitions, config);
+            html = HTMLService.wrapHTML(html, $scope.file.title);  // TODO: wrap html and save on server
+
+            var postData = {
+                "type": $scope.file.type,
+                "html": html
+            };
+
+            $http.post('/api/savepreview', postData).then(function(data) {
+
+                //$scope.previewPath = data.data;  // returns path of newly created html
+                $scope.previewPath = data.data.previewPath;
+                // success
+                // open preview lightbox with iframe as soon as the post request returns success
+                ngDialog.open({ 
+                    template: "./views/templates/dialog_preview.html",
+                    disableAnimation: true,
+                    closeByDocument: true,  // enable clicking on background to close dialog
+                    scope: $scope
+                });
+            }, function() {
+                // error
+                console.log("something went wrong while trying to create preview");
             });
+
+            
         });
     };
 
