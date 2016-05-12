@@ -130,7 +130,8 @@ router.put('/definitions/:id', function (req, res) {
         word: definition.word,
         author: definition.author,
         text: definition.text,
-        url: definition.url
+        url: definition.url,
+        filetype: definition.filetype
     };
     Definition.findOneAndUpdate({_id: id}, update, function(err, definition) {
         if (err) {

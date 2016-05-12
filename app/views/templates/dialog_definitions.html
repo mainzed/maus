@@ -40,21 +40,18 @@
 
       <tbody> 
 
-        <tr ng-repeat="definition in definitions | filter:filterBox | orderBy: '-updated_at'"> 
+        <tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'"> 
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
               <span class="icon-enter"></span>
             </a>
           </td>
           <td>
-            
             <ms-table-input ng-model="definition.word"></ms-table-input>
-
           </td> 
 
           <td>
             <ms-table-input ng-model="definition.text"></ms-table-input>
-            
           </td>
 
           <td>
@@ -74,16 +71,13 @@
 
         </tr><!-- end repeat -->
         
-        
-
       </tbody> 
     </table>
   </scrollable>
  
   <div class="toolbarrelative">
     <div class="toolbar">
-      <!--<button class="btn btn-default btn-sm" ng-click="onApplyDefinitionChanges()" ng-disabled="!hasChanges">apply changes</button>-->
-      <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick(); createdNew = true">create new</button>
+      <button class="btn btn-default btn-sm" ng-click="onCreateDefinitionClick()">create new</button>
     </div>
   </div>
 </div>

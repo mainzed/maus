@@ -8,6 +8,7 @@ var definitionSchema = new Schema({
     word: String, 
     url: String,
     text: String,
+    filetype: { type: String, default: "opOlat" },
     updated_at: { type: Date, default: Date.now }
 });
 

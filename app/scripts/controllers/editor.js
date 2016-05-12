@@ -139,21 +139,6 @@ angular.module('meanMarkdownApp')
         $scope.addSnippet(snippet);
     };
 
-    $scope.onDefinitionClick = function() {
-        ngDialog.open({ 
-            template: "./views/templates/dialog_definitions.html",
-            scope: $scope,
-            disableAnimation: true,
-            preCloseCallback: function() {
-                $scope.onApplyDefinitionChanges();
-                $scope.editMode = false;
-            }
-        });
-    };
-    
-    $scope.getDefinitions = function() {
-        $scope.definitions = definitionService.query();
-    };
 
     $scope.onExportClick = function() {
 
@@ -164,7 +149,6 @@ angular.module('meanMarkdownApp')
             disableAnimation: true,
             scope: $scope
         });
-
     };
 
     $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions) {
@@ -242,32 +226,31 @@ angular.module('meanMarkdownApp')
         });
     };
 
-    $scope.onDefinitionCreateClick = function() {
-        $scope.definition = {};  // reset
-        $scope.editMode = true;
-    };
-
-    $scope.onDefinitionEditClick = function(definition) {
-        $scope.definition = definition;
-        $scope.editMode = true;
-    };
-
-    $scope.onDefinitionSaveClick = function(definition) {
-        if (definition._id) {  // already exists, update!
-            definitionService.update({id: definition._id}, definition, function() {
-                // success
-                $scope.getDefinitions();
-                $scope.editMode = false;  // changes view
-            });
-        } else {  // doesnt exist, create new!
-            definitionService.save(definition, function() {
-                // success
-                $scope.getDefinitions();
-                $scope.editMode = false;  // changes view
-            });
-        }
+    /**
+     * update markdown service when editor changes
+     */
+    $scope.onEditorChange = function() {
+        //$scope.file.markdown = $scope.editor.getValue();  // TODO: set file.markdown as ng-model
+        $scope.unsavedChanges = true;  // gets reset on save
     };
     
+    // handler for click on button "Glossareintrag"
+    $scope.onDefinitionClick = function() {
+        ngDialog.open({ 
+            template: "./views/templates/dialog_definitions.html",
+            scope: $scope,
+            disableAnimation: true,
+            preCloseCallback: function() {
+                $scope.onApplyDefinitionChanges();
+                $scope.editMode = false;
+            }
+        });
+    };
+    
+    $scope.getDefinitions = function() {
+        $scope.definitions = definitionService.query();
+    };
+
     $scope.onRemoveDefinitionClick = function(id) {
         definitionService.remove({id: id}, function() {
             // success
@@ -277,74 +260,30 @@ angular.module('meanMarkdownApp')
         });
     };
 
-    /*$scope.remove = function(item) { 
-        var index = $scope.bdays.indexOf(item);
-        $scope.bdays.splice(index, 1);     
-    };*/
-
-    /**
-     * update markdown service when editor changes
-     */
-    $scope.onEditorChange = function() {
-
-        //$scope.file.markdown = $scope.editor.getValue();  // TODO: set file.markdown as ng-model
-
-        $scope.unsavedChanges = true;  // gets reset on save
-    };
-
     /**
      * saves all defintions in case they were changed
      */
     $scope.onApplyDefinitionChanges = function() {
-        $scope.hasChanges = false;
+        //$scope.hasChanges = false;
         $scope.definitions.forEach(function(definition) {
+            //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             definitionService.update({id: definition._id}, definition, function() {
                 // success
             });
         });
-        // if a new definition was created, save that as well
-        if ($scope.newDefinition) {
-            definitionService.save($scope.newDefinition, function() {
-                // success
-                $scope.newDefinition = false;
-                //$scope.getDefinitions();
-                $scope.createNewMode = false;  // reset
-            });
-        }
     };
 
     $scope.onCreateDefinitionClick = function() {
-        
+        // save existing
         $scope.onApplyDefinitionChanges();
 
-        definitionService.save({}, function() {
+        // create new empty definition
+        definitionService.save({ filetype: $scope.file.type }, function() {
             // success
             $scope.getDefinitions();  // refresh
         });
 
     };
-
-    /*$scope.onDeleteDefinitionClick = function(id) {
-        definitionService.remove({id: id}, function() {
-            $scope.getDefinitions();  // refresh
-        });
-    };*/
-
-    $scope.onDefinitionChange = function() {
-        $scope.hasChanges = true;
-    };
-
-    $scope.onTextareaChange = function(){
-        $(".clickspan").next("textarea").css("display", "block");
-        $(".clickspan").next("textarea").focus();
-        //console.log("works!");
-    };
-
-    $scope.$watch("showTextarea", function(newValue, oldValue) {
-        console.log(newValue);
-        console.log(oldValue);
-    });
-
 
     // link hotkey
     $(document).keydown(function (e) {
