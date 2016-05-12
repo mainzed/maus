@@ -56,6 +56,13 @@ border: none;
 .line {width: 10px; height: 1px; background: black; display: block; margin-bottom: 2px;}
 .bluebutton {color: #004CFF; border: 1px solid #004CFF; border-radius: 2px !important; font-family: "Roboto"; margin-top: 20px;}
 .bluebutton.btn[disabled] {color: tomato; border-color: tomato;}
+.btn:focus,.btn:active {
+   outline: none !important;
+   background: none;
+   color: #004CFF;
+}
+
+.btn:active .bluebutton {color: #004CFF;}
 
 
 .filesection {width: 100%; }
@@ -152,7 +159,7 @@ body {
 }
 
 .smalltoolbar {font-family: "Roboto"; padding-top: 100px; letter-spacing: 0.03em; }
-.smalltoolbar span {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em;}
+.toolbar span {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em;}
 .toolbarwrapper {position: fixed; left: 0; bottom: 0; width: 100%; background: white; border-top: 1px solid #e3e3e3; z-index: 999; height: 40px; overflow: hidden; text-align: center;}
 .toolbarrelative {position: relative; margin-top: 10px; margin-left: -9px; margin-bottom: -9px; width: calc(100% + 18px); background: white; border-top: 1px solid #e3e3e3;}
 .toolbar {margin: 0 auto; padding-bottom: 15px; padding-top: 0px;}
@@ -163,7 +170,7 @@ body {
 
 .home {position: fixed; left: 10px; bottom: 10px;}
 .filename {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em; position: fixed; 
-right: 10px; bottom: 10px; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; height: 20px;}
+right: 10px; bottom: 14px; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; height: 20px;}
 
 
 
@@ -281,7 +288,7 @@ img {background-color: none !important;}
 
 #maus, #maustext {position: fixed; top: 20px; right: 25px; margin-left: -30px; width: 60px;}
 #maustext {bottom: 20px; width: 200px; margin-left: -100px; text-align: center; font-size: 12px; display: none;}
-.displayuser { float: right; font-family: "Roboto";}
+.displayuser {  font-family: "Roboto"; margin-top: 4px;}
 .underline {text-decoration: underline;}
 .nomargin {margin: 0;}
 .nopadding {padding: 0;}

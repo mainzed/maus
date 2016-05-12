@@ -61,6 +61,7 @@ angular.module('meanMarkdownApp')
         
         ngDialog.openConfirm({
             template: "./views/templates/dialog_confirm_delete.html",
+            className: "smalldialog",
             disableAnimation: true,
             scope: $scope
         }).then(function (success) {
