@@ -2,3 +2,6 @@
 /.tmp
 /.sass-cache
 /app/bower_components
+/app/preview_files/opolat/preview.html
+/app/preview_files/prmainzed/preview.html
+/app/preview_files/opmainzed/preview.html

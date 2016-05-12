@@ -133,9 +133,7 @@ body {
 
 /* toolbars */
 
-#editor-tools {
-  
-}
+
 
 #editor-tools button, #editor-tools a {
   font-family: "Roboto";
@@ -153,6 +151,8 @@ body {
 .toolbar {margin: 0 auto; padding-bottom: 15px; padding-top: 0px;}
 .seven {width: 70%;}
 .six {width: 60%;}
+
+.filename {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em; float: right; display: block;}
 
 
 
@@ -278,6 +278,36 @@ img {background-color: none !important;}
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
 .ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px;}
+.ngdialog.smalldialog .ngdialog-content { 
+  width: 400px; padding: 10px;
+  -webkit-animation: ngdialog-flyin .5s;
+  animation: ngdialog-flyin .5s;
+  background: #e9e9e9;
+  border-radius: 5px;
+  color: #444;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 9px;
+  position: relative;
+}
+
+.ngdialog.smalldialog .ngdialog-close:before {
+    background: transparent;
+    border-radius: 3px;
+    color: #bbb;
+    content: '\00D7';
+    font-size: 26px;
+    font-weight: 400;
+    height: 30px;
+    line-height: 26px;
+    position: absolute;
+    right: 3px;
+    text-align: center;
+    top: 3px;
+    width: 30px;
+}
+
+.ngdialog.smalldialog .ngdialog-close {position: absolute; right: 0; top: 0;}
 
 .view {height: 100%;}
 
@@ -314,8 +344,16 @@ img {background-color: none !important;}
 /* icons */
 .icon-trash {float: right;}
 
+
+textarea.form-control {
+    height: auto;
+    max-width: 100%;
+}
+
+/* preview */
 .preview {
   width: 100%;
   height: 500px;
   border: none;
 }                
+

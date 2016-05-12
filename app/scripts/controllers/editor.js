@@ -87,6 +87,7 @@ angular.module('meanMarkdownApp')
         if ($scope.unsavedChanges) {
             ngDialog.openConfirm({
                 template: "./views/templates/dialog_confirm_home.html",
+                className: 'smalldialog',
                 scope: $scope
             }).then(function(success) {
                 // user confirmed to go back to files
