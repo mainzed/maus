@@ -8,9 +8,7 @@
     <!-- create new -->
     <div class="toolbarwrapper">
       <div class="smalltoolbar toolbar seven">
-    		<button class="btn btn-default btn-sm" id="create-new" class="file createfile" ng-click="onCreateNewFile()">
-          Datei erstellen
-        </button>
+    		
         <div class="displayuser">
           <span ng-show="currentUser">maus version 0.5 / Logged in as {{ currentUser.name }} ({{ currentUser.group }}), </span>
           <button type="button" class="btn btn-default underline" ng-click="onLogoutClick()">
@@ -21,6 +19,10 @@
     </div>
   </div>
 </div>
+
+
+<img class="plusposition" src="../images/plus.png" width="50" ng-click="onCreateNewFile()" />
+
 
 
 
