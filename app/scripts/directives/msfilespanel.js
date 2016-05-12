@@ -37,13 +37,14 @@ angular.module('meanMarkdownApp')
              */
             scope.getFormattedDate = function(timestamp) {
                 var format = "dd.MM.yyyy";
+                var timezone = "CEST";
 
-                var date = $filter('date')(timestamp, format);
-                var today = $filter('date')(new Date(), format);
-                var yesterday = $filter('date')(new Date() - 1, format);
+                var date = $filter('date')(timestamp, format, timezone);
+                var today = $filter('date')(new Date(), format, timezone);
+                var yesterday = $filter('date')(new Date() - 1, format, timezone);
 
                 if (date === today) {
-                    return "Heute";
+                    return "Heute ";
                 } else if (date === yesterday) {
                     return "Gestern";
                 } else {

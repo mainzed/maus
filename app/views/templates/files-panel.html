@@ -25,9 +25,9 @@
 
        <!-- date -->
       <td>
-      <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['updated_at']" data-toggle="tooltip" title="Reset Filter">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['updated_at']" data-toggle="tooltip" title="Reset Filter">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
       </td>
 
        <!-- author -->
@@ -77,7 +77,7 @@
       
       <td> 
 
-        <div class="dropdown pull-right">
+        <div class="dropdown pull-right" ng-init="checkIfArchivedFiles(file._id)"> <!-- check if archived verions exist -->
           <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             <span class="line"></span>
             <span class="line"></span>
@@ -93,8 +93,8 @@
              </a>
             </li>
 
-            <!-- history -->
-            <li>
+            <!-- history, show only if exists -->
+            <li ng-show="hasArchived.indexOf(file._id) > -1">
               <a ng-href="#/history/{{file._id}}" target="_self" class="" data-toggle="tooltip" title="Show History">
                 Frühere Versionen
                </a>
