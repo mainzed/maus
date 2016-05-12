@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('AuthService', function ($cookieStore) {
+  .service('AuthService', function ($cookieStore, $location) {
 
     // groups/roles = ["admin", "look-diva", "mainzed"]
     var users = [
@@ -40,13 +40,6 @@ angular.module('meanMarkdownApp')
 
     ];
 
-    //var currentUser;
-   
-    this.setUser = function(username) {
-        //currentUser = username;
-        $cookieStore.put('currentUser', username);
-    };
-
     this.getUser = function() {
         return $cookieStore.get('currentUser');
     };
@@ -63,7 +56,7 @@ angular.module('meanMarkdownApp')
      * takes callbacks for success and failure
      */
     this.login = function(username, password, success, failure) {
-        var me = this;
+
         // TODO: replace this with actual server login        
         var isValid = false;
         users.forEach(function(item) {
@@ -73,7 +66,7 @@ angular.module('meanMarkdownApp')
                 if (item.password === password) {
                     isValid = true;
 
-                    me.setUser({ 
+                    $cookieStore.put('currentUser', { 
                         name: item.name,
                         group: item.group 
                     });
@@ -89,6 +82,7 @@ angular.module('meanMarkdownApp')
 
     this.logout = function() {
         $cookieStore.remove('currentUser');
+        $location.path("/login");
     };
 
   });
