@@ -1,0 +1,4 @@
+
+<span class="clickspan" ng-show="!showTextarea" ng-click="showTextarea = true">{{ bindModel }}</span> 
+           
+<textarea ng-show="showTextarea" type="text" placeholder="Word" ng-model="bindModel" class="form-control" ng-blur="showTextarea = false" focus-on-visibility></textarea>

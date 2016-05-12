@@ -42,6 +42,7 @@ module.exports = function(config) {
       'app/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js',
       'app/bower_components/jquery.mousestop/jquery.event.mousestop.js',
       'app/bower_components/angular-filter/dist/angular-filter.min.js',
+      'app/bower_components/lodash/lodash.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

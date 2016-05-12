@@ -64,7 +64,11 @@ angular.module('meanMarkdownApp')
 
             fileService.remove({id: id}, function() {
                 console.log("file remove successfull!");
-                $scope.files = fileService.query();
+
+                // remove file from local array without reloading
+                var index = _.findIndex($scope.files, {id: id});
+                $scope.files.splice(index, 1); 
+                //$scope.files = fileService.query();
 
                 // close open dialogs
                 //var openDialogs = ngDialog.getOpenDialogs(); 

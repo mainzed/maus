@@ -48,25 +48,13 @@
           </td>
           <td>
             
-            <!-- first column -->
-            <!--<span ng-hide="$index === 0 && createdNew" class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showWord" ng-click="showWord = true; onTextareaChange()">{{ definition.word }}</span> 
-              
-            <textarea ng-show="showWord || ($index === 0 && createdNew)" type="text" placeholder="Word" ng-model="definition.word" class="form-control" focus-on-visibility></textarea>-->
-
-            <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showWord" ng-click="showWord = true; onTextareaChange()">{{ definition.word }}</span> 
-              
-            <textarea ng-show="showWord" type="text" placeholder="Word" ng-model="definition.word" class="form-control" focus-on-visibility></textarea>
+            <ms-table-input ng-model="definition.word"></ms-table-input>
 
           </td> 
 
           <td>
-            <span class="clickspan" ng-blur="authorClass = ['def-table-entries']" ng-show="!showText" ng-click="showText = true; onTextareaChange()">{{ definition.text }}</span> 
-           
-
-
-            <textarea ng-show="showText" type="text" placeholder="Definition" ng-model="definition.text" class="form-control" focus-on-visibility></textarea>
-
-
+            <ms-table-input ng-model="definition.text"></ms-table-input>
+            
           </td>
 
           <td>
@@ -79,7 +67,7 @@
 
           <!-- remove -->
           <td>
-            <button type="button" class="btn btn-default" ng-click="onDeleteDefinitionClick(definition._id)">
+            <button type="button" class="btn btn-default" ng-click="onRemoveDefinitionClick(definition._id)">
               <span class="icon-trash"></span>
             </button>
           </td>

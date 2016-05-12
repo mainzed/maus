@@ -270,9 +270,16 @@ angular.module('meanMarkdownApp')
     $scope.onRemoveDefinitionClick = function(id) {
         definitionService.remove({id: id}, function() {
             // success
-            $scope.getDefinitions();
+            // remove from local definitions array without reloading
+            var index = _.findIndex($scope.definitions, {id: id});
+            $scope.definitions.splice(index, 1);     
         });
     };
+
+    /*$scope.remove = function(item) { 
+        var index = $scope.bdays.indexOf(item);
+        $scope.bdays.splice(index, 1);     
+    };*/
 
     /**
      * update markdown service when editor changes
@@ -299,7 +306,7 @@ angular.module('meanMarkdownApp')
             definitionService.save($scope.newDefinition, function() {
                 // success
                 $scope.newDefinition = false;
-                $scope.getDefinitions();
+                //$scope.getDefinitions();
                 $scope.createNewMode = false;  // reset
             });
         }
@@ -316,11 +323,11 @@ angular.module('meanMarkdownApp')
 
     };
 
-    $scope.onDeleteDefinitionClick = function(id) {
+    /*$scope.onDeleteDefinitionClick = function(id) {
         definitionService.remove({id: id}, function() {
             $scope.getDefinitions();  // refresh
         });
-    };
+    };*/
 
     $scope.onDefinitionChange = function() {
         $scope.hasChanges = true;
