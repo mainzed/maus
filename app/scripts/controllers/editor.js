@@ -13,11 +13,19 @@ angular.module('meanMarkdownApp')
         $document, $http, fileService, AuthService, ngDialog, 
         definitionService) {
     
-    if (!AuthService.isAuthenticated()) {
-        $location.path("/login");
-    } else {
-        $scope.currentUser = AuthService.getUser();
-    }
+    $scope.init = function() {
+        // check if logged in
+        if (!AuthService.isAuthenticated()) {
+            $location.path("/login");
+        } else {
+            $scope.currentUser = AuthService.getUser();
+        }
+
+        // get file based on id provided in address bar
+        fileService.get({ id: $routeParams.id }, function(file) {
+            $scope.file = file; 
+        });
+    };
 
     $scope.showSuccess = false;
     $scope.showError = false;
@@ -26,15 +34,9 @@ angular.module('meanMarkdownApp')
     /**
      * makes editor available to rest of controller 
      */
-    $scope.codemirrorLoaded = function(_editor){
+    $scope.onCodeMirrorLoaded = function(_editor){
         $scope.editor = _editor;  // for global settings
     };
-
-    // get file based on id provided in address bar
-	fileService.get({ id: $routeParams.id }, function(file) {
-        $scope.file = file; 
-    });
-
 
     $scope.editorOptions = {
         lineWrapping: true,
@@ -138,7 +140,6 @@ angular.module('meanMarkdownApp')
         
         $scope.addSnippet(snippet);
     };
-
 
     $scope.onExportClick = function() {
 
@@ -255,7 +256,7 @@ angular.module('meanMarkdownApp')
         definitionService.remove({id: id}, function() {
             // success
             // remove from local definitions array without reloading
-            var index = _.findIndex($scope.definitions, {id: id});
+            var index = _.findIndex($scope.definitions, {_id: id});
             $scope.definitions.splice(index, 1);     
         });
     };
@@ -348,14 +349,6 @@ angular.module('meanMarkdownApp')
         //clearTimeout(timer);
         //timer=setTimeout(mouseStopped,1400);
     });
-
-    function fitEditorHeight() {
-        //var height = window.innerHeight - 44 - 60 - 8;  // form: 34 + 10px // tools: 50 + 10px
-        //var height = window.innerHeight / 100 * 85;  // get 70% of screen height
-        //editor.setSize("",  height);  // empty string as workaround
-        
-        //$(".nano").css("height", height); 
-    }
 
     /**
      * prompt when trying to refresh with unsaved changes

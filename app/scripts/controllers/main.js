@@ -11,16 +11,18 @@ angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService) {
   	
     // check if already logged in, if not, redirect to login page
-    if (!AuthService.isAuthenticated()) {
-        $location.path("/login");
-    } else {
-        $scope.currentUser = AuthService.getUser();
-    }
+    
 
-    $scope.awesomeThings = [1, 2, 3];
-
+    $scope.init = function() {
+        if (!AuthService.isAuthenticated()) {
+            $location.path("/login");
+        } else {
+            $scope.currentUser = AuthService.getUser();
+        }
+    };
 
     $scope.files = fileService.query();
+    
     $scope.newFile = {};  // filled by dialog
 
     $scope.onCreateNewFile = function() {
@@ -67,7 +69,7 @@ angular.module('meanMarkdownApp')
                 console.log("file remove successfull!");
 
                 // remove file from local array without reloading
-                var index = _.findIndex($scope.files, {id: id});
+                var index = _.findIndex($scope.files, {_id: id});
                 $scope.files.splice(index, 1); 
                 //$scope.files = fileService.query();
 
@@ -81,7 +83,6 @@ angular.module('meanMarkdownApp')
             // Error logic here
             console.log("CANCELLED!");
         });
-   
     };
     
     $scope.onDownloadClick = function(id) {
@@ -107,7 +108,6 @@ angular.module('meanMarkdownApp')
             });
         });
     };
-
 
     $scope.getArchivedFiles = function() {
         var id = $routeParams.id;
@@ -167,7 +167,7 @@ angular.module('meanMarkdownApp')
         // updated file with content from archived File. use fileID to
         // know which file to replace
         fileService.update({id: archivedFile.fileID}, file, function() {
-            console.log("file updated successfully!");
+            //console.log("file updated successfully!");
             $scope.files = fileService.query();
             $location.path("/files");
         }, function() {
@@ -177,16 +177,16 @@ angular.module('meanMarkdownApp')
 
     $scope.onSaveClick = function(file) {
         fileService.update({id: file._id}, file, function() {
-            console.log("file updated successfully!");
-            $scope.files = fileService.query();
+            //success
+            //$scope.files = fileService.query();
         }, function() {
+            // error
             console.log("could not update file!");
         });
     };
 
     $scope.onLogoutClick = function() {
         AuthService.logout();
-        $location.path("/login");
     };
 
     $("#maus").hover(function(){
