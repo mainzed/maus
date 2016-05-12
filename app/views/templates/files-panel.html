@@ -1,5 +1,10 @@
+
 <!-- search box -->
 <input type="search" placeholder="Search" ng-model="filesFilterBox">
+
+<!-- show currently active filter -->
+<ms-filter-button></ms-filter-button>
+
 <div ng-repeat="(key, value) in files | filter: filesFilterBox | groupBy: 'type'" ng-show="groupHasValidFiles(key)">
 
   <!-- custom section names -->
@@ -7,7 +12,7 @@
   <span class="tableheader" ng-show="key === 'opMainzed'">Mainzed Jahresbericht</span>
   <span class="tableheader" ng-show="key === 'prMainzed'">Mainzed Presentation</span>
   <span class="tableheader" ng-show="key === 'prI3mainz'">i3mainz Presentation</span>
-
+  
   <table class="filegroup">
     <colgroup>
       <col span="1" style="width: 60%;">
@@ -16,37 +21,6 @@
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 10%;">
     </colgroup>
-    
-    <!-- show button to reset filter as column header when a filter is active -->
-    <tr ng-show="currentFilter"> 
-      <!-- filename -->
-      <td>
-      </td>
-
-       <!-- date -->
-      <td>
-        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['updated_at']" data-toggle="tooltip" title="Reset Filter">
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-      </td>
-
-       <!-- author -->
-      <td>
-        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['author']" data-toggle="tooltip" title="Reset Filter">
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-      </td>
-
-       <!-- private -->
-      <td>
-        <button type="button" class="btn btn-default btn-sm" ng-click="onResetClick()" ng-show="currentFilter['private']" data-toggle="tooltip" title="Reset Filter">
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-      </td>
-
-      <!-- menu -->
-      <td></td>
-    </tr>
 
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
     <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false">
