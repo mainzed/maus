@@ -109,6 +109,18 @@ angular.module('meanMarkdownApp')
         });
     };
 
+    $scope.onHistoryClick = function(id) {
+        fileService.get({id: id}, function(file) {
+            $scope.file = file;
+            
+            ngDialog.open({
+                template: "./views/history.html",
+                disableAnimation: true,
+                scope: $scope
+            });
+        });
+    };
+
     $scope.getArchivedFiles = function() {
         var id = $routeParams.id;
         $scope.archivedFiles = archivedFileService.query({id: id});

@@ -1,24 +1,46 @@
 <div ng-init="getArchivedFiles()">
-  <h3>{{ archivedFiles[0].title }} by {{ archivedFiles[0].author }} - Archivierte Versionen</h3>
+  <span class="tableheader">{{ archivedFiles[0].title }} by {{ archivedFiles[0].author }} - Archivierte Versionen</span>
 
+  <scrollable>
   <!--<span ng-show="archivedFiles.length < 1">No archived versions exist for this file.</span>-->
 
   <!--archived files found for this document: {{ archivedFiles.length }}-->
-  <div class="version" ng-repeat="archivedFile in archivedFiles | orderBy: 'created_at':true" > 
+  <table class="filegroup fullwidth historytable">
+   <colgroup>
+      <col span="1" style="width: 25%;">
+      <col span="1" style="width: 25%;">
+      <col span="1" style="width: 25%;">
+      <col span="1" style="width: 25%;">
+     
+    </colgroup>
+ 
+
+
+  <tr class="version" ng-repeat="archivedFile in archivedFiles | orderBy: 'created_at':true" > 
   <!-- ng-if skips first item -->
     
     <!-- formatted date or "current" -->
-    <div>{{ archivedFile.created_at | date: "dd.MM.yyyy HH:mm" : 'CEST'}} <span ng-show="$index === 0">(current)</span></div>
+    <td>{{ archivedFile.created_at | date: "dd.MM.yyyy HH:mm" : 'CEST'}} <span ng-show="$index === 0">(current)</span></td>
     
-    <div ng-show="!archivedFile.updated_by">changed by owner</div>
-    <div ng-show="archivedFile.updated_by === archivedFile.author">changed by {{ archivedFile.updated_by }}</div>
-    <div ng-show="archivedFile.updated_by && (archivedFile.updated_by !== archivedFile.author)">changed by {{ archivedFile.updated_by }}</div>
+    <td>
+    <span ng-show="!archivedFile.updated_by">changed by owner</span>
+    <span ng-show="archivedFile.updated_by === archivedFile.author">changed by {{ archivedFile.updated_by }}</span>
+    <span ng-show="archivedFile.updated_by && (archivedFile.updated_by !== archivedFile.author)">
+      changed by {{ archivedFile.updated_by }}</span>
+    </td>
 
+    <td>
     <!-- open as new file, visible fr everybody -->
-    <button type="button" class="btn" ng-click="onOpenAsNewFileClick(archivedFile)">Open as new file</button>
+    <button type="button" class="btn btn-default bluebutton nomargin" ng-click="onOpenAsNewFileClick(archivedFile)">Als neue Datei öffnen</button>
+    </td>
 
+    <td>
     <!-- revert file back to archived version, only visible for owner of file -->
-    <button type="button" class="btn" ng-click="onRevertFileClick(archivedFile)" ng-show="currentUser.name === archivedFile.author && $index > 0">Revert file back to this version</button>
-  </div>
+    <button type="button" class="btn btn-default bluebutton nomargin" ng-click="onRevertFileClick(archivedFile)" ng-show="currentUser.name === archivedFile.author && $index > 0">Hierauf zurücksetzen</button>
+    </td>
+
+  </tr>
+  </table>
+
+  </scrollable>
 </div>
-<a ng-href="#/files" class="home">back to files</a>
