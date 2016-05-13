@@ -21,6 +21,9 @@ angular.module('meanMarkdownApp')
         //console.log(bindModel);
         //scope.model = attrs.model;
         //element.text(attrs.model);
+
+        //console.log("")
+
       }
     };
   });

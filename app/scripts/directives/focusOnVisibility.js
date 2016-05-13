@@ -14,7 +14,6 @@ angular.module('meanMarkdownApp')
         scope.$watch(attrs.ngShow, function(newValue) {
             if (newValue === true) {
                 $timeout(function() {
-                  console.log("works");
                   element.focus();
                 }, 0, false);
             }

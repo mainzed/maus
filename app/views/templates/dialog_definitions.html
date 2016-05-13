@@ -39,7 +39,6 @@
       
 
       <tbody> 
-
         <tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'"> 
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
@@ -47,7 +46,11 @@
             </a>
           </td>
           <td>
-            <ms-table-input ng-model="definition.word"></ms-table-input>
+            <!-- new definition -->
+            <textarea ng-show="showNewFocus && $index === 0 && !definition._id" type="text" placeholder="Word" ng-model="definition.word" class="form-control" ng-blur="showNewFocus = false" focus-on-visibility></textarea>
+
+            <!-- existing definition -->
+            <ms-table-input ng-show="!showNewFocus || $index > 0 || definition._id" ng-model="definition.word"></ms-table-input>
           </td> 
 
           <td>
@@ -74,10 +77,7 @@
       </tbody> 
     </table>
   </scrollable>
- 
-  
     
-         <img class="plusposition" ng-click="onCreateDefinitionClick()" src="../images/plus.png" width="50" />
-     
+  <img class="plusposition" ng-click="onCreateDefinitionClick(); showNewFocus = true; filterBox = ''" src="../images/plus.png" width="50" />   
    
 </div>

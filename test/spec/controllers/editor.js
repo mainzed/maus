@@ -18,7 +18,7 @@ describe('Controller: EditorCtrl', function () {
 
     }));
 
-    it('should define scope', function () {
+    it('should have defined scope', function () {
         expect(scope).toBeDefined();
     });
 
@@ -42,5 +42,33 @@ describe('Controller: EditorCtrl', function () {
         expect(EditorCtrl.editor.getValue()).toBe(content + snippet);
 
     });*/
+
+    describe('definition functions', function() {
+        
+        it('should add new object to definitions array', function() {
+            
+            //scope.file.type = "testtype";
+            scope.definitions = [{
+                    _id: "definition1",
+                    word: "Test"
+                },{
+                    _id: "definition2",
+                    word: "Test2"
+                }];
+
+            expect(scope.definitions.length).toBe(2);
+
+            // add new
+            scope.onCreateDefinitionClick();
+
+            expect(scope.definitions.length).toBe(3);
+            //expect(scope.definitions[2]).toBe("testtype");
+
+        });
+
+    });
+    
+
+    
 
 });

@@ -10,7 +10,7 @@
 angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService, 
-        $document, $http, fileService, AuthService, ngDialog, 
+        $document, $http, $filter, fileService, AuthService, ngDialog, 
         definitionService) {
     
     $scope.init = function() {
@@ -223,8 +223,6 @@ angular.module('meanMarkdownApp')
                 // error
                 console.log("something went wrong while trying to create preview");
             });
-
-            
         });
     };
 
@@ -269,22 +267,23 @@ angular.module('meanMarkdownApp')
         //$scope.hasChanges = false;
         $scope.definitions.forEach(function(definition) {
             //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
-            definitionService.update({id: definition._id}, definition, function() {
-                // success
-            });
+            if (definition._id) {
+                definitionService.update({id: definition._id}, definition);
+
+            } else {  // new definition 
+                definitionService.save(definition);
+            }
         });
     };
 
     $scope.onCreateDefinitionClick = function() {
-        // save existing
-        $scope.onApplyDefinitionChanges();
+        // add empty object to local definitions array
+        var timestmap = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm:ss.sssZ", "CEST");
 
-        // create new empty definition
-        definitionService.save({ filetype: $scope.file.type }, function() {
-            // success
-            $scope.getDefinitions();  // refresh
+        $scope.definitions.push({ 
+            filetype: $scope.file.type,  // to be shown in table
+            updated_at: timestmap // to be sorted to top
         });
-
     };
 
     // link hotkey
