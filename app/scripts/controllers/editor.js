@@ -147,6 +147,7 @@ angular.module('meanMarkdownApp')
 
         ngDialog.open({ 
             template: "./views/templates/dialog_export.html",
+            className: "smalldialog",
             disableAnimation: true,
             scope: $scope
         });

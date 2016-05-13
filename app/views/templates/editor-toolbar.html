@@ -1,14 +1,13 @@
 <div class="toolbarwrapper">
-  <div id="editor-tools" class="toolbar six">
-    
-    
-    <!-- home button -->
-    <div class="btn-group" role="group"> 
-      <button class="btn btn-default btn-sm" ng-click="onFilesClick()">
-        <span class="icon-home"></span>
-      </button>
-    </div>
-    
+
+  <!-- home button -->
+  <button class="btn btn-default btn-sm home" ng-click="onFilesClick()">
+    <span class="icon-home"></span>
+  </button>
+
+
+  <div id="editor-tools" class="toolbar autowidth center">
+        
     <!-- undo and redo buttons -->
     <div class="btn-group" role="group"> 
       <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Undo (Ctrl + Z)" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
@@ -16,11 +15,11 @@
     </div>
     
     <!-- help button-->
-    <div class="btn-group" role="group"> 
-      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help">
+  
+    <button href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help">
         Spickzettel
-      </a>
-    </div>
+    </button>
+    
     
     <!-- image, links & storyscript buttons -->
     <div class="btn-group" role="group"> 
@@ -34,12 +33,12 @@
       </button>
 
       <!-- link button -->
-      <div class="btn-group" role="group">
-        <button class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
+      
+      <button class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
           Link
-        </button>
+      </button>
        
-      </div>
+      
 
       <!-- storyscript button -->
       <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
@@ -67,9 +66,10 @@
     <span class="save-text" ng-show="showSuccess === true">... saved!</span>
     <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
 
-    <!-- filename -->
-    <span class="filename">{{ file.title }} ({{ file.type }})</span>
+    
 
 
   </div>
+  <!-- filename -->
+    <span class="filename">{{ file.title }} ({{ file.type }})</span>
 </div>

@@ -27,13 +27,9 @@
   </div>
 
   <!-- save button -->
-  <button type="submit" class="btn btn-primary btn-sm" ng-disabled="!file.title || !file.author || !file.type" ng-click="onSaveClick(file) || closeThisDialog()">
+  <button type="submit" class="btn  btn-sm center-block bluebutton" ng-disabled="!file.title || !file.author || !file.type" ng-click="onSaveClick(file) || closeThisDialog()">
     Save
   </button>
 
-  <!-- delete button -->
-  <button type="submit" class="btn btn-danger btn-sm pull-right" ng-click="onRemoveClick(file._id)">
-    Delete 
-  </button>
 
 </form>
