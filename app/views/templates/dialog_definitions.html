@@ -1,5 +1,5 @@
 
-<span class="tableheader">Definitions</span>
+<span class="tableheader fullwidth">Definitions</span>
 <div class="container" ng-init="getDefinitions()">
 
   <!-- search box -->
@@ -42,7 +42,7 @@
         <tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'"> 
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
-              <span class="icon-enter"></span>
+              <i class="fa fa-play" aria-hidden="true"></i>
             </a>
           </td>
           <td>

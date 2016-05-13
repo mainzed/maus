@@ -59,17 +59,23 @@ border: none;
 .btn:focus,.btn:active {
    outline: none !important;
    background: none;
+   background-color: transparent !important;
    color: #004CFF;
 }
 
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: transparent !important;
+}
+
 .btn:active .bluebutton {color: #004CFF;}
+.fa-play {color: #004CFF;}
 
 
 .filesection {width: 100%; }
 table {table-layout: fixed;}
 .filegroup {margin-bottom: 20px; margin: 10px auto 100px auto; width: 70%; }
 .filegroup:hover td {}
-.filegroup tr {border-top: 1px solid #e3e3e3;}
+.filegroup tr {border-top: 1px solid #e3e3e3; width: 100%;}
 .filegroup td {padding: 2px 7px !important; border-left: 1px solid transparent; letter-spacing: 0.03em;}
 .filegroup th {padding: 2px 7px !important; border-left: 1px solid transparent; letter-spacing: 0.03em;}
 .filegroup td a {letter-spacing: 0.03em; text-overflow: ellipsis; width: 100%; display: block; overflow: hidden;}
@@ -82,11 +88,12 @@ tbody tr:nth-child(even) {
    
 }
 .filegroup input {text-overflow: ellipsis; width: 100%;}
+
+.historytable td  {width: 25%; min-width: 200px;}
 .clickspan {min-width: 50px; min-height: 30px; display: block; cursor: pointer; width: 100%; overflow: hidden; text-overflow: ellipsis;}
-.fullwidth {width: 100%;}
 
 
-.definitionsearch {margin-bottom: 50px;}
+.definitionsearch {padding: 20px 10px;}
 
 
 /* Code Mirror */
@@ -104,8 +111,8 @@ tbody tr:nth-child(even) {
 
 
 /* version */
-.version {float: left; clear: left; font-family: "Arimo"; font-size: 14px; margin-bottom: 5px;}
-.version div {float: left; margin-right: 20px; font-family: "Arimo"; font-size: 16px; letter-spacing: 0.02em;}
+.version { font-family: "Roboto"; font-size: 14px; margin-bottom: 5px;}
+.version div {float: left; margin-right: 20px; font-family: "Roboto"; font-size: 16px; letter-spacing: 0.02em;}
 
 
 /* lists */
@@ -302,7 +309,7 @@ img {background-color: none !important;}
 
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
-.ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px;}
+.ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px; overflow: hidden;}
 .ngdialog.smalldialog .ngdialog-content { 
   width: 400px; padding: 10px;
   -webkit-animation: ngdialog-flyin .5s;
@@ -380,5 +387,8 @@ textarea.form-control {
   width: 100%;
   height: 500px;
   border: none;
-}                
+}   
+
+.fullwidth {width: 100% !important;}
+
 
