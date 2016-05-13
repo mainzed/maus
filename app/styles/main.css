@@ -168,9 +168,14 @@ body {
 .autowidth {width: auto;}
 .center {display: inline-block;}
 
-.home {position: fixed; left: 10px; bottom: 10px;}
-.filename {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em; position: fixed; 
-right: 10px; bottom: 14px; display: block; max-width: 150px; overflow: hidden; text-overflow: ellipsis; height: 20px;}
+.home {position: fixed; left: 10px; bottom: 4px;}
+.filename {position: fixed; white-space: nowrap;
+right: 10px; bottom: 12px; display: block; max-width: 200px; overflow: hidden; text-overflow: ellipsis; height: 22px;}
+.iconlabel {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em;}
+
+.grotesk {font-family: "Roboto"; font-size: 14px; letter-spacing: 0.03em;}
+
+.filterbutton {position: fixed; top: 0; right: 0; background: gray; background: white;}
 
 
 
