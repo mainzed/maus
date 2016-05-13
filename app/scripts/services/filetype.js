@@ -26,9 +26,10 @@ angular.module('meanMarkdownApp')
                 }
             ]
         },{
+
             type: "opMainzed",
             displayname: "Mainzed Jahresbericht",
-            groups: ["admin", "mainzed"],
+            groups: ["admin", "mainzed", "look-diva"],
             tools: [
                 {
                     name: "imagetag"
@@ -37,11 +38,13 @@ angular.module('meanMarkdownApp')
                 }
             ]
         },{
+
             type: "prMainzed",
             displayname: "Mainzed Präsentation",
-            groups: ["admin", "mainzed"],
+            groups: ["admin", "mainzed", "look-diva"],
             tools: []
         },{
+
             type: "news",
             displayname: "News",
             groups: ["admin"],

@@ -110,20 +110,16 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onHistoryClick = function(id) {
-        fileService.get({id: id}, function(file) {
-            $scope.file = file;
+        
+        archivedFileService.query({id: id}, function(files) {
+            $scope.archivedFiles = files;
             
             ngDialog.open({
-                template: "./views/history.html",
+                template: "./views/templates/dialog_history.html",
                 disableAnimation: true,
                 scope: $scope
             });
         });
-    };
-
-    $scope.getArchivedFiles = function() {
-        var id = $routeParams.id;
-        $scope.archivedFiles = archivedFileService.query({id: id});
     };
 
     $scope.hasArchived = [];
@@ -157,9 +153,8 @@ angular.module('meanMarkdownApp')
         }
 
         fileService.save(file, function(file) {
-
+            // success
             $location.path("/editor/" + file._id);
-
         }, function() {
             // error
             console.log("could not create new file!");
@@ -181,7 +176,7 @@ angular.module('meanMarkdownApp')
         fileService.update({id: archivedFile.fileID}, file, function() {
             //console.log("file updated successfully!");
             $scope.files = fileService.query();
-            $location.path("/files");
+            
         }, function() {
             console.log("could not update file!");
         });
