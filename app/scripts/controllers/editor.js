@@ -162,6 +162,8 @@ angular.module('meanMarkdownApp')
             addDefinitionsTable: addDefinitions
         };
 
+        console.log(config);
+
         definitionService.query(function(definitions) {
             
             // convert markdown to html
@@ -283,6 +285,11 @@ angular.module('meanMarkdownApp')
             filetype: $scope.file.type,  // to be shown in table
             updated_at: timestmap // to be sorted to top
         });
+    };
+
+    $scope.isValidToolForType = function(filetype, toolname) {
+        //console.log($scope.file.type, toolname);
+        return filetypeService.isValidToolForType(filetype, toolname);
     };
 
     // link hotkey

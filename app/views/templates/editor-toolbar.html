@@ -20,7 +20,7 @@
     </div>
     
     <!-- help button-->
-  
+
     <button href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help">
         Spickzettel
     </button>
@@ -30,23 +30,23 @@
     <div class="btn-group marginleft" role="group"> 
       
       <!-- image button -->
-      <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
+      <button ng-show="isValidToolForType(file.type, 'imagetag')" class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
         Bild
       </button>
+
+      <!-- definition-button -->
       <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
         Glossareintrag
       </button>
 
       <!-- link button -->
       
-      <button class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
-          Link
+      <button ng-show="isValidToolForType(file.type, 'linktag')" class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
+        Link
       </button>
-       
-      
 
       <!-- storyscript button -->
-      <button class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
+      <button ng-show="isValidToolForType(file.type, 'storytag')" class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
         Story
       </button>
     </div>
@@ -71,10 +71,9 @@
     <span class="save-text" ng-show="showSuccess === true">... saved!</span>
     <span class="save-text" ng-show="showError === true">... someting went wrong!</span>
 
-    
-
-
   </div>
+
   <!-- filename -->
-    <span class="filename grotesk">{{ file.title }} ({{ file.type }})</span>
+  <span class="filename grotesk">{{ file.title }} ({{ file.type }})</span>
+
 </div>

@@ -20,7 +20,7 @@
     </colgroup>
 
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
-    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false">
+    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false" ng-if="isValidTypeForGroup(file.type, currentUser.group)">
 
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">

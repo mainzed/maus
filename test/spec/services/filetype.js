@@ -19,5 +19,20 @@ describe('Service: filetypeService', function () {
         expect(service.getNameByType("opOlat")).toEqual("OLAT");
     });
 
+    it('should return if tool is valid', function() {
+        expect(service.isValidToolForType("opOlat", "imagetag")).toBe(true);
+        expect(service.isValidToolForType("prMainzed", "storytag")).toBe(false);
+        expect(service.isValidToolForType("non-existint-filetype", "storytag")).toBe(false);
+    });
+
+    it('should return if type is valid for usergroup', function() {
+        expect(service.isValidTypeForGroup("opOlat", "admin")).toBe(true);
+        expect(service.isValidTypeForGroup("news", "mainzed")).toBe(false);
+    });
+
+
+
+
+
 
 });

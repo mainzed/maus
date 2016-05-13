@@ -13,9 +13,9 @@
    <div class="form-group">
     <label for="typeInput">Type</label>
     <select class="form-control" id="typeInput" ng-model="newFile.type" ng-init="newFile.type = 'opOlat'">
-      <option value="opOlat">OLAT</option>
-      <option value="opMainzed">Mainzed Jahresbericht</option>
-      <option value="prMainzed">Mainzed Presentation</option>
+      <option value="opOlat" ng-show="isValidTypeForGroup('opOlat', currentUser.group)">OLAT</option>
+      <option value="opMainzed" ng-show="isValidTypeForGroup('opMainzed', currentUser.group)">Mainzed Jahresbericht</option>
+      <option value="prMainzed" ng-show="isValidTypeForGroup('prMainzed', currentUser.group)">Mainzed Presentation</option>
       <!--<option value="prI3mainz">i3mainz Presentation</option>-->
     </select>
   </div>

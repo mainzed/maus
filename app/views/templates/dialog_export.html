@@ -5,34 +5,24 @@
     <input type="text" class="form-control" id="inputTitle" placeholder="export.html" ng-model="filename">
   </div>
 
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="addTitle"> Add Title
-    </label>
+  <div>
+    <ms-checkbox ng-model="addTitle"></ms-checkbox> Add Title
   </div>
 
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="addContentTable"> Add Table of Content
-    </label>
+  <div>
+    <ms-checkbox ng-model="addContentTable"></ms-checkbox> Add Table of Content
   </div>
 
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="addImages"> Add Table of Images
-    </label>
+  <div>
+    <ms-checkbox ng-model="addImages"></ms-checkbox> Add Table of Images
   </div>
 
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="addLinks"> Add Table of Links
-    </label>
+  <div>
+    <ms-checkbox ng-model="addLinks"></ms-checkbox> Add Table of Links
   </div>
 
-  <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="addDefinitions"> Add Table of Definitions
-    </label>
+  <div>
+    <ms-checkbox ng-model="addDefinitions"></ms-checkbox> Add Table of Definitions
   </div>
 
   <button type="button" class="btn btn-default center-block bluebutton" ng-click="onDownloadConfirm(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions) || closeThisDialog()" ng-disabled="!filename">

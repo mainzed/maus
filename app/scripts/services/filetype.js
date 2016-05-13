@@ -14,6 +14,7 @@ angular.module('meanMarkdownApp')
         {
             type: "opOlat",
             displayname: "OLAT",
+            groups: ["admin", "look-diva", "mainzed"],
             tools: [
                 {
                     name: "storytag"
@@ -27,6 +28,7 @@ angular.module('meanMarkdownApp')
         },{
             type: "opMainzed",
             displayname: "Mainzed Jahresbericht",
+            groups: ["admin", "mainzed"],
             tools: [
                 {
                     name: "imagetag"
@@ -37,10 +39,12 @@ angular.module('meanMarkdownApp')
         },{
             type: "prMainzed",
             displayname: "Mainzed Präsentation",
+            groups: ["admin", "mainzed"],
             tools: []
         },{
             type: "news",
             displayname: "News",
+            groups: ["admin"],
             tools: []
         }
     ];
@@ -60,10 +64,39 @@ angular.module('meanMarkdownApp')
         }
     };
 
-    this.isValidToolForType = function(type) {
-        var obj = _.find(filetypes, function(item) { 
+    this.isValidToolForType = function(type, toolname) {
+        var obj;
+        var isValid = false;
+
+        obj = _.find(filetypes, function(item) { 
             return item.type === type; 
         });
-    }
 
+        if (obj) {
+            obj.tools.forEach(function(tool) {
+                if (tool.name === toolname) {
+                    isValid = true;
+                }
+            });
+        }
+        return isValid;
+    };
+
+    this.isValidTypeForGroup = function(type, group) {
+        var obj;
+        var isValid = false;
+
+        obj = _.find(filetypes, function(item) { 
+            return item.type === type; 
+        });
+
+        if (obj) {
+            if (obj.groups.indexOf(group) > -1) {
+                isValid = true;
+            }
+        }
+        return isValid;
+    };
+
+    
   });
