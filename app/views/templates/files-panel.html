@@ -8,10 +8,7 @@
 <div ng-repeat="(key, value) in files | filter: filesFilterBox | groupBy: 'type'" ng-show="groupHasValidFiles(key)">
 
   <!-- custom section names -->
-  <span class="tableheader" ng-show="key === 'opOlat'">OLAT</span>
-  <span class="tableheader" ng-show="key === 'opMainzed'">Mainzed Jahresbericht</span>
-  <span class="tableheader" ng-show="key === 'prMainzed'">Mainzed Presentation</span>
-  <span class="tableheader" ng-show="key === 'prI3mainz'">i3mainz Presentation</span>
+  <span class="tableheader">{{ getName(key) }}</span>
   
   <table class="filegroup">
     <colgroup>

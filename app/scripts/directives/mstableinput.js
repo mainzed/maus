@@ -12,7 +12,7 @@ angular.module('meanMarkdownApp')
       templateUrl: '../views/templates/table-input.html',
       restrict: 'E',
       //scope: true,
-      scope:{
+      scope: {
         bindModel:'=ngModel'
       },
       link: function postLink(scope, element, attrs) {

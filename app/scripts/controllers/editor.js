@@ -11,7 +11,7 @@ angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService, 
         $document, $http, $filter, fileService, AuthService, ngDialog, 
-        definitionService) {
+        definitionService, filetypeService) {
     
     $scope.init = function() {
         // check if logged in
@@ -81,7 +81,6 @@ angular.module('meanMarkdownApp')
             $scope.showError = true;
             $timeout(function () { $scope.showError = false; }, 3000);
         });
-
     };
 
     $scope.onFilesClick = function() {

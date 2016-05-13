@@ -8,24 +8,22 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService) {
   	
     // check if already logged in, if not, redirect to login page
-    
-
     $scope.init = function() {
         if (!AuthService.isAuthenticated()) {
             $location.path("/login");
         } else {
             $scope.currentUser = AuthService.getUser();
         }
+
+        $scope.files = fileService.query();
+        $scope.filetypes = filetypeService.getAll();
     };
 
-    $scope.files = fileService.query();
-    
-    $scope.newFile = {};  // filled by dialog
-
     $scope.onCreateNewFile = function() {
+        $scope.newFile = {};  // filled by dialog
         ngDialog.open({ 
             template: "./views/templates/dialog_new_file.html",
             className: "smalldialog",
@@ -67,7 +65,7 @@ angular.module('meanMarkdownApp')
         }).then(function (success) {
 
             fileService.remove({id: id}, function() {
-                console.log("file remove successfull!");
+                //console.log("file remove successfull!");
 
                 // remove file from local array without reloading
                 var index = _.findIndex($scope.files, {_id: id});
@@ -80,7 +78,7 @@ angular.module('meanMarkdownApp')
                 ngDialog.close("ngdialog1");
             });
 
-        }, function (error) {
+        }, function () {
             // Error logic here
             console.log("CANCELLED!");
         });
@@ -189,6 +187,10 @@ angular.module('meanMarkdownApp')
 
     $scope.onLogoutClick = function() {
         AuthService.logout();
+    };
+
+    $scope.getName = function(filetype) {
+        return filetypeService.getNameByType(filetype);
     };
 
     $("#maus").hover(function(){
