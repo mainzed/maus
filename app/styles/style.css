@@ -25,6 +25,14 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+
+.icon-maus:before {
+    content: "\e906";
+    font-size: 25px;
+    margin-right: 7px;
+    margin-top: 2px;
+    float: left;
+}
 .icon-enter:before {
     content: "\e904";
 }
@@ -43,4 +51,6 @@
 .icon-trash:before {
     content: "\e903";
 }
+
+
 

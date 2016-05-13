@@ -2,7 +2,8 @@
 
   <!-- home button -->
   <button class="btn btn-default btn-sm home" ng-click="onFilesClick()">
-    <span class="icon-home"></span>
+     <i class="fa fa-angle-left"></i>
+     <span class="iconlabel">Dateiübersicht</span>
   </button>
 
 
@@ -10,8 +11,12 @@
         
     <!-- undo and redo buttons -->
     <div class="btn-group" role="group"> 
-      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Undo (Ctrl + Z)" ng-click="onUndoClick()"><i class="fa fa-undo"></i></button>
-      <button class="btn btn-default btn-sm" ng-click="onRedoClick()" data-toggle="tooltip" title="Redo"><i class="fa fa-repeat"></i></button>
+      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Undo (Ctrl + Z)" ng-click="onUndoClick()">
+        <i class="fa fa-undo"></i>
+      </button>
+      <button class="btn btn-default btn-sm" ng-click="onRedoClick()" data-toggle="tooltip" title="Redo">
+        <i class="fa fa-repeat"></i>
+      </button>
     </div>
     
     <!-- help button-->
@@ -22,7 +27,7 @@
     
     
     <!-- image, links & storyscript buttons -->
-    <div class="btn-group" role="group"> 
+    <div class="btn-group marginleft" role="group"> 
       
       <!-- image button -->
       <button class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
@@ -71,5 +76,5 @@
 
   </div>
   <!-- filename -->
-    <span class="filename">{{ file.title }} ({{ file.type }})</span>
+    <span class="filename grotesk">{{ file.title }} ({{ file.type }})</span>
 </div>
