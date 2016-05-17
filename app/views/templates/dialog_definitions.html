@@ -65,12 +65,13 @@
             <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
           </td>
 
+
           <td ng-show="file.type !== 'opMainzed'">
             <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
           </td>
 
           <!-- remove -->
-          <td>
+          <td ng-show="definition._id">
             <button type="button" class="btn btn-default" ng-click="onRemoveDefinitionClick(definition._id)">
               <span class="icon-trash"></span>
             </button>
