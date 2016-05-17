@@ -12,31 +12,38 @@ angular.module('meanMarkdownApp')
 
     // groups/roles = ["admin", "look-diva", "mainzed"]
     var users = [
-        {
+        {   
+            _id: "user1",
             name: "axel",
             password: "axel",
             group: "admin"
-        },{
+        },{ 
+            _id: "user2",
             name: "matthias",
             password: "matthias",
             group: "admin"
-        },{
+        },{ 
+            _id: "user3",
             name: "anne",
             password: "mainzed",
             group: "mainzed"
         },{
+            _id: "user4",
             name: "kai",
             password: "mainzed",
             group: "mainzed"
         },{
+            _id: "user5",
             name: "sarah",
             password: "sarah",
             group: "look-diva"
         },{
+            _id: "user6",
             name: "thomas",
             password: "thomas",
             group: "look-diva"
         },{
+            _id: "user7",
             name: "eva",
             password: "eva",
             group: "look-diva"
@@ -72,7 +79,8 @@ angular.module('meanMarkdownApp')
 
                     $cookieStore.put('currentUser', { 
                         name: item.name,
-                        group: item.group 
+                        group: item.group,
+                        _id: item._id 
                     });
                     success();
                 }

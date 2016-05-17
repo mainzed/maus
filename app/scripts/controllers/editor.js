@@ -205,7 +205,8 @@ angular.module('meanMarkdownApp')
 
             var postData = {
                 "type": $scope.file.type,
-                "html": html
+                "html": html,
+                "user_id": $scope.currentUser._id
             };
 
             $http.post('/api/savepreview', postData).then(function(data) {

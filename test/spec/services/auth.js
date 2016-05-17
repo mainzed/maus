@@ -34,10 +34,8 @@ describe('Service: AuthService', function () {
                 success = false;
             });
             expect(success).toBe(true);
-            expect(service.getUser()).toEqual({
-                name: "axel",
-                group: "admin"
-            });
+            expect(service.getUser().name).toEqual("axel");
+            expect(service.getUser().group).toEqual("admin");
             expect(service.isAuthenticated()).toBe(true);
         });
 
