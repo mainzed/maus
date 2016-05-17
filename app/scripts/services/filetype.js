@@ -105,7 +105,7 @@ angular.module('meanMarkdownApp')
         var types = [];
         filetypes.forEach(function(filetype) {
             if (filetype.groups.indexOf(group) > -1) {
-                types.push(filetype.type);
+                types.push(filetype);
             }
         });
         return types;

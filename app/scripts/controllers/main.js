@@ -16,10 +16,9 @@ angular.module('meanMarkdownApp')
             $location.path("/login");
         } else {
             $scope.currentUser = AuthService.getUser();
+            $scope.filetypes = filetypeService.getTypesByGroup($scope.currentUser.group);  // get allowed filetypes
         }
-
         $scope.files = fileService.query();
-        $scope.filetypes = filetypeService.getAll();
     };
 
     $scope.onCreateNewFile = function() {
@@ -195,10 +194,6 @@ angular.module('meanMarkdownApp')
     $scope.onLogoutClick = function() {
         AuthService.logout();
     };
-
-    $scope.getTypesByGroup = function(group) {
-        $scope.filetypes = filetypeService.getTypesByGroup(group);
-    }; 
 
     $scope.isValidToolForType = function(filetype, toolname) {
         //console.log($scope.file.type, toolname);

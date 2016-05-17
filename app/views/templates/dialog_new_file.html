@@ -12,11 +12,8 @@
 
    <div class="form-group">
     <label for="typeInput">Type</label>
-    <select class="form-control" id="typeInput" ng-model="newFile.type" ng-init="newFile.type = 'opOlat'" ng-init="getTypesByGroup(currentUser.group)">
-      <option ng-repeat="type in filetypes" value="opOlat">Whatever</option>
-      <!--<option value="opMainzed" ng-show="isValidTypeForGroup('opMainzed', currentUser.group)">Mainzed Jahresbericht</option>
-      <option value="prMainzed" ng-show="isValidTypeForGroup('prMainzed', currentUser.group)">Mainzed Presentation</option>-->
-      <!--<option value="prI3mainz">i3mainz Presentation</option>-->
+    <select class="form-control" id="typeInput" ng-model="newFile.type" ng-init="newFile.type = 'opOlat'">
+      <option ng-repeat="filetype in filetypes" value="{{filetype.type}}">{{ filetype.displayname }}</option>
     </select>
   </div>
 
