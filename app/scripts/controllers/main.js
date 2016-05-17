@@ -20,6 +20,7 @@ angular.module('meanMarkdownApp')
 
         $scope.files = fileService.query();
         $scope.filetypes = filetypeService.getAll();
+        $scope.checkforfirefox();
     };
 
     $scope.onCreateNewFile = function() {
@@ -210,12 +211,19 @@ angular.module('meanMarkdownApp')
     };
 
     $("#maus").hover(function(){
-       $(this).attr("src", "../images/maussmile.svg");
+        $(this).attr("src", "../images/maussmile.svg");
     });
 
-     $("#maus").mouseleave(function(){
-       $(this).attr("src", "../images/maus.svg");
+    $("#maus").mouseleave(function(){
+        $(this).attr("src", "../images/maus.svg");
     });
+
+
+    $scope.checkforfirefox = function() {
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            alert("Bitte Chrome benutzen!!");
+        }
+    }
 
   });
 
