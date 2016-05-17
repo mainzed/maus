@@ -91,9 +91,9 @@ tbody tr:nth-child(even) {
 
 .historytable td  {width: 25%; min-width: 200px;}
 .clickspan {min-width: 50px; min-height: 30px; display: block; cursor: pointer; width: 100%; overflow: hidden; text-overflow: ellipsis;}
+.clickspan:hover {background: lavender;}
 
-
-.definitionsearch {padding: 20px 10px;}
+.definitionsearch {}
 
 
 /* Code Mirror */
@@ -377,10 +377,23 @@ img {background-color: none !important;}
 .icon-trash {float: right;}
 
 
-textarea.form-control {
-    height: auto;
+textarea{
+    height: 30px;
+    display: block;
     max-width: 100%;
+    background: none;
+    resize: none;
+    border: none;
+    border-style: none; 
+    border-color: transparent !important; 
+    overflow: hidden;       
+    outline: none;
+    width: 100%;
 }
+
+
+textarea:hover {background: white; cursor: pointer;}
+textarea:focus {background: white; resize: vertical; height: 100px; cursor: text;}
 
 /* preview */
 .preview {

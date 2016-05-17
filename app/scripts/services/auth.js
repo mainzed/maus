@@ -36,6 +36,10 @@ angular.module('meanMarkdownApp')
             name: "thomas",
             password: "thomas",
             group: "look-diva"
+        },{
+            name: "eva",
+            password: "eva",
+            group: "look-diva"
         }
 
     ];

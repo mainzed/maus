@@ -17,10 +17,14 @@
       <thead> 
         <tr class="noborder"> 
           <th></th>
-          <th>Word</th>
+
+          <!-- Erste Spalte -->
+          <th ng-show="file.type === 'opMainzed'">Shortcut</th>
+          <th ng-show="file.type !== 'opMainzed'">Word</th>
+          
           <th>Definition</th>
-          <th>Source</th>
-          <th>Website</th>
+          <th ng-show="file.type !== 'opMainzed'">Source</th>
+          <th ng-show="file.type !== 'opMainzed'">Website</th>
           <th></th>
         </tr> 
       </thead> 
@@ -57,11 +61,11 @@
             <ms-table-input ng-model="definition.text"></ms-table-input>
           </td>
 
-          <td>
+          <td ng-show="file.type !== 'opMainzed'">
             <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
           </td>
 
-          <td>
+          <td ng-show="file.type !== 'opMainzed'">
             <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
           </td>
 
