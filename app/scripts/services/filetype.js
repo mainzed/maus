@@ -101,5 +101,15 @@ angular.module('meanMarkdownApp')
         return isValid;
     };
 
+    this.getTypesByGroup = function(group) {
+        var types = [];
+        filetypes.forEach(function(filetype) {
+            if (filetype.groups.indexOf(group) > -1) {
+                types.push(filetype);
+            }
+        });
+        return types;
+    };
+
     
   });

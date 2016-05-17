@@ -16,10 +16,9 @@ angular.module('meanMarkdownApp')
             $location.path("/login");
         } else {
             $scope.currentUser = AuthService.getUser();
+            $scope.filetypes = filetypeService.getTypesByGroup($scope.currentUser.group);  // get allowed filetypes
         }
-
         $scope.files = fileService.query();
-        $scope.filetypes = filetypeService.getAll();
         $scope.checkforfirefox();
     };
 
