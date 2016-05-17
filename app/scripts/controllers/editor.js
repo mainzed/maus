@@ -10,7 +10,7 @@
 angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService, 
-        $document, $http, $filter, fileService, AuthService, ngDialog, 
+        $document, $http, $filter, $window, fileService, AuthService, ngDialog, 
         definitionService, filetypeService) {
     
     $scope.init = function() {
@@ -285,6 +285,10 @@ angular.module('meanMarkdownApp')
             filetype: $scope.file.type,  // to be shown in table
             updated_at: timestmap // to be sorted to top
         });
+    };
+
+    $scope.onHelpClick = function() {
+        $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");
     };
 
     $scope.isValidToolForType = function(filetype, toolname) {
