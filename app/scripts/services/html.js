@@ -143,7 +143,7 @@ angular.module('meanMarkdownApp')
         return html;
     };
 
-    this.getMainzedPresentation = function(file) {
+    this.getPrMainzed = function(file) {
         var customRenderer = new marked.Renderer();
 
         // custom heading renderer
@@ -167,12 +167,18 @@ angular.module('meanMarkdownApp')
         // append last closing div tag
         html += "</div>";
 
-        
+        //console.log(html);
+
+        //html = wrapPrMainzedHTML(html, file.title);
 
         return html;
     };
 
-    this.wrapHTML = function(html, title) {
+    this.getOpMainzed = function(file) {
+        return marked(file.markdown);
+    };
+
+    this.wrapOlatHTML = function(html, title) {
         
         return "<!DOCTYPE html>\n" + 
                 "<html lang=\"de\">\n" +
@@ -180,12 +186,48 @@ angular.module('meanMarkdownApp')
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
                 "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
-                '<link rel="stylesheet" href="style/olat.css">\n' +
+                '<link rel="stylesheet" href="style/opolat.css">\n' +
                 "</head>\n"+
                 "<body>\n" +
                 html + "\n" +
                 "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
-                "<script src=\"javascript/olat.js\"></script>\n" +
+                "<script src=\"javascript/app.js\"></script>\n" +
+                "</body>\n"+
+                "</html>";
+    };
+
+    this.wrapPrMainzedHTML = function(html, title) {
+        
+        return "<!DOCTYPE html>\n" + 
+                "<html lang=\"de\">\n" +
+                "<head>\n" +
+                "<title>" + title + "</title>\n" +
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
+                '<link rel="stylesheet" href="style/prmainzed.css">\n' +
+                "</head>\n"+
+                "<body>\n" +
+                html + "\n" +
+                "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
+                "<script src=\"javascript/app.js\"></script>\n" +
+                "</body>\n"+
+                "</html>";
+    };
+
+    this.wrapOpMainzedHTML = function(html, title) {
+        
+        return "<!DOCTYPE html>\n" + 
+                "<html lang=\"de\">\n" +
+                "<head>\n" +
+                "<title>" + title + "</title>\n" +
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
+                '<link rel="stylesheet" href="style/opmainzed.css">\n' +
+                "</head>\n"+
+                "<body>\n" +
+                html + "\n" +
+                "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
+                "<script src=\"javascript/app.js\"></script>\n" +
                 "</body>\n"+
                 "</html>";
     };

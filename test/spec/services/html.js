@@ -572,7 +572,7 @@ describe('Service: HTMLService', function () {
             }));
         });  // end getOlat()
 
-        describe('wrapHtml()', function() {
+        describe('wrapOlatHtml()', function() {
             it('should wrap content', function() {
                 var inputHtml = "<p>This is a paragraph</p>";
                 var title = "Test";
@@ -582,16 +582,16 @@ describe('Service: HTMLService', function () {
                                 '<title>Test</title>\n' +
                                 '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
                                 '<meta property="dc:creator" content="Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz" />\n' +
-                                '<link rel="stylesheet" href="style/olat.css">\n' +
+                                '<link rel="stylesheet" href="style/opolat.css">\n' +
                                 '</head>\n' +
                                 '<body>\n' +
                                 inputHtml + "\n" +
                                 '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>\n' +
-                                '<script src="javascript/olat.js"></script>\n' +
+                                '<script src="javascript/app.js"></script>\n' +
                                 '</body>\n' +
                                 '</html>';
 
-                var outputHtml = service.wrapHTML(inputHtml, title);
+                var outputHtml = service.wrapOlatHTML(inputHtml, title);
 
                 expect(outputHtml).toEqual(expected);
             });
@@ -600,7 +600,7 @@ describe('Service: HTMLService', function () {
 
     describe('MainzedPresentation functions', function() {
 
-        describe('getMainzedPresentation()', function() {
+        describe('getPrMainzed()', function() {
             var file;
             beforeEach(function() {
                 file = {
@@ -618,7 +618,7 @@ describe('Service: HTMLService', function () {
                                 "<p>This is markdown!</p>\n" +
                                 "</div>";
 
-                expect(service.getMainzedPresentation(file)).toEqual(expected);
+                expect(service.getPrMainzed(file)).toEqual(expected);
 
             });
         });

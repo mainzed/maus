@@ -39,7 +39,6 @@
       </button>
 
       <!-- link button -->
-      
       <button ng-show="isValidToolForType(file.type, 'linktag')" class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
         Link
       </button>
@@ -56,7 +55,7 @@
     </button>
 
     <!-- preview button -->
-    <button ng-disabled="file.type !== 'opOlat'" class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
+    <button ng-disabled="file.type !== 'prMainzed' && file.type !== 'opOlat' && file.type !== 'opMainzed'" class="btn btn-default btn-sm" ng-click="onPreviewClick()" ng-disabled="editor.getValue().length < 1">
         Preview
     </button>
 

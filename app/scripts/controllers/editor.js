@@ -198,10 +198,22 @@ angular.module('meanMarkdownApp')
         };
 
         definitionService.query(function(definitions) {
-            
+            var html;
             // convert markdown to html
-            var html = HTMLService.getOlat($scope.file, definitions, config);
-            html = HTMLService.wrapHTML(html, $scope.file.title);  // TODO: wrap html and save on server
+            if ($scope.file.type === "opOlat") {
+                html = HTMLService.getOlat($scope.file, definitions, config);
+                html = HTMLService.wrapOlatHTML(html, $scope.file.title);  // TODO: wrap html and save on server
+            
+            } else if ($scope.file.type === "opMainzed") {
+                html = HTMLService.getOpMainzed($scope.file);
+                html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+            
+            } else if ($scope.file.type === "prMainzed") {
+                html = HTMLService.getPrMainzed($scope.file);
+                html = HTMLService.wrapPrMainzedHTML(html, $scope.file.title);
+            }
+
+
 
             var postData = {
                 "type": $scope.file.type,
