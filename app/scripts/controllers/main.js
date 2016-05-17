@@ -196,6 +196,10 @@ angular.module('meanMarkdownApp')
         AuthService.logout();
     };
 
+    $scope.getTypesByGroup = function(group) {
+        $scope.filetypes = filetypeService.getTypesByGroup(group);
+    }; 
+
     $scope.isValidToolForType = function(filetype, toolname) {
         //console.log($scope.file.type, toolname);
         return filetypeService.isValidToolForType(filetype, toolname);

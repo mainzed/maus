@@ -30,6 +30,10 @@ describe('Service: filetypeService', function () {
         expect(service.isValidTypeForGroup("news", "mainzed")).toBe(false);
     });
 
+    it('should return allowed filetypes for a group', function() {
+        expect(service.getTypesByGroup("admin").length).toBe(4);
+    });
+
 
 
 
