@@ -178,15 +178,22 @@ angular.module('meanMarkdownApp')
         return marked(file.markdown);
     };
 
-    this.wrapOlatHTML = function(html, title) {
-        
+    this.wrapOlatHTML = function(html, title, isFolder) {
+        var stylePath;
+
+        if (isFolder) {
+            stylePath = "../style/olat.css";
+        } else {
+            stylePath = "style/olat.css";
+        }
+
         return "<!DOCTYPE html>\n" + 
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
                 "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
-                '<link rel="stylesheet" href="style/opolat.css">\n' +
+                '<link rel="stylesheet" href="' + stylePath + '">\n' +
                 "</head>\n"+
                 "<body>\n" +
                 html + "\n" +

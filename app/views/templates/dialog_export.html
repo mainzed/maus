@@ -1,5 +1,5 @@
 
-<form ng-init="addTitle = true; addContentTable = true; addImages = true; addLinks = true; addDefinitions = true">
+<form ng-init="addTitle = true; addContentTable = true; addImages = true; addLinks = true; addDefinitions = true; isFolder = false">
   <div class="form-group">
     <label for="inputTitle">Filename</label>
     <input type="text" class="form-control" id="inputTitle" placeholder="export.html" ng-model="filename">
@@ -25,7 +25,11 @@
     <ms-checkbox ng-model="addDefinitions"></ms-checkbox> Add Table of Definitions
   </div>
 
-  <button type="button" class="btn btn-default center-block bluebutton" ng-click="onDownloadConfirm(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions) || closeThisDialog()" ng-disabled="!filename">
+  <div>
+    <ms-checkbox ng-model="isFolder"></ms-checkbox> Subfolder
+  </div>
+
+  <button type="button" class="btn btn-default center-block bluebutton" ng-click="onDownloadConfirm(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) || closeThisDialog()" ng-disabled="!filename">
     Export
   </button>
 

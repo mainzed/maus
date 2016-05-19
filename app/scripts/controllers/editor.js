@@ -152,7 +152,7 @@ angular.module('meanMarkdownApp')
         });
     };
 
-    $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions) {
+    $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) {
 
         var config = {
             addTitle: addTitle,
@@ -160,15 +160,14 @@ angular.module('meanMarkdownApp')
             addImagesTable: addImages,
             //addLinksTable: addLinks,
             addDefinitionsTable: addDefinitions
+            //isFolder: isFolder
         };
-
-        console.log(config);
 
         definitionService.query(function(definitions) {
             
             // convert markdown to html
             var html = HTMLService.getOlat($scope.file, definitions, config);
-            html = HTMLService.wrapHTML(html, $scope.file.title);
+            html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
 
             // init download
             var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
