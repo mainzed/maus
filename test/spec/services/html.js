@@ -582,7 +582,7 @@ describe('Service: HTMLService', function () {
                                 '<title>Test</title>\n' +
                                 '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
                                 '<meta property="dc:creator" content="Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz" />\n' +
-                                '<link rel="stylesheet" href="style/opolat.css">\n' +
+                                '<link rel="stylesheet" href="style/olat.css">\n' +
                                 '</head>\n' +
                                 '<body>\n' +
                                 inputHtml + "\n" +
@@ -595,6 +595,31 @@ describe('Service: HTMLService', function () {
 
                 expect(outputHtml).toEqual(expected);
             });
+
+            it('should wrap content with styles in subfolder', function() {
+                var inputHtml = "<p>This is a paragraph</p>";
+                var title = "Test";
+                var isFolder = true;
+                var expected = '<!DOCTYPE html>\n' +
+                                '<html lang="de">\n' + 
+                                '<head>\n' +
+                                '<title>Test</title>\n' +
+                                '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\n' +
+                                '<meta property="dc:creator" content="Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz" />\n' +
+                                '<link rel="stylesheet" href="../style/olat.css">\n' +
+                                '</head>\n' +
+                                '<body>\n' +
+                                inputHtml + "\n" +
+                                '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>\n' +
+                                '<script src="javascript/app.js"></script>\n' +
+                                '</body>\n' +
+                                '</html>';
+
+                var outputHtml = service.wrapOlatHTML(inputHtml, title, isFolder);
+
+                expect(outputHtml).toEqual(expected);
+            });
+
         });
     }); // end OLAT
 
