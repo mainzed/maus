@@ -1,88 +1,20 @@
 
-<span class="tableheader fullwidth">Definitions</span>
-<div class="container" ng-init="getDefinitions()">
+<!--<span class="tableheader fullwidth">Definitions</span>-->
+
+<button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="assets.definition">Definitionen</button>
+<button type="button" class="btn btn-default" ng-click="category = 'image'" ng-show="assets.image">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="assets.story">Storyelemente</button>
+<button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="assets.linklist">Linklisten</button>
+
+<div class="container" ng-init="getDefinitions(); category = 'definition'">
 
   <!-- search box -->
-  <input type="search" class="form-control definitionsearch" placeholder="Search by Word" ng-model="filterBox">
+  <input type="search" class="form-control definitionsearch" placeholder="Search" ng-model="filterBox">
 
-  <table class="filegroup nomargin fullwidth">
-    <colgroup>
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 20%;">
-      <col span="1" style="width: 45%;">
-      <col span="1" style="width: 15%;">
-      <col span="1" style="width: 10%;">
-      <col span="1" style="width: 5%;">
-    </colgroup>
-      <thead> 
-        <tr class="noborder"> 
-          <th></th>
+  <ms-definitions-table ng-show="category === 'definition'"></ms-definitions-table>
+  <ms-images-table ng-show="category === 'image'"></ms-images-table>
+  <ms-stories-table ng-show="category === 'story'"></ms-stories-table>
 
-          <!-- Erste Spalte -->
-          <th ng-show="file.type === 'opMainzed'">Shortcut</th>
-          <th ng-show="file.type !== 'opMainzed'">Word</th>
-          
-          <th>Definition</th>
-          <th ng-show="file.type !== 'opMainzed'">Source</th>
-          <th ng-show="file.type !== 'opMainzed'">Website</th>
-          <th></th>
-        </tr> 
-      </thead> 
-    </table> 
+  <img class="plusposition" ng-click="onCreateDefinitionClick(category); showNewFocus = true; filterBox = ''" src="../images/plus.png" width="50" />
 
-  <scrollable>
-    <table class="filegroup nomargin fullwidth">
-       <colgroup>
-        <col span="1" style="width: 5%;">
-        <col span="1" style="width: 20%;">
-        <col span="1" style="width: 45%;">
-        <col span="1" style="width: 15%;">
-        <col span="1" style="width: 10%;">
-        <col span="1" style="width: 5%;">
-      </colgroup>
-      
-
-      <tbody> 
-        <tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'"> 
-          <td>
-            <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
-              <i class="fa fa-play" aria-hidden="true"></i>
-            </a>
-          </td>
-          <td>
-            <!-- new definition -->
-            <textarea ng-show="showNewFocus && $index === 0 && !definition._id" type="text" placeholder="Word" ng-model="definition.word" class="form-control" ng-blur="showNewFocus = false" focus-on-visibility></textarea>
-
-            <!-- existing definition -->
-            <ms-table-input ng-show="!showNewFocus || $index > 0 || definition._id" ng-model="definition.word"></ms-table-input>
-          </td> 
-
-          <td>
-            <ms-table-input ng-model="definition.text"></ms-table-input>
-          </td>
-
-          <td ng-show="file.type !== 'opMainzed'">
-            <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
-          </td>
-
-
-          <td ng-show="file.type !== 'opMainzed'">
-            <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
-          </td>
-
-          <!-- remove -->
-          <td ng-show="definition._id">
-            <button type="button" class="btn btn-default" ng-click="onRemoveDefinitionClick(definition._id)">
-              <span class="icon-trash"></span>
-            </button>
-          </td>
-
-        </tr><!-- end repeat -->
-        
-      </tbody> 
-    </table>
-  </scrollable>
-    
-  <img class="plusposition" ng-click="onCreateDefinitionClick(); showNewFocus = true; filterBox = ''" src="../images/plus.png" width="50" />   
-   
 </div>

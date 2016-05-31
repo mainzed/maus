@@ -8,8 +8,8 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (definitionService) {
-    
+  .service('HTMLService', function (definitionService, filetypeService) {
+
     var usedDefs;  // store IDs of actually used defs
     /**
      * generates OLAT html from markdown. provides a callback with the generated
@@ -54,7 +54,7 @@ angular.module('meanMarkdownApp')
 
             // workaround for linkUrl.startsWith
             //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
-            
+
             //console.log("works!");
             links.push({
                 url: linkUrl,
@@ -62,7 +62,7 @@ angular.module('meanMarkdownApp')
             });
 
             return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-            
+
         };
 
         // custom image renderer
@@ -91,17 +91,17 @@ angular.module('meanMarkdownApp')
 
             ImageCounter++;
 
-            return '<figure id="' + alt + '">\n' + 
+            return '<figure id="' + alt + '">\n' +
                     "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
-                    "<figcaption>\n" + 
-                    preCaption + "<br>" + caption + "<br>" + 
-                    "<a href=\"#images-table\">\n" + 
+                    "<figcaption>\n" +
+                    preCaption + "<br>" + caption + "<br>" +
+                    "<a href=\"#images-table\">\n" +
                     "(Quelle)\n" +
                     "</a>\n" +
-                    "</figcaption>\n" + 
+                    "</figcaption>\n" +
                     "</figure>\n";
         };
-        
+
         var html = marked(markdown, { renderer: customRenderer });
 
         var stories = this.getStories(html);  // needed for table of content
@@ -110,7 +110,7 @@ angular.module('meanMarkdownApp')
 
         //var usedDefs = [];
         html = this.replaceDefinitionTags(html, definitions);
-        
+
         // add tables of images and links
         if (config.addImagesTable) {
             html += this.createImagesTable(images);
@@ -133,10 +133,10 @@ angular.module('meanMarkdownApp')
             html = this.createTableOfContent(html, headings, stories, images) + html;
             //console.log(html);
         }
-        
+
         // add title to beginning of filee
         if (config.addTitle === true) {
-            html =  "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>\n" + 
+            html =  "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>\n" +
                     html;
         }
 
@@ -187,12 +187,12 @@ angular.module('meanMarkdownApp')
             stylePath = "style/olat.css";
         }
 
-        return "<!DOCTYPE html>\n" + 
+        return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
-                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" +
                 '<link rel="stylesheet" href="' + stylePath + '">\n' +
                 "</head>\n"+
                 "<body>\n" +
@@ -204,13 +204,13 @@ angular.module('meanMarkdownApp')
     };
 
     this.wrapPrMainzedHTML = function(html, title) {
-        
-        return "<!DOCTYPE html>\n" + 
+
+        return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
-                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" +
                 '<link rel="stylesheet" href="style/prmainzed.css">\n' +
                 "</head>\n"+
                 "<body>\n" +
@@ -222,13 +222,13 @@ angular.module('meanMarkdownApp')
     };
 
     this.wrapOpMainzedHTML = function(html, title) {
-        
-        return "<!DOCTYPE html>\n" + 
+
+        return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 "<title>" + title + "</title>\n" +
                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
-                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" + 
+                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" +
                 '<link rel="stylesheet" href="style/opmainzed.css">\n' +
                 "</head>\n"+
                 "<body>\n" +
@@ -239,63 +239,84 @@ angular.module('meanMarkdownApp')
                 "</html>";
     };
 
-    this.replaceDefinitionTags = function(html, definitions) {
+    /**
+     * requires html and definitions from the database
+     */
+    this.replaceEnrichmentTags = function(html, enrichments) {
+        var me = this;
+        //var enrichment;
+
         // reset used definitions
         usedDefs = [];
 
-        // loop through all defined words and look up a definition in the database
-        var words = html.match(/\{(.*?)\}/g); 
+        // get all tags
+        var tags = html.match(/\{(.*?)\}/g);
 
-        if (definitions.length && words) {
-            //console.log("word and definition found!");
+        // loop through all tags
+        if (tags) {
+            tags.forEach(function(tag) {
+                // bracket content
+                var content = tag.replace("{", "").replace("}", "");
 
-            words.forEach(function(word, index) {
-                // remove brackets
-                var content = word.replace("{", "").replace("}", ""); // bracket content 
-                var mainWord;  // e.g. Geld
-                var extraWord;
-                // check if extra word was used {Cash: Money} instead of {Money}
-                if (content.indexOf(":") > -1) {  // defferent word was used 
-                    extraWord = content.split(":")[0];
-                    mainWord = content.split(":")[1].trim();
-                } else {  // normal mode
-                    mainWord = content;
+                // extract category keyword and shortcut
+                var category;
+                var shortcut;
+
+                if (content.split(":").length > 1) {
+                    category = content.split(":")[0].trim();
+                    shortcut = content.split(":")[1].trim();
+                } else {
+                    // legacy support
+                    category = "definition";
+                    shortcut = content;
+                    //console.log("shortcut: " + shortcut);
                 }
-                
-                //var defs = {};
-                definitions.forEach(function(definition) {
 
-                    if (definition.word === mainWord) {
-                        var snippet;
-                        if (extraWord) {  // use extra word as link
-                            snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + extraWord + "</a>";
-                        } else {  // use definition mai word as link
-                            snippet = "<a href=\"#definitions-table\" title=\"" + definition.text + "\" class=\"definition\">" + definition.word + "</a>";
-                        }
+                // get enrichment for the specified shortcut
+                var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+                //console.log(enrichment);
 
-                        html = html.replace(word, snippet);
+                // get snippet based on category and filetype
+                // templates for this are defined in filetypeService
+                console.log(category);
+                var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
 
-                        if (usedDefs.indexOf(definition._id) === -1) {  // skip duplicates
-                            usedDefs.push(definition._id);
-                        }
-                        
+                if (!snippet) {
+                    console.log("unknown enrichment filetype: " + enrichment.filetype + " or category: " + category);
+                }
 
-                        // TODO: gets run again for evey word, unneccessary
-                        //console.log("append tables!");
-                        //appendTables($scope.html);
-                    
-                        // on last word -> create definitions table
-                        /*if (index === words.length - 1) {  // last word
-                            if (Object.keys(defs).length) {
-                                cb(html);
-                            }
-                        }*/
-                    }
-                });  
-            });
+                // actually replace the tag
+                html = html.replace(tag, snippet);
+
+                // record all enrichments for content tables
+                if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                    usedDefs.push(enrichment._id);
+                }
+            })
         }
 
         return html;
+    };
+
+    /**
+     * wrapper to support the old function name
+     */
+    this.replaceDefinitionTags = function(html, enrichments) {
+        return this.replaceEnrichmentTags(html, enrichments);
+    };
+
+    /**
+     * helper function that loops through all enrichments and finds match
+     */
+     // TODO: access enrichments directly via definitionService
+    this.findEnrichmentByShortcut = function(enrichments, shortcut) {
+        var result;
+        enrichments.forEach(function(enrichment) {
+            if (enrichment.word === shortcut) {
+                result = enrichment;
+            }
+        });
+        return result;
     };
 
     /**
@@ -340,36 +361,36 @@ angular.module('meanMarkdownApp')
                 counter++;
             }
         }
-        
+
         // replace closing tags all at once -> no id needed
         html = html.replace(/<p>}story<\/p>/g, "</div>");
-   
+
         return html;
-    }; 
+    };
 
     // returns html containing table of links
     // requires array containing link objects
     this.createLinksTable = function(links) {
         var html = "";
         if (links.length) {
-            
+
             html += "<div id=\"links-table\" class=\"links-table\">\n" +
-                    "<h4>Links</h4>\n" + 
+                    "<h4>Links</h4>\n" +
                     "<ul>\n";
-            
+
             for (var key in links) {
                 var link = links[key];
                 html += "<li><a href=\"" + link.url + "\" target=\"_blank\">" + link.text + "</a></li>\n";
             }
             html += "</ul>\n" +
-                    "</div>"; 
+                    "</div>";
         }
         return html;
     };
 
     /**
-     * returns a html div element containing an 
-     * unordered list with all images. 
+     * returns a html div element containing an
+     * unordered list with all images.
      * requires a list of image objects
      */
     this.createImagesTable = function(images) {
@@ -379,36 +400,36 @@ angular.module('meanMarkdownApp')
             // create html
             images.forEach(function(image) {
                 html += "<li>\n";
-                html += image.preCaption + "<br>\n"; 
+                html += image.preCaption + "<br>\n";
                 html += image.title + "<br>\n";
-                
+
                 if (image.author !== undefined) {
                     html += image.author + "<br>\n";
                 }
-                
+
                 if (image.license !== undefined) {
                     html += image.license + "<br>\n";
                 }
-                
+
                 if (image.url !== undefined) {
-                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>\n";  
+                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>\n";
                 }
 
                 html += "</li>\n";
             });
         }
-        html += "</ul>\n" + 
+        html += "</ul>\n" +
                 "</div>";
         return html;
     };
 
     /**
-     * returns a html div element containing an 
-     * unordered list with all definitions. 
+     * returns a html div element containing an
+     * unordered list with all definitions.
      * requires a an object of definition objects
      */
     this.createDefinitionsTable = function(definitions) {
-        
+
         var html = "";
         html += "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
                 "<h4>Glossar</h4>\n" +
@@ -437,14 +458,14 @@ angular.module('meanMarkdownApp')
     };
 
     /**
-     * returns a html div element containing an 
-     * unordered list with all level 1 headings. 
+     * returns a html div element containing an
+     * unordered list with all level 1 headings.
      * requires a list of heading objects
      */
     this.createTableOfContent = function(bodyHtml, headings, stories, images) {
         stories = stories || false;
         var html = "";
-        
+
         html += "<div id=\"headings-table\" class=\"headings-table\">\n" +
                 "<ul>\n";
 
@@ -453,15 +474,15 @@ angular.module('meanMarkdownApp')
             html += "<li><a href=\"#page-title\">Top</a></li>\n";
             html += "<li class=\"seperator\"></li>\n";
         }
-        
+
 
         // headings
         if (headings.length > 0) {
             // create html
             headings.forEach(function(heading) {
                 if (heading.level === 1) {  // skip all but h1
-                    html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" + 
-                        heading.text +  
+                    html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" +
+                        heading.text +
                         "</a></li>\n";
                 }
             });
@@ -484,14 +505,14 @@ angular.module('meanMarkdownApp')
         if (bodyHtml.match("id=\"images-table\"")) {
             html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
         }
-        
+
         // add link to links-table if it exists
         if (bodyHtml.match(/id=\"links-table\"/)) {
             html += "<li><a href=\"#links-table\">Links</a></li>\n";
         }
 
         // add link to definitions-table if it exists
-        if (bodyHtml.match("id=\"definitions-table\"")) { 
+        if (bodyHtml.match("id=\"definitions-table\"")) {
             html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
         }
 
@@ -500,7 +521,3 @@ angular.module('meanMarkdownApp')
     };
 
   });
-
-
-
-        

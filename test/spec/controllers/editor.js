@@ -24,9 +24,9 @@ describe('Controller: EditorCtrl', function () {
 
     /*it('should initiate codemirror editor', function() {
         //expect(scope.showSuccess).toBe(false);
-        
+
         scope.onCodeMirrorLoaded();
-            
+
         expect(scope.editor).toBeDefined();
         //$scope.addSnippet
     }, 2000);*/
@@ -44,9 +44,9 @@ describe('Controller: EditorCtrl', function () {
     });*/
 
     describe('definition functions', function() {
-        
-        it('should add new object to definitions array', function() {
-            
+
+        /*it('should add new object to definitions array', function() {
+
             //scope.file.type = "testtype";
             scope.definitions = [{
                     _id: "definition1",
@@ -64,11 +64,11 @@ describe('Controller: EditorCtrl', function () {
             expect(scope.definitions.length).toBe(3);
             //expect(scope.definitions[2]).toBe("testtype");
 
-        });
+        });*/
 
     });
-    
 
-    
+
+
 
 });

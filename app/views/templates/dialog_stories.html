@@ -1,0 +1,19 @@
+
+<span class="tableheader fullwidth">Definitions</span>
+
+<button type="button" class="btn btn-default" ng-click="category = 'definition'">Definitionen</button>
+<button type="button" class="btn btn-default" ng-click="category = 'image'">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'story'">Storyelemente</button>
+<button type="button" class="btn btn-default" ng-click="category = 'linklist'">Linklisten</button>
+
+<div class="container" ng-init="getDefinitions(); category = 'definition'">
+
+  <!-- search box -->
+  <input type="search" class="form-control definitionsearch" placeholder="Search" ng-model="filterBox">
+
+  <ms-definitions-table ng-show="category === 'definition'"></ms-definitions-table>
+  <ms-images-table ng-show="category === 'image'"></ms-images-table>
+
+  <img class="plusposition" ng-click="onCreateDefinitionClick(category); showNewFocus = true; filterBox = ''" src="../images/plus.png" width="50" />
+
+</div>

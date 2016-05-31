@@ -9,10 +9,10 @@
  */
 angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
-        $scope, $location, $timeout, $routeParams, HTMLService, 
-        $document, $http, $filter, $window, fileService, AuthService, ngDialog, 
+        $scope, $location, $timeout, $routeParams, HTMLService,
+        $document, $http, $filter, $window, fileService, AuthService, ngDialog,
         definitionService, filetypeService) {
-    
+
     $scope.init = function() {
         // check if logged in
         if (!AuthService.isAuthenticated()) {
@@ -23,8 +23,13 @@ angular.module('meanMarkdownApp')
 
         // get file based on id provided in address bar
         fileService.get({ id: $routeParams.id }, function(file) {
-            $scope.file = file; 
+            $scope.file = file;
+
+            // get defined assets/snippets to determine what tabs to display in enrichments table
+            $scope.assets = filetypeService.getAssetsForFiletype(file.type);
         });
+
+
     };
 
     $scope.showSuccess = false;
@@ -32,7 +37,7 @@ angular.module('meanMarkdownApp')
     $scope.editMode = false;  // used in definitions dialog
 
     /**
-     * makes editor available to rest of controller 
+     * makes editor available to rest of controller
      */
     $scope.onCodeMirrorLoaded = function(_editor){
         $scope.editor = _editor;  // for global settings
@@ -130,13 +135,13 @@ angular.module('meanMarkdownApp')
     $scope.onStoryScriptClick = function() {
         var snippet;
         var selection = $scope.editor.getSelection();
-        
+
         if (selection.length) {
             snippet = "\nstory{\n\n" + selection + "\n\n}story\n";
         } else {
             snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n";
         }
-        
+
         $scope.addSnippet(snippet);
     };
 
@@ -144,7 +149,7 @@ angular.module('meanMarkdownApp')
 
         $scope.filename = $scope.file.title.replace(/\s/g, "_") + ".html";
 
-        ngDialog.open({ 
+        ngDialog.open({
             template: "./views/templates/dialog_export.html",
             className: "smalldialog",
             disableAnimation: true,
@@ -164,13 +169,13 @@ angular.module('meanMarkdownApp')
         };
 
         definitionService.query(function(definitions) {
-            
+
             // convert markdown to html
             var html = HTMLService.getOlat($scope.file, definitions, config);
             html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
 
             // init download
-            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });           
+            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
             var downloadLink = angular.element('<a></a>');
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', filename);
@@ -202,11 +207,11 @@ angular.module('meanMarkdownApp')
             if ($scope.file.type === "opOlat") {
                 html = HTMLService.getOlat($scope.file, definitions, config);
                 html = HTMLService.wrapOlatHTML(html, $scope.file.title);  // TODO: wrap html and save on server
-            
+
             } else if ($scope.file.type === "opMainzed") {
                 html = HTMLService.getOpMainzed($scope.file);
                 html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
-            
+
             } else if ($scope.file.type === "prMainzed") {
                 html = HTMLService.getPrMainzed($scope.file);
                 html = HTMLService.wrapPrMainzedHTML(html, $scope.file.title);
@@ -226,7 +231,7 @@ angular.module('meanMarkdownApp')
                 $scope.previewPath = data.data.previewPath;
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
-                ngDialog.open({ 
+                ngDialog.open({
                     template: "./views/templates/dialog_preview.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
@@ -246,10 +251,10 @@ angular.module('meanMarkdownApp')
         //$scope.file.markdown = $scope.editor.getValue();  // TODO: set file.markdown as ng-model
         $scope.unsavedChanges = true;  // gets reset on save
     };
-    
+
     // handler for click on button "Glossareintrag"
     $scope.onDefinitionClick = function() {
-        ngDialog.open({ 
+        ngDialog.open({
             template: "./views/templates/dialog_definitions.html",
             scope: $scope,
             disableAnimation: true,
@@ -259,7 +264,7 @@ angular.module('meanMarkdownApp')
             }
         });
     };
-    
+
     $scope.getDefinitions = function() {
         $scope.definitions = definitionService.query();
     };
@@ -269,7 +274,7 @@ angular.module('meanMarkdownApp')
             // success
             // remove from local definitions array without reloading
             var index = _.findIndex($scope.definitions, {_id: id});
-            $scope.definitions.splice(index, 1);     
+            $scope.definitions.splice(index, 1);
         });
     };
 
@@ -283,18 +288,19 @@ angular.module('meanMarkdownApp')
             if (definition._id) {
                 definitionService.update({id: definition._id}, definition);
 
-            } else {  // new definition 
+            } else {  // new definition
                 definitionService.save(definition);
             }
         });
     };
 
-    $scope.onCreateDefinitionClick = function() {
+    $scope.onCreateDefinitionClick = function(category) {
         // add empty object to local definitions array
         var timestmap = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm:ss.sssZ", "CEST");
 
-        $scope.definitions.push({ 
+        $scope.definitions.push({
             filetype: $scope.file.type,  // to be shown in table
+            category: category,
             updated_at: timestmap // to be sorted to top
         });
     };
@@ -312,11 +318,11 @@ angular.module('meanMarkdownApp')
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
-        if(e.ctrlKey && code === 76) { // Shift + L 
+        if(e.ctrlKey && code === 76) { // Shift + L
             console.log("Ctrl + L");
             $scope.onLinkClick();
             e.preventDefault();  // stop save action
-            
+
         }
     });
 
@@ -328,7 +334,7 @@ angular.module('meanMarkdownApp')
             console.log("Ctrl + I");
             $scope.onImageClick();
             e.preventDefault();  // stop save action
-            
+
         }
     });
 
@@ -336,11 +342,11 @@ angular.module('meanMarkdownApp')
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
         // shiftKey ctrlKey
-        if(e.ctrlKey && code === 83) { // Shift + S 
+        if(e.ctrlKey && code === 83) { // Shift + S
             console.log("Ctrl + S");
             $scope.onSaveClick();
             e.preventDefault();  // stop save action
-            
+
         }
     });
 

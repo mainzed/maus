@@ -24,7 +24,19 @@ angular.module('meanMarkdownApp')
                 },{
                     name: "linktag"
                 }
-            ]
+            ],
+            assets: {
+                definition: {
+                    html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                },
+                story: {
+                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
+                }
+                // image
+                // linklist
+                // story
+            }
+
         },{
 
             type: "opMainzed",
@@ -36,7 +48,12 @@ angular.module('meanMarkdownApp')
                 },{
                     name: "linktag"
                 }
-            ]
+            ],
+            assets: {
+                definition: {
+                    html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                }
+            }
         },{
 
             type: "prMainzed",
@@ -57,8 +74,8 @@ angular.module('meanMarkdownApp')
     };
 
     this.getNameByType = function(type) {
-        var obj = _.find(filetypes, function(item) { 
-            return item.type === type; 
+        var obj = _.find(filetypes, function(item) {
+            return item.type === type;
         });
         if (obj) {
             return obj.displayname;
@@ -71,8 +88,8 @@ angular.module('meanMarkdownApp')
         var obj;
         var isValid = false;
 
-        obj = _.find(filetypes, function(item) { 
-            return item.type === type; 
+        obj = _.find(filetypes, function(item) {
+            return item.type === type;
         });
 
         if (obj) {
@@ -89,8 +106,8 @@ angular.module('meanMarkdownApp')
         var obj;
         var isValid = false;
 
-        obj = _.find(filetypes, function(item) { 
-            return item.type === type; 
+        obj = _.find(filetypes, function(item) {
+            return item.type === type;
         });
 
         if (obj) {
@@ -111,5 +128,58 @@ angular.module('meanMarkdownApp')
         return types;
     };
 
-    
+    /**
+     * dynamically fills asset/snippet template and returns generated html string
+     */
+    var storyCounter = 1;
+    this.getAssetByFiletypeAndCategory = function(category, enrichment) {
+        var filetype = enrichment.filetype;
+
+        //console.log("looking for: " + category);
+        // get correct file object
+        var obj = _.find(filetypes, function(item) {
+            return item.type === filetype;
+        });
+
+        if (!obj.assets) {
+            console.log("unknown filetype: " + filetype + " or missing asset definition");
+        }
+
+        // look up the string for the specific category
+        var template = obj.assets[category].html;
+
+        if (filetype === "opOlat" && category === "definition") {
+            // fill template with enrichments
+            template = this.populateDefinitions(template, enrichment);
+
+        } else if (filetype === "opMainzed" && category === "definition") {
+            template = this.populateDefinitions(template, enrichment);
+        }
+
+
+        //console.log(template);
+        return template;
+    };
+
+    this.populateDefinitions = function(template, enrichment) {
+        template = template.replace("${text}", enrichment.text);
+        template = template.replace("${word}", enrichment.word);
+        return template;
+    };
+
+    this.populateStories = function(template) {
+        template = template.replace("${counter}", storyCounter);
+        template = template.replace("${text}", enrichment.text);
+        storyCounter++;
+        return template;
+    };
+
+    this.getAssetsForFiletype = function(filetype) {
+        var obj = _.find(filetypes, function(item) {
+            return item.type === filetype;
+        });
+        return obj.assets;
+    };
+
+
   });
