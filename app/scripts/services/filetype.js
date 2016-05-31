@@ -141,19 +141,20 @@ angular.module('meanMarkdownApp')
             return item.type === filetype;
         });
 
-        if (!obj.assets) {
+        if (!_.has(obj.assets[category], 'html')) {
             console.log("unknown filetype: " + filetype + " or missing asset definition");
+            return false;
         }
 
         // look up the string for the specific category
         var template = obj.assets[category].html;
 
-        if (filetype === "opOlat" && category === "definition") {
+        if ((filetype === "opOlat" || filetype === "opMainzed") && category === "definition") {
             // fill template with enrichments
             template = this.populateDefinitions(template, enrichment);
 
-        } else if (filetype === "opMainzed" && category === "definition") {
-            template = this.populateDefinitions(template, enrichment);
+        } else if (filetype === "opOlat" && category === "story") {
+            template = this.populateStories(template, enrichment);
         }
 
 
@@ -167,7 +168,7 @@ angular.module('meanMarkdownApp')
         return template;
     };
 
-    this.populateStories = function(template) {
+    this.populateStories = function(template, enrichment) {
         template = template.replace("${counter}", storyCounter);
         template = template.replace("${text}", enrichment.text);
         storyCounter++;

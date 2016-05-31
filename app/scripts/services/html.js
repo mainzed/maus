@@ -18,7 +18,7 @@ angular.module('meanMarkdownApp')
      // TODO: dont require file, but create EditorService
     this.getOlat = function(file, definitions, config) {
         //console.log(callback);
-        var config = config || {
+        config = config || {
             addTitle: false,
             addContentTable: false,
             addImagesTable: false
@@ -31,6 +31,9 @@ angular.module('meanMarkdownApp')
 
         // convert markdown
         var customRenderer = new marked.Renderer();
+
+        // counter that are used in rendering and for custom tags later
+        var storyCounter = 1;
 
         // custom heading renderer
         var headings = [];
@@ -106,10 +109,10 @@ angular.module('meanMarkdownApp')
 
         var stories = this.getStories(html);  // needed for table of content
 
-        html = this.replaceStoryTags(html);
+        html = this.replaceStoryTags(html, storyCounter);
 
         //var usedDefs = [];
-        html = this.replaceDefinitionTags(html, definitions);
+        html = this.replaceEnrichmentTags(html, definitions, storyCounter);
 
         // add tables of images and links
         if (config.addImagesTable) {
@@ -242,7 +245,7 @@ angular.module('meanMarkdownApp')
     /**
      * requires html and definitions from the database
      */
-    this.replaceEnrichmentTags = function(html, enrichments) {
+    this.replaceEnrichmentTags = function(html, enrichments, storyCounter) {
         var me = this;
         //var enrichment;
 
@@ -278,20 +281,23 @@ angular.module('meanMarkdownApp')
 
                 // get snippet based on category and filetype
                 // templates for this are defined in filetypeService
-                console.log(category);
-                var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
+                if (enrichment) {
+                    var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
 
-                if (!snippet) {
-                    console.log("unknown enrichment filetype: " + enrichment.filetype + " or category: " + category);
+                    if (snippet) {
+                        // actually replace the tag
+                        html = html.replace(tag, snippet);
+
+                        // record all enrichments for content tables
+                        if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                            usedDefs.push(enrichment._id);
+                        }
+                    } else {
+                        console.log("unknown enrichment filetype: " + enrichment.filetype + " or category: " + category);
+                    }
                 }
 
-                // actually replace the tag
-                html = html.replace(tag, snippet);
 
-                // record all enrichments for content tables
-                if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
-                    usedDefs.push(enrichment._id);
-                }
             })
         }
 

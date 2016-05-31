@@ -314,6 +314,13 @@ angular.module('meanMarkdownApp')
         return filetypeService.isValidToolForType(filetype, toolname);
     };
 
+    // listen to click on a enrichmenttag
+    $(document).on('click', 'span.cm-markdown-definition', function(){
+        var category = $(this).text().replace("{", "").replace("}", "").split(":")[0];
+        $scope.onDefinitionClick();
+    });
+
+
     // link hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;

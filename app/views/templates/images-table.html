@@ -38,7 +38,7 @@
 
       <tbody>
         <!--<tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'">-->
-        <tr ng-repeat="definition in definitions | filter: {category: category} | filter:filterBox |  orderBy: '-updated_at'">
+        <tr ng-repeat="definition in definitions | filter: {category: category, filetype: file.type} | filter:filterBox |  orderBy: '-updated_at'">
           <td>
             <a ng-click="closeThisDialog(); addDefinition(definition)" class="choose">
               <i class="fa fa-play" aria-hidden="true"></i>
