@@ -32,7 +32,7 @@ module.exports = function (grunt) {
         // references package.json so it can load plugins automatically
         // this way we dont have to do this for every plugin:
         // grunt.loadNpmTasks('grunt-express-server');
-        //pgk: grunt.file.readJSON('package.json'), 
+        //pgk: grunt.file.readJSON('package.json'),
 
         // Project settings
         yeoman: appConfig,
@@ -71,8 +71,8 @@ module.exports = function (grunt) {
               '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
             ]
           },
-            
-            
+
+
             // express: {
             //     files: ['**/*.js'],
             //     tasks:  ['express'],
@@ -216,7 +216,7 @@ module.exports = function (grunt) {
         // Automatically inject Bower components into the app
         wiredep: {
 
-          // inject components into index.html 
+          // inject components into index.html
           app: {
             src: ['<%= yeoman.app %>/index.html'],
             ignorePath:  /\.\.\//
@@ -239,7 +239,7 @@ module.exports = function (grunt) {
               }
             }
           }
-        }, 
+        },
 
         // Renames files for browser caching purposes
         filerev: {
@@ -432,7 +432,7 @@ module.exports = function (grunt) {
           dist: [
             'copy:styles',
             'imagemin',
-            'svgmin'
+            //'svgmin'
           ]
         },
 
@@ -457,7 +457,7 @@ module.exports = function (grunt) {
           }
         }
     });
-  
+
     // load all plugins automatically using the package.json file
     grunt.loadNpmTasks('grunt-express-server');
 
@@ -487,21 +487,35 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
-        'clean:dist',
-        'wiredep',
-        'useminPrepare',
-        'concurrent:dist',
+        'clean:dist',  // deletes /dist
+        'wiredep',   // add bower references
+
+        'useminPrepare',  // prepares files for concat, uglify and cssmin
+
+        'concurrent:dist',   // run image minify and copy styles
+
         'postcss',
-        'ngtemplates',
-        'concat',
-        'ngAnnotate',
-        'copy:dist',
-        'cdnify',
-        'cssmin',
+
+        'ngtemplates',  // stores all angular views/templates in the scripts.js
+
+        'concat',  // creates vendor.js and scripts.js (just merges, doesnt minify)
+        'ngAnnotate',  // makes angular code save for minification
+
+        'copy:dist',  // copy app files to /dist
+        //'cdnify',  // replaces bower components with cdns when possible
+        'cssmin',  // minify css
+
+        // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
+        // the result to /dist/scripts
         'uglify',
-        'filerev',
+
+        //'filerev',      // gives cryptic names to files :) (browser caching)
+
+        // replaces references to scripts and styles in index.html with links
+        // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
         'usemin',
-        'htmlmin'
+
+        //'htmlmin'  // minify index.html
     ]);
 
     /*grunt.registerTask('default', [

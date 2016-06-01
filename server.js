@@ -12,6 +12,7 @@ var apiRouter = require('./routes/api');
 // middleware
 app.use(compression());
 app.use(logger('dev'));
+
 app.use(express.static(__dirname + '/app'));  // development
 //app.use(express.static(__dirname + '/dist'));  // production
 
@@ -24,7 +25,6 @@ require('./database.js');
 app.disable('x-powered-by');
 
 app.use('/api', apiRouter);
-
 
 app.listen(port, function () {
     console.log('Server listening on port ' + port + "!");
