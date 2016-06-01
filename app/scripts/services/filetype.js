@@ -31,10 +31,11 @@ angular.module('meanMarkdownApp')
                 },
                 story: {
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
-                }
+                },
+                /*linklist: {
+                    html: "<div class=\"linklist\">${text}</div>"
+                }*/
                 // image
-                // linklist
-                // story
             }
 
         },{
@@ -155,6 +156,9 @@ angular.module('meanMarkdownApp')
 
         } else if (filetype === "opOlat" && category === "story") {
             template = this.populateStories(template, enrichment);
+
+        } else if (filetype === "opOlat" && category === "linklist") {
+            template = this.populateLinklists(template, enrichment);
         }
 
 
@@ -172,6 +176,11 @@ angular.module('meanMarkdownApp')
         template = template.replace("${counter}", storyCounter);
         template = template.replace("${text}", enrichment.text);
         storyCounter++;
+        return template;
+    };
+
+    this.populateLinklists = function(template, enrichment) {
+        template = template.replace("${text}", enrichment.text);
         return template;
     };
 
