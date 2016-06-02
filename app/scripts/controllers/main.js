@@ -8,8 +8,8 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService) {
-  	
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService, UserService) {
+
     // check if already logged in, if not, redirect to login page
     $scope.init = function() {
         if (!AuthService.isAuthenticated()) {
@@ -24,7 +24,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onCreateNewFile = function() {
         $scope.newFile = {};  // filled by dialog
-        ngDialog.open({ 
+        ngDialog.open({
             template: "./views/templates/dialog_new_file.html",
             className: "smalldialog",
             disableAnimation: true,
@@ -56,7 +56,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onRemoveClick = function(id) {
-        
+
         ngDialog.openConfirm({
             template: "./views/templates/dialog_confirm_delete.html",
             className: "smalldialog",
@@ -69,11 +69,11 @@ angular.module('meanMarkdownApp')
 
                 // remove file from local array without reloading
                 var index = _.findIndex($scope.files, {_id: id});
-                $scope.files.splice(index, 1); 
+                $scope.files.splice(index, 1);
                 //$scope.files = fileService.query();
 
                 // close open dialogs
-                //var openDialogs = ngDialog.getOpenDialogs(); 
+                //var openDialogs = ngDialog.getOpenDialogs();
                 //console.log(openDialogs);
                 ngDialog.close("ngdialog1");
             });
@@ -83,12 +83,12 @@ angular.module('meanMarkdownApp')
             console.log("CANCELLED!");
         });
     };
-    
+
     $scope.onDownloadClick = function(id) {
         fileService.get({id: id}, function(file) {
-            
+
             // trigger download
-            var blob = new Blob([file.markdown], { type:"data:text/plain;charset=utf-8;" });           
+            var blob = new Blob([file.markdown], { type:"data:text/plain;charset=utf-8;" });
             var downloadLink = angular.element('<a></a>');
             downloadLink.attr('href', window.URL.createObjectURL(blob));
             downloadLink.attr('download', 'export.md');
@@ -99,7 +99,7 @@ angular.module('meanMarkdownApp')
     $scope.onEditClick = function(id) {
         fileService.get({id: id}, function(file) {
             $scope.file = file;
-            
+
             ngDialog.open({
                 template: "./views/templates/dialog_edit_file.html",
                 className: "smalldialog",
@@ -110,10 +110,10 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onHistoryClick = function(id) {
-        
+
         archivedFileService.query({id: id}, function(files) {
             $scope.archivedFiles = files;
-            
+
             ngDialog.open({
                 template: "./views/templates/dialog_history.html",
                 disableAnimation: true,
@@ -162,7 +162,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onRevertFileClick = function(archivedFile) {
-        
+
         var file = {
             author: archivedFile.author,
             title: archivedFile.title,
@@ -176,7 +176,7 @@ angular.module('meanMarkdownApp')
         fileService.update({id: archivedFile.fileID}, file, function() {
             //console.log("file updated successfully!");
             $scope.files = fileService.query();
-            
+
         }, function() {
             console.log("could not update file!");
         });
@@ -194,6 +194,29 @@ angular.module('meanMarkdownApp')
 
     $scope.onLogoutClick = function() {
         AuthService.logout();
+    };
+
+    $scope.getUsers = function() {
+        UserService.query(function(users) {
+            $scope.users = users;
+        });
+    }
+    $scope.onUsersClick = function() {
+        ngDialog.open({
+            template: "./views/templates/dialog_users.html",
+            disableAnimation: true,
+            scope: $scope
+        });
+    };
+
+    $scope.onDeleteUserClick = function(id) {
+        UserService.remove({id: id}, function() {
+
+            // remove file from local array without reloading
+            var index = _.findIndex($scope.users, {_id: id});
+            $scope.users.splice(index, 1);
+
+        });
     };
 
     $scope.isValidToolForType = function(filetype, toolname) {
@@ -225,5 +248,3 @@ angular.module('meanMarkdownApp')
     }
 
   });
-
-

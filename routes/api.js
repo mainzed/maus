@@ -70,14 +70,11 @@ function isAuthenticated (req, res, next) {
      var id = req.params.id;
      var user = req.body;
 
-     /*var update = {
-         word: definition.word,
-         author: definition.author,
-         text: definition.text,
-         url: definition.url,
-         filetype: definition.filetype
-     };*/
-     User.findOneAndUpdate({_id: id}, user, function(err, user) {
+     var update = {
+         username: user.username,
+         group: user.group
+     };
+     User.findOneAndUpdate({_id: id}, update, function(err, user) {
          if (err) {
              throw err;
          }
@@ -86,6 +83,7 @@ function isAuthenticated (req, res, next) {
  });
 
  router.delete('/users/:id', function (req, res) {
+     //console.log("trying to delete user!");
      var id = req.params.id;
 
      User.remove({_id: id}, function(err, user) {
@@ -99,7 +97,7 @@ function isAuthenticated (req, res, next) {
 
 //Register the authentication middleware
 // intercepts requests to /files when not authenticated
-router.use('/api/files', isAuthenticated);
+//router.use('/api/files', isAuthenticated);
 
 router.get('/files', function (req, res) {
     File.getFiles(function(err, files) {

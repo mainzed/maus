@@ -1,0 +1,21 @@
+
+<div class="container" ng-init="getUsers()">
+
+    <div ng-repeat="user in users">
+        username: {{ user.username }}
+
+        <!-- group selection  dropdown -->
+        <div class="form-group">
+          <label for="userGroupSelect">Group</label>
+          <select class="form-control" id="userGroupSelect" ng-model="user.group" ng-change="user.$save()">
+            <option>admin</option>
+            <option>look-diva</option>
+            <option>mainzed</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-default" ng-click="onDeleteUserClick(user._id)" ng-disabled="user.username === currentUser.name">delete</button>
+
+    </div>
+
+</div>

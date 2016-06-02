@@ -11,7 +11,7 @@ angular.module('meanMarkdownApp')
   .service('AuthService', function ($cookieStore, $location, $http, UserService) {
 
     // groups/roles = ["admin", "look-diva", "mainzed"]
-    var users = [
+    /*var users = [
         {
             _id: "user1",
             name: "axel",
@@ -49,7 +49,7 @@ angular.module('meanMarkdownApp')
             group: "look-diva"
         }
 
-    ];
+    ];*/
 
     this.getUser = function() {
         return $cookieStore.get('currentUser');
@@ -73,20 +73,24 @@ angular.module('meanMarkdownApp')
             password: password
         }
 
-        $http.post('/auth/login', {data: data}).then(function(res) {
+        $http.post('/auth/login', data).then(function(res) {
             // success
-
-            console.log(res);
             if (res.data.user !== null && res.data.state === "success") {
-                console.log("correct login!");
+
+                $cookieStore.put('currentUser', {
+                    name: res.data.user.username,
+                    //group: item.group,
+                    _id: res.data.user._id
+                });
+
+                success(res.data.user);
             } else {
-                console.log("incorrect login!");
+                failure("password or username incorrect!");
             }
 
         }, function(res) {
             // error
-            console.log("failed!");
-            console.log(res);
+            failure("could not connect to server!");
         });
 
         /*// TODO: replace this with actual server login
@@ -124,13 +128,40 @@ angular.module('meanMarkdownApp')
             });
 
             if (exists) {
-                console.log("user exoists!");
+                failure({ message: "user already exists!"});
             } else {
-                console.log("user doesnt exiost!");
+
+                var data = {
+                    username: username,
+                    password: password
+                };
+
+                // trying to sign up
+                $http.post('/auth/signup', data).then(function(res) {
+                    // success
+                    //console.log(res);
+                    if (res.data.user !== null && res.data.state === "success") {
+
+                        $cookieStore.put('currentUser', {
+                            name: res.data.user.username,
+                            //group: item.group,
+                            _id: res.data.user._id
+                        });
+
+                        success(res.data.user);
+
+                    } else {
+                        failure({ message: "something went wrong when trying to signup a new user!"});
+                    }
+
+                }, function() {
+                    failure({ message: "could not complete signup request!"});
+                });
+
             }
 
         }, function() {
-            failure();
+            failure({ message: "could not connect to users db!"});
         });
 
 

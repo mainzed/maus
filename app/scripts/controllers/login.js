@@ -32,15 +32,22 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onSignupSubmit = function() {
-        //$scope.validating = true;  // used to disable login button while validating
+        $scope.validating = true;  // used to disable login button while validating
 
-        AuthService.signup($scope.username, $scope.password, function() {
+        AuthService.signup($scope.username, $scope.password, function(user) {
             // success
-            console.log("success!");
+            //console.log("success!");
+            $location.path("/files");
+            $scope.validating = false;
+
             //console.log(users);
-        }, function() {
+        }, function(res) {
             // failure
-            console.log("failure!");
+            console.log(res.message);
+            $scope.showError = true;
+            $timeout(function () { $scope.showError = false; }, 3000);
+
+            $scope.validating = false;
         });
 
         /*AuthService.login($scope.username, $scope.password, function() {

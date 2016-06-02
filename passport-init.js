@@ -55,7 +55,7 @@ module.exports = function(passport){
 		},
 		function(req, username, password, done) {
 
-			console.log("trying to sign up!");
+			console.log("\n\n\n\n\ntrying to sign up!\n\n\n\n\n");
 			console.log(username);
 			console.log(password);
 
