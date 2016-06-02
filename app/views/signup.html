@@ -6,8 +6,7 @@
     <div class="form-group">
       <input type="password" class="form-control" placeholder="Password" ng-model="password">
     </div>
-    <button id="login-button" type="button" class="btn btn-default" ng-click="onLoginSubmit()" ng-disabled="!username || !password || validating">Login</button>
-    <button id="signup-button" type="button" class="btn btn-default" ng-click="onSignupSubmit()" ng-disabled="!username || !password || validating">Signup</button>
+    <button id="login-button" type="button" class="btn btn-default" ng-click="onSignupSubmit()" ng-disabled="!username || !password || validating">Signup</button>
     <span ng-show="showError" class="text-danger">Failed!</span>
     <span ng-show="showSuccess" class="text-success">Success!</span>
   </form>

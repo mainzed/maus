@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('LoginCtrl', function ($scope, AuthService, $location, $timeout) {
+  .controller('LoginCtrl', function ($scope, $location, $timeout, AuthService) {
 
     // check if already logged in, if yes redirect to files overview
     if (AuthService.isAuthenticated()) {
@@ -17,7 +17,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onLoginSubmit = function() {
         $scope.validating = true;  // used to disable login button while validating
-        
+
         AuthService.login($scope.username, $scope.password, function() {
             // success
             $location.path("/files");
@@ -29,6 +29,31 @@ angular.module('meanMarkdownApp')
 
             $scope.validating = false;
         });
+    };
+
+    $scope.onSignupSubmit = function() {
+        //$scope.validating = true;  // used to disable login button while validating
+
+        AuthService.signup($scope.username, $scope.password, function() {
+            // success
+            console.log("success!");
+            //console.log(users);
+        }, function() {
+            // failure
+            console.log("failure!");
+        });
+
+        /*AuthService.login($scope.username, $scope.password, function() {
+            // success
+            $location.path("/files");
+            $scope.validating = false;
+        }, function() {
+            // failure
+            $scope.showError = true;
+            $timeout(function () { $scope.showError = false; }, 3000);
+
+            $scope.validating = false;
+        });*/
     };
 
     /**

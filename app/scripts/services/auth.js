@@ -8,21 +8,21 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('AuthService', function ($cookieStore, $location) {
+  .service('AuthService', function ($cookieStore, $location, $http, UserService) {
 
     // groups/roles = ["admin", "look-diva", "mainzed"]
     var users = [
-        {   
+        {
             _id: "user1",
             name: "axel",
             password: "axel",
             group: "admin"
-        },{ 
+        },{
             _id: "user2",
             name: "matthias",
             password: "matthias",
             group: "admin"
-        },{ 
+        },{
             _id: "user3",
             name: "anne",
             password: "mainzed",
@@ -68,7 +68,28 @@ angular.module('meanMarkdownApp')
      */
     this.login = function(username, password, success, failure) {
 
-        // TODO: replace this with actual server login        
+        var data = {
+            username: username,
+            password: password
+        }
+
+        $http.post('/auth/login', {data: data}).then(function(res) {
+            // success
+
+            console.log(res);
+            if (res.data.user !== null && res.data.state === "success") {
+                console.log("correct login!");
+            } else {
+                console.log("incorrect login!");
+            }
+
+        }, function(res) {
+            // error
+            console.log("failed!");
+            console.log(res);
+        });
+
+        /*// TODO: replace this with actual server login
         var isValid = false;
         users.forEach(function(item) {
             if (item.name === username) {
@@ -77,10 +98,10 @@ angular.module('meanMarkdownApp')
                 if (item.password === password) {
                     isValid = true;
 
-                    $cookieStore.put('currentUser', { 
+                    $cookieStore.put('currentUser', {
                         name: item.name,
                         group: item.group,
-                        _id: item._id 
+                        _id: item._id
                     });
                     success();
                 }
@@ -89,7 +110,30 @@ angular.module('meanMarkdownApp')
 
         if (!isValid) {
             failure();
-        }
+        }*/
+    };
+
+    this.signup = function(username, password, success, failure) {
+        //console.log(users);
+        UserService.query(function(users) {
+            //success(users);
+
+            // check if user already exists
+            var exists = _.find(users, function(user) {
+                return user.username === username;
+            });
+
+            if (exists) {
+                console.log("user exoists!");
+            } else {
+                console.log("user doesnt exiost!");
+            }
+
+        }, function() {
+            failure();
+        });
+
+
     };
 
     this.logout = function() {
