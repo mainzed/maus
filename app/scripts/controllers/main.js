@@ -10,17 +10,17 @@
 angular.module('meanMarkdownApp')
   .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService, UserService) {
 
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    }
+
     // check if already logged in, if not, redirect to login page
     $scope.init = function() {
-        if (!AuthService.isAuthenticated()) {
-            $location.path("/login");
-        } else {
-            $scope.currentUser = AuthService.getUser();
-            $scope.group = AuthService.getUserGroup();
-            //console.log(AuthService.getUserGroup());
-            $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
-        }
+        $scope.currentUser = AuthService.getUser();
+        $scope.group = AuthService.getUserGroup();
+
         $scope.files = fileService.query();
+        $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
         $scope.checkforfirefox();
     };
 

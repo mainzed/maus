@@ -8,9 +8,9 @@
 
 
   <div id="editor-tools" class="toolbar autowidth center">
-        
+
     <!-- undo and redo buttons -->
-    <div class="btn-group" role="group"> 
+    <div class="btn-group" role="group">
       <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Undo (Ctrl + Z)" ng-click="onUndoClick()">
         <i class="fa fa-undo"></i>
       </button>
@@ -18,37 +18,37 @@
         <i class="fa fa-repeat"></i>
       </button>
     </div>
-    
+
     <!-- help button-->
     <button target="_blank" class="btn btn-default btn-sm nav-link" role="button" data-toggle="tooltip" title="Markdown Help" ng-click="onHelpClick()">
         Spickzettel
     </button>
-    
-    
+
+
     <!-- image, links & storyscript buttons -->
-    <div class="btn-group marginleft" role="group"> 
-      
+    <div class="btn-group marginleft" role="group">
+
       <!-- image button -->
-      <button ng-show="isValidToolForType(file.type, 'imagetag')" class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
+      <!--<button ng-show="isValidToolForType(file.type, 'imagetag')" class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
         Bild
-      </button>
+    </button>-->
 
       <!-- definition-button -->
       <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
-        Glossareintrag
+        Anreichern
       </button>
 
       <!-- link button -->
-      <button ng-show="isValidToolForType(file.type, 'linktag')" class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
+      <!--<button ng-show="isValidToolForType(file.type, 'linktag')" class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
         Link
-      </button>
+    </button>-->
 
       <!-- storyscript button -->
-      <button ng-show="isValidToolForType(file.type, 'storytag')" class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
+      <!--<button ng-show="isValidToolForType(file.type, 'storytag')" class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
         Story
-      </button>
+    </button>-->
     </div>
-    
+
     <!-- export -->
     <button class="btn btn-default btn-sm marginleft" ng-click="onExportClick()">
         Export
@@ -60,7 +60,7 @@
     </button>
 
     <!-- save button -->
-    <div class="btn-group" role="group"> 
+    <div class="btn-group" role="group">
       <button class="btn btn-default
        btn-sm pull-right" ng-click="onSaveClick()" data-toggle="tooltip" title="Save (Ctrl + S)" ng-disabled="!unsavedChanges">
         Speichern

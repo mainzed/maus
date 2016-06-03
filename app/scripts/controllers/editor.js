@@ -13,13 +13,14 @@ angular.module('meanMarkdownApp')
         $document, $http, $filter, $window, fileService, AuthService, ngDialog,
         definitionService, filetypeService) {
 
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    }
+
     $scope.init = function() {
-        // check if logged in
-        if (!AuthService.isAuthenticated()) {
-            $location.path("/login");
-        } else {
-            $scope.currentUser = AuthService.getUser();
-        }
+
+        $scope.currentUser = AuthService.getUser();
+
 
         // get file based on id provided in address bar
         fileService.get({ id: $routeParams.id }, function(file) {
@@ -113,7 +114,17 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.addDefinition = function(definition) {
-        var snippet = "{" + definition.word + "}";
+        var snippet = "{definition: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
+    $scope.addStory = function(definition) {
+        var snippet = "{story: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
+    $scope.addImage = function(definition) {
+        var snippet = "{image: " + definition.word + "}";
         $scope.addSnippet(snippet);
     };
 

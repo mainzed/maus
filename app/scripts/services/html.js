@@ -123,7 +123,7 @@ angular.module('meanMarkdownApp')
             html += this.createLinksTable(links);
         }*/
 
-        if (config.addDefinitionsTable) {
+        if (config.addDefinitionsTable && usedDefs.length > 0) {
             html += this.createDefinitionsTable(definitions);
         }
 
@@ -289,7 +289,7 @@ angular.module('meanMarkdownApp')
                         html = html.replace(tag, snippet);
 
                         // record all enrichments for content tables
-                        if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        if (category === "definition" && usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
                             usedDefs.push(enrichment._id);
                         }
                     } else {

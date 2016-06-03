@@ -103,7 +103,7 @@ angular.module('meanMarkdownApp')
         return isValid;
     };
 
-    this.isValidTypeForGroup = function(type, group) {
+    /*this.isValidTypeForGroup = function(type, group) {
         var obj;
         var isValid = false;
 
@@ -117,9 +117,9 @@ angular.module('meanMarkdownApp')
             }
         }
         return isValid;
-    };
+    };*/
 
-    this.getTypesByGroup = function(group) {
+    /*this.getTypesByGroup = function(group) {
         var types = [];
         filetypes.forEach(function(filetype) {
             if (filetype.groups.indexOf(group) > -1) {
@@ -127,7 +127,7 @@ angular.module('meanMarkdownApp')
             }
         });
         return types;
-    };
+    };*/
 
     /**
      * dynamically fills asset/snippet template and returns generated html string
