@@ -61,13 +61,13 @@ angular.module('meanMarkdownApp')
             displayname: "Mainzed Präsentation",
             groups: ["admin", "mainzed", "look-diva"],
             tools: []
-        }/*,{
+        },{
 
             type: "news",
             displayname: "News",
             groups: ["admin"],
             tools: []
-        }*/
+        }
     ];
 
     this.getAll = function() {

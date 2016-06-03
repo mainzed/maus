@@ -41,7 +41,13 @@ angular.module('meanMarkdownApp')
      * makes editor available to rest of controller
      */
     $scope.onCodeMirrorLoaded = function(_editor){
+
         $scope.editor = _editor;  // for global settings
+
+        if ($scope.currentUser.group !== "admin") {
+            $scope.editor.setOption("readOnly", true);
+        }
+
     };
 
     $scope.editorOptions = {

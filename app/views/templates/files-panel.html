@@ -19,9 +19,9 @@
       <col span="1" style="width: 10%;">
     </colgroup>
 
+
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
     <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false">
-
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
           {{ file.title }}
@@ -53,7 +53,7 @@
       <td>
 
         <div class="dropdown pull-right" ng-init="checkIfArchivedFiles(file._id)"> <!-- check if archived verions exist -->
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <button ng-disabled="file.type === 'news' && currentUser.group !== 'admin'" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>

@@ -21,6 +21,15 @@ angular.module('meanMarkdownApp')
 
         $scope.files = fileService.query();
         $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
+        //console.log($scope.filetypes);
+        /*if ($scope.currentUser.group !== "admin") {
+
+            $scope.filetypes = _.remove($scope.filetypes, function(o) {
+                return o.type !== 'news';
+            });
+
+            //console.log($scope.filetypes);
+        }*/
         $scope.checkforfirefox();
     };
 

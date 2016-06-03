@@ -34,7 +34,7 @@
     </button>-->
 
       <!-- definition-button -->
-      <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()">
+      <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()" ng-disabled="file.type === 'news' && currentUser.group !== 'admin'">
         Anreichern
       </button>
 
