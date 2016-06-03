@@ -9,7 +9,7 @@
 
   <!-- custom section names -->
   <span class="tableheader">{{ getName(key) }}</span>
-  
+
   <table class="filegroup">
     <colgroup>
       <col span="1" style="width: 60%;">
@@ -20,33 +20,37 @@
     </colgroup>
 
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
-    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false" ng-if="isValidTypeForGroup(file.type, currentUser.group)">
+    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author === currentUser.name || file.private === false">
 
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
           {{ file.title }}
         </a>
       </td>
-      
+
       <td>
         <button type="button" class="btn btn-link" ng-click="setFilter({ updated_at: file.updated_at })" ng-disabled="currentFilter['updated_at']">
           {{ getFormattedDate(file.updated_at) }}
-        </button> 
+        </button>
       </td>
 
       <td>
-        <button type="button" class="btn btn-link" ng-click="setFilter({ author: file.author })" ng-disabled="currentFilter['author']">
+        <button ng-show="file.author === currentUser.name" type="button" class="btn btn-link" ng-click="setFilter({ author: file.author })" ng-disabled="currentFilter['author']">
+          {{ "me" }}
+        </button>
+        <button ng-show="file.author !== currentUser.name" type="button" class="btn btn-link" ng-click="setFilter({ author: file.author })" ng-disabled="currentFilter['author']">
           {{ file.author }}
-        </button> 
+        </button>
       </td>
 
       <td class="colfilestate">
         <button type="button" class="btn btn-link" ng-click="setFilter({ private: true })" ng-disabled="currentFilter['private']">
-          <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible for other users!"></i>
+          <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible to other users!"></i>
+          <i ng-show="!file.private" class="fa fa-unlock" aria-hidden="true" data-toggle="tooltip" title="Public Document. Visible to all users!"></i>
         </button>
-      </td> 
-      
-      <td> 
+      </td>
+
+      <td>
 
         <div class="dropdown pull-right" ng-init="checkIfArchivedFiles(file._id)"> <!-- check if archived verions exist -->
           <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -54,7 +58,7 @@
             <span class="line"></span>
             <span class="line"></span>
           </button>
-          
+
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
             <!-- download -->
@@ -84,10 +88,10 @@
                 Löschen
               </a>
             </li>
-           
+
           </ul>
         </div>
-      
+
       </td>
 
     </tr>

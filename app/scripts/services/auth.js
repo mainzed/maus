@@ -10,49 +10,12 @@
 angular.module('meanMarkdownApp')
   .service('AuthService', function ($cookieStore, $location, $http, UserService) {
 
-    // groups/roles = ["admin", "look-diva", "mainzed"]
-    /*var users = [
-        {
-            _id: "user1",
-            name: "axel",
-            password: "axel",
-            group: "admin"
-        },{
-            _id: "user2",
-            name: "matthias",
-            password: "matthias",
-            group: "admin"
-        },{
-            _id: "user3",
-            name: "anne",
-            password: "mainzed",
-            group: "mainzed"
-        },{
-            _id: "user4",
-            name: "kai",
-            password: "mainzed",
-            group: "mainzed"
-        },{
-            _id: "user5",
-            name: "sarah",
-            password: "sarah",
-            group: "look-diva"
-        },{
-            _id: "user6",
-            name: "thomas",
-            password: "thomas",
-            group: "look-diva"
-        },{
-            _id: "user7",
-            name: "eva",
-            password: "eva",
-            group: "look-diva"
-        }
-
-    ];*/
-
     this.getUser = function() {
         return $cookieStore.get('currentUser');
+    };
+
+    this.getUserGroup = function() {
+        return $cookieStore.get('currentUser').group;
     };
 
     this.isAuthenticated = function() {
@@ -79,7 +42,7 @@ angular.module('meanMarkdownApp')
 
                 $cookieStore.put('currentUser', {
                     name: res.data.user.username,
-                    //group: item.group,
+                    group: res.data.user.group,
                     _id: res.data.user._id
                 });
 

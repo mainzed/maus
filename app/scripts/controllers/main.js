@@ -16,7 +16,9 @@ angular.module('meanMarkdownApp')
             $location.path("/login");
         } else {
             $scope.currentUser = AuthService.getUser();
-            $scope.filetypes = filetypeService.getTypesByGroup($scope.currentUser.group);  // get allowed filetypes
+            $scope.group = AuthService.getUserGroup();
+            //console.log(AuthService.getUserGroup());
+            $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
         }
         $scope.files = fileService.query();
         $scope.checkforfirefox();
@@ -35,6 +37,8 @@ angular.module('meanMarkdownApp')
 
     // within dialog, click on create
     $scope.onCreateConfirm = function() {
+
+        $scope.newFile.private = !$scope.newFile.public;
 
         // save as new file
         var file = {
@@ -97,6 +101,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onEditClick = function(id) {
+
         fileService.get({id: id}, function(file) {
             $scope.file = file;
 
@@ -183,9 +188,16 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onSaveClick = function(file) {
-        fileService.update({id: file._id}, file, function() {
+
+        //console.log(file.public);
+
+        //console.log("selected private: " + $scope.public);
+        file.private = !file.public;
+        //console.log(file.private);
+        fileService.update({id: file._id}, file, function(file) {
             //success
-            //$scope.files = fileService.query();
+            $scope.files = fileService.query();
+
         }, function() {
             // error
             console.log("could not update file!");
@@ -218,6 +230,14 @@ angular.module('meanMarkdownApp')
 
         });
     };
+
+    $scope.onUserChange = function(user) {
+
+        UserService.update({id: user._id}, user, function() {
+            //
+            console.log("update of user: " + user.username + " successfull");
+        })
+    }
 
     $scope.isValidToolForType = function(filetype, toolname) {
         //console.log($scope.file.type, toolname);

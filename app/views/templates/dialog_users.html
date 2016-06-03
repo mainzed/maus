@@ -1,4 +1,4 @@
-
+<h3>Users</h3>
 <div class="container" ng-init="getUsers()">
 
     <div ng-repeat="user in users">
@@ -7,10 +7,9 @@
         <!-- group selection  dropdown -->
         <div class="form-group">
           <label for="userGroupSelect">Group</label>
-          <select class="form-control" id="userGroupSelect" ng-model="user.group" ng-change="user.$save()">
+          <select class="form-control" id="userGroupSelect" ng-model="user.group" ng-change="onUserChange(user)">
             <option>admin</option>
-            <option>look-diva</option>
-            <option>mainzed</option>
+            <option>user</option>
           </select>
         </div>
 

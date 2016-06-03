@@ -1,5 +1,6 @@
 
 <div class="row files-top" ng-init="init()">
+
   <div class="listcontainer">
 
   	<scrollable>
@@ -12,11 +13,12 @@
         <div class="displayuser">
 
           <!-- admin button -->
-          <button type="button" class="btn btn-default underline" ng-click="onUsersClick()">
+
+          <button type="button" class="btn btn-default underline" ng-click="onUsersClick()" ng-show="group === 'admin'">
             Users
           </button>
 
-          <span ng-show="currentUser"><span class="icon-maus"></span>maus version 0.5 / Logged in as {{ currentUser.name }} ({{ currentUser.group }}), </span>
+          <span ng-show="currentUser"><span class="icon-maus"></span>maus version 0.5 / Logged in as {{ currentUser.name }}, </span>
           <button type="button" class="btn btn-default underline" ng-click="onLogoutClick()">
             Logout
           </button>

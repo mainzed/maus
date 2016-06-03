@@ -24,7 +24,7 @@ angular.module('meanMarkdownApp')
             $scope.validating = false;
         }, function() {
             // failure
-            $scope.showError = true;
+            $scope.showError = "wrong username or password";
             $timeout(function () { $scope.showError = false; }, 3000);
 
             $scope.validating = false;
@@ -34,33 +34,30 @@ angular.module('meanMarkdownApp')
     $scope.onSignupSubmit = function() {
         $scope.validating = true;  // used to disable login button while validating
 
-        AuthService.signup($scope.username, $scope.password, function(user) {
-            // success
-            //console.log("success!");
-            $location.path("/files");
-            $scope.validating = false;
+        if ($scope.password === $scope.passwordConfirm) {
+            AuthService.signup($scope.username, $scope.password, function(user) {
+                // success
+                //console.log("success!");
+                $location.path("/files");
+                $scope.validating = false;
 
-            //console.log(users);
-        }, function(res) {
-            // failure
-            console.log(res.message);
-            $scope.showError = true;
+            }, function(res) {
+                // failure
+                $scope.showError = res.message;
+                $timeout(function () { $scope.showError = false; }, 3000);
+
+                $scope.validating = false;
+            });
+        } else {
+            //
+            $scope.showError = "passwords do not match!";
             $timeout(function () { $scope.showError = false; }, 3000);
 
             $scope.validating = false;
-        });
+            $scope.passwordConfirm = "";
+        }
 
-        /*AuthService.login($scope.username, $scope.password, function() {
-            // success
-            $location.path("/files");
-            $scope.validating = false;
-        }, function() {
-            // failure
-            $scope.showError = true;
-            $timeout(function () { $scope.showError = false; }, 3000);
 
-            $scope.validating = false;
-        });*/
     };
 
     /**
