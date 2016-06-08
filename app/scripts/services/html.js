@@ -198,7 +198,8 @@ angular.module('meanMarkdownApp')
                 headings.push({
                     text: text,
                     level: level,
-                    counter: h1Counter
+                    counter: h1Counter,
+                    idString: "section-" + h1Counter
                 });
 
                 return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
@@ -209,7 +210,8 @@ angular.module('meanMarkdownApp')
                 headings.push({
                     text: text,
                     level: level,
-                    counter: h2Counter
+                    counter: h2Counter,
+                    idString: "section-" + h1Counter + "-" + h2Counter
                 });
 
                 return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
@@ -219,7 +221,8 @@ angular.module('meanMarkdownApp')
                 headings.push({
                     text: text,
                     level: level,
-                    counter: h3Counter
+                    counter: h3Counter,
+                    idString: "section-" + h1Counter + "-" + h2Counter + "-" + h3Counter
                 });
 
                 return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
@@ -302,7 +305,6 @@ angular.module('meanMarkdownApp')
     				'<h1 class="titletext title">mainzed jahresbericht <br>1</h1>' +
     				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
     			'</div>' +
-
 
                 "<ul id=\"nav\">\n" + navigation + "</ul>\n" +
 

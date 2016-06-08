@@ -26,6 +26,11 @@ angular.module('meanMarkdownApp')
         fileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
 
+            // lock editor if news
+            if ($scope.file.type === "news" && $scope.currentUser.group !== "admin") {
+                $scope.editor.setOption("readOnly", true);
+            }
+
             // get defined assets/snippets to determine what tabs to display in enrichments table
             $scope.assets = filetypeService.getAssetsForFiletype(file.type);
         });
@@ -41,13 +46,7 @@ angular.module('meanMarkdownApp')
      * makes editor available to rest of controller
      */
     $scope.onCodeMirrorLoaded = function(_editor){
-
         $scope.editor = _editor;  // for global settings
-
-        if ($scope.currentUser.group !== "admin") {
-            $scope.editor.setOption("readOnly", true);
-        }
-
     };
 
     $scope.editorOptions = {
