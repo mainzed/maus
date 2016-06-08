@@ -47,7 +47,7 @@ angular.module('meanMarkdownApp')
     // within dialog, click on create
     $scope.onCreateConfirm = function() {
 
-        $scope.newFile.private = !$scope.newFile.public;
+        //$scope.newFile.private = !$scope.newFile.public;
 
         // save as new file
         var file = {
@@ -201,7 +201,7 @@ angular.module('meanMarkdownApp')
         //console.log(file.public);
 
         //console.log("selected private: " + $scope.public);
-        file.private = !file.public;
+        //file.private = !file.public;
         //console.log(file.private);
         fileService.update({id: file._id}, file, function(file) {
             //success

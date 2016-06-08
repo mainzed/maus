@@ -18,8 +18,8 @@
   </div>
 
   <!-- public checkbox -->
-  <div ng-init="newFile.public = false">
-    <ms-checkbox ng-model="newFile.public"></ms-checkbox> Public
+  <div ng-init="newFile.private = false">
+    <ms-checkbox ng-model="newFile.private"></ms-checkbox> Private
   </div>
 
   <button type="submit" class="btn btn-default center-block bluebutton" ng-disabled="!newFile.title || !currentUser" ng-click="onCreateConfirm() || closeThisDialog()">
