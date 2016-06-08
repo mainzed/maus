@@ -245,6 +245,8 @@ angular.module('meanMarkdownApp')
 
                 //$scope.previewPath = data.data;  // returns path of newly created html
                 $scope.previewPath = data.data.previewPath;
+
+                console.log("previewpath: " + data.data.previewPath);
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
