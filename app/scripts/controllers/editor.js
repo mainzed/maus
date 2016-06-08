@@ -133,6 +133,11 @@ angular.module('meanMarkdownApp')
         $scope.addSnippet(snippet);
     };
 
+    $scope.addCitation = function(definition) {
+        var snippet = "{citation: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
     $scope.onLabelClick = function() {
         var snippet = "[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)";
         $scope.addSnippet(snippet);
@@ -247,18 +252,31 @@ angular.module('meanMarkdownApp')
                 $scope.previewPath = data.data.previewPath;
 
                 console.log("previewpath: " + data.data.previewPath);
+
+                $scope.dialogClass = 'ngdialog-theme-default';
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
                     template: "./views/templates/dialog_preview.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
+                    className: 'ngdialog-theme-default',
                     scope: $scope
                 });
             }, function() {
                 // error
                 console.log("something went wrong while trying to create preview");
             });
+        });
+    };
+
+    $scope.onMobileClick = function() {
+        ngDialog.open({
+            template: "./views/templates/dialog_preview.html",
+            disableAnimation: true,
+            closeByDocument: true,  // enable clicking on background to close dialog
+            className: 'ngdialog-theme-default mobile-view',
+            scope: $scope
         });
     };
 
@@ -322,6 +340,8 @@ angular.module('meanMarkdownApp')
             updated_at: timestmap // to be sorted to top
         });
     };
+
+
 
     $scope.onHelpClick = function() {
         $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");

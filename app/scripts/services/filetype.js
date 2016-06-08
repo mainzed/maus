@@ -53,7 +53,14 @@ angular.module('meanMarkdownApp')
             assets: {
                 definition: {
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
-                }
+                },
+                image: {
+                    html: "<img src=\"${url}\" alt=\"${alt}\" />"
+                },
+                citation: {
+                    html: "<div class=\"citation\">${text}</div>"
+                },
+
             }
         },{
 

@@ -3,6 +3,7 @@
 
 <button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="assets.definition">Definitionen</button>
 <button type="button" class="btn btn-default" ng-click="category = 'image'" ng-show="assets.image">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'citation'" ng-show="assets.citation">Zitate</button>
 <button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="assets.story">Storyelemente</button>
 <button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="assets.linklist">Linklisten</button>
 
@@ -12,6 +13,7 @@
   <input type="search" class="form-control definitionsearch" placeholder="Search" ng-model="filterBox">
 
   <ms-definitions-table ng-show="category === 'definition'"></ms-definitions-table>
+  <ms-citations-table ng-show="category === 'citation'"></ms-citations-table>
   <ms-images-table ng-show="category === 'image'"></ms-images-table>
   <ms-stories-table ng-show="category === 'story'"></ms-stories-table>
 

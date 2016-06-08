@@ -4,7 +4,7 @@
     src: url('fonts/mdigitalread10-Medium.eot?#iefix') format('embedded-opentype'),
          url('fonts/mdigitalread10-Medium.woff2') format('woff2'),
          url('fonts/mdigitalread10-Medium.woff') format('woff');
-      
+
     font-weight: normal;
     font-style: normal;
 }
@@ -85,7 +85,7 @@ span.tableheader {padding: 12px 7px 20px; width: 70%; margin: 0 auto; display: b
 .filegroup td.colfilename {width: 70%;}
 .filegroup button {width: 100%; text-overflow: ellipsis; text-align: left; overflow: hidden; font-size: 16px;}
 tbody tr:nth-child(even) {
-   
+
 }
 .filegroup input {text-overflow: ellipsis; width: 100%;}
 
@@ -244,7 +244,7 @@ right: 10px; bottom: 12px; display: block; max-width: 200px; overflow: hidden; t
   list-style: none;
   padding: 4px 15px;
   margin-bottom: -1px;
-  
+
 }
 
 .createfile {
@@ -284,8 +284,8 @@ select.btn-mini {
 
 .map { height: 400px; width: 100%; }
 
-#mapid { 
-  height: 180px; 
+#mapid {
+  height: 180px;
 }
 
 a[ng-click]{
@@ -310,7 +310,7 @@ img {background-color: none !important;}
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
 .ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px; overflow: hidden;}
-.ngdialog.smalldialog .ngdialog-content { 
+.ngdialog.smalldialog .ngdialog-content {
   width: 400px; padding: 10px;
   -webkit-animation: ngdialog-flyin .5s;
   animation: ngdialog-flyin .5s;
@@ -342,6 +342,12 @@ img {background-color: none !important;}
 .ngdialog.smalldialog .ngdialog-close {position: absolute; right: 0; top: 0;}
 
 .view {height: 100%;}
+
+/* iPhone 6 resolution */
+.mobile-view {
+    width: 375px;
+    height: 667px;
+}
 
 /*definitions table */
 .table-condensed > tbody > tr > td {padding: 1px;}
@@ -384,9 +390,9 @@ textarea{
     background: none;
     resize: none;
     border: none;
-    border-style: none; 
-    border-color: transparent !important; 
-    overflow: hidden;       
+    border-style: none;
+    border-color: transparent !important;
+    overflow: hidden;
     outline: none;
     width: 100%;
 }
@@ -400,8 +406,6 @@ textarea:focus {background: white; resize: vertical; height: 100px; cursor: text
   width: 100%;
   height: 500px;
   border: none;
-}   
+}
 
 .fullwidth {width: 100% !important;}
-
-
