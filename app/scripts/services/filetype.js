@@ -30,7 +30,8 @@ angular.module('meanMarkdownApp')
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                 },
                 story: {
-                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
+                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
+                    title: "Zitate"
                 }
                 // image
                 // linklist
@@ -52,6 +53,9 @@ angular.module('meanMarkdownApp')
             assets: {
                 definition: {
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                },
+                story: {
+                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
                 }
             }
         },{
