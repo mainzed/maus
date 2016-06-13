@@ -40,10 +40,10 @@ angular
           templateUrl: './views/editor.html',
           controller: 'EditorCtrl'
       })
-      .when('/history/:id', {
+      /*.when('/history/:id', {
           templateUrl: './views/history.html',
           controller: 'MainCtrl'
-      })
+      })*/
       .otherwise({
         redirectTo: '/'
       });

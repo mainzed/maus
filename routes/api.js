@@ -9,6 +9,26 @@ var path = require('path');
 var File = require('../models/file');
 var Definition = require('../models/definition');
 var ArchivedFile = require('../models/archivedFile');
+var User = require('../models/user');
+
+//Used for routes that must be authenticated.
+function isAuthenticated (req, res, next) {
+    console.log("checking!");
+	// if user is authenticated in the session, call the next() to call the next request handler
+	// Passport adds this method to request object. A middleware is allowed to add properties to
+	// request and response objects
+
+	//allow all get request methods
+	if(req.method === "GET"){
+		return next();
+	}
+	if (req.isAuthenticated()){
+		return next();
+	}
+
+	// if the user is not authenticated then redirect him to the login page
+	return res.redirect('/whatever');
+}
 
 /**
  * GET /tickets - Retrieves a list of tickets
@@ -17,6 +37,67 @@ var ArchivedFile = require('../models/archivedFile');
  * PUT /tickets/12 - Updates ticket #12
  * DELETE /tickets/12 - Deletes ticket #12
  */
+ router.get('/users', function (req, res) {
+     User.find(function(err, users) {
+         if (err) {
+             throw err;
+         }
+         res.json(users);
+     });
+ });
+
+ router.get('/users/:id', function (req, res) {
+     var id = req.params.id;
+     User.findById(id, function(err, user) {
+         if (err) {
+             res.status(404).send('Not found');
+         }
+         res.json(user);
+     });
+ });
+
+ router.post('/users', function (req, res) {
+     var user = req.body;
+     User.create(user, function(err, user) {
+         if (err) {
+             throw err;
+         }
+         res.json(user);
+     });
+ });
+
+ router.put('/users/:id', function (req, res) {
+     var id = req.params.id;
+     var user = req.body;
+
+     var update = {
+         username: user.username,
+         group: user.group
+     };
+     User.findOneAndUpdate({_id: id}, update, function(err, user) {
+         if (err) {
+             throw err;
+         }
+         res.json(user);
+     });
+ });
+
+ router.delete('/users/:id', function (req, res) {
+     //console.log("trying to delete user!");
+     var id = req.params.id;
+
+     User.remove({_id: id}, function(err, user) {
+         if (err) {
+             throw err;
+         }
+         res.json(user);
+     });
+
+ });
+
+//Register the authentication middleware
+// intercepts requests to /files when not authenticated
+//router.use('/api/files', isAuthenticated);
 
 router.get('/files', function (req, res) {
     File.getFiles(function(err, files) {
@@ -92,7 +173,7 @@ router.delete('/files/:id', function (req, res) {
 
 // definitions
 router.get('/definitions', function (req, res) {
-    
+
     Definition.find().sort('word').exec(function(err, definitions) {
         if (err) {
             throw err;
@@ -124,7 +205,7 @@ router.post('/definitions', function (req, res) {
 
 router.put('/definitions/:id', function (req, res) {
     var id = req.params.id;
-    var definition = req.body;   
+    var definition = req.body;
 
     var update = {
         word: definition.word,
@@ -217,9 +298,9 @@ router.post('/savepreview', function (req, res) {
     } else {
         res.status(500).send('Filetype ' + type + 'not supported!');
     }
-    
+
     //var finalPath =  path.join(__dirname, outputPath);
-    
+
     //console.log(finalPath);
 
     var options = { flag : 'w' };
@@ -231,12 +312,12 @@ router.post('/savepreview', function (req, res) {
             //console.log("created " + outputPath);
             res.status(200);
             res.json({
-                message: "success", 
+                message: "success",
                 previewPath: outputPath.substring(4)
             });
         }
-        
-    }); 
+
+    });
 });
 
 module.exports = router;

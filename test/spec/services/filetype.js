@@ -25,18 +25,4 @@ describe('Service: filetypeService', function () {
         expect(service.isValidToolForType("non-existint-filetype", "storytag")).toBe(false);
     });
 
-    it('should return if type is valid for usergroup', function() {
-        expect(service.isValidTypeForGroup("opOlat", "admin")).toBe(true);
-        expect(service.isValidTypeForGroup("news", "mainzed")).toBe(false);
-    });
-
-    it('should return allowed filetypes for a group', function() {
-        expect(service.getTypesByGroup("admin").length).toBe(4);
-    });
-
-
-
-
-
-
 });

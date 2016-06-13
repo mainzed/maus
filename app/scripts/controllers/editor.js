@@ -13,17 +13,23 @@ angular.module('meanMarkdownApp')
         $document, $http, $filter, $window, fileService, AuthService, ngDialog,
         definitionService, filetypeService) {
 
+    if (!AuthService.isAuthenticated()) {
+        $location.path("/login");
+    }
+
     $scope.init = function() {
-        // check if logged in
-        if (!AuthService.isAuthenticated()) {
-            $location.path("/login");
-        } else {
-            $scope.currentUser = AuthService.getUser();
-        }
+
+        $scope.currentUser = AuthService.getUser();
+
 
         // get file based on id provided in address bar
         fileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
+
+            // lock editor if news
+            if ($scope.file.type === "news" && $scope.currentUser.group !== "admin") {
+                $scope.editor.setOption("readOnly", true);
+            }
 
             // get defined assets/snippets to determine what tabs to display in enrichments table
             $scope.assets = filetypeService.getAssetsForFiletype(file.type);
@@ -113,7 +119,22 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.addDefinition = function(definition) {
-        var snippet = "{" + definition.word + "}";
+        var snippet = "{definition: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
+    $scope.addStory = function(definition) {
+        var snippet = "{story: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
+    $scope.addImage = function(definition) {
+        var snippet = "{image: " + definition.word + "}";
+        $scope.addSnippet(snippet);
+    };
+
+    $scope.addCitation = function(definition) {
+        var snippet = "{citation: " + definition.word + "}";
         $scope.addSnippet(snippet);
     };
 
@@ -229,18 +250,33 @@ angular.module('meanMarkdownApp')
 
                 //$scope.previewPath = data.data;  // returns path of newly created html
                 $scope.previewPath = data.data.previewPath;
+
+                console.log("previewpath: " + data.data.previewPath);
+
+                $scope.dialogClass = 'ngdialog-theme-default';
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
                     template: "./views/templates/dialog_preview.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
+                    className: 'ngdialog-theme-default',
                     scope: $scope
                 });
             }, function() {
                 // error
                 console.log("something went wrong while trying to create preview");
             });
+        });
+    };
+
+    $scope.onMobileClick = function() {
+        ngDialog.open({
+            template: "./views/templates/dialog_preview.html",
+            disableAnimation: true,
+            closeByDocument: true,  // enable clicking on background to close dialog
+            className: 'ngdialog-theme-default mobile-view',
+            scope: $scope
         });
     };
 
@@ -304,6 +340,8 @@ angular.module('meanMarkdownApp')
             updated_at: timestmap // to be sorted to top
         });
     };
+
+
 
     $scope.onHelpClick = function() {
         $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");

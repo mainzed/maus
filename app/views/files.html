@@ -1,16 +1,24 @@
 
 <div class="row files-top" ng-init="init()">
+
   <div class="listcontainer">
-    
+
   	<scrollable>
 	    <ms-files-panel class="filesection"></ms-files-panel>
     </scrollable>
     <!-- create new -->
     <div class="toolbarwrapper">
       <div class="toolbar autowidth center">
-    		
+
         <div class="displayuser">
-          <span ng-show="currentUser"><span class="icon-maus"></span>maus version 0.5 / Logged in as {{ currentUser.name }} ({{ currentUser.group }}), </span>
+
+          <!-- admin button -->
+
+          <button type="button" class="btn btn-default underline" ng-click="onUsersClick()" ng-show="group !== 'admin'">
+            Users
+          </button>
+
+          <span ng-show="currentUser"><span class="icon-maus"></span>maus version 0.5 / Logged in as {{ currentUser.name }}, </span>
           <button type="button" class="btn btn-default underline" ng-click="onLogoutClick()">
             Logout
           </button>

@@ -1,5 +1,5 @@
 <form>
-  
+
   <!--<div class="form-group">
     <label for="authorInput">Author</label>
     <input type="text" class="form-control" id="authorInput" placeholder="Author" ng-model="newFile.author" readonly ng-init="newFile.author = currentUser.name">
@@ -17,13 +17,13 @@
     </select>
   </div>
 
-  <!-- private checkbox -->
-  <div ng-init="newFile.private = true">
+  <!-- public checkbox -->
+  <div ng-init="newFile.private = false">
     <ms-checkbox ng-model="newFile.private"></ms-checkbox> Private
   </div>
 
   <button type="submit" class="btn btn-default center-block bluebutton" ng-disabled="!newFile.title || !currentUser" ng-click="onCreateConfirm() || closeThisDialog()">
     Create
   </button>
-   
+
 </form>

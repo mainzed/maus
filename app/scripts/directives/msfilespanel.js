@@ -14,7 +14,7 @@ angular.module('meanMarkdownApp')
         //scope: true,  // isolated scope for each instance
 
         link: function postLink(scope, element, attrs) {
-            
+
             scope.currentFileType = attrs.filetype;
 
             /**
@@ -28,11 +28,11 @@ angular.module('meanMarkdownApp')
                     if (file.type === key && (file.author === scope.currentUser.name || file.private === false)) {
                         hasValid = true;
                     }
-                }); 
+                });
                 return hasValid;
             };
 
-            /** 
+            /**
              * uses DateJS to convert mongodb timestamp to nicely formatted string
              */
             scope.getFormattedDate = function(timestamp) {
@@ -58,7 +58,7 @@ angular.module('meanMarkdownApp')
             scope.setFilter = function(query) {
                 if (query["updated_at"]) {
                     var timestamp = query["updated_at"];
-                    
+
                     // 2016-04-18T14:08:49.213Z
                     scope.currentFilter = { updated_at: timestamp.substring(0, 10) };  // ignore time and use date as filter
 

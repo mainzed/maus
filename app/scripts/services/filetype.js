@@ -30,12 +30,18 @@ angular.module('meanMarkdownApp')
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                 },
                 story: {
+<<<<<<< HEAD
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
                     title: "Zitate"
                 }
+=======
+                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
+                },
+                /*linklist: {
+                    html: "<div class=\"linklist\">${text}</div>"
+                }*/
+>>>>>>> 19cb4cd45d3bb1e7e1c782301fbdba6dc65b817d
                 // image
-                // linklist
-                // story
             }
 
         },{
@@ -54,9 +60,19 @@ angular.module('meanMarkdownApp')
                 definition: {
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                 },
+
                 story: {
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
                 }
+
+                image: {
+                    html: "<img src=\"${url}\" alt=\"${alt}\" />"
+                },
+                citation: {
+                    html: "<div class=\"citation\">${text}</div>"
+                },
+
+
             }
         },{
 
@@ -106,7 +122,7 @@ angular.module('meanMarkdownApp')
         return isValid;
     };
 
-    this.isValidTypeForGroup = function(type, group) {
+    /*this.isValidTypeForGroup = function(type, group) {
         var obj;
         var isValid = false;
 
@@ -120,9 +136,9 @@ angular.module('meanMarkdownApp')
             }
         }
         return isValid;
-    };
+    };*/
 
-    this.getTypesByGroup = function(group) {
+    /*this.getTypesByGroup = function(group) {
         var types = [];
         filetypes.forEach(function(filetype) {
             if (filetype.groups.indexOf(group) > -1) {
@@ -130,7 +146,7 @@ angular.module('meanMarkdownApp')
             }
         });
         return types;
-    };
+    };*/
 
     /**
      * dynamically fills asset/snippet template and returns generated html string
@@ -159,6 +175,9 @@ angular.module('meanMarkdownApp')
 
         } else if (filetype === "opOlat" && category === "story") {
             template = this.populateStories(template, enrichment);
+
+        } else if (filetype === "opOlat" && category === "linklist") {
+            template = this.populateLinklists(template, enrichment);
         }
 
 
@@ -176,6 +195,11 @@ angular.module('meanMarkdownApp')
         template = template.replace("${counter}", storyCounter);
         template = template.replace("${text}", enrichment.text);
         storyCounter++;
+        return template;
+    };
+
+    this.populateLinklists = function(template, enrichment) {
+        template = template.replace("${text}", enrichment.text);
         return template;
     };
 

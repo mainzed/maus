@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('LoginCtrl', function ($scope, AuthService, $location, $timeout) {
+  .controller('LoginCtrl', function ($scope, $location, $timeout, AuthService) {
 
     // check if already logged in, if yes redirect to files overview
     if (AuthService.isAuthenticated()) {
@@ -17,18 +17,47 @@ angular.module('meanMarkdownApp')
 
     $scope.onLoginSubmit = function() {
         $scope.validating = true;  // used to disable login button while validating
-        
+
         AuthService.login($scope.username, $scope.password, function() {
             // success
             $location.path("/files");
             $scope.validating = false;
         }, function() {
             // failure
-            $scope.showError = true;
+            $scope.showError = "wrong username or password";
             $timeout(function () { $scope.showError = false; }, 3000);
 
             $scope.validating = false;
         });
+    };
+
+    $scope.onSignupSubmit = function() {
+        $scope.validating = true;  // used to disable login button while validating
+
+        if ($scope.password === $scope.passwordConfirm) {
+            AuthService.signup($scope.username, $scope.password, function(user) {
+                // success
+                //console.log("success!");
+                $location.path("/files");
+                $scope.validating = false;
+
+            }, function(res) {
+                // failure
+                $scope.showError = res.message;
+                $timeout(function () { $scope.showError = false; }, 3000);
+
+                $scope.validating = false;
+            });
+        } else {
+            //
+            $scope.showError = "passwords do not match!";
+            $timeout(function () { $scope.showError = false; }, 3000);
+
+            $scope.validating = false;
+            $scope.passwordConfirm = "";
+        }
+
+
     };
 
     /**

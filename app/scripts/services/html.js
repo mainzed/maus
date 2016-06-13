@@ -123,7 +123,7 @@ angular.module('meanMarkdownApp')
             html += this.createLinksTable(links);
         }*/
 
-        if (config.addDefinitionsTable) {
+        if (config.addDefinitionsTable && usedDefs.length > 0) {
             html += this.createDefinitionsTable(definitions);
         }
 
@@ -178,7 +178,144 @@ angular.module('meanMarkdownApp')
     };
 
     this.getOpMainzed = function(file) {
-        return marked(file.markdown);
+
+        // convert markdown
+        var customRenderer = new marked.Renderer();
+
+        var headings = [];
+        var h1Counter = 0;
+        var h2Counter = 0;
+        var h3Counter = 0;
+        customRenderer.heading = function (text, level) {
+
+
+
+            if (level === 1) {
+                h1Counter++;
+                h2Counter = 0;
+                h3Counter = 0;
+
+                headings.push({
+                    text: text,
+                    level: level,
+                    counter: h1Counter,
+                    idString: "section-" + h1Counter
+                });
+
+                return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
+            } else if (level === 2) {
+                h2Counter++;
+                h3Counter = 0;
+
+                headings.push({
+                    text: text,
+                    level: level,
+                    counter: h2Counter,
+                    idString: "section-" + h1Counter + "-" + h2Counter
+                });
+
+                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
+            } else if (level === 3) {
+                h3Counter++;
+
+                headings.push({
+                    text: text,
+                    level: level,
+                    counter: h3Counter,
+                    idString: "section-" + h1Counter + "-" + h2Counter + "-" + h3Counter
+                });
+
+                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
+            }
+        };
+
+
+        // custom link renderer
+        /*var links = [];
+        customRenderer.link = function (linkUrl, noIdea, text) {
+
+            // workaround for linkUrl.startsWith
+            //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
+
+            //console.log("works!");
+            links.push({
+                url: linkUrl,
+                text: text.replace("!", "")  // replace ! for "weiterführende links"
+            });
+
+            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+
+        };*/
+
+        // custom image renderer
+        /*var images = []; // save images here to use them for the images-table
+        var ImageCounter = 1;
+        customRenderer.image = function (src, title, alt) {
+            // used title attr for caption, author etc
+            var tokens = title.split("; ");
+            var caption = tokens[0].replace(/\\/g, "");
+            var author = tokens[1];
+            var license = tokens[2];
+            var url = tokens[3];
+            var title = alt;
+            var preCaption = "Abb." + ImageCounter;
+
+            // not needed for rendering, but to access them later
+            images.push({
+                url: url,
+                caption: caption,
+                author: author,
+                license: license,
+                title: title,
+                preCaption: preCaption
+            });
+            //var html = "";
+
+            ImageCounter++;
+
+            return '<figure id="' + alt + '">\n' +
+                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
+                    "<figcaption>\n" +
+                    preCaption + "<br>" + caption + "<br>" +
+                    "<a href=\"#images-table\">\n" +
+                    "(Quelle)\n" +
+                    "</a>\n" +
+                    "</figcaption>\n" +
+                    "</figure>\n";
+        };*/
+
+        var html = marked(file.markdown, { renderer: customRenderer });
+
+        // wrap main content
+        html = '<div id="read">\n' + html + '</div>\n';
+
+        // add resources
+        var navigation = this.createOpMainzedNavigation(html, headings);
+        html = '<div id="ressourceswrapper">' +
+    		     '<div id="ressources">' +
+    			   '<span id="navicon">' +
+    			     '<span class="icon-toc"></span>' +
+    			   '</span>' +
+
+    			'<span id="closeicon">' +
+    				'<span class="icon-close"></span>' +
+    			'</span>' +
+
+    			'<div id="titletextbg">' +
+    				'<h1 class="titletext title">mainzed jahresbericht <br>1</h1>' +
+    				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
+    			'</div>' +
+
+                "<ul id=\"nav\">\n" + navigation + "</ul>\n" +
+
+    			'<div id="ressourcestext">' +
+    			'</div>' +
+
+    		'</div>' +
+    	'</div>' + html;
+
+
+        return html;
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
@@ -229,15 +366,51 @@ angular.module('meanMarkdownApp')
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
+                '<meta charset="UTF-8">' +
                 "<title>" + title + "</title>\n" +
-                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
-                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" +
-                '<link rel="stylesheet" href="style/opmainzed.css">\n' +
+
+                '<link rel="stylesheet" href="style/reader.css">\n' +
+                '<link rel="stylesheet" href="style/style.css">\n' +
+                '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">' +
                 "</head>\n"+
                 "<body>\n" +
-                html + "\n" +
-                "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
-                "<script src=\"javascript/app.js\"></script>\n" +
+
+                '<div id="titlepicture">' +
+            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
+            	'</div>' +
+            	'<div id="scrollmarker"></div>' +
+
+
+                html +
+
+                    '<div id="imprint">' +
+                		'<h3>Impressum</h3>' +
+                		'<p>Angaben gemäß § 5 TMG:</p>' +
+
+
+                		'<div class="address" about="#mainzed" typeof="foaf:Organization">' +
+                			'<span class="organisationnameimprint" property="foaf:name">' +
+                				'mainzed - Mainzer Zentrum für Digitalit&auml;t in den Geistes- und Kulturwissenschaften			</span><br>' +
+                			'<div rel="vcard:hasAddress">' +
+                				'<address>' +
+                				'c/o Hochschule Mainz University of Applied Sciences<br>' +
+                				'<div property="vcard:street-address">Lucy-Hillebrandtstr.2</div>' +
+                				'<span property="vcard:postal-code">55128</span> <span property="vcard:locality">Mainz</span>, <span property="vcard:country-name">Germany</span>' +
+                				'</address>' +
+                			'</div>' +
+                		'</div>' +
+                	'</div>' +
+
+
+
+                '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
+
+                '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>' +
+                '<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>' +
+
+                '<script src="javascript/app.js"></script>' +
+                '<script src="javascript/markactive.js"></script>' +
+
                 "</body>\n"+
                 "</html>";
     };
@@ -289,7 +462,7 @@ angular.module('meanMarkdownApp')
                         html = html.replace(tag, snippet);
 
                         // record all enrichments for content tables
-                        if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        if (category === "definition" && usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
                             usedDefs.push(enrichment._id);
                         }
                     } else {
@@ -523,6 +696,61 @@ angular.module('meanMarkdownApp')
         }
 
         html += "</ul>\n</div>\n";
+        return html;
+    };
+
+    this.createOpMainzedNavigation = function(bodyHtml, headings) {
+
+        var html = "";
+
+        // headings
+        if (headings.length > 0) {
+            // create html
+            headings.forEach(function(heading) {
+
+                if (heading.level === 1) {  // skip all but h1
+                    html += "<li><a href=\"#section-" + heading.counter + "\">" +
+                        heading.text +
+                        "</a></li>\n";
+                }
+            });
+        }
+
+
+        /*<ul id="nav">
+            <li><a href="#section-1">Outreach</a>
+                <ul>
+                    <li><a href="#section-1-1">mainzedzwei16</a></li>
+                    <li><a href="#section-1-2">Futour II</a></li>
+                    <li><a href="#section-1-2">MoDa2016</a></li>
+                </ul>
+            </li>
+            <li><a href="#section-2">mainzed Profil</a>
+                <ul>
+                    <li><a href="#section-2-1">Verbund</a></li>
+                    <li><a href="#section-2-2">Verbund</a></li>
+                </ul>
+            </li>
+            <li><a href="#section-3">Beratung/Unterstützung</a>
+                <ul>
+                    <li><a href="#section-3-1">Maschinenraum</a></li>
+                    <li><a href="#section-3-2">Verknüpf. Escience- Services</a></li>
+                </ul>
+            </li>
+            <li><a href="#section-4">Section</a>
+                <ul>
+                    <li><a href="#section-4-1">Subtitle</a></li>
+                    <li><a href="#section-4-2">Subtitle</a></li>
+                </ul>
+            </li>
+            <li><a href="#section-5">Section</a>
+                <ul>
+                    <li><a href="#section-5-1">Subtitle</a></li>
+                    <li><a href="#section-5-2">Subtitle</a></li>
+                </ul>
+            </li>
+        </ul>*/
+
         return html;
     };
 
