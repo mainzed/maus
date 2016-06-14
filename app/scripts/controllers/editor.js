@@ -134,7 +134,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.addCitation = function(definition) {
-        var snippet = "{citation: " + definition.word + "}";
+        var snippet = "{citation: " + definition.word + "}"; // changes
         $scope.addSnippet(snippet);
     };
 
