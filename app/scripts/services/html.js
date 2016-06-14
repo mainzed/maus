@@ -27,6 +27,7 @@ angular.module('meanMarkdownApp')
 
         // get data
         var markdown = file.markdown;
+
         var title = file.title;
 
         // convert markdown
