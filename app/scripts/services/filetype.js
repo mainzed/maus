@@ -30,17 +30,13 @@ angular.module('meanMarkdownApp')
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                 },
                 story: {
-<<<<<<< HEAD
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
                     title: "Zitate"
                 }
-=======
-                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
-                },
+
                 /*linklist: {
                     html: "<div class=\"linklist\">${text}</div>"
                 }*/
->>>>>>> 19cb4cd45d3bb1e7e1c782301fbdba6dc65b817d
                 // image
             }
 
@@ -63,16 +59,14 @@ angular.module('meanMarkdownApp')
 
                 story: {
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
-                }
+                },
 
                 image: {
                     html: "<img src=\"${url}\" alt=\"${alt}\" />"
                 },
                 citation: {
                     html: "<div class=\"citation\">${text}</div>"
-                },
-
-
+                }
             }
         },{
 
