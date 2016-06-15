@@ -258,7 +258,7 @@ angular.module('meanMarkdownApp')
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
-                    template: "./views/templates/dialog_export.html",
+                    template: "./views/templates/dialog_preview.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
                     //className: 'ngdialog-theme-default',

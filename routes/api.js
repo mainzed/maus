@@ -312,6 +312,7 @@ router.post('/savepreview', function (req, res) {
             res.status(500).send('Error while trying to save preview!');
         } else {
             //console.log("created " + outputPath);
+            console.log("saved file successfilly!!!!");
             res.status(200);
             res.json({
                 message: "success",
