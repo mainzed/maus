@@ -252,15 +252,16 @@ angular.module('meanMarkdownApp')
                 $scope.previewPath = data.data.previewPath;
 
                 console.log("previewpath: " + data.data.previewPath);
+                console.log(data.data);
 
-                $scope.dialogClass = 'ngdialog-theme-default';
+                //$scope.dialogClass = 'ngdialog-theme-default';
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
                     template: "./views/templates/dialog_preview.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
-                    className: 'ngdialog-theme-default',
+                    //className: 'ngdialog-theme-default',
                     scope: $scope
                 });
             }, function() {
