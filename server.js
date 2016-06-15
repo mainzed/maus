@@ -17,7 +17,9 @@ var authenticate = require('./routes/authenticate')(passport);
 app.use(compression());
 app.use(logger('dev'));
 app.use(session({
-    secret: "everything is awesome!"
+    secret: "everything is awesome!",
+    resave: true,
+    saveUninitialized: true
 }));
 
 var initPassport = require('./passport-init');

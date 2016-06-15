@@ -287,14 +287,21 @@ router.delete('/archivedfiles/:id', function (req, res) {
 
 // post html string and save it as preview.html
 router.post('/savepreview', function (req, res) {
+    console.log("trying to save preview file ...");
+    //console.log(__dirname);
 
     var html = req.body.html;
     var type = req.body.type;
     var userID = req.body.user_id;
     var outputPath;
 
+
     if (type === "opOlat" || type === "opMainzed" || type === "prMainzed") {
-        outputPath = "app/preview_files/" + type.toLowerCase() + "/preview_" + userID + ".html";
+        //outputPath = __dirname + "../app/preview_files/" + type.toLowerCase() + "/preview_" + userID + ".html";
+        var filename = "/preview_" + userID + ".html";
+        outputPath = path.join(__dirname, "../app/preview_files/", type.toLowerCase(), filename);
+        console.log("trying to save file of type: " + type + " to: " + outputPath);
+        //console.log(__dirname);
     } else {
         res.status(500).send('Filetype ' + type + 'not supported!');
     }
@@ -310,10 +317,11 @@ router.post('/savepreview', function (req, res) {
             res.status(500).send('Error while trying to save preview!');
         } else {
             //console.log("created " + outputPath);
+            console.log("saved file successfully!!!!");
             res.status(200);
             res.json({
                 message: "success",
-                previewPath: outputPath.substring(4)
+                previewPath: path.join("preview_files/", type.toLowerCase(), filename)
             });
         }
 
