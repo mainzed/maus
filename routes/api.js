@@ -287,14 +287,16 @@ router.delete('/archivedfiles/:id', function (req, res) {
 
 // post html string and save it as preview.html
 router.post('/savepreview', function (req, res) {
-
+    console.log("trying to save preview file ...");
     var html = req.body.html;
     var type = req.body.type;
     var userID = req.body.user_id;
     var outputPath;
 
+
     if (type === "opOlat" || type === "opMainzed" || type === "prMainzed") {
         outputPath = "app/preview_files/" + type.toLowerCase() + "/preview_" + userID + ".html";
+        console.log("trying to save file of type: " + type + " to: " + outputPath);
     } else {
         res.status(500).send('Filetype ' + type + 'not supported!');
     }
