@@ -1,9 +1,9 @@
 		@font-face {
 		    font-family: 'mario';
-		    src: url('mario/Mario5-Regular.eot');
-		    src: url('mario/Mario5-Regular.eot?#iefix') format('embedded-opentype'),
-		         url('mario/Mario5-Regular.woff2') format('woff2'),
-		         url('mario/Mario5-Regular.woff') format('woff');
+		    src: url('mario/Mario6-Regular.eot');
+		    src: url('mario/Mario6-Regular.eot?#iefix') format('embedded-opentype'),
+		         url('mario/Mario6-Regular.woff2') format('woff2'),
+		         url('mario/Mario6-Regular.woff') format('woff');
 		      
 		    font-weight: normal;
 		    font-style: normal;
@@ -15,15 +15,15 @@
 		* 		{ 	margin: 0; padding: 0; font-family: 'mario', Arial, sans-serif; list-style: none; text-decoration: none; text-rendering: optimizeLegibility; }
 		body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
 		p  		{ 	font-size: 21px; line-height: 29px; letter-spacing: 0.02em;  margin: 0 30%; float: left; clear: left; }
-		h1 		{ 	font-weight: normal; padding: 20px 30% 130px 30%;
-		    		width: calc(100% - 60%); margin-top: 128px; font-size: 130px;  }
-		h2 		{ 	font-size: 40px; line-height: 60px; margin-bottom: 0; padding-top: 100px; 
+		h1 		{ 	font-weight: normal; padding: 20px 30% 8px 30%;
+		    		width: calc(100% - 60%); margin-top: 128px; font-size: 75px;  }
+		h2 		{ 	font-size: 40px; line-height: 60px; margin-bottom: 0; padding-top: 60px; 
 					margin-top: 30px; font-weight: normal; margin-left: 30%; }
 		h3 		{ 	font-size: 15px; line-height: 23px; margin: 0 auto 15px auto; font-weight: normal; 
 					padding-top: 60px; width: 80%; margin-left: 30%; }
 
 		h1, h2, h3, h4 {float: left; clear: left;}
-		a 		{ 	font-style: none; color: black; }
+		a 		{ 	font-style: none; color: black; border-bottom: 1px solid black; padding-bottom: 0; }
 		img 	{ 	height: 200px; cursor: pointer; }
 		figcaption 	{	display: none;	}
 		figure 	{	float: left; }
@@ -37,14 +37,15 @@
 						font-weight: normal; width: 90%; margin-left: 2%; letter-spacing: 0;  position: absolute;
 						top: 30%; left: 0; width: auto; background: none;}
 		.titletext {	color: white;	}
+		.shortcut {background: yellow;}
 		#scrollmarker {position: absolute; top: 10px; width: 10px; height: 10px;}
 
 
 		/* listen im Text */
-		#read ul {margin-top: 20px; float: left; clear: left; margin-left: 15%;}
+		#read ul {margin: 20px 0; float: left; clear: left; margin-left: 30%;}
 		#read li {font-size: 21px; margin-left: 17px;}
 		#read li:before {    
-			content: "\2192";
+			content: "--";
 			margin-left: -16px;
 			margin-right: 5px;
 		}
@@ -52,8 +53,8 @@
 		
 
 		#ressourceswrapper 	{	position: fixed; height: 100%; top: 0; left: 0; }
-		#ressources 		{ 	float: left; width: 2000px; background: #f1f1f1;   
-								height: 100%; display: block; transition: 0.4s; }
+		#ressources 		{ 	float: left; width: 2000px; background: white;   
+								height: 100%; display: block; transition: 0.4s; border-right: 1px solid black; }
 		#ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
 		#ressourcestext 	{ 	float: right; display: block; margin-top: 60px; width: 250px; }
 		#ressources p 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px;  }
@@ -76,6 +77,7 @@
 		#nav li ul {margin-left:30px;}
 		#nav li {margin-top: 20px;}
 		#nav ul li {margin-top: 0;}
+		#nav a {border: 0;}
 
 
 
@@ -169,22 +171,22 @@
 		@media screen and (max-width: 800px) {
 			* 	{ 	cursor: pointer; letter-spacing: 0.02em; }
 			
-			h1 	{ 	padding: 30px 5% 168px 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 40px;  }
+			h1 	{ 	padding: 30px 5% 10px 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 50px; letter-spacing: 0;  }
 			h2 	{	font-size: 25px; line-height: 32px; letter-spacing: 0; width: 90%; margin-left: 5%; margin-right: auto;	}
-			h3 	{	width: 90%; margin-left: 5%;	}
+			h3 	{	width: 90%; margin-left: 5%; padding-top: 30px; font-size: 10px; margin-bottom: 5px;	}
 			p  	{	font-size: 18px; line-height: 24px; width: 90%; margin-left: 5%;	}
 			img {	width: 100%; height: auto;	}
 			figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
 			iframe {	width: 100%;	}
 
-			.title {font-size: 40px; line-height: 40px; top: 70%;}
+			.title {font-size: 40px; line-height: 40px; top: auto; bottom: 100px;}
 
 			#titlepicture {background-position: -360px;}
 
 			#read ul {margin-top: 20px; margin-left: 5%;}
 			#read li {font-size: 18px; }
 			#read li:before {    
-				content: "\2192";
+				
     			margin-left: -16px;
    				 margin-right: 5px;
    			}
