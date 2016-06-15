@@ -258,12 +258,13 @@ angular.module('meanMarkdownApp')
                 // success
                 // open preview lightbox with iframe as soon as the post request returns success
                 ngDialog.open({
-                    template: "./views/templates/dialog_preview.html",
+                    template: "./views/templates/dialog_export.html",
                     disableAnimation: true,
                     closeByDocument: true,  // enable clicking on background to close dialog
                     //className: 'ngdialog-theme-default',
                     scope: $scope
                 });
+
             }, function() {
                 // error
                 console.log("something went wrong while trying to create preview");
