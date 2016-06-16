@@ -1,9 +1,20 @@
 		@font-face {
 		    font-family: 'mario';
-		    src: url('mario/Mario6-Regular.eot');
-		    src: url('mario/Mario6-Regular.eot?#iefix') format('embedded-opentype'),
-		         url('mario/Mario6-Regular.woff2') format('woff2'),
-		         url('mario/Mario6-Regular.woff') format('woff');
+		    src: url('mario/Mario7-Regular.eot');
+		    src: url('mario/Mario7-Regular.eot?#iefix') format('embedded-opentype'),
+		         url('mario/Mario7-Regular.woff2') format('woff2'),
+		         url('mario/Mario7-Regular.woff') format('woff');
+		      
+		    font-weight: normal;
+		    font-style: normal;
+		}
+
+		@font-face {
+		    font-family: 'marioitalic';
+		    src: url('mario/Mario7italic-Regular.eot');
+		    src: url('mario/Mario7italic-Regular.eot?#iefix') format('embedded-opentype'),
+		         url('mario/Mario7italic-Regular.woff2') format('woff2'),
+		         url('mario/Mario7italic-Regular.woff') format('woff');
 		      
 		    font-weight: normal;
 		    font-style: normal;
@@ -27,7 +38,8 @@
 		img 	{ 	height: 200px; cursor: pointer; }
 		figcaption 	{	display: none;	}
 		figure 	{	float: left; }
-		iframe {	float: left; }
+		iframe 	{	float: left; }
+		i 		{font-family: 'marioitalic', Arial, sans-serif; font-style: normal;}
 
 		.citation {float: left; clear: both; margin: 40px 0;}
 		.citation p { font-size: 40px; line-height: 40px; letter-spacing: 0;}
@@ -42,10 +54,10 @@
 
 
 		/* listen im Text */
-		#read ul {margin: 20px 0; float: left; clear: left; margin-left: 30%;}
+		#read ul {margin: 20px 0; float: left; clear: left; margin: 0 30%;}
 		#read li {font-size: 21px; margin-left: 17px;}
 		#read li:before {    
-			content: "--";
+			content: "—";
 			margin-left: -16px;
 			margin-right: 5px;
 		}
