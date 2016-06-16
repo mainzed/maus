@@ -431,6 +431,7 @@ angular.module('meanMarkdownApp')
 
         // reset used definitions
         usedDefs = [];
+        var usedEnrichments = [];
 
         // get all tags
         var tags = html.match(/\{(.*?)\}/g);
@@ -470,8 +471,9 @@ angular.module('meanMarkdownApp')
 
 
                         //console.log(footnoteContent);
-                        if (enrichment.filetype === "opMainzed") {
+                        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
                             html = me.appendResourcesToDiv(html, "footnotes", enrichment);
+                            usedEnrichments.push(enrichment.word);
                         }
 
                         // record all enrichments for content tables
