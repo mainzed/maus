@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 
 var api = require('./routes/api');
-var authenticate = require('./routes/authenticate')(passport);
+var authenticate = require('./routes/authenticate')(passport); //
 
 // middleware
 app.use(compression());
