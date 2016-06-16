@@ -65,7 +65,7 @@ angular.module('meanMarkdownApp')
      */
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
-        if(code === 13) {  // enter
+        if (code === 13 && !$scope.showSignup) {  // enter
             // attr('disabled') returns 'disabled' or undefined
             if (!$("#login-button").attr('disabled')) {  // skip when button is disabled
                 $("#login-button").click()

@@ -6,15 +6,19 @@
     <div class="form-group">
       <input type="password" class="form-control" placeholder="Password" ng-model="password">
     </div>
+
+    <!-- login button -->
     <button id="login-button" type="button" class="btn btn-default" ng-click="onLoginSubmit()" ng-disabled="!username || !password || validating">Login</button>
     <span ng-show="showError" class="text-danger" ng-bind="showError"></span>
     <span ng-show="showSuccess" class="text-success">Success!</span>
+
   </form>
 </div>
 
 <span ng-show="!showSignup">
     or
-    <button type="button" class="btn btn-default btn-sm" ng-click="showSignup = true">signup</button>
+    <!-- signup button -->
+    <button type="button" class="btn btn-default btn-sm" ng-click="showSignup = true; username = ''; password=''">signup</button>
 </span>
 
 <div class="col-md-3" ng-show="showSignup">
