@@ -178,7 +178,11 @@ angular.module('meanMarkdownApp')
         return html;
     };
 
-    this.getOpMainzed = function(file) {
+    /**
+     * requires all available definitions to be obtained before running.
+     * returns generated html.
+     */
+    this.getOpMainzed = function(file, definitions) {
 
         // convert markdown
         var customRenderer = new marked.Renderer();
@@ -188,8 +192,6 @@ angular.module('meanMarkdownApp')
         var h2Counter = 0;
         var h3Counter = 0;
         customRenderer.heading = function (text, level) {
-
-
 
             if (level === 1) {
                 h1Counter++;
@@ -315,6 +317,10 @@ angular.module('meanMarkdownApp')
     		'</div>' +
     	'</div>' + html;
 
+        // add div for enrichments
+        html += "<div id='footnotes'></div>\n";
+
+        html = this.replaceEnrichmentTags(html, definitions);
 
         return html;
     };
@@ -451,7 +457,7 @@ angular.module('meanMarkdownApp')
 
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                //console.log(enrichment);
+                //  console.log(enrichment);
 
                 // get snippet based on category and filetype
                 // templates for this are defined in filetypeService
@@ -461,6 +467,12 @@ angular.module('meanMarkdownApp')
                     if (snippet) {
                         // actually replace the tag
                         html = html.replace(tag, snippet);
+
+
+                        //console.log(footnoteContent);
+                        if (enrichment.filetype === "opMainzed") {
+                            html = me.appendResourcesToDiv(html, "footnotes", enrichment);
+                        }
 
                         // record all enrichments for content tables
                         if (category === "definition" && usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
@@ -477,6 +489,27 @@ angular.module('meanMarkdownApp')
 
         return html;
     };
+
+    /**
+     * adds definition texts to the 'footnotes'-div at the end of opMainzed
+     * documents.
+     * @param {string} html - html content that contains the div.
+     * @param {string} divID - ID of div to which the content should be appended.
+     */
+    this.appendResourcesToDiv = function(html, divID, enrichment) {
+        //console.log("append stuff");
+        // if opmainzed - append content to "footnotes"-div at end of document
+        var footnoteContent = html.match(/<div id='footnotes'>(.*?)<\/div>/);
+        var innerHTML = footnoteContent[1];
+        var entireHTML = footnoteContent[0];
+
+        // append to innerhtml
+        var newInnerHtml = innerHTML + "<div class=\"" + enrichment._id + "\">" + enrichment.text + "!</div>\n";
+
+        //console.log("replacing: " + footnoteContent.length);
+
+        return html.replace(entireHTML, entireHTML.replace(innerHTML, newInnerHtml));
+    }
 
     /**
      * wrapper to support the old function name

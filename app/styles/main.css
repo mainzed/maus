@@ -343,12 +343,6 @@ img {background-color: none !important;}
 
 .view {height: 100%;}
 
-/* iPhone 6 resolution */
-.mobile-view {
-    width: 375px;
-    height: 667px;
-}
-
 /*definitions table */
 .table-condensed > tbody > tr > td {padding: 1px;}
 .definitons-table .nano-pane {right: 0; background: transparent;}
@@ -406,6 +400,12 @@ textarea:focus {background: white; resize: vertical; height: 100px; cursor: text
   width: 100%;
   height: 500px;
   border: none;
+}
+
+.ngdialog.ngdialog-theme-default.preview-mobile .ngdialog-content {
+    width: 375px;
+    height: 667px;
+    border: none;
 }
 
 .fullwidth {width: 100% !important;}

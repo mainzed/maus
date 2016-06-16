@@ -28,6 +28,7 @@ angular.module('meanMarkdownApp')
             assets: {
                 definition: {
                     html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                    //html: "<span id=\"${id}\" class=\"shortcut\">${word}</span>"
                 },
                 story: {
                     html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
@@ -54,7 +55,8 @@ angular.module('meanMarkdownApp')
             ],
             assets: {
                 definition: {
-                    html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                    //html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
+                    html: "<span id=\"${id}\" class=\"shortcut\">${word}</span>"
                 },
 
                 story: {
@@ -163,14 +165,14 @@ angular.module('meanMarkdownApp')
         // look up the string for the specific category
         var template = obj.assets[category].html;
 
-        if ((filetype === "opOlat" || filetype === "opMainzed") && category === "definition") {
+        if (category === "definition") {
             // fill template with enrichments
             template = this.populateDefinitions(template, enrichment);
 
-        } else if (filetype === "opOlat" && category === "story") {
+        } else if (category === "story") {
             template = this.populateStories(template, enrichment);
 
-        } else if (filetype === "opOlat" && category === "linklist") {
+        } else if (category === "linklist") {
             template = this.populateLinklists(template, enrichment);
         }
 
@@ -182,6 +184,7 @@ angular.module('meanMarkdownApp')
     this.populateDefinitions = function(template, enrichment) {
         template = template.replace("${text}", enrichment.text);
         template = template.replace("${word}", enrichment.word);
+        template = template.replace("${id}", enrichment._id);
         return template;
     };
 

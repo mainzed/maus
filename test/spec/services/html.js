@@ -336,130 +336,6 @@ describe('Service: HTMLService', function () {
 
         });
 
-        describe('advanced enrichment/definition tags', function() {
-
-
-            it('should replace definition tag (opOlat)', function() {
-                var enrichments = [
-                    {
-                        _id: "571725cd5c6b2bd90ed10b6e",
-                         word: "someDefinedWord",
-                        __v: 0,
-                        url: "www.google.de",
-                        text: "This is the definition description!",
-                        updated_at: "2016-04-20T06:46:37.887Z",
-                        filetype: "opOlat",
-                        category: "definition",
-                        author: "John Doe"
-                    }
-                ];
-
-                var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
-                var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
-
-                var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
-
-                expect(enrichments.length).toBe(1);
-                expect(outputHtml).toBe(expected);
-
-            });
-
-            it('should replace definition tag (opMainzed)', function() {
-                var enrichments = [
-                    {
-                        _id: "571725cd5c6b2bd90ed10b6e",
-                         word: "someDefinedWord",
-                        __v: 0,
-                        url: "www.google.de",
-                        text: "This is the definition description!",
-                        updated_at: "2016-04-20T06:46:37.887Z",
-                        filetype: "opMainzed",
-                        category: "definition",
-                        author: "John Doe"
-                    }
-                ];
-
-                var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
-                var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
-
-                var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
-
-                expect(enrichments.length).toBe(1);
-                expect(outputHtml).toBe(expected);
-
-            });
-
-            it('should replace legacy syntax definition tag for olat', function() {
-                var enrichments = [
-                    {
-                        _id: "571725cd5c6b2bd90ed10b6e",
-                         word: "legacyDefinition",
-                        __v: 0,
-                        url: "www.google.de",
-                        text: "This is the definition description!",
-                        updated_at: "2016-04-20T06:46:37.887Z",
-                        filetype: "opOlat",
-                        category: "definition",
-                        author: "John Doe"
-                    }
-                ];
-
-                var inputHtml = "<p>String with a {legacyDefinition}!</p>";  // string is not a defined definition
-                var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">legacyDefinition</a>!</p>";
-
-                var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
-
-                expect(enrichments.length).toBe(1);
-                expect(outputHtml).toBe(expected);
-
-            });
-
-            it('should replace story tag for opOlat', function() {
-                var enrichments = [
-                    {
-                        _id: "571725cd5c6b2bd90ed10b6e",
-                         word: "story1",
-                        __v: 0,
-                        text: "story text!",
-                        updated_at: "2016-04-20T06:46:37.887Z",
-                        filetype: "opOlat",
-                        category: "story",
-                        author: "John Doe"
-                    }
-                ];
-
-                var inputHtml = "content before story {story: story1} content after!";  // string is not a defined definition
-                var expected = "content before story <div class=\"story\" id=\"story1\">story text!</div> content after!";
-
-                var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
-
-                expect(enrichments.length).toBe(1);
-                expect(outputHtml).toBe(expected);
-
-            });
-
-            /*it('should replace definition tag',function() {
-
-                var inputHtml = "<p>This string with a {definition: def1}!</p>";
-                var expected = "<p>This string with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
-                var outputHtml;
-                var definitions = definitionService.query();
-
-                var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
-                //done();
-                //expect(definitions[0].word).toEqual("someDefinedWord");
-                //console.log(definitions);
-
-                expect(outputHtml).toEqual(expected);
-
-                //expect(1).toBe(2);
-                //console.log("done!");
-
-            });*/
-
-
-        });
-
         describe('getOlat()', function() {
             var file;
             var fileWithLinks;
@@ -779,4 +655,131 @@ describe('Service: HTMLService', function () {
 
     });
 
+    describe('replaceEnrichmentTags()', function() {
+
+
+        it('should replace definition tag (opOlat)', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "someDefinedWord",
+                    __v: 0,
+                    url: "www.google.de",
+                    text: "This is the definition description!",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opOlat",
+                    category: "definition",
+                    author: "John Doe"
+                }
+            ];
+
+            var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
+            //var expected = "<p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>";
+            var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
+
+
+            var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect(outputHtml).toBe(expected);
+
+        });
+
+        it('should replace definition tag (opMainzed)', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "someDefinedWord",
+                    __v: 0,
+                    url: "www.google.de",
+                    text: "This is the definition description!",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "definition",
+                    author: "John Doe"
+                }
+            ];
+
+            var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
+
+            var expected = "<p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>";
+
+
+            var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect(outputHtml).toBe(expected);
+
+        });
+
+        it('should replace legacy syntax definition tag for olat', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "legacyDefinition",
+                    __v: 0,
+                    url: "www.google.de",
+                    text: "This is the definition description!",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opOlat",
+                    category: "definition",
+                    author: "John Doe"
+                }
+            ];
+
+            var inputHtml = "<p>String with a {legacyDefinition}!</p>";  // string is not a defined definition
+            var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">legacyDefinition</a>!</p>";
+
+            var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect(outputHtml).toBe(expected);
+
+        });
+
+        it('should replace story tag for opOlat', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "story1",
+                    __v: 0,
+                    text: "story text!",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opOlat",
+                    category: "story",
+                    author: "John Doe"
+                }
+            ];
+
+            var inputHtml = "content before story {story: story1} content after!";  // string is not a defined definition
+            var expected = "content before story <div class=\"story\" id=\"story1\">story text!</div> content after!";
+
+            var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect(outputHtml).toBe(expected);
+
+        });
+
+        /*it('should replace definition tag',function() {
+
+            var inputHtml = "<p>This string with a {definition: def1}!</p>";
+            var expected = "<p>This string with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
+            var outputHtml;
+            var definitions = definitionService.query();
+
+            var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
+            //done();
+            //expect(definitions[0].word).toEqual("someDefinedWord");
+            //console.log(definitions);
+
+            expect(outputHtml).toEqual(expected);
+
+            //expect(1).toBe(2);
+            //console.log("done!");
+
+        });*/
+
+
+    });
 });

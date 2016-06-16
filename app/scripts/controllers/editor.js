@@ -230,7 +230,7 @@ angular.module('meanMarkdownApp')
                 html = HTMLService.wrapOlatHTML(html, $scope.file.title);  // TODO: wrap html and save on server
 
             } else if ($scope.file.type === "opMainzed") {
-                html = HTMLService.getOpMainzed($scope.file);
+                html = HTMLService.getOpMainzed($scope.file, definitions);
                 html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
 
             } else if ($scope.file.type === "prMainzed") {
@@ -251,24 +251,35 @@ angular.module('meanMarkdownApp')
                 //$scope.previewPath = data.data;  // returns path of newly created html
                 $scope.previewPath = data.data.previewPath;
 
-                console.log("previewpath: " + data.data.previewPath);
-                console.log(data.data);
-
-                //$scope.dialogClass = 'ngdialog-theme-default';
-                // success
-                // open preview lightbox with iframe as soon as the post request returns success
-                ngDialog.open({
-                    template: "./views/templates/dialog_preview.html",
-                    disableAnimation: true,
-                    closeByDocument: true,  // enable clicking on background to close dialog
-                    //className: 'ngdialog-theme-default',
-                    scope: $scope
-                });
+                //console.log("previewpath: " + data.data.previewPath);
+                //console.log(data.data);
+                $scope.openDesktopPreview();
 
             }, function() {
                 // error
                 console.log("something went wrong while trying to create preview");
             });
+        });
+    };
+
+    $scope.openDesktopPreview = function() {
+        ngDialog.open({
+            template: "./views/templates/dialog_preview.html",
+            disableAnimation: true,
+            closeByDocument: true,  // enable clicking on background to close dialog
+            //className: 'ngdialog-theme-default',
+            //className: $scope.dialogClass,
+            scope: $scope
+        });
+    };
+
+    $scope.openMobilePreview = function() {
+        ngDialog.open({
+            template: "./views/templates/dialog_preview.html",
+            disableAnimation: true,
+            closeByDocument: true,  // enable clicking on background to close dialog
+            className:'ngdialog-theme-default preview-mobile',
+            scope: $scope
         });
     };
 
