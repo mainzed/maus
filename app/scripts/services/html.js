@@ -318,7 +318,7 @@ angular.module('meanMarkdownApp')
     	'</div>' + html;
 
         // add div for enrichments
-        html += "<div id='footnotes'></div>\n";
+        html += "<div id='footnotes'>placeholder</div>\n";
 
         html = this.replaceEnrichmentTags(html, definitions);
 
@@ -506,9 +506,9 @@ angular.module('meanMarkdownApp')
         var entireHTML = footnoteContent[0];
 
         // append to innerhtml
-        var newInnerHtml = innerHTML + "<div class=\"" + enrichment._id + "\">" + enrichment.text + "!</div>\n";
+        var newInnerHtml = "<div class=\"" + enrichment._id + "\">" + enrichment.text + "!</div>\n";
 
-        //console.log("replacing: " + footnoteContent.length);
+        console.log("replacing: " + innerHTML + " within "  + entireHTML);
 
         return html.replace(entireHTML, entireHTML.replace(innerHTML, newInnerHtml));////
     }

@@ -58,11 +58,6 @@ angular.module('meanMarkdownApp')
                     //html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                     html: "<span id=\"${id}\" class=\"shortcut\">${word}</span>"
                 },
-
-                story: {
-                    html: "<div class=\"story\" id=\"story${counter}\">${text}</div>"
-                },
-
                 image: {
                     html: "<img src=\"${url}\" alt=\"${alt}\" />"
                 },
@@ -175,7 +170,6 @@ angular.module('meanMarkdownApp')
         } else if (category === "linklist") {
             template = this.populateLinklists(template, enrichment);
         }
-
 
         //console.log(template);
         return template;
