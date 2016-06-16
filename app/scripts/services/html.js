@@ -508,7 +508,7 @@ angular.module('meanMarkdownApp')
 
         //console.log("replacing: " + footnoteContent.length);
 
-        return html.replace(entireHTML, entireHTML.replace(innerHTML, newInnerHtml)); //
+        return html.replace(entireHTML, entireHTML.replace(innerHTML, newInnerHtml)); ///
     }
 
     /**
