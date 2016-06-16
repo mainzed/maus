@@ -2,7 +2,7 @@
 
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 3001;  //
+var port = process.env.PORT || 3000;  //
 var logger = require('morgan');
 var passport = require('passport');
 var session = require('express-session');
@@ -30,7 +30,6 @@ app.use(express.static(__dirname + '/app'));  // development
 
 
 app.use(bodyParser.json());
-
 app.use(passport.initialize());
 app.use(passport.session());
 
