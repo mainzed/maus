@@ -5,28 +5,30 @@
     <input type="text" class="form-control" id="inputTitle" placeholder="export.html" ng-model="filename">
   </div>
 
-  <div>
-    <ms-checkbox ng-model="addTitle"></ms-checkbox> Add Title
-  </div>
+  <div id="export_options" ng-show="file.type === 'opOlat'">
+      <div>
+        <ms-checkbox ng-model="addTitle"></ms-checkbox> Add Title
+      </div>
 
-  <div>
-    <ms-checkbox ng-model="addContentTable"></ms-checkbox> Add Table of Content
-  </div>
+      <div>
+        <ms-checkbox ng-model="addContentTable"></ms-checkbox> Add Table of Content
+      </div>
 
-  <div>
-    <ms-checkbox ng-model="addImages"></ms-checkbox> Add Table of Images
-  </div>
+      <div>
+        <ms-checkbox ng-model="addImages"></ms-checkbox> Add Table of Images
+      </div>
 
-  <div>
-    <ms-checkbox ng-model="addLinks"></ms-checkbox> Add Table of Links
-  </div>
+      <div>
+        <ms-checkbox ng-model="addLinks"></ms-checkbox> Add Table of Links
+      </div>
 
-  <div>
-    <ms-checkbox ng-model="addDefinitions"></ms-checkbox> Add Table of Definitions
-  </div>
+      <div>
+        <ms-checkbox ng-model="addDefinitions"></ms-checkbox> Add Table of Definitions
+      </div>
 
-  <div>
-    <ms-checkbox ng-model="isFolder"></ms-checkbox> Subfolder
+      <div>
+        <ms-checkbox ng-model="isFolder"></ms-checkbox> Subfolder
+      </div>
   </div>
 
   <button type="button" class="btn btn-default center-block bluebutton" ng-click="onDownloadConfirm(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) || closeThisDialog()" ng-disabled="!filename">

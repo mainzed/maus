@@ -232,23 +232,10 @@ angular.module('meanMarkdownApp')
             }
         };
 
-
         // custom link renderer
-        /*var links = [];
         customRenderer.link = function (linkUrl, noIdea, text) {
-
-            // workaround for linkUrl.startsWith
-            //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
-
-            //console.log("works!");
-            links.push({
-                url: linkUrl,
-                text: text.replace("!", "")  // replace ! for "weiterführende links"
-            });
-
             return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-
-        };*/
+        };
 
         // custom image renderer
         /*var images = []; // save images here to use them for the images-table
@@ -740,14 +727,46 @@ angular.module('meanMarkdownApp')
         var html = "";
 
         // headings
+        var previousHeadingLevel;
         if (headings.length > 0) {
             // create html
             headings.forEach(function(heading) {
 
                 if (heading.level === 1) {  // skip all but h1
-                    html += "<li><a href=\"#section-" + heading.counter + "\">" +
+                    console.log(previousHeadingLevel);
+                    if (previousHeadingLevel === 1) {
+                        html += "</li>\n";
+                    }
+
+                    if (previousHeadingLevel === 2) {  // close open ul
+                        html += "</ul>\n";
+                        html += "</li>\n";
+                    }
+
+                    html += "<li>\n<a href=\"#" + heading.idString + "\">" +
                         heading.text +
-                        "</a></li>\n";
+                        "</a>\n";
+
+                    // 1Up
+                    previousHeadingLevel = heading.level;
+
+                } else if (heading.level === 2) {
+                    // if previous was 1, open new ul
+                    // if previous was 2, keep ul open
+                    if (previousHeadingLevel === 1) {
+                        html += "<ul>\n";
+                        html += "<li><a href=\"#" + heading.idString + "\">" +
+                            heading.text +
+                            "</a></li>\n";
+                        //html += "<ul>\n";
+                    } else if (previousHeadingLevel === 2) {
+                        html += "<li><a href=\"#" + heading.idString + "\">" +
+                            heading.text +
+                            "</a></li>\n";
+                    }
+
+                    // 1Up
+                    previousHeadingLevel = heading.level;
                 }
             });
         }
