@@ -274,42 +274,54 @@ angular.module('meanMarkdownApp')
                     "</figure>\n";
         };*/
 
+        // create template
+        var htmlString = '<div id="ressourceswrapper">' +
+        		        '<div id="ressources">' +
+        			        '<span id="navicon">' +
+        			            '<span class="icon-toc"></span>' +
+        			        '</span>' +
+
+                			'<span id="closeicon">' +
+                				'<span class="icon-close"></span>' +
+                			'</span>' +
+
+                			'<div id="titletextbg">' +
+                				'<h1 class="titletext title">mainzed jahresbericht <br>1</h1>' +
+                				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
+                			'</div>' +
+
+                            // navigation
+                            "<ul id=\"nav\"></ul>\n" +
+
+                            // glossar texts get appended here
+        			        '<div id="ressourcestext"></div>' +
+
+        		        '</div>' +
+        	        '</div>' +
+
+                    // markdown content goes here
+                    '<div id="read"></div>\n' +
+
+                    // glossar resources go here and will be activated via js
+                    "<div id='footnotes'></div>\n";
+
+        // make jQuery compatible
+        var page = $("<div>" + htmlString + "</div>");
+
+        // enrich page
+
+        // add markdown content
         var html = marked(file.markdown, { renderer: customRenderer });
+        $("#read", page).append(html);
 
-        // wrap main content
-        html = '<div id="read">\n' + html + '</div>\n';
+        // add headings to navigation
+        this.createOpMainzedNavigation(page, headings);
 
-        // add resources
-        var navigation = this.createOpMainzedNavigation(html, headings);
-        html = '<div id="ressourceswrapper">' +
-    		     '<div id="ressources">' +
-    			   '<span id="navicon">' +
-    			     '<span class="icon-toc"></span>' +
-    			   '</span>' +
+        // convert tags and add resources to end of document
+        this.replaceEnrichmentTags(page, definitions);
 
-    			'<span id="closeicon">' +
-    				'<span class="icon-close"></span>' +
-    			'</span>' +
-
-    			'<div id="titletextbg">' +
-    				'<h1 class="titletext title">mainzed jahresbericht <br>1</h1>' +
-    				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
-    			'</div>' +
-
-                "<ul id=\"nav\">\n" + navigation + "</ul>\n" +
-
-    			'<div id="ressourcestext">' +
-    			'</div>' +
-
-    		'</div>' +
-    	'</div>' + html;
-
-        // add div for enrichments
-        html += "<div id='footnotes'></div>\n";
-
-        html = this.replaceEnrichmentTags(html, definitions);
-
-        return html;
+        // get html from page via jquery
+        return page.html();
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
@@ -412,7 +424,7 @@ angular.module('meanMarkdownApp')
     /**
      * requires html and definitions from the database
      */
-    this.replaceEnrichmentTags = function(html, enrichments, storyCounter) {
+    this.replaceEnrichmentTags = function(page, enrichments, storyCounter) {
         var me = this;
         //var enrichment;
 
@@ -421,7 +433,7 @@ angular.module('meanMarkdownApp')
         var usedEnrichments = [];
 
         // get all tags
-        var tags = html.match(/\{(.*?)\}/g);
+        var tags = $("#read", page).html().match(/\{(.*?)\}/g);
 
         // loop through all tags
         if (tags) {
@@ -454,19 +466,21 @@ angular.module('meanMarkdownApp')
 
                     if (snippet) {
                         // actually replace the tag
-                        html = html.replace(tag, snippet);
+                        var currentHTML = $("#read", page).html();
+
+                        $("#read", page).html(currentHTML.replace(tag, snippet));
 
 
                         //console.log(footnoteContent);
                         if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
 
                             // make html usable with jquery
-                            var page = $("<div>" + html + "</div>");
+                            //var page = $("<div>" + html + "</div>");
 
                             // select footnotes div and append resources
                             $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + enrichment.text + "</div>\n");
 
-                            html = page.html();
+                            //html = page.html();
 
                             usedEnrichments.push(enrichment.word);
                         }
@@ -484,39 +498,7 @@ angular.module('meanMarkdownApp')
             })
         }
 
-        return html;
-    };
-
-    /**
-     * adds definition texts to the 'footnotes'-div at the end of opMainzed
-     * documents.
-     * @param {string} html - html content that contains the div.
-     * @param {string} divID - ID of div to which the content should be appended.
-     */
-    this.appendResourcesToDiv = function(html, divID, enrichment) {
-
-        if (enrichment.category !== "definition") {
-            throw Error("category not supported! use this function with definitions only");
-        }
-
-        console.log("processing: " + enrichment.word);
-        //console.log(enrichment);
-
-        var page = $("<div>" + html + "</div>");
-        var footnotes = $("#footnotes", page);
-
-        //console.log(html);
-
-        //footnoteContent = console.log($("<div>" + html + "</div>").find("#footnotes").html());
-
-
-
-        footnotes.append("<div class=\"" + enrichment._id + "\">" + enrichment.text + "</div>\n")
-
-
-        console.log(footnotes.html());
-
-        return html;
+        return;
     };
 
     /**
@@ -741,47 +723,34 @@ angular.module('meanMarkdownApp')
         return html;
     };
 
-    this.createOpMainzedNavigation = function(bodyHtml, headings) {
+    /**
+     * requires pages (jquery selection from htmlString)
+     */
+    this.createOpMainzedNavigation = function(page, headings) {
 
-        var html = "";
-
-        // headings
         var previousHeadingLevel;
         if (headings.length > 0) {
             // create html
             headings.forEach(function(heading) {
 
+                var headingString = "<a href=\"#" + heading.idString + "\">" +
+                    heading.text + "</a>";
+
                 if (heading.level === 1) {  // skip all but h1
-                    //console.log(previousHeadingLevel);
-                    if (previousHeadingLevel === 1) {
-                        html += "</li>\n";
-                    }
-
-                    if (previousHeadingLevel === 2) {  // close open ul
-                        html += "</ul>\n";
-                        html += "</li>\n";
-                    }
-
-                    html += "<li>\n<a href=\"#" + heading.idString + "\">" +
-                        heading.text +
-                        "</a>\n";
+                    $("#nav", page).append("<li>" + headingString + "</li>");
 
                     // 1Up
                     previousHeadingLevel = heading.level;
 
                 } else if (heading.level === 2) {
-                    // if previous was 1, open new ul
-                    // if previous was 2, keep ul open
+
+                    // if previous was 1, open new ul and append li
                     if (previousHeadingLevel === 1) {
-                        html += "<ul>\n";
-                        html += "<li><a href=\"#" + heading.idString + "\">" +
-                            heading.text +
-                            "</a></li>\n";
-                        //html += "<ul>\n";
+                        $("#nav li", page).last().append("<ul><li>" + headingString + "</li></ul>");
+
+                       //  if previous was 2, just append to ul
                     } else if (previousHeadingLevel === 2) {
-                        html += "<li><a href=\"#" + heading.idString + "\">" +
-                            heading.text +
-                            "</a></li>\n";
+                        $("#nav ul", page).last().append("<li>" + headingString + "</li>");
                     }
 
                     // 1Up
@@ -789,43 +758,7 @@ angular.module('meanMarkdownApp')
                 }
             });
         }
-
-
-        /*<ul id="nav">
-            <li><a href="#section-1">Outreach</a>
-                <ul>
-                    <li><a href="#section-1-1">mainzedzwei16</a></li>
-                    <li><a href="#section-1-2">Futour II</a></li>
-                    <li><a href="#section-1-2">MoDa2016</a></li>
-                </ul>
-            </li>
-            <li><a href="#section-2">mainzed Profil</a>
-                <ul>
-                    <li><a href="#section-2-1">Verbund</a></li>
-                    <li><a href="#section-2-2">Verbund</a></li>
-                </ul>
-            </li>
-            <li><a href="#section-3">Beratung/Unterstützung</a>
-                <ul>
-                    <li><a href="#section-3-1">Maschinenraum</a></li>
-                    <li><a href="#section-3-2">Verknüpf. Escience- Services</a></li>
-                </ul>
-            </li>
-            <li><a href="#section-4">Section</a>
-                <ul>
-                    <li><a href="#section-4-1">Subtitle</a></li>
-                    <li><a href="#section-4-2">Subtitle</a></li>
-                </ul>
-            </li>
-            <li><a href="#section-5">Section</a>
-                <ul>
-                    <li><a href="#section-5-1">Subtitle</a></li>
-                    <li><a href="#section-5-2">Subtitle</a></li>
-                </ul>
-            </li>
-        </ul>*/
-
-        return html;
+        return;
     };
 
   });
