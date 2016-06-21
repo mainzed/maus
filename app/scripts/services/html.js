@@ -752,7 +752,7 @@ angular.module('meanMarkdownApp')
             headings.forEach(function(heading) {
 
                 if (heading.level === 1) {  // skip all but h1
-                    console.log(previousHeadingLevel);
+                    //console.log(previousHeadingLevel);
                     if (previousHeadingLevel === 1) {
                         html += "</li>\n";
                     }
