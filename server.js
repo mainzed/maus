@@ -35,7 +35,7 @@ app.use(passport.session());
 
 require('./database.js');
 
-// security
+// security //
 app.disable('x-powered-by');
 
 //app.use('/', index);
