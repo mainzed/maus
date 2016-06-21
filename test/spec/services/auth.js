@@ -17,8 +17,8 @@ describe('Service: AuthService', function () {
         expect(service).toBeDefined();
     });
 
-    describe('login / logout', function() {
-        
+    /*describe('login / logout', function() {
+
         afterEach(function() {
             service.logout();
         });
@@ -74,8 +74,8 @@ describe('Service: AuthService', function () {
             expect(service.isAuthenticated()).toBe(false);
         });
 
-    });
+    });*/
 
-    
+
 
 });

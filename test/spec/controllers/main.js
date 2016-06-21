@@ -27,12 +27,12 @@ describe('Controller: MainCtrl', function () {
 
     }));
 
-    it('should have defined scope', function () {        
+    it('should have defined scope', function () {
         expect(scope).toBeDefined();
         expect(MainCtrl).toBeDefined();
     });
 
-    it('should redirect to login page if user is not logged in ', inject(function() {
+    /*it('should redirect to login page if user is not logged in ', inject(function() {
 
         // make sure no user is logged in
         expect(AuthService.isAuthenticated()).toBe(false);
@@ -42,10 +42,10 @@ describe('Controller: MainCtrl', function () {
 
         // redirect to login page
         expect(location.path()).toEqual("/login");
-    }));
+    }));*/
 
     /*it('should stay on page if user is logged in', inject(function($route) {
-        
+
         // create a mock for the AuthService
         AuthService = {
             isAuthenticated: function() {
@@ -91,7 +91,7 @@ describe('Controller: MainCtrl', function () {
 
         var index = _.findIndex(files, {_id: "file2"});
 
-        files.splice(index, 1); 
+        files.splice(index, 1);
 
         expect(files.length).toBe(3);
         expect(files).toEqual(
@@ -104,7 +104,7 @@ describe('Controller: MainCtrl', function () {
             }]
         );
     });
-    
+
 
 
 });

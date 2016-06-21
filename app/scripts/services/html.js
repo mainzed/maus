@@ -305,7 +305,7 @@ angular.module('meanMarkdownApp')
     	'</div>' + html;
 
         // add div for enrichments
-        html += "<div id='footnotes'>placeholder</div>\n";
+        html += "<div id='footnotes'></div>\n";
 
         html = this.replaceEnrichmentTags(html, definitions);
 
@@ -458,8 +458,16 @@ angular.module('meanMarkdownApp')
 
 
                         //console.log(footnoteContent);
-                        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
-                            html = me.appendResourcesToDiv(html, "footnotes", enrichment);
+                        if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
+
+                            // make html usable with jquery
+                            var page = $("<div>" + html + "</div>");
+
+                            // select footnotes div and append resources
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + enrichment.text + "</div>\n");
+
+                            html = page.html();
+
                             usedEnrichments.push(enrichment.word);
                         }
 
@@ -486,19 +494,30 @@ angular.module('meanMarkdownApp')
      * @param {string} divID - ID of div to which the content should be appended.
      */
     this.appendResourcesToDiv = function(html, divID, enrichment) {
-        //console.log("append stuff");
-        // if opmainzed - append content to "footnotes"-div at end of document
-        var footnoteContent = html.match(/<div id='footnotes'>(.*?)<\/div>/);
-        var innerHTML = footnoteContent[1];
-        var entireHTML = footnoteContent[0];
 
-        // append to innerhtml
-        var newInnerHtml = "<div class=\"" + enrichment._id + "\">" + enrichment.text + "!</div>\n";
+        if (enrichment.category !== "definition") {
+            throw Error("category not supported! use this function with definitions only");
+        }
 
-        console.log("replacing: " + innerHTML + " within "  + entireHTML);
+        console.log("processing: " + enrichment.word);
+        //console.log(enrichment);
 
-        return html.replace(entireHTML, entireHTML.replace(innerHTML, newInnerHtml));////
-    }
+        var page = $("<div>" + html + "</div>");
+        var footnotes = $("#footnotes", page);
+
+        //console.log(html);
+
+        //footnoteContent = console.log($("<div>" + html + "</div>").find("#footnotes").html());
+
+
+
+        footnotes.append("<div class=\"" + enrichment._id + "\">" + enrichment.text + "</div>\n")
+
+
+        console.log(footnotes.html());
+
+        return html;
+    };
 
     /**
      * wrapper to support the old function name
