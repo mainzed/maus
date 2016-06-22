@@ -129,7 +129,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.addImage = function(definition) {
-        var snippet = "{image: " + definition.word + "}";
+        var snippet = "{picture: " + definition.word + "}";
         $scope.addSnippet(snippet);
     };
 
@@ -339,7 +339,9 @@ angular.module('meanMarkdownApp')
      */
     $scope.onApplyDefinitionChanges = function() {
         //$scope.hasChanges = false;
+
         $scope.definitions.forEach(function(definition) {
+            console.log(definition);
             //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             if (definition._id) {
                 definitionService.update({id: definition._id}, definition);

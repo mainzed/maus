@@ -2,13 +2,14 @@
 
   <table class="filegroup nomargin fullwidth">
     <colgroup>
-      <col span="1" style="width: 5%;">
-      <col span="1" style="width: 20%;">
-      <col span="1" style="width: 35%;">
-      <col span="1" style="width: 10%;">
+      <col span="1" style="width: 3%;"><!-- insert shortcut button -->
       <col span="1" style="width: 15%;">
       <col span="1" style="width: 10%;">
-      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 20%;"><!-- bildunterschrift -->
+      <col span="1" style="width: 20%;">
+      <col span="1" style="width: 10%;"><!-- author -->
+
+
     </colgroup>
       <thead>
         <tr class="noborder">
@@ -19,7 +20,6 @@
           <th>Lizenz</th>
           <th>Quelle</th>
           <th>Author</th>
-
           <th></th>
         </tr>
       </thead>
@@ -28,12 +28,14 @@
   <scrollable>
     <table class="filegroup nomargin fullwidth">
        <colgroup>
-        <col span="1" style="width: 5%;">
-        <col span="1" style="width: 20%;">
-        <col span="1" style="width: 45%;">
-        <col span="1" style="width: 15%;">
-        <col span="1" style="width: 10%;">
-        <col span="1" style="width: 5%;">
+           <col span="1" style="width: 3%;">
+           <col span="1" style="width: 15%;">
+           <col span="1" style="width: 10%;">
+           <col span="1" style="width: 20%;"><!-- bildunterschrift -->
+           <col span="1" style="width: 20%;">
+           <col span="1" style="width: 10%;"><!-- author -->
+
+
       </colgroup>
 
       <tbody>
@@ -60,13 +62,20 @@
             <ms-table-input ng-model="definition.text"></ms-table-input>
           </td>
 
+          <!-- license -->
           <td>
-            <input type="text" placeholder="Source" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
+            <ms-table-input ng-model="definition.license"></ms-table-input>
           </td>
 
           <td>
-            <input type="text" placeholder="Website" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
+            <input type="text" placeholder="URL" ng-model="definition.url" ng-class="urlClass" ng-init="urlClass = ['def-table-entries']" ng-blur="urlClass = ['def-table-entries']" ng-focus="urlClass = ['form-control']" ng-change="onDefinitionChange()">
           </td>
+
+          <td>
+            <input type="text" placeholder="Author" ng-model="definition.author" ng-class="authorClass" ng-init="authorClass = ['def-table-entries']" ng-blur="authorClass = ['def-table-entries']" ng-focus="authorClass = ['form-control']" ng-change="onDefinitionChange()">
+          </td>
+
+
 
           <!-- remove -->
           <td ng-show="definition._id">

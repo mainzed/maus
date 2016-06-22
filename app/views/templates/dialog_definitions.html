@@ -2,7 +2,7 @@
 <!--<span class="tableheader fullwidth">Definitions</span>-->
 
 <button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="assets.definition">Definitionen</button>
-<button type="button" class="btn btn-default" ng-click="category = 'image'" ng-show="assets.image">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'picture'" ng-show="assets.image">Bilder</button>
 <button type="button" class="btn btn-default" ng-click="category = 'citation'" ng-show="assets.citation">Zitate</button>
 <button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="assets.story">Storyelemente</button>
 <button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="assets.linklist">Linklisten</button>
@@ -14,7 +14,7 @@
 
   <ms-definitions-table ng-show="category === 'definition'"></ms-definitions-table>
   <ms-citations-table ng-show="category === 'citation'"></ms-citations-table>
-  <ms-images-table ng-show="category === 'image'"></ms-images-table>
+  <ms-images-table ng-show="category === 'picture'"></ms-images-table>
   <ms-stories-table ng-show="category === 'story'"></ms-stories-table>
 
   <img class="plusposition" ng-click="onCreateDefinitionClick(category); showNewFocus = true; filterBox = ''" src="../images/plus.png" width="50" />
