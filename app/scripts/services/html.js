@@ -398,8 +398,6 @@ angular.module('meanMarkdownApp')
                     '<div id="imprint">' +
                 		'<h3>Impressum</h3>' +
                 		'<p>Angaben gemäß § 5 TMG:</p>' +
-
-
                 		'<div class="address" about="#mainzed" typeof="foaf:Organization">' +
                 			'<span class="organisationnameimprint" property="foaf:name">' +
                 				'mainzed - Mainzer Zentrum für Digitalit&auml;t in den Geistes- und Kulturwissenschaften			</span><br>' +
@@ -413,10 +411,8 @@ angular.module('meanMarkdownApp')
                 		'</div>' +
                 	'</div>' +
 
-
-
                 '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
-
+                '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>' +
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>' +
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>' +
 
@@ -455,81 +451,94 @@ angular.module('meanMarkdownApp')
                     category = content.split(":")[0].trim();
                     shortcut = content.split(":")[1].trim();
                 } else {
-                    // legacy support
+                    // legacy support: when no category/keyword is given
+                    // it is assumed that it is a definition
                     category = "definition";
                     shortcut = content;
-                    //console.log("shortcut: " + shortcut);
                 }
-
-                //console.log(category);
-                //console.log(shortcut);
 
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                //console.log(enrichment);
+                var currentHTML = $("#read", page).html();
 
-                // get multiple enrichments for pictuee group
-                if (category === "picturegroup") {
-                    me.replacePictureGroups(page, shortcut, enrichments, tag);
+                if (enrichment) {
+                    // get multiple enrichments for pictuee group
+                    if (category === "picturegroup") {
+                        me.replacePictureGroups(page, shortcut, enrichments, tag);
+
+                    } else if (category === "picture") {
+                        //console.log(enrichment);
+                        var figureString = '<figure>\n' +
+                                        '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
+                                        '<figcaption>\n' +
+                                            enrichment.text +
+                                        '</figcaption>\n' +
+                                    '</figure>';
+
+                        // replace tag with newly created HTML
+                        $("#read", page).html(currentHTML.replace(tag, figureString));
+
+                    } else if (category === "definition") {
+                        // get snippet
+                        var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
+
+                        // replace tag with snippet
+                        $("#read", page).html(currentHTML.replace(tag, snippet));
+
+                        // for opMainzed, add ressources to end of page
+                        if (enrichment.filetype === "opMainzed") {
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
+                        }
+
+                    }
+
+                    // keep track of enrichments so resources arent inserted multiple times
+                    if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        usedDefs.push(enrichment._id);
+                    }
+
+                    if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        usedEnrichments.push(enrichment._id);
+                    }
                 }
 
-                // get snippet based on category and filetype
-                // templates for this are defined in filetypeService
-                if (enrichment && category !== "picturegroup") {
+
+
+                /* else {
+
                     var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
 
-                    if (snippet || category === "picture") {
+                    if (snippet) {
                         // actually replace the tag
-                        var currentHTML = $("#read", page).html();
-
-                        if (category === "picture") {
-                            //console.log(enrichment);
-                            snippet = '<figure>\n' +
-                                            '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
-                                            '<figcaption>\n' +
-                                                enrichment.text +
-                                            '</figcaption>\n' +
-                                        '</figure>';
+                        currentHTML = $("#read", page).html();
 
 
-                            //$("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
+
+                        // definition and everything else
+                        $("#read", page).html(currentHTML.replace(tag, snippet));
 
 
-                            // replace tag with newly created HTML
-                            $("#read", page).html(currentHTML.replace(tag, snippet));
-                        } else if (category === "picturegroup") {
-                            // get all picture shortcuts from shortcut
-                            console.log(shortcut);
+                        //console.log(footnoteContent);
+                        if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
 
-                        } else {
-                            // definition and everything else
-                            $("#read", page).html(currentHTML.replace(tag, snippet));
+                            // make html usable with jquery
+                            //var page = $("<div>" + html + "</div>");
 
+                            // select footnotes div and append resources
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
 
-                            //console.log(footnoteContent);
-                            if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
+                            //html = page.html();
 
-                                // make html usable with jquery
-                                //var page = $("<div>" + html + "</div>");
-
-                                // select footnotes div and append resources
-                                $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
-
-                                //html = page.html();
-
-                                usedEnrichments.push(enrichment.word);
-                            }
+                            usedEnrichments.push(enrichment.word);
                         }
+
 
 
                         // record all enrichments for content tables
                         if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
                             usedDefs.push(enrichment._id);
                         }
-                    } else {
-                        console.log("unknown enrichment filetype: " + enrichment.filetype + " or category: " + category);
-                    }
-                }
+                }*/
 
             })
         }
@@ -541,8 +550,6 @@ angular.module('meanMarkdownApp')
         if (shortcut.length < 2) {
             console.log("Picturegroup needs at least two pictures.");
         }
-        console.log("placing picturegroup");
-
         var me = this;
 
         // replace tag with picturegroup div
@@ -553,13 +560,9 @@ angular.module('meanMarkdownApp')
 
         // get all pictures from shortcut
         var shortcuts = shortcut.split(",");
-        //var enrichmentList = [];
         shortcuts.forEach(function(shortcut) {
             var picture = shortcut.trim();
-            //enrichmentList.push(me.findEnrichmentByShortcut(enrichments, picture));
             var enrichment = me.findEnrichmentByShortcut(enrichments, picture);
-            console.log("picture group: ");
-            console.log(enrichment);
             var figureString = '<figure>\n' +
                             '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
                             '<figcaption>\n' +
@@ -569,42 +572,6 @@ angular.module('meanMarkdownApp')
 
             $(".picturegroup", page).last().append(figureString);
         });
-
-
-
-
-
-
-
-
-
-
-        console.log($(".picturegroup", page).html());
-
-        // append all pictures to last picturegroup
-
-        /*var currentHTML = $("#read", page).html();
-
-
-            snippet = '<div class="pictureWrapper">\n' +
-                        '<figure>\n' +
-                            '<img src="' + enrichment.text + '" class="picture" alt="">\n' +
-                            '<figcaption>\n' +
-                                enrichment.text +
-                            '</figcaption>\n' +
-                        '</figure>\n' +
-                      '</div>';
-        */
-
-            //$("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
-
-
-            // replace tag with newly created HTML
-
-
-        //$("#read", page).html();
-
-        //console.log(enrichmentList);
     };
 
     /**
