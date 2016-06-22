@@ -1,75 +1,68 @@
-		@font-face {
-		    font-family: 'mario';
-		    src: url('mario/Mario7-Regular.eot');
-		    src: url('mario/Mario7-Regular.eot?#iefix') format('embedded-opentype'),
-		         url('mario/Mario7-Regular.woff2') format('woff2'),
-		         url('mario/Mario7-Regular.woff') format('woff');
+	@font-face {
+		    font-family: 'mainzeddisplay';
+		    src: url('fonts/mainzeddisplaytype-Regular.eot');
+		    src: url('fonts/mainzeddisplaytype-Regular?#iefix') format('embedded-opentype'),
+		         url('fonts/mainzeddisplaytype-Regular.woff2') format('woff2'),
+		         url('fonts/mainzeddisplaytype-Regular.woff') format('woff');
 		      
 		    font-weight: normal;
 		    font-style: normal;
 		}
 
-		@font-face {
-		    font-family: 'marioitalic';
-		    src: url('mario/Mario7italic-Regular.eot');
-		    src: url('mario/Mario7italic-Regular.eot?#iefix') format('embedded-opentype'),
-		         url('mario/Mario7italic-Regular.woff2') format('woff2'),
-		         url('mario/Mario7italic-Regular.woff') format('woff');
-		      
-		    font-weight: normal;
-		    font-style: normal;
-		}
-
-		
 
 
-		* 		{ 	margin: 0; padding: 0; font-family: 'mario', Arial, sans-serif; list-style: none; text-decoration: none; text-rendering: optimizeLegibility; }
+		* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', sans-serif; letter-spacing: 0.02em;  
+					list-style: none; text-decoration: none;  }
 		body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
-		p  		{ 	font-size: 21px; line-height: 29px; letter-spacing: 0.02em;  margin: 0 30%; float: left; clear: left; }
-		h1 		{ 	font-weight: normal; padding: 20px 30% 8px 30%;
-		    		width: calc(100% - 60%); margin-top: 128px; font-size: 75px;  }
-		h2 		{ 	font-size: 40px; line-height: 60px; margin-bottom: 0; padding-top: 60px; 
-					margin-top: 30px; font-weight: normal; margin-left: 30%; }
-		h3 		{ 	font-size: 15px; line-height: 23px; margin: 0 auto 15px auto; font-weight: normal; 
-					padding-top: 60px; width: 80%; margin-left: 30%; }
+		p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 35%; float: left; clear: left; }
+		h1 		{ 	margin: 90px 35% 10px 35%; font-weight: normal;
+		    		width: calc(100% - 60%); font-size: 60px; letter-spacing: 0;  }
+		h2 		{ 	font-size: 25px; line-height: 28px;  font-weight: normal; margin: 95px 35% 30px 35%;
+					letter-spacing: 0; font-weight: bold;}
+		h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 35% 8px 35%; font-weight: normal;   }
 
 		h1, h2, h3, h4 {float: left; clear: left;}
-		a 		{ 	font-style: none; color: black; border-bottom: 1px solid black; padding-bottom: 0; }
+		a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
 		img 	{ 	height: 200px; cursor: pointer; }
 		figcaption 	{	display: none;	}
-		figure 	{	float: left; }
+		figure 	{	float: left; margin-left: 2px; margin-top: 100px; margin-bottom: 100px; }
 		iframe 	{	float: left; }
-		i 		{font-family: 'marioitalic', Arial, sans-serif; font-style: normal;}
+		i, em 		{ font-style: normal; }
+		strong {font-weight: normal;}
 
-		.citation {float: left; clear: both; margin: 40px 0;}
-		.citation p { font-size: 40px; line-height: 40px; letter-spacing: 0;}
+		.citation { margin: 40px 0;}
+		.citation p { 	font-size: 60px; line-height: 60px; letter-spacing: 0; 
+						font-family: "Source Serif Pro";  margin: 100px 25%; padding-top: 20px;
+						border-top: 1px solid #e7e7e7; font-weight: 600;  }
 
-		#titletextbg {	background: #2e2e2e; width: 100%; height: 100%;}
-		.title {font-size: 90px; line-height: 90px; font-family: "mainzed display type", sans-serif; 
-						font-weight: normal; width: 90%; margin-left: 2%; letter-spacing: 0;  position: absolute;
+		#titletextbg {	background: white; width: 100%; height: 100%;}
+		.title {font-size: 90px; line-height: 90px; font-family: "mainzeddisplay", sans-serif; 
+						font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
 						top: 30%; left: 0; width: auto; background: none;}
-		.titletext {	color: white;	}
-		.shortcut {background: yellow;}
+		.titletext {		}
+		.shortcut {background: white;}
 		#scrollmarker {position: absolute; top: 10px; width: 10px; height: 10px;}
 
 
 		/* listen im Text */
-		#read ul {margin: 20px 0; float: left; clear: left; margin: 0 30%;}
-		#read li {font-size: 21px; margin-left: 17px;}
+		#read {}
+		#read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
+		#read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
 		#read li:before {    
 			content: "—";
-			margin-left: -16px;
-			margin-right: 5px;
+			margin-left: -20px;
+			margin-right: 4px;
 		}
 
 		
 
 		#ressourceswrapper 	{	position: fixed; height: 100%; top: 0; left: 0; }
-		#ressources 		{ 	float: left; width: 2000px; background: white;   
-								height: 100%; display: block; transition: 0.4s; border-right: 1px solid black; }
+		#ressources 		{ 	float: left; width: 2000px; background: white; color: black;   
+								height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
 		#ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
-		#ressourcestext 	{ 	float: right; display: block; margin-top: 60px; width: 250px; }
-		#ressources p 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px;  }
+		#ressourcestext 	{ 	float: right; display: block; margin: 60px 20px 0 0; width: 258px; }
+		#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 22px; }
+		.figcaption 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px;  }
 
 		#imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
     							background-repeat: no-repeat !important;
@@ -77,19 +70,19 @@
 		
 
 		/* start */
-		.start				{ 	position: absolute; bottom: 20px; left: 30px; }
+		.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; }
 		#titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../bierdeckel2.jpg"); 
 								background-size: cover; top: 0; z-index: -1; }
-		.coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; font-size: 12px;}
+		.coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; font-size: 12px; margin-right: 0;}
 		
 
 		
 		/*Navigation*/
-		#nav {	float: right; display: none; margin-top: 40px; overflow: auto; width: 200px;  }
-		#nav li ul {margin-left:30px;}
-		#nav li {margin-top: 20px;}
-		#nav ul li {margin-top: 0;}
-		#nav a {border: 0;}
+		#nav 			{	float: right; display: none; margin-top: 40px; overflow: auto; width: 258px; margin-right: 20px;  }
+		#nav li ul 		{	margin-left:30px;	}
+		#nav li 		{	margin-top: 20px;	}
+		#nav ul li 		{	margin-top: 0;	}
+		#nav a 			{	border: 0; color: black;	}
 
 
 
@@ -106,6 +99,7 @@
 			
 		#read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
 		#footnotes, #imprint { float: left; clear: left;}
+		#footnotes {margin: 0 35%; width: auto;}
 		
 
 		/* footnotes */
@@ -116,8 +110,8 @@
 
 		.current a {color: red;}
 		
-		.active  {color: blue;}
-		.firsth2 {margin-top: 0;}
+		a.active  {text-decoration: underline;}
+	
 		/*.minimalressource {width: 70px; background: white; opacity: 1;}*/
 		.white {color: white;}
 		
@@ -164,13 +158,20 @@
 		/* small screens */
 		@media screen and (max-width: 1200px) {
 
-		
-		/* Animation Classes */
-		.showpictures { margin-left: -1100px; background: black !important; }
-		.startanimation { margin-left: -1500px;}
+			
+			/* Animation Classes */
+			.showpictures { margin-left: -1100px; background: black !important; }
+			.startanimation { margin-left: -1500px;}
 
-		#ressources img 	{ 	width: 800px;  }
-		#imagecontainer {position: absolute;  width: 900px;  }
+			#ressources img 	{ 	width: 800px;  }
+			#imagecontainer {position: absolute;  width: 900px;  }
+
+			.title {font-size: 70px; line-height: 70px; top: 30%; left: 0; }
+
+			p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 25%;  }
+			h1 		{ 	margin: 90px 25% 10px 25%; font-size: 60px;  }
+			h2 		{ 	font-size: 25px; line-height: 28px;  margin: 95px 25% 30px 25%; }
+			h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 25% 8px 25%;    }
 
 
 		}
@@ -183,10 +184,14 @@
 		@media screen and (max-width: 800px) {
 			* 	{ 	cursor: pointer; letter-spacing: 0.02em; }
 			
-			h1 	{ 	padding: 30px 5% 10px 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 50px; letter-spacing: 0;  }
-			h2 	{	font-size: 25px; line-height: 32px; letter-spacing: 0; width: 90%; margin-left: 5%; margin-right: auto;	}
-			h3 	{	width: 90%; margin-left: 5%; padding-top: 30px; font-size: 10px; margin-bottom: 5px;	}
-			p  	{	font-size: 18px; line-height: 24px; width: 90%; margin-left: 5%;	}
+			h1 	{ 	margin: 20px 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 45px; line-height: 50px; letter-spacing: 0;  }
+			h2 	{	margin: 20px 5%; font-size: 29px; line-height: 37px; letter-spacing: 0; width: 90%; }
+			h3 	{	margin: 5px 5%; padding-top: 30px; font-size: 12px; 	}
+
+			/* navigation zone */
+			h1,h2,h3 {padding-top: 60px;}
+
+			p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
 			img {	width: 100%; height: auto;	}
 			figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
 			iframe {	width: 100%;	}
@@ -195,25 +200,31 @@
 
 			#titlepicture {background-position: -360px;}
 
-			#read ul {margin-top: 20px; margin-left: 5%;}
-			#read li {font-size: 18px; }
+			.citation p {margin: 100px 5%; font-size: 40px; line-height: 40px;}
+
+			#read ul {margin: 20px 5%;}
+			#read li {font-size: 19px; line-height: 24px; }
 			#read li:before {    
 				
     			margin-left: -16px;
    				 margin-right: 5px;
    			}
 
-   			#ressources a {color: white;}
+   			#ressources a {color: black;}
 
 						
 			#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
-			#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0;
-									width: 100%; border-bottom: 1px solid white; display: block; transition: 0.3s; 
-									background: #2e2e2e; color: white; }
+			#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
+									width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s; 
+									 }
 			
 			
 
-			#nav, #ressourcestext {	position: fixed; -webkit-overflow-scrolling: touch; top: 0; float: none; left: 5%; overflow: auto; width: 90%; margin-bottom: 20px; margin-top: 0; padding-top: 20px; }
+			#nav, #ressourcestext {	position: fixed; -webkit-overflow-scrolling: touch; top: 0; float: none; 
+									left: 5%; overflow: auto; width: 90%; margin-bottom: 20px; margin-top: 0; padding-top: 20px; 
+
+								}
+			
 			#nav.activeressource {height: 400px;}
 			#ressourcestext.activeressource {height: 250px; margin-top: 0; padding-top: 20px;}
 			#navicon {margin: 10px 10px; left: 8px; top: 3px; z-index: 9999;}
@@ -227,6 +238,7 @@
 				margin-top: -510px;
 				-webkit-transition: width 0.2s; /* Safari */
 	    		transition: width 0.2s;
+	    		background: gray !important;
 			 }
 
 			.showtableofcontent {
@@ -264,6 +276,28 @@
 
 			
 			
+		}
+
+		/* mobile */
+		@media screen and (max-width: 600px) {
+			
+			
+			h1 	{ 	font-size: 35px; line-height: 40px;  }
+			h2 	{	font-size: 25px; line-height: 32px;  }
+			h3 	{	font-size: 10px; 	}
+
+			
+
+			p  	{	font-size: 16px; line-height: 22px; 	}
+
+			#read li {font-size: 16px; line-height: 22px; }
+		
+			
+
+			.title {font-size: 40px; line-height: 40px; }
+
+
+			.citation p {font-size: 40px; line-height: 40px;}
 		}
 
 

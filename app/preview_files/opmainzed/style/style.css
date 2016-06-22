@@ -26,9 +26,29 @@
 }
 
 .icon-toc:before {
-    content: "\e900";
+    content: "\e902";
+}
+.icon-dropdown:before {
+    content: "\e904";
 }
 .icon-close:before {
     content: "\e901";
+}
+
+
+.shortcut {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.shortcut:hover {text-decoration: underline;}
+
+.shortcut:after {
+    content: "\e900";
+    font-family: "icomoon" !important;
+    font-style: normal;
+    font-size: 15px;
+    font-weight: normal;
+    margin-left: 2px;
 }
 
