@@ -234,7 +234,12 @@ angular.module('meanMarkdownApp')
 
         // custom link renderer
         customRenderer.link = function (linkUrl, noIdea, text) {
-            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+            if (linkUrl.startsWith("#")) {   // internal link
+                return "<a href=\"" + linkUrl + "\" class='internal-link'>" + text + "</a>";
+            } else {  // external links
+                return "<a href=\"" + linkUrl + "\" class='external-link' target=\"_blank\">" + text + "</a>";
+            }
+
         };
 
         // custom image renderer
@@ -276,6 +281,7 @@ angular.module('meanMarkdownApp')
 
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
+                        '<div id="imagecontainer"></div>' +
         		        '<div id="ressources">' +
         			        '<span id="navicon">' +
         			            '<span class="icon-toc"></span>' +
