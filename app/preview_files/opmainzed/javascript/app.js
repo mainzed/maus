@@ -71,7 +71,7 @@ $(document).ready(function() {
     });
 
 
-   $("a").click(function(event){     
+  $("a:not(.external-link)").click(function(event){     
         event.preventDefault();
         $('html,body').animate({scrollTop:$(this.hash).offset().top}, 1200);
     });
