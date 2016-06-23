@@ -260,7 +260,7 @@ angular.module('meanMarkdownApp')
                 			'</span>' +
 
                 			'<div id="titletextbg">' +
-                				'<h1 class="titletext title">mainzed jahresbericht <br>1</h1>' +
+                				'<h1 class="titletext title">mainzed jahresbericht <br>2015/2016</h1>' +
                 				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
                 			'</div>' +
 
