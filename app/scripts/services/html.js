@@ -112,7 +112,12 @@ angular.module('meanMarkdownApp')
 
         html = this.replaceStoryTags(html, storyCounter);
 
-        //var usedDefs = [];
+        // workaround since everything else still works with htmlString and not page object
+        var page = $("<div>" + html + "</div>");
+        this.replaceEnrichmentTags(page, definitions);
+        html = page.html();
+
+
         html = this.replaceEnrichmentTags(html, definitions, storyCounter);
 
         // add tables of images and links
@@ -242,43 +247,6 @@ angular.module('meanMarkdownApp')
 
         };
 
-        // custom image renderer
-        /*var images = []; // save images here to use them for the images-table
-        var ImageCounter = 1;
-        customRenderer.image = function (src, title, alt) {
-            // used title attr for caption, author etc
-            var tokens = title.split("; ");
-            var caption = tokens[0].replace(/\\/g, "");
-            var author = tokens[1];
-            var license = tokens[2];
-            var url = tokens[3];
-            var title = alt;
-            var preCaption = "Abb." + ImageCounter;
-
-            // not needed for rendering, but to access them later
-            images.push({
-                url: url,
-                caption: caption,
-                author: author,
-                license: license,
-                title: title,
-                preCaption: preCaption
-            });
-            //var html = "";
-
-            ImageCounter++;
-
-            return '<figure id="' + alt + '">\n' +
-                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
-                    "<figcaption>\n" +
-                    preCaption + "<br>" + caption + "<br>" +
-                    "<a href=\"#images-table\">\n" +
-                    "(Quelle)\n" +
-                    "</a>\n" +
-                    "</figcaption>\n" +
-                    "</figure>\n";
-        };*/
-
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
                         '<div id="imagecontainer"></div>' +
@@ -383,6 +351,7 @@ angular.module('meanMarkdownApp')
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
                 '<link rel="stylesheet" href="style/style.css">\n' +
+                '<link href="https://fonts.googleapis.com/css?family=Rasa:300,400|Roboto:400,400i,700,700i" rel="stylesheet">' +
                 '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">' +
                 "</head>\n"+
                 "<body>\n" +
@@ -398,8 +367,6 @@ angular.module('meanMarkdownApp')
                     '<div id="imprint">' +
                 		'<h3>Impressum</h3>' +
                 		'<p>Angaben gemäß § 5 TMG:</p>' +
-
-
                 		'<div class="address" about="#mainzed" typeof="foaf:Organization">' +
                 			'<span class="organisationnameimprint" property="foaf:name">' +
                 				'mainzed - Mainzer Zentrum für Digitalit&auml;t in den Geistes- und Kulturwissenschaften			</span><br>' +
@@ -413,10 +380,8 @@ angular.module('meanMarkdownApp')
                 		'</div>' +
                 	'</div>' +
 
-
-
                 '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
-
+                '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>' +
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>' +
                 '<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>' +
 
@@ -439,7 +404,7 @@ angular.module('meanMarkdownApp')
         var usedEnrichments = [];
 
         // get all tags
-        var tags = $("#read", page).html().match(/\{(.*?)\}/g);
+        var tags = $(page).html().match(/\{(.*?)\}/g);
 
         // loop through all tags
         if (tags) {
@@ -455,83 +420,77 @@ angular.module('meanMarkdownApp')
                     category = content.split(":")[0].trim();
                     shortcut = content.split(":")[1].trim();
                 } else {
-                    // legacy support
+                    // legacy support: when no category/keyword is given
+                    // it is assumed that it is a definition
                     category = "definition";
                     shortcut = content;
-                    //console.log("shortcut: " + shortcut);
                 }
-
-                //console.log(category);
-                //console.log(shortcut);
 
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                //console.log(enrichment);
-
-                // get multiple enrichments for pictuee group
-                if (category === "picturegroup") {
-                    me.replacePictureGroups(page, shortcut, enrichments, tag);
-                }
-
-                // get snippet based on category and filetype
-                // templates for this are defined in filetypeService
-                if (enrichment && category !== "picturegroup") {
-                    var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
-
-                    if (snippet || category === "picture") {
-                        // actually replace the tag
-                        var currentHTML = $("#read", page).html();
-
-                        if (category === "picture") {
-                            //console.log(enrichment);
-                            snippet = '<figure>\n' +
-                                            '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
-                                            '<figcaption>\n' +
-                                                enrichment.text +
-                                            '</figcaption>\n' +
-                                        '</figure>';
 
 
-                            //$("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
 
 
-                            // replace tag with newly created HTML
-                            $("#read", page).html(currentHTML.replace(tag, snippet));
-                        } else if (category === "picturegroup") {
-                            // get all picture shortcuts from shortcut
-                            console.log(shortcut);
-
-                        } else {
-                            // definition and everything else
-                            $("#read", page).html(currentHTML.replace(tag, snippet));
-
-
-                            //console.log(footnoteContent);
-                            if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
-
-                                // make html usable with jquery
-                                //var page = $("<div>" + html + "</div>");
-
-                                // select footnotes div and append resources
-                                $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
-
-                                //html = page.html();
-
-                                usedEnrichments.push(enrichment.word);
-                            }
-                        }
-
-
-                        // record all enrichments for content tables
-                        if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
-                            usedDefs.push(enrichment._id);
-                        }
+                if (enrichment) {
+                    var currentHTML;
+                    if (enrichment.filetype === "opMainzed") {
+                        currentHTML = $("#read", page).html();
                     } else {
-                        console.log("unknown enrichment filetype: " + enrichment.filetype + " or category: " + category);
+                        currentHTML = $(page).html();
+                        //console.log(currentHTML);
+                    }
+
+                    // get multiple enrichments for pictuee group
+                    if (category === "picturegroup" && enrichment.filetype === "opMainzed") {
+                        me.replacePictureGroups(page, shortcut, enrichments, tag);
+
+                    } else if (category === "picture" && enrichment.filetype === "opMainzed") {
+                        //console.log(enrichment);
+                        var figureString = '<figure>\n' +
+                                        '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
+                                        '<figcaption>\n' +
+                                            enrichment.text +
+                                        '</figcaption>\n' +
+                                    '</figure>';
+
+                        // replace tag with newly created HTML
+                        $("#read", page).html(currentHTML.replace(tag, figureString));
+
+                    } else if (category === "definition") {
+                        console.log("is a defintiion!!");
+                        // get snippet
+                        var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
+
+                        // replace tag with snippet
+                        if (enrichment.filetype === "opMainzed") {
+                            console.log("insidie!!!");
+                            console.log(currentHTML);
+                            $("#read", page).html(currentHTML.replace(tag, snippet));
+                        } else {
+                            console.log(currentHTML);
+                            $(page).html(currentHTML.replace(tag, snippet));
+                            //console.log(currentHTML);
+                        }
+
+                        // for opMainzed, add ressources to end of page
+                        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
+                        }
+
+                    }
+
+                    // keep track of enrichments so resources arent inserted multiple times
+                    if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        usedDefs.push(enrichment._id);
+                    }
+
+                    if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
+                        usedEnrichments.push(enrichment._id);
                     }
                 }
 
-            })
+            });
         }
         return;
     };
@@ -541,8 +500,6 @@ angular.module('meanMarkdownApp')
         if (shortcut.length < 2) {
             console.log("Picturegroup needs at least two pictures.");
         }
-        console.log("placing picturegroup");
-
         var me = this;
 
         // replace tag with picturegroup div
@@ -553,13 +510,9 @@ angular.module('meanMarkdownApp')
 
         // get all pictures from shortcut
         var shortcuts = shortcut.split(",");
-        //var enrichmentList = [];
         shortcuts.forEach(function(shortcut) {
             var picture = shortcut.trim();
-            //enrichmentList.push(me.findEnrichmentByShortcut(enrichments, picture));
             var enrichment = me.findEnrichmentByShortcut(enrichments, picture);
-            console.log("picture group: ");
-            console.log(enrichment);
             var figureString = '<figure>\n' +
                             '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
                             '<figcaption>\n' +
@@ -569,49 +522,13 @@ angular.module('meanMarkdownApp')
 
             $(".picturegroup", page).last().append(figureString);
         });
-
-
-
-
-
-
-
-
-
-
-        console.log($(".picturegroup", page).html());
-
-        // append all pictures to last picturegroup
-
-        /*var currentHTML = $("#read", page).html();
-
-
-            snippet = '<div class="pictureWrapper">\n' +
-                        '<figure>\n' +
-                            '<img src="' + enrichment.text + '" class="picture" alt="">\n' +
-                            '<figcaption>\n' +
-                                enrichment.text +
-                            '</figcaption>\n' +
-                        '</figure>\n' +
-                      '</div>';
-        */
-
-            //$("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
-
-
-            // replace tag with newly created HTML
-
-
-        //$("#read", page).html();
-
-        //console.log(enrichmentList);
     };
 
     /**
      * wrapper to support the old function name
      */
-    this.replaceDefinitionTags = function(html, enrichments) {
-        return this.replaceEnrichmentTags(html, enrichments);
+    this.replaceDefinitionTags = function(page, enrichments) {
+        return this.replaceEnrichmentTags(page, enrichments);
     };
 
     /**
