@@ -803,7 +803,7 @@ describe('Service: HTMLService', function () {
                 author: "John Doe",
                 type: "opOlat",
                 markdown: "# heading 1\n" +
-                            "This is **markdown**! ![awesome-image](bilder/bild.jpg \"Caption this!; John Doe; CC BY-NA; www.source.com\")"
+                            "This is **markdown**!\n![awesome-image](bilder/bild.jpg \"Caption this!; John Doe; CC BY-NA; www.source.com\")"
             };
 
             var config = {
@@ -815,6 +815,7 @@ describe('Service: HTMLService', function () {
 
             var expected =  '<h1 id="h1-1">heading 1</h1>\n' +
                             '<p>This is <strong>markdown</strong>!</p>\n' +
+                            '<figure id="awesome-image"><img src="bilder/bild.jpg" alt="awesome-image"><figcaption>Abb.1<br>Caption this!<br><a href="#images-table">(Quelle)</a></figcaption></figure>' +
                             "<div id=\"images-table\" class=\"images-table\">\n" +
                                             "<h4>Abbildungen</h4>\n" +
                                             "<ul>\n" +

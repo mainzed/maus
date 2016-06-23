@@ -44,18 +44,16 @@ angular.module('meanMarkdownApp')
             this.createImagesTable(page);
         }
 
-        html = page.html();
+
 
 
         /*if (config.addLinksTable) {
             html += this.createLinksTable(links);
         }*/
 
-        if (config.addDefinitionsTable && usedDefs.length > 0) {
-            //html += this.createDefinitionsTable(definitions);
+        if (config.addDefinitionsTable) {
+            this.createDefinitionsTable(page);
         }
-
-        page = $("<div>" + html + "</div>");
 
         // add table of content to beginning of file
         // has to be executed after images and links table to be able
@@ -356,7 +354,7 @@ angular.module('meanMarkdownApp')
             ImageCounter++;
 
             return '<figure id="' + alt + '">\n' +
-                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
+                    "<img src=\"" + src + "\" alt=\"" + alt + "\" >" +
                     "<figcaption>\n" +
                     preCaption + "<br>" + caption + "<br>" +
                     "<a href=\"#images-table\">\n" +
@@ -594,21 +592,31 @@ angular.module('meanMarkdownApp')
      */
     this.createImagesTable = function(page) {
 
-        var images = $("img", page);
+        var figures = $("figure", page);
 
-        if (images.length > 0) {
+        if (figures.length > 0) {
             // append table of images to end of page
             $(page).append('<div id="images-table" class="images-table"><h4>Abbildungen</h4><ul></ul></div>');
 
             // append images
-            images.each(function(index) {
+            figures.each(function(index) {
                 // get metadata from title
-                var caption = $(this).attr('title')[0];
-                var author = $(this).attr('title')[1];
-                var license = $(this).attr('title')[2];
-                var url = $(this).attr('title')[3];
+                var caption = $(this).find("figcaption").text();
+                //console.log(caption);
 
-                var imageString = '<li>Abb.' + (index + 1) + "<br>" + caption + '<br>' + author + '<br>' + license + '<br><a href="' + url + '" target="_blank">Quelle</a></li>';
+                //$('div.post br').after('<br/>');
+
+                //var metadata
+                /*var metadata = $(this).attr('title').split(";");
+                var caption = metadata[0];
+                var author = metadata[1];
+                var license = metadata[2];
+                var url = metadata[3];
+                */
+
+                //var imageString = '<li>Abb.' + (index + 1) + "<br>" + caption + '<br>' + author + '<br>' + license + '<br><a href="' + url + '" target="_blank">Quelle</a></li>';
+
+                var imageString = '<li>Abb.' + (index + 1) + "<br>" + caption + "</li>";
 
                 $("#images-table ul", page).append(imageString);
             });
@@ -621,12 +629,20 @@ angular.module('meanMarkdownApp')
      * unordered list with all definitions.
      * requires a an object of definition objects
      */
-    this.createDefinitionsTable = function(definitions) {
+    this.createDefinitionsTable = function(page) {
 
-        var html = "";
-        html += "<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+
+        $(page).append("<div id=\"definitions-table\" class=\"definitions-table\">\n" +
                 "<h4>Glossar</h4>\n" +
-                "<ul>\n";
+                "<ul></ul>\n" +
+                "</div>");
+
+        // get all definitions
+        $("a .definition").each(function() {
+
+        });
+
+        /*
 
         // sort keys by alphabet
         Object.keys(definitions).sort().forEach(function(key) {
@@ -644,10 +660,10 @@ angular.module('meanMarkdownApp')
                 html += "</li>\n";
             }
         });
+        */
 
-        html += "</ul>\n</div>\n";
         //console.log(html);
-        return html;
+        return;
     };
 
     /**
