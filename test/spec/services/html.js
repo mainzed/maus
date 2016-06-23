@@ -706,6 +706,35 @@ describe('Service: HTMLService', function () {
 
         });
 
+        it('should replace citation tag', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b61",
+                     word: "citation1",
+                    __v: 0,
+                    text: "This is the citation.",
+                    author: "John Doe",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "citation"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{citation: citation1}</div></div>');
+
+            var expected = '<div id="read"><div class="citation">' +
+                            '<p>' + enrichments[0].text + '</p>\n' +
+                            '<span class="author">' + enrichments[0].author + '</span>' +
+                            '</div></div>';
+
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect($(page).html()).toBe(expected);
+
+        });
+
 
     });
 

@@ -452,16 +452,22 @@ angular.module('meanMarkdownApp')
 
                     // get multiple enrichments for pictuee group
                     if (category === "picture" && enrichment.filetype === "opMainzed") {
-                        //console.log(enrichment);
-                        var figureString = '<figure>\n' +
-                                        '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
-                                        '<figcaption>\n' +
-                                            enrichment.text +
-                                        '</figcaption>\n' +
-                                    '</figure>';
+                        me.replacePicture(tag, page, enrichment);
+
+                    } else if (category === "citation" && enrichment.filetype === "opMainzed") {
+                        // TODO: configure in filetypes what enrichments are available for
+                        // each filetype
+                        if (!enrichment.text || !enrichment.author) {
+                            console.log("text or author missing!");
+                        }
+
+                        var citationString = '<div class="citation">' +
+                                                marked(enrichment.text) +
+                                                '<span class="author">' + enrichment.author + '</span>' +
+                                                '</div>';
                         //console.log(currentHTML);
                         // replace tag with newly created HTML
-                        $("#read", page).html(currentHTML.replace(tag, figureString));
+                        $("#read", page).html(currentHTML.replace(tag, citationString));
 
                     } else if (category === "definition") {
                         //console.log("is a defintiion!!");

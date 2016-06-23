@@ -55,6 +55,11 @@ module.exports = function(config) {
     // define custom reportes (use mocha-like reporter)
     reporters: ['mocha'],
 
+    // reporter options
+    mochaReporter: {
+      output: "autowatch"
+    },
+
     // list of files / patterns to exclude
     exclude: [
     ],

@@ -60,9 +60,6 @@ angular.module('meanMarkdownApp')
                 },
                 image: {
                     html: "<img src=\"${url}\" alt=\"${alt}\" />"
-                },
-                citation: {
-                    html: "<div class=\"citation\">${text}</div>"
                 }
             }
         },{
