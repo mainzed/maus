@@ -17,39 +17,26 @@ angular.module('meanMarkdownApp')
      */
      // TODO: dont require file, but create EditorService
     this.getOlat = function(file, definitions, config) {
-        //console.log(callback);
+
         config = config || {
             addTitle: false,
             addContentTable: false,
+            addDefinitionsTable: false,
             addImagesTable: false
         };
 
-        var title = file.title;
-
         var html = this.convertOpOlatMarkdownToHTML(file.markdown);
 
-        //var stories = this.getStories(html);  // needed for table of content
-
-        var storyCounter = 1;
-        html = this.replaceStoryTags(html, storyCounter);
-
-        // workaround since everything else still works with htmlString and not page object
         var page = $("<div>" + html + "</div>");
-        this.replaceEnrichmentTags(page, definitions);
 
-        //html = this.replaceEnrichmentTags(html, definitions, storyCounter);
+        this.replaceStoryTags(page);
+
+        this.replaceEnrichmentTags(page, definitions);
 
         // add tables of images and links
         if (config.addImagesTable) {
             this.createImagesTable(page);
         }
-
-
-
-
-        /*if (config.addLinksTable) {
-            html += this.createLinksTable(links);
-        }*/
 
         if (config.addDefinitionsTable) {
             this.createDefinitionsTable(page);
@@ -64,7 +51,7 @@ angular.module('meanMarkdownApp')
 
         // add title to beginning of filee
         if (config.addTitle) {
-            $(page).prepend('<h1 class="page-title" id="page-title">' + title + '</h1>');
+            $(page).prepend('<h1 class="page-title" id="page-title">' + file.title + '</h1>');
         }
 
         return $(page).html();
@@ -561,9 +548,9 @@ angular.module('meanMarkdownApp')
 
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
-    this.replaceStoryTags = function(html) {
-        //var reg = new RegExp(/§\{([\s\S]*?)\}/, "g");
-        //var stories = markdown.match(reg);  // store them for later
+    this.replaceStoryTags = function(page) {
+
+        var html = $(page).html();
 
         // get count of replacements to add ID
         var matches = html.match(/story{/g);
@@ -582,7 +569,8 @@ angular.module('meanMarkdownApp')
         // replace closing tags all at once -> no id needed
         html = html.replace(/<p>}story<\/p>/g, "</div>");
 
-        return html;
+        $(page).html(html);
+        return;
     };
 
     /**
@@ -631,38 +619,25 @@ angular.module('meanMarkdownApp')
      */
     this.createDefinitionsTable = function(page) {
 
+        var definitions = $("a.definition", page);
 
-        $(page).append("<div id=\"definitions-table\" class=\"definitions-table\">\n" +
-                "<h4>Glossar</h4>\n" +
-                "<ul></ul>\n" +
-                "</div>");
+        // append table if definitions
+        if (definitions.length > 0) {
+            $(page).append("<div id=\"definitions-table\" class=\"definitions-table\">\n" +
+                    "<h4>Glossar</h4>\n" +
+                    "<ul></ul>\n" +
+                    "</div>");
 
-        // get all definitions
-        $("a .definition").each(function() {
-
-        });
-
-        /*
-
-        // sort keys by alphabet
-        Object.keys(definitions).sort().forEach(function(key) {
-            var definition = definitions[key];
-            //console.log(definition.word);
-
-            if (usedDefs.indexOf(definition._id) > -1 && definition.word) {  // definition was used in text and has a word
-
-                html += "<li>\n";
-                if (definition.url) {
-                    html += "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a> (<a href=\"" + definition.url + "\" target=\"_blank\">website</a>)\n";
-                } else {
-                    html += "<a href=\"#\" target=\"_blank\" class=\"definition\" title=\"" + definition.text + "\">" + definition.word + "</a>\n";
+            // append definitions
+            var usedDefs = [];
+            definitions.each(function() {
+                if (usedDefs.indexOf($(this).html()) === -1) {  // skip duplicates
+                    var defString = '<li><a href="#" target="_blank" class="definition" title="' + $(this).attr("title") + '">' + $(this).html() + '</a></li>';
+                    $("#definitions-table ul", page).append(defString);
+                    usedDefs.push($(this).html());
                 }
-                html += "</li>\n";
-            }
-        });
-        */
-
-        //console.log(html);
+            });
+        }
         return;
     };
 
