@@ -351,7 +351,7 @@ angular.module('meanMarkdownApp')
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
                 '<link rel="stylesheet" href="style/style.css">\n' +
-                '<link href="https://fonts.googleapis.com/css?family=Rasa:300,400|Roboto:400,400i,700,700i" rel="stylesheet">' +
+                '<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700|Roboto:400,400i,700" rel="stylesheet">' +
                 '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">' +
                 "</head>\n"+
                 "<body>\n" +
