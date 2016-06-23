@@ -79,7 +79,7 @@ angular.module('meanMarkdownApp')
             var author = tokens[1];
             var license = tokens[2];
             var url = tokens[3];
-            var title = alt;
+            //var title = alt;
             var preCaption = "Abb." + ImageCounter;
 
             // not needed for rendering, but to access them later
@@ -156,7 +156,7 @@ angular.module('meanMarkdownApp')
         var customRenderer = new marked.Renderer();
 
         // custom heading renderer
-        var headings = [];
+        //var headings = [];
         var counter = 0;
         customRenderer.heading = function (text, level) {
             counter++;
@@ -395,7 +395,7 @@ angular.module('meanMarkdownApp')
     /**
      * requires html and definitions from the database
      */
-    this.replaceEnrichmentTags = function(page, enrichments, storyCounter) {
+    this.replaceEnrichmentTags = function(page, enrichments) {
         var me = this;
         //var enrichment;
 
@@ -426,56 +426,62 @@ angular.module('meanMarkdownApp')
                     shortcut = content;
                 }
 
+                // workaround for pictureGroups, they aquire their
+                // enrichments themselves
+                if (category === "picturegroup") {
+                    //console.log("adding picture group!");
+                    me.replacePictureGroups(page, shortcut, enrichments, tag);
+                }
+
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
 
-
-
-
-                if (enrichment) {
+                if (enrichment) {  // picturegroup enrichments aquired later
                     var currentHTML;
+                    //console.log("before: " + category);
                     if (enrichment.filetype === "opMainzed") {
                         currentHTML = $("#read", page).html();
+                        if (currentHTML.length < 1) {
+                            console.log("No div with id #read found in page");
+                            throw Error("No div with id #read found in page");
+                        }
                     } else {
                         currentHTML = $(page).html();
                         //console.log(currentHTML);
                     }
 
                     // get multiple enrichments for pictuee group
-                    if (category === "picturegroup" && enrichment.filetype === "opMainzed") {
-                        me.replacePictureGroups(page, shortcut, enrichments, tag);
-
-                    } else if (category === "picture" && enrichment.filetype === "opMainzed") {
+                    if (category === "picture" && enrichment.filetype === "opMainzed") {
                         //console.log(enrichment);
                         var figureString = '<figure>\n' +
-                                        '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
+                                        '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
                                         '<figcaption>\n' +
                                             enrichment.text +
                                         '</figcaption>\n' +
                                     '</figure>';
-
+                        //console.log(currentHTML);
                         // replace tag with newly created HTML
                         $("#read", page).html(currentHTML.replace(tag, figureString));
 
                     } else if (category === "definition") {
-                        console.log("is a defintiion!!");
+                        //console.log("is a defintiion!!");
                         // get snippet
                         var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
 
                         // replace tag with snippet
                         if (enrichment.filetype === "opMainzed") {
-                            console.log("insidie!!!");
-                            console.log(currentHTML);
+                            //console.log("insidie!!!");
+                            //console.log(currentHTML);
                             $("#read", page).html(currentHTML.replace(tag, snippet));
                         } else {
-                            console.log(currentHTML);
+                            //console.log(currentHTML);
                             $(page).html(currentHTML.replace(tag, snippet));
                             //console.log(currentHTML);
                         }
 
                         // for opMainzed, add ressources to end of page
                         if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + marked(enrichment.text) + "</div>\n");
                         }
 
                     }
@@ -499,6 +505,7 @@ angular.module('meanMarkdownApp')
         //console.log(shortcut);
         if (shortcut.length < 2) {
             console.log("Picturegroup needs at least two pictures.");
+            throw Error("Picturegroup needs at least two pictures.");
         }
         var me = this;
 
@@ -513,15 +520,42 @@ angular.module('meanMarkdownApp')
         shortcuts.forEach(function(shortcut) {
             var picture = shortcut.trim();
             var enrichment = me.findEnrichmentByShortcut(enrichments, picture);
-            var figureString = '<figure>\n' +
-                            '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
-                            '<figcaption>\n' +
-                                enrichment.text +
-                            '</figcaption>\n' +
-                        '</figure>';
+            if (!enrichment) {
+                console.log("Picture '" + shortcut + "' not found!");
+                //throw Error("Picturegroup needs at least two pictures.");
+            } else {
 
-            $(".picturegroup", page).last().append(figureString);
+                if (!enrichment.title) {
+                    console.log("missing image alt attribute");
+                    enrichment.title = "picture";
+                }
+                var figureString = '<figure>\n' +
+                                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
+                                '<figcaption>\n' +
+                                    enrichment.text +
+                                '</figcaption>\n' +
+                            '</figure>';
+
+                $(".picturegroup", page).last().append(figureString);
+            }
         });
+    };
+
+    this.replacePicture = function(tag, page, enrichment) {
+        if (!enrichment.title) {
+            console.log("missing image alt attribute");
+            enrichment.title = "picture";
+        }
+        var figureString = '<figure>\n' +
+                        '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
+                        '<figcaption>\n' +
+                            enrichment.text +
+                        '</figcaption>\n' +
+                    '</figure>';
+        //console.log(currentHTML);
+        // replace tag with newly created HTML
+        var currentHTML = $("#read", page).html();
+        $("#read", page).html(currentHTML.replace(tag, figureString));
     };
 
     /**
@@ -555,7 +589,7 @@ angular.module('meanMarkdownApp')
         var counter = 1;
         //console.log(matches);
         if (matches) {
-            matches.forEach(function(match) {
+            matches.forEach(function() {
 
                 stories.push({
                     counter: counter,
@@ -688,7 +722,7 @@ angular.module('meanMarkdownApp')
      * unordered list with all level 1 headings.
      * requires a list of heading objects
      */
-    this.createTableOfContent = function(bodyHtml, headings, stories, images) {
+    this.createTableOfContent = function(bodyHtml, headings, stories) {
         stories = stories || false;
         var html = "";
 

@@ -375,10 +375,10 @@ angular.module('meanMarkdownApp')
     };
 
     // listen to click on a enrichmenttag
-    $(document).on('click', 'span.cm-markdown-definition', function(){
+    /*$(document).on('click', 'span.cm-markdown-definition', function(){
         var category = $(this).text().replace("{", "").replace("}", "").split(":")[0];
         $scope.onDefinitionClick();
-    });
+    });*/
 
 
     // link hotkey

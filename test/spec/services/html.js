@@ -596,37 +596,6 @@ describe('Service: HTMLService', function () {
     });
 
     describe('replaceEnrichmentTags() for opMainzed', function() {
-        var htmlString;
-        var page;
-
-        /*it('should replace definition tag (opOlat)', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "someDefinedWord",
-                    __v: 0,
-                    url: "www.google.de",
-                    text: "This is the definition description!",
-                    updated_at: "2016-04-20T06:46:37.887Z",
-                    filetype: "opOlat",
-                    category: "definition",
-                    author: "John Doe"
-                }
-            ];
-
-            //var inputHtml = "";  // string is not a defined definition
-            //var expected = "<p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>";
-            var expected = "<p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
-
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            var outputHtml = $(page).html();
-
-            expect(enrichments.length).toBe(1);
-            expect(outputHtml).toBe(expected);
-
-        });*/
 
         it('should replace definition tag', function() {
             var enrichments = [
@@ -644,13 +613,122 @@ describe('Service: HTMLService', function () {
             ];
 
             // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div></div>');
+            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
 
             //var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
 
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p></div>";
+            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
+            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+            "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div>\n</div>";
 
             //page = $("<div>" + inputHtml + "</div>");
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect($(page).html()).toBe(expected);
+
+            //expect($)
+
+        });
+
+        it('should replace picture tag', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic1",
+                    __v: 0,
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picture: pic1}</div></div>');
+
+            var expected = '<div id="read"><figure>\n<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">\n<figcaption>\n' + enrichments[0].text + '</figcaption>\n</figure></div>';
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect($(page).html()).toBe(expected);
+
+        });
+
+        it('should replace picturegroup tag', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic1",
+                    __v: 0,
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe"
+                },{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic2",
+                    __v: 0,
+                    url: "www.some-other-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
+
+            var expected = '<div id="read"><div class="picturegroup">' +
+
+            // figure 1
+            '<figure>\n<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">\n<figcaption>\n' + enrichments[0].text + '</figcaption>\n</figure>' +
+
+            // figure 2
+            '<figure>\n<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">\n<figcaption>\n' + enrichments[1].text +
+
+            '</figcaption>\n</figure>' +
+            '</div></div>';
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect($(page).html()).toBe(expected);
+
+        });
+
+
+    });
+
+    describe("replaceEnrichmentTags() for opOlat", function() {
+        it('should replace definition tag', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "someDefinedWord",
+                    __v: 0,
+                    url: "www.google.de",
+                    text: "This is the definition description!",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opOlat",
+                    category: "definition",
+                    author: "John Doe"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><p>String with a {definition: someDefinedWord}!</p></div>');
+
+            var expected = '<p>String with a <a href="#definitions-table" title="' + enrichments[0].text + '" class="definition">' + enrichments[0].word + '</a>!</p>';
 
             service.replaceEnrichmentTags(page, enrichments);
 
@@ -666,7 +744,7 @@ describe('Service: HTMLService', function () {
                      word: "legacyDefinition",
                     __v: 0,
                     url: "www.google.de",
-                    text: "This is the definition description!",
+                    text: "This is the legacy definition description!",
                     updated_at: "2016-04-20T06:46:37.887Z",
                     filetype: "opOlat",
                     category: "definition",
@@ -674,9 +752,10 @@ describe('Service: HTMLService', function () {
                 }
             ];
 
-            var page = $('<div><div id="read"><p>String with a {legacyDefinition}!</p></div></div>');
+            // make jQuery compatible
+            var page = $('<div><p>String with a {legacyDefinition}!</p></div>');
 
-            var expected = "<div><p>String with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">legacyDefinition</a>!</p></div>";
+            var expected = '<p>String with a <a href="#definitions-table" title="' + enrichments[0].text + '" class="definition">' + enrichments[0].word + '</a>!</p>';
 
             service.replaceEnrichmentTags(page, enrichments);
 
@@ -684,6 +763,8 @@ describe('Service: HTMLService', function () {
             expect($(page).html()).toBe(expected);
 
         });
+    });
+
 
         // it('should replace story tag for opOlat', function() {
         //     var enrichments = [
@@ -728,6 +809,4 @@ describe('Service: HTMLService', function () {
 
         });*/
 
-
-    });
 });
