@@ -112,7 +112,12 @@ angular.module('meanMarkdownApp')
 
         html = this.replaceStoryTags(html, storyCounter);
 
-        //var usedDefs = [];
+        // workaround since everything else still works with htmlString and not page object
+        var page = $("<div>" + html + "</div>");
+        this.replaceEnrichmentTags(page, definitions);
+        html = page.html();
+
+
         html = this.replaceEnrichmentTags(html, definitions, storyCounter);
 
         // add tables of images and links
@@ -242,43 +247,6 @@ angular.module('meanMarkdownApp')
 
         };
 
-        // custom image renderer
-        /*var images = []; // save images here to use them for the images-table
-        var ImageCounter = 1;
-        customRenderer.image = function (src, title, alt) {
-            // used title attr for caption, author etc
-            var tokens = title.split("; ");
-            var caption = tokens[0].replace(/\\/g, "");
-            var author = tokens[1];
-            var license = tokens[2];
-            var url = tokens[3];
-            var title = alt;
-            var preCaption = "Abb." + ImageCounter;
-
-            // not needed for rendering, but to access them later
-            images.push({
-                url: url,
-                caption: caption,
-                author: author,
-                license: license,
-                title: title,
-                preCaption: preCaption
-            });
-            //var html = "";
-
-            ImageCounter++;
-
-            return '<figure id="' + alt + '">\n' +
-                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
-                    "<figcaption>\n" +
-                    preCaption + "<br>" + caption + "<br>" +
-                    "<a href=\"#images-table\">\n" +
-                    "(Quelle)\n" +
-                    "</a>\n" +
-                    "</figcaption>\n" +
-                    "</figure>\n";
-        };*/
-
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
                         '<div id="imagecontainer"></div>' +
@@ -383,6 +351,7 @@ angular.module('meanMarkdownApp')
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
                 '<link rel="stylesheet" href="style/style.css">\n' +
+                '<link href="https://fonts.googleapis.com/css?family=Rasa:300,400|Roboto:400,400i,700,700i" rel="stylesheet">' +
                 '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">' +
                 "</head>\n"+
                 "<body>\n" +
@@ -435,7 +404,7 @@ angular.module('meanMarkdownApp')
         var usedEnrichments = [];
 
         // get all tags
-        var tags = $("#read", page).html().match(/\{(.*?)\}/g);
+        var tags = $(page).html().match(/\{(.*?)\}/g);
 
         // loop through all tags
         if (tags) {
@@ -459,14 +428,24 @@ angular.module('meanMarkdownApp')
 
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                var currentHTML = $("#read", page).html();
+
+
+
 
                 if (enrichment) {
+                    var currentHTML;
+                    if (enrichment.filetype === "opMainzed") {
+                        currentHTML = $("#read", page).html();
+                    } else {
+                        currentHTML = $(page).html();
+                        //console.log(currentHTML);
+                    }
+
                     // get multiple enrichments for pictuee group
-                    if (category === "picturegroup") {
+                    if (category === "picturegroup" && enrichment.filetype === "opMainzed") {
                         me.replacePictureGroups(page, shortcut, enrichments, tag);
 
-                    } else if (category === "picture") {
+                    } else if (category === "picture" && enrichment.filetype === "opMainzed") {
                         //console.log(enrichment);
                         var figureString = '<figure>\n' +
                                         '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
@@ -479,14 +458,23 @@ angular.module('meanMarkdownApp')
                         $("#read", page).html(currentHTML.replace(tag, figureString));
 
                     } else if (category === "definition") {
+                        console.log("is a defintiion!!");
                         // get snippet
                         var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
 
                         // replace tag with snippet
-                        $("#read", page).html(currentHTML.replace(tag, snippet));
+                        if (enrichment.filetype === "opMainzed") {
+                            console.log("insidie!!!");
+                            console.log(currentHTML);
+                            $("#read", page).html(currentHTML.replace(tag, snippet));
+                        } else {
+                            console.log(currentHTML);
+                            $(page).html(currentHTML.replace(tag, snippet));
+                            //console.log(currentHTML);
+                        }
 
                         // for opMainzed, add ressources to end of page
-                        if (enrichment.filetype === "opMainzed") {
+                        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
                             $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
                         }
 
@@ -502,45 +490,7 @@ angular.module('meanMarkdownApp')
                     }
                 }
 
-
-
-                /* else {
-
-                    var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
-
-                    if (snippet) {
-                        // actually replace the tag
-                        currentHTML = $("#read", page).html();
-
-
-
-                        // definition and everything else
-                        $("#read", page).html(currentHTML.replace(tag, snippet));
-
-
-                        //console.log(footnoteContent);
-                        if (category === "definition" && enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment.word)) {
-
-                            // make html usable with jquery
-                            //var page = $("<div>" + html + "</div>");
-
-                            // select footnotes div and append resources
-                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + marked(enrichment.text) + "</div>\n");
-
-                            //html = page.html();
-
-                            usedEnrichments.push(enrichment.word);
-                        }
-
-
-
-                        // record all enrichments for content tables
-                        if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
-                            usedDefs.push(enrichment._id);
-                        }
-                }*/
-
-            })
+            });
         }
         return;
     };
@@ -577,8 +527,8 @@ angular.module('meanMarkdownApp')
     /**
      * wrapper to support the old function name
      */
-    this.replaceDefinitionTags = function(html, enrichments) {
-        return this.replaceEnrichmentTags(html, enrichments);
+    this.replaceDefinitionTags = function(page, enrichments) {
+        return this.replaceEnrichmentTags(page, enrichments);
     };
 
     /**

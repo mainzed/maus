@@ -44,6 +44,7 @@ module.exports = function(config) {
       'app/bower_components/angular-filter/dist/angular-filter.min.js',
       'app/bower_components/lodash/lodash.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
+
       // endbower
       'app/scripts/**/*.js',
       //'test/mock/**/*.js',
@@ -79,7 +80,7 @@ module.exports = function(config) {
       'karma-jasmine',
       'karma-mocha-reporter',
       //'karma-junit-reporter',
-      //'karma-firefox-launcher', 
+      //'karma-firefox-launcher',
       'karma-phantomjs-launcher'
     ],
 
