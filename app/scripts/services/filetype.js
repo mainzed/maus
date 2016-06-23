@@ -58,9 +58,8 @@ angular.module('meanMarkdownApp')
                     //html: "<a href=\"#definitions-table\" title=\"${text}\" class=\"definition\">${word}</a>"
                     html: "<span id=\"${id}\" class=\"shortcut\">${word}</span>"
                 },
-                image: {
-                    html: "<img src=\"${url}\" alt=\"${alt}\" />"
-                }
+                image: {},
+                citation: {}
             }
         },{
 

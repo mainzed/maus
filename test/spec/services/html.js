@@ -838,4 +838,27 @@ describe('Service: HTMLService', function () {
 
         });*/
 
+    describe("getOpMainzed()", function() {
+        var file;
+        beforeEach(function() {
+            file = {
+                title: "Test File",
+                author: "John Doe",
+                type: "opMainzed",
+                markdown:   "# heading 1\n" +
+                            "This is markdown!"
+            };
+        });
+
+        it("should return html", function() {
+            var expected =  "<div>\n" +
+                            '<h1 id="section-1">heading 1</h1>\n' +
+                            "<p>This is markdown!</p>\n" +
+                            "</div>";
+
+            expect(service.getOpMainzed(file)).toEqual(expected);
+
+        });
+
+    })
 });

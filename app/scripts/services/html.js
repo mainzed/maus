@@ -189,64 +189,6 @@ angular.module('meanMarkdownApp')
      */
     this.getOpMainzed = function(file, definitions) {
 
-        // convert markdown
-        var customRenderer = new marked.Renderer();
-
-        var headings = [];
-        var h1Counter = 0;
-        var h2Counter = 0;
-        var h3Counter = 0;
-        customRenderer.heading = function (text, level) {
-
-            if (level === 1) {
-                h1Counter++;
-                h2Counter = 0;
-                h3Counter = 0;
-
-                headings.push({
-                    text: text,
-                    level: level,
-                    counter: h1Counter,
-                    idString: "section-" + h1Counter
-                });
-
-                return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
-            } else if (level === 2) {
-                h2Counter++;
-                h3Counter = 0;
-
-                headings.push({
-                    text: text,
-                    level: level,
-                    counter: h2Counter,
-                    idString: "section-" + h1Counter + "-" + h2Counter
-                });
-
-                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
-            } else if (level === 3) {
-                h3Counter++;
-
-                headings.push({
-                    text: text,
-                    level: level,
-                    counter: h3Counter,
-                    idString: "section-" + h1Counter + "-" + h2Counter + "-" + h3Counter
-                });
-
-                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
-            }
-        };
-
-        // custom link renderer
-        customRenderer.link = function (linkUrl, noIdea, text) {
-            if (linkUrl.startsWith("#")) {   // internal link
-                return "<a href=\"" + linkUrl + "\" class='internal-link'>" + text + "</a>";
-            } else {  // external links
-                return "<a href=\"" + linkUrl + "\" class='external-link' target=\"_blank\">" + text + "</a>";
-            }
-
-        };
-
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
                         '<div id="imagecontainer"></div>' +
@@ -282,16 +224,15 @@ angular.module('meanMarkdownApp')
         // make jQuery compatible
         var page = $("<div>" + htmlString + "</div>");
 
-        // enrich page
+        var html = this.convertMarkdownToHTML(file.markdown);
 
-        // add markdown content
-        var html = marked(file.markdown, { renderer: customRenderer });
+        // add markdown content to page
         $("#read", page).append(html);
 
-        // add headings to navigation
-        this.createOpMainzedNavigation(page, headings);
+        // enrich page: add headings to navigation
+        this.createOpMainzedNavigation(page);
 
-        // convert tags and add resources to end of document
+        // enrich page: convert tags and add resources to end of document
         this.replaceEnrichmentTags(page, definitions);
 
         // get html from page via jquery
@@ -390,6 +331,47 @@ angular.module('meanMarkdownApp')
 
                 "</body>\n"+
                 "</html>";
+    };
+
+    /**
+     * uses the marked function to convert markdown to html
+     */
+    this.convertMarkdownToHTML = function(markdown) {
+        var customRenderer = new marked.Renderer();
+
+        var h1Counter = 0;
+        var h2Counter = 0;
+        var h3Counter = 0;
+        customRenderer.heading = function (text, level) {
+
+            if (level === 1) {
+                h1Counter++;
+                h2Counter = 0;
+                h3Counter = 0;
+
+                return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
+            } else if (level === 2) {
+                h2Counter++;
+                h3Counter = 0;
+                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
+
+            } else if (level === 3) {
+                h3Counter++;
+                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
+            }
+        };
+
+        // custom link renderer
+        customRenderer.link = function (linkUrl, noIdea, text) {
+            if (linkUrl.startsWith("#")) {   // internal link
+                return "<a href=\"" + linkUrl + "\" class='internal-link'>" + text + "</a>";
+            } else {  // external links
+                return "<a href=\"" + linkUrl + "\" class='external-link' target=\"_blank\">" + text + "</a>";
+            }
+
+        };
+
+        return marked(markdown, { renderer: customRenderer });
     };
 
     /**
@@ -789,38 +771,36 @@ angular.module('meanMarkdownApp')
     /**
      * requires pages (jquery selection from htmlString)
      */
-    this.createOpMainzedNavigation = function(page, headings) {
+    this.createOpMainzedNavigation = function(page) {
 
         var previousHeadingLevel;
-        if (headings.length > 0) {
-            // create html
-            headings.forEach(function(heading) {
+        $("h1, h2", page).each(function(index) {
+            if (index > 0) {  // skip jahresbericht title
 
-                var headingString = "<a href=\"#" + heading.idString + "\">" +
-                    heading.text + "</a>";
+                // generate string
+                var headingString = "<a href=\"#" + $(this).attr('id') + "\">" + $(this).text() + "</a>";
 
-                if (heading.level === 1) {  // skip all but h1
+                // append string based on level
+                if ($(this).is("h1")) {
+
                     $("#nav", page).append("<li>" + headingString + "</li>");
+                    previousHeadingLevel = 1;
 
-                    // 1Up
-                    previousHeadingLevel = heading.level;
+                } else if ($(this).is("h2")) {  // h2
 
-                } else if (heading.level === 2) {
-
-                    // if previous was 1, open new ul and append li
                     if (previousHeadingLevel === 1) {
+                        // if previous was 1, open new ul and append li
                         $("#nav li", page).last().append("<ul><li>" + headingString + "</li></ul>");
 
-                       //  if previous was 2, just append to ul
                     } else if (previousHeadingLevel === 2) {
+                        //  if previous was 2, just append to ul
                         $("#nav ul", page).last().append("<li>" + headingString + "</li>");
                     }
-
-                    // 1Up
-                    previousHeadingLevel = heading.level;
+                    previousHeadingLevel = 2;
                 }
-            });
-        }
+            }
+        });
+
         return;
     };
 
