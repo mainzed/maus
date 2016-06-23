@@ -4,11 +4,13 @@ var is_iPad = navigator.userAgent.match(/iPad/i) != null;
 var mobile = false;
 
 $(document).ready(function() {
-    
+
     //lazyload
+    /*
     $("img").lazyload({
         threshold : 200
     });
+    */
     
     // initScroller();
     checkBrowserWidth();

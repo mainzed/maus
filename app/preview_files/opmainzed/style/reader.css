@@ -1,342 +1,296 @@
-	@font-face {
-		    font-family: 'mainzeddisplay';
-		    src: url('fonts/mainzeddisplaytype-Regular.eot');
-		    src: url('fonts/mainzeddisplaytype-Regular?#iefix') format('embedded-opentype'),
-		         url('fonts/mainzeddisplaytype-Regular.woff2') format('woff2'),
-		         url('fonts/mainzeddisplaytype-Regular.woff') format('woff');
-		      
-		    font-weight: normal;
-		    font-style: normal;
-		}
+@font-face {
+    font-family: 'mainzeddisplay';
+    src: url('fonts/mainzeddisplaytype-Regular.eot');
+    src: url('fonts/mainzeddisplaytype-Regular?#iefix') format('embedded-opentype'),
+         url('fonts/mainzeddisplaytype-Regular.woff2') format('woff2'),
+         url('fonts/mainzeddisplaytype-Regular.woff') format('woff');
+      
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', sans-serif; letter-spacing: 0.02em;  
+			list-style: none; text-decoration: none;  }
+body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
+p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 35%; float: left; clear: left; }
+h1 		{ 	margin: 70px 35% 10px 35%; font-weight: normal;
+    		width: calc(100% - 60%); font-size: 60px; letter-spacing: 0;  }
+h2 		{ 	font-size: 25px; line-height: 28px;  font-weight: normal; margin: 75px 35% 30px 35%;
+			letter-spacing: 0; font-weight: bold;}
+h3 		{ 	font-size: 15px; line-height: 23px; margin: 10px 35% 8px 35%; font-weight: normal;   }
+
+h1, h2, h3, h4 {	float: left; clear: left; padding-top: 20px;	}
+a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
+img 	{ 	height: 200px; cursor: pointer; }
+figcaption 	{	display: none;	}
+figure 	{	float: left; margin-left: 5px;   }
+iframe 	{	float: left; margin-left: 5px; }
+i, em 	{ 	font-style: normal; }
+strong 	{	font-weight: normal;	}
+
+
+.citation 	{ 	margin: 40px 0; border-top: 1px solid #e7e7e7; display: inline-block;
+				border-bottom: 1px solid #e7e7e7; margin: 100px 25%; padding-top: 20px; padding-bottom: 120px;}
+.citation p { 	font-size: 50px; line-height: 60px; letter-spacing: 0; 
+				font-family: "Roboto Slab", sans-serif; margin: 0; 
+				 font-weight: 700;  }
+.citation .author {font-size: 20px; font-family: "Roboto Slab"; font-style: italic; float: left; margin-top: 20px; font-weight: bold;}
+#titletextbg {	background: white; width: 100%; height: 100%;}
+.title {font-size: 90px; line-height: 90px; font-family: "mainzeddisplay", sans-serif; 
+				font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
+				top: 30%; left: 0; width: auto; background: none;}
+.titletext {		}
+.shortcut {background: white;}
+#scrollmarker {position: absolute; top: 140px; width: 100px; height: 10px;}
+
+
+/* listen im Text */
+#read {}
+#read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
+#read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
+#read li:before {    
+	content: "—";
+	margin-left: -20px;
+	margin-right: 4px;
+}
 
 
 
-		* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', sans-serif; letter-spacing: 0.02em;  
-					list-style: none; text-decoration: none;  }
-		body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
-		p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 35%; float: left; clear: left; }
-		h1 		{ 	margin: 90px 35% 10px 35%; font-weight: normal;
-		    		width: calc(100% - 60%); font-size: 60px; letter-spacing: 0;  }
-		h2 		{ 	font-size: 25px; line-height: 28px;  font-weight: normal; margin: 95px 35% 30px 35%;
-					letter-spacing: 0; font-weight: bold;}
-		h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 35% 8px 35%; font-weight: normal;   }
+#ressourceswrapper 	{	position: fixed; height: 100%; top: 0; left: 0; }
+#ressources 		{ 	float: left; width: 2000px; background: white; color: black;   
+						height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
+#ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
+#ressourcestext 	{ 	float: right; display: block; margin: 60px 20px 0 0; width: 258px; }
+#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 22px; }
+.figcaption 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px;  }
 
-		h1, h2, h3, h4 {float: left; clear: left;}
-		a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
-		img 	{ 	height: 200px; cursor: pointer; }
-		figcaption 	{	display: none;	}
-		figure 	{	float: left; margin-left: 2px; margin-top: 100px; margin-bottom: 100px; }
-		iframe 	{	float: left; }
-		i, em 		{ font-style: normal; }
-		strong {font-weight: normal;}
+#imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
+						background-repeat: no-repeat !important; background-position: right !important; display: none; }
 
-		.citation { margin: 40px 0;}
-		.citation p { 	font-size: 60px; line-height: 60px; letter-spacing: 0; 
-						font-family: "Source Serif Pro";  margin: 100px 25%; padding-top: 20px;
-						border-top: 1px solid #e7e7e7; font-weight: 600;  }
-
-		#titletextbg {	background: white; width: 100%; height: 100%;}
-		.title {font-size: 90px; line-height: 90px; font-family: "mainzeddisplay", sans-serif; 
-						font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
-						top: 30%; left: 0; width: auto; background: none;}
-		.titletext {		}
-		.shortcut {background: white;}
-		#scrollmarker {position: absolute; top: 10px; width: 10px; height: 10px;}
+.picturegroup 		{	margin: 200px 20%; float: left; }
 
 
-		/* listen im Text */
-		#read {}
-		#read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
-		#read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
-		#read li:before {    
-			content: "—";
-			margin-left: -20px;
-			margin-right: 4px;
-		}
+/* start */
+.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; }
+#titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../bierdeckel2.jpg"); 
+						background-size: cover; top: 0; z-index: -1; }
+.coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; font-size: 12px; margin-right: 0;}
 
-		
+/*Navigation*/
+#nav 			{	float: right; display: none; margin-top: 40px; overflow: auto; width: 258px; margin-right: 20px;  }
+#nav li ul 		{	margin-left: 30px;	}
+#nav li 		{	margin-top: 20px;	}
+#nav ul li 		{	margin-top: 0;	}
+#nav a 			{	border: 0; color: black;	}
 
-		#ressourceswrapper 	{	position: fixed; height: 100%; top: 0; left: 0; }
-		#ressources 		{ 	float: left; width: 2000px; background: white; color: black;   
-								height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
-		#ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
-		#ressourcestext 	{ 	float: right; display: block; margin: 60px 20px 0 0; width: 258px; }
-		#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 22px; }
-		.figcaption 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px;  }
+/*Nav Icon*/
+#navicon { position: fixed; top: 22px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;}
+.left {float: left;}
 
-		#imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
-    							background-repeat: no-repeat !important;
-   			 					background-position: right !important; display: none; }
-		
-
-		/* start */
-		.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; }
-		#titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../bierdeckel2.jpg"); 
-								background-size: cover; top: 0; z-index: -1; }
-		.coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; font-size: 12px; margin-right: 0;}
-		
-
-		
-		/*Navigation*/
-		#nav 			{	float: right; display: none; margin-top: 40px; overflow: auto; width: 258px; margin-right: 20px;  }
-		#nav li ul 		{	margin-left:30px;	}
-		#nav li 		{	margin-top: 20px;	}
-		#nav ul li 		{	margin-top: 0;	}
-		#nav a 			{	border: 0; color: black;	}
-
-
-
-		/*Nav Icon*/
-		#navicon { position: fixed; top: 22px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;}
-		.left {float: left;}
-
-
-
-		/*Close Icon*/
-		#closeicon {position: absolute; right: 20px; top: 15px; cursor: pointer; display: none; z-index: 99999;}
-		
-
-			
-		#read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
-		#footnotes, #imprint { float: left; clear: left;}
-		#footnotes {margin: 0 35%; width: auto;}
-		
-
-		/* footnotes */
-		#footnotes img {width: 200px;}
-		
-
-
-
-		.current a {color: red;}
-		
-		a.active  {text-decoration: underline;}
+/*Close Icon*/
+#closeicon {position: absolute; right: 20px; top: 15px; cursor: pointer; display: none; z-index: 99999;}
 	
-		/*.minimalressource {width: 70px; background: white; opacity: 1;}*/
-		.white {color: white;}
-		
+#read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
+#footnotes, #imprint { float: left; clear: left;}
+#footnotes {margin: 0 35%; width: auto;}
 
-		
+/* footnotes */
+#footnotes img {width: 200px;}
 
+.current a {color: red;}
 
-		/* Animation Classes */
-		.showdefinitions { 
-			margin-left: -1700px;
-			-webkit-transition: width 2s; /* Safari */
-    		transition: width 2s;
-		 }
+a.active  {font-weight: bold;}
 
-		.minified {
-			margin-left: -1940px;
-			-webkit-transition: width 1s; /* Safari */
-    		transition: width 1s;
-		}
-		
-		.showpictures { 
-			margin-left: -500px;
-		   	background: black !important; 
-		   	-webkit-transition: width 1s; /* Safari */
-    		transition: width 1s;
-		}
-
-		
-		.fadeout {
-			margin-left: -1200px;
-			-webkit-transition: width 1s; /* Safari */
-    		transition: width 1s;
-		}
-
-		.startanimation {
-			margin-left: -1050px;
-			-webkit-transition: width 1s; /* Safari */
-    		transition: width 1s;
-		}
+/*.minimalressource {width: 70px; background: white; opacity: 1;}*/
+.white {color: white;}
 
 
 
 
-		/* small screens */
-		@media screen and (max-width: 1200px) {
 
-			
-			/* Animation Classes */
-			.showpictures { margin-left: -1100px; background: black !important; }
-			.startanimation { margin-left: -1500px;}
+/* Animation Classes */
+.showdefinitions { 
+	margin-left: -1700px;
+	-webkit-transition: width 2s; /* Safari */
+	transition: width 2s;
+ }
 
-			#ressources img 	{ 	width: 800px;  }
-			#imagecontainer {position: absolute;  width: 900px;  }
+.minified {
+	margin-left: -1940px;
+	-webkit-transition: width 1s; /* Safari */
+	transition: width 1s;
+}
 
-			.title {font-size: 70px; line-height: 70px; top: 30%; left: 0; }
+.showpictures { 
+	margin-left: -500px;
+   	background: black !important; 
+   	-webkit-transition: width 1s; /* Safari */
+	transition: width 1s;
+}
 
-			p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 25%;  }
-			h1 		{ 	margin: 90px 25% 10px 25%; font-size: 60px;  }
-			h2 		{ 	font-size: 25px; line-height: 28px;  margin: 95px 25% 30px 25%; }
-			h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 25% 8px 25%;    }
+
+.fadeout {
+	margin-left: -1200px;
+	-webkit-transition: width 1s; /* Safari */
+	transition: width 1s;
+}
+
+.startanimation {
+	margin-left: -1050px;
+	-webkit-transition: width 1s; /* Safari */
+	transition: width 1s;
+}
 
 
-		}
 
+
+/* small screens */
+@media screen and (max-width: 1200px) {
 	
+	/* Animation Classes */
+	.showpictures { margin-left: -1100px; background: black !important; }
+	.startanimation { margin-left: -1500px;}
+
+	#ressources img 	{ 	width: 800px;  }
+	#imagecontainer {position: absolute;  width: 900px;  }
+
+	.title {font-size: 70px; line-height: 70px; top: 30%; left: 0; }
+
+	p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 25%;  }
+	h1 		{ 	margin: 90px 25% 10px 25%; font-size: 60px;  }
+	h2 		{ 	font-size: 25px; line-height: 28px;  margin: 95px 25% 30px 25%; }
+	h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 25% 8px 25%;    }
+
+}
 
 
 
-		/* mobile */
-		@media screen and (max-width: 800px) {
-			* 	{ 	cursor: pointer; letter-spacing: 0.02em; }
-			
-			h1 	{ 	margin: 20px 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 45px; line-height: 50px; letter-spacing: 0;  }
-			h2 	{	margin: 20px 5%; font-size: 29px; line-height: 37px; letter-spacing: 0; width: 90%; }
-			h3 	{	margin: 5px 5%; padding-top: 30px; font-size: 12px; 	}
 
-			/* navigation zone */
-			h1,h2,h3 {padding-top: 60px;}
 
-			p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
-			img {	width: 100%; height: auto;	}
-			figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
-			iframe {	width: 100%;	}
+/* tablet portrait */
+@media screen and (max-width: 800px) {
+	* 	{ 	cursor: pointer; letter-spacing: 0.02em; }
+	
+	h1 	{ 	margin: 20px 5% 0 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 45px; line-height: 50px; letter-spacing: 0;  }
+	h2 	{	margin: 30px 5%; font-size: 29px; line-height: 34px; letter-spacing: 0; width: 90%; }
+	h3 	{	margin: 3px 5%; padding-top: 25px; font-size: 12px; 	}
 
-			.title {font-size: 40px; line-height: 40px; top: auto; bottom: 100px;}
+	/* navigation zone */
+	h1,h2,h3 {padding-top: 60px;}
 
-			#titlepicture {background-position: -360px;}
+	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
+	img {	width: 100%; height: auto;	}
+	figure {margin-left: 0;}
+	figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
+	iframe {	width: 100%;	}
 
-			.citation p {margin: 100px 5%; font-size: 40px; line-height: 40px;}
+	.title {font-size: 40px; line-height: 40px; top: auto; bottom: 100px;}
 
-			#read ul {margin: 20px 5%;}
-			#read li {font-size: 19px; line-height: 24px; }
-			#read li:before {    
+	#titlepicture {background-position: -360px;}
+	.citation {margin: 100px 5%;}
+	.citation p {margin: 0; font-size: 40px; line-height: 40px;}
+	.picturegroup 		{	margin: 200px 0; float: left; }
+
+	#read ul {margin: 20px 5%;}
+	#read li {font-size: 19px; line-height: 24px; }
+	#read li:before {    
+		
+			margin-left: -17px;
+			 margin-right: 5px;
+		}
+
+	#ressources a {color: black;}
+
 				
-    			margin-left: -16px;
-   				 margin-right: 5px;
-   			}
+	#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
+	#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
+							width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s; }
 
-   			#ressources a {color: black;}
-
-						
-			#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
-			#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
-									width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s; 
-									 }
-			
-			
-
-			#nav, #ressourcestext {	position: fixed; -webkit-overflow-scrolling: touch; top: 0; float: none; 
-									left: 5%; overflow: auto; width: 90%; margin-bottom: 20px; margin-top: 0; padding-top: 20px; 
-
-								}
-			
-			#nav.activeressource {height: 400px;}
-			#ressourcestext.activeressource {height: 250px; margin-top: 0; padding-top: 20px;}
-			#navicon {margin: 10px 10px; left: 8px; top: 3px; z-index: 9999;}
-			#closeicon {float: none; position: fixed; top: 0; right: 0;}
-			#ressources img {width: 100%;}
+	#nav, #ressourcestext {	position: fixed; -webkit-overflow-scrolling: touch; top: 0; float: none; 
+							left: 5%; overflow: auto; width: 90%; margin-bottom: 20px; margin-top: 0; padding-top: 20px; }
+	
+	#nav.activeressource {height: 400px;}
+	#ressourcestext.activeressource {height: 250px; margin-top: 0; padding-top: 20px;}
+	#navicon {margin: 10px 0; left: 5%; top: 3px; z-index: 9999;}
+	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
+	#ressources img {width: 100%;}
 
 
 
-			/* Animation Classes */
-			.showdefinitionsm { 
-				margin-top: -510px;
-				-webkit-transition: width 0.2s; /* Safari */
-	    		transition: width 0.2s;
-	    		background: gray !important;
-			 }
+	/* Animation Classes */
+	.showdefinitionsm { 
+		margin-top: -510px;
+		-webkit-transition: width 0.2s; /* Safari */
+		transition: width 0.2s;
+		background: #e4e4e4 !important;
+	 }
 
-			.showtableofcontent {
-				margin-top: -350px;
-				-webkit-transition: width 0.2s; /* Safari */
-	    		transition: width 0.2s;
-			}
+	.showtableofcontent {
+		margin-top: -350px;
+		-webkit-transition: width 0.2s; /* Safari */
+		transition: width 0.2s;
+		background: #e4e4e4 !important;
+	}
 
-			.minifiedm {
-				margin-top: -750px;
-				-webkit-transition: width 0.2s; /* Safari */
-	    		transition: width 0.2s;
-			}
-			
-			.showpicturesm { 
-				margin-top: 0;
-			   	background: black;
-			   	-webkit-transition: width 0.2s; /* Safari */
-	    		transition: width 0.2s;
-			}
-
-			
-			.fadeoutm {
-				margin-top: -800px;
-				-webkit-transition: width 0.2s; /* Safari */
-	    		transition: width 0.2s;
-			}
-
-			.startanimationm {
-				margin-top: -500px;
-				-webkit-transition: width 1s; /* Safari */
-	    		transition: width 1s;
-			}
-
-
-			
-			
-		}
-
-		/* mobile */
-		@media screen and (max-width: 600px) {
-			
-			
-			h1 	{ 	font-size: 35px; line-height: 40px;  }
-			h2 	{	font-size: 25px; line-height: 32px;  }
-			h3 	{	font-size: 10px; 	}
-
-			
-
-			p  	{	font-size: 16px; line-height: 22px; 	}
-
-			#read li {font-size: 16px; line-height: 22px; }
-		
-			
-
-			.title {font-size: 40px; line-height: 40px; }
-
-
-			.citation p {font-size: 40px; line-height: 40px;}
-		}
-
-
-
-
-
-
-
-
-
-
-		/*
-
-		------------ Labeling System Plugin ----------------
-
-		.col {float: left; width: auto;  min-height: 500px;  }
-		.col div {height: 40px;}
-		.linevertical {float: left; height: 100%; display: block; width: 1px; background: black; }
-		.first {height: 50%; margin-top: 20px;}
-		.last {height: 21px; margin-top: 0px;}
-		.linehorizontal {float: left; height: 1px; width: 100px; background: black; margin-top: 20px;}
-		.innertext {margin-top: 10px; float: left; margin-left: 10px;}
-		.right {float: right; margin-left: 10px;}
-		#vocab, #label {}
-		.shift {margin-top: 60px;}
-		.wrapper {display: inline-block; width: auto; margin-top: 50px;}
-		.wrapper2 {text-align: center; display: none; position: fixed; top: 0;}
-		p.label {text-align: left; margin-left: 10px;}
-		.bg {background: #f2f2f2; height: 100%; min-height: 300px;  }
-		.bigbg {width: 100%;}
-		.leftbg {width: calc(100% - 51px); float: left;}
-		.rightbg {width: calc(0% + 50px); float: right;}
-		.content {float: left; margin-top: -280px;}
-		#concepts .content {padding-right: 50px;}
-		#vocab .content {padding-left: 50px;}
-		.label {color: gray; font-weight: bold; text-decoration: none !important; margin-bottom: 20px;}
-		#footer {color: gray; font-family: "Arimo"; font-size: 12px; letter-spacing: 0.05em; width: 300px; position: fixed; right: 50%; bottom: 200px; text-align: center; margin-right: -150px;}
-		
-		*/
-		
+	.minifiedm {
+		margin-top: -750px;
+		-webkit-transition: width 0.2s; /* Safari */
+		transition: width 0.2s;
+	}
+	
+	.showpicturesm { 
+		margin-top: 0;
+	   	background: black;
+	   	-webkit-transition: width 0.2s; /* Safari */
+		transition: width 0.2s;
+	}
 
 	
+	.fadeoutm {
+		margin-top: -800px;
+		-webkit-transition: width 0.2s; /* Safari */
+		transition: width 0.2s;
+	}
+
+	.startanimationm {
+		margin-top: -500px;
+		-webkit-transition: width 1s; /* Safari */
+		transition: width 1s;
+	}
+
+
+	
+	
+}
+
+/* smartphone portrait */
+@media screen and (max-width: 600px) {
+	
+	
+	h1 	{ 	font-size: 35px; line-height: 40px;  }
+	h2 	{	font-size: 25px; line-height: 30px;  }
+	h3 	{	font-size: 10px; 	}
+
+	
+
+	p  	{	font-size: 16px; line-height: 22px; 	}
+
+	#read li {font-size: 16px; line-height: 22px; }
+
+	
+
+	.title {font-size: 40px; line-height: 40px; }
+
+
+	.citation p {font-size: 40px; line-height: 40px;}
+}
+
+
+
+
+
+
+
+
+
