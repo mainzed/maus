@@ -613,18 +613,21 @@ describe('Service: HTMLService', function () {
             ];
 
             // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div></div>');
+            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
 
             //var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
 
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p></div>";
+            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
+            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+            "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div>\n</div>";
 
             //page = $("<div>" + inputHtml + "</div>");
 
             service.replaceEnrichmentTags(page, enrichments);
 
-            expect(enrichments.length).toBe(1);
             expect($(page).html()).toBe(expected);
+
+            //expect($)
 
         });
 
