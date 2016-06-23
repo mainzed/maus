@@ -22,134 +22,54 @@ angular.module('meanMarkdownApp')
             addTitle: false,
             addContentTable: false,
             addImagesTable: false
-            //addLinksTable: false
         };
-
-        // get data
-        var markdown = file.markdown;
 
         var title = file.title;
 
-        // convert markdown
-        var customRenderer = new marked.Renderer();
+        var html = this.convertOpOlatMarkdownToHTML(file.markdown);
 
-        // counter that are used in rendering and for custom tags later
+        //var stories = this.getStories(html);  // needed for table of content
+
         var storyCounter = 1;
-
-        // custom heading renderer
-        var headings = [];
-        var counter = 0;
-        customRenderer.heading = function (text, level) {
-            counter++;
-            //var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
-            headings.push({
-                text: text,
-                level: level,
-                counter: counter
-            });
-
-            return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>\n';
-        };
-
-        // custom link renderer
-        var links = [];
-        customRenderer.link = function (linkUrl, noIdea, text) {
-
-            // workaround for linkUrl.startsWith
-            //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
-
-            //console.log("works!");
-            links.push({
-                url: linkUrl,
-                text: text.replace("!", "")  // replace ! for "weiterführende links"
-            });
-
-            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
-
-        };
-
-        // custom image renderer
-        var images = []; // save images here to use them for the images-table
-        var ImageCounter = 1;
-        customRenderer.image = function (src, title, alt) {
-            // used title attr for caption, author etc
-            var tokens = title.split("; ");
-            var caption = tokens[0].replace(/\\/g, "");
-            var author = tokens[1];
-            var license = tokens[2];
-            var url = tokens[3];
-            //var title = alt;
-            var preCaption = "Abb." + ImageCounter;
-
-            // not needed for rendering, but to access them later
-            images.push({
-                url: url,
-                caption: caption,
-                author: author,
-                license: license,
-                title: title,
-                preCaption: preCaption
-            });
-            //var html = "";
-
-            ImageCounter++;
-
-            return '<figure id="' + alt + '">\n' +
-                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
-                    "<figcaption>\n" +
-                    preCaption + "<br>" + caption + "<br>" +
-                    "<a href=\"#images-table\">\n" +
-                    "(Quelle)\n" +
-                    "</a>\n" +
-                    "</figcaption>\n" +
-                    "</figure>\n";
-        };
-
-        var html = marked(markdown, { renderer: customRenderer });
-
-        var stories = this.getStories(html);  // needed for table of content
-
         html = this.replaceStoryTags(html, storyCounter);
 
         // workaround since everything else still works with htmlString and not page object
         var page = $("<div>" + html + "</div>");
         this.replaceEnrichmentTags(page, definitions);
-        html = page.html();
 
-
-        html = this.replaceEnrichmentTags(html, definitions, storyCounter);
+        //html = this.replaceEnrichmentTags(html, definitions, storyCounter);
 
         // add tables of images and links
         if (config.addImagesTable) {
-            html += this.createImagesTable(images);
+            this.createImagesTable(page);
         }
+
+        html = page.html();
+
 
         /*if (config.addLinksTable) {
             html += this.createLinksTable(links);
         }*/
 
         if (config.addDefinitionsTable && usedDefs.length > 0) {
-            html += this.createDefinitionsTable(definitions);
+            //html += this.createDefinitionsTable(definitions);
         }
+
+        page = $("<div>" + html + "</div>");
 
         // add table of content to beginning of file
         // has to be executed after images and links table to be able
         // to add references to them
-        if (config.addContentTable === true) {
-
-            //console.log("add table of content!");
-            html = this.createTableOfContent(html, headings, stories, images) + html;
-            //console.log(html);
+        if (config.addContentTable) {
+            this.createOpOlatNavigation(page);
         }
 
         // add title to beginning of filee
-        if (config.addTitle === true) {
-            html =  "<h1 class=\"page-title\" id=\"page-title\">" + title + "</h1>\n" +
-                    html;
+        if (config.addTitle) {
+            $(page).prepend('<h1 class="page-title" id="page-title">' + title + '</h1>');
         }
 
-        return html;
+        return $(page).html();
     };
 
     this.getPrMainzed = function(file) {
@@ -224,7 +144,7 @@ angular.module('meanMarkdownApp')
         // make jQuery compatible
         var page = $("<div>" + htmlString + "</div>");
 
-        var html = this.convertMarkdownToHTML(file.markdown);
+        var html = this.convertOpMainzedMarkdownToHTML(file.markdown);
 
         // add markdown content to page
         $("#read", page).append(html);
@@ -336,7 +256,7 @@ angular.module('meanMarkdownApp')
     /**
      * uses the marked function to convert markdown to html
      */
-    this.convertMarkdownToHTML = function(markdown) {
+    this.convertOpMainzedMarkdownToHTML = function(markdown) {
         var customRenderer = new marked.Renderer();
 
         var h1Counter = 0;
@@ -371,6 +291,80 @@ angular.module('meanMarkdownApp')
 
         };
 
+        return marked(markdown, { renderer: customRenderer });
+    };
+
+    /**
+     * uses the marked function to convert markdown to html
+     */
+    this.convertOpOlatMarkdownToHTML = function(markdown) {
+        var customRenderer = new marked.Renderer();
+
+        // counter that are used in rendering and for custom tags later
+        //var storyCounter = 1;
+
+        // custom heading renderer
+        //var headings = [];
+        var counter = 0;
+        customRenderer.heading = function (text, level) {
+            counter++;
+            return '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>\n';
+        };
+
+        // custom link renderer
+        //var links = [];
+        customRenderer.link = function (linkUrl, noIdea, text) {
+
+            // workaround for linkUrl.startsWith
+            //if (linkUrl.substring(0, 1) !== "#" ) {  // skip local links
+
+            //console.log("works!");
+            /*links.push({
+                url: linkUrl,
+                text: text.replace("!", "")  // replace ! for "weiterführende links"
+            });*/
+
+            return "<a href=\"" + linkUrl + "\" target=\"_blank\">" + text + "</a>";
+
+        };
+
+        // custom image renderer
+        //var images = []; // save images here to use them for the images-table
+
+        var ImageCounter = 1;
+        customRenderer.image = function (src, title, alt) {
+            // used title attr for caption, author etc
+            var tokens = title.split("; ");
+            var caption = tokens[0].replace(/\\/g, "");
+            var author = tokens[1];
+            var license = tokens[2];
+            var url = tokens[3];
+            //var title = alt;
+            var preCaption = "Abb." + ImageCounter;
+
+            // not needed for rendering, but to access them later
+            /*images.push({
+                url: url,
+                caption: caption,
+                author: author,
+                license: license,
+                title: title,
+                preCaption: preCaption
+            });*/
+            //var html = "";
+
+            ImageCounter++;
+
+            return '<figure id="' + alt + '">\n' +
+                    "<img src=\"" + src + "\" alt=\"" + alt + "\">" +
+                    "<figcaption>\n" +
+                    preCaption + "<br>" + caption + "<br>" +
+                    "<a href=\"#images-table\">\n" +
+                    "(Quelle)\n" +
+                    "</a>\n" +
+                    "</figcaption>\n" +
+                    "</figure>\n";
+        };
         return marked(markdown, { renderer: customRenderer });
     };
 
@@ -567,29 +561,6 @@ angular.module('meanMarkdownApp')
         return result;
     };
 
-    /**
-     * counts the numer of stories. returns list
-     */
-    this.getStories = function(html) {
-
-        var stories = [];
-        var matches = html.match(/story{/g);
-        var counter = 1;
-        //console.log(matches);
-        if (matches) {
-            matches.forEach(function() {
-
-                stories.push({
-                    counter: counter,
-                    name: "Story Teil " + counter
-                });
-                counter++;
-            });
-        }
-
-        return stories;
-    };
-
     // replaces opening and closing $ tags with a wrapping div
     // for slides -> use counter to keep track of slide-ids
     this.replaceStoryTags = function(html) {
@@ -616,59 +587,33 @@ angular.module('meanMarkdownApp')
         return html;
     };
 
-    // returns html containing table of links
-    // requires array containing link objects
-    this.createLinksTable = function(links) {
-        var html = "";
-        if (links.length) {
-
-            html += "<div id=\"links-table\" class=\"links-table\">\n" +
-                    "<h4>Links</h4>\n" +
-                    "<ul>\n";
-
-            for (var key in links) {
-                var link = links[key];
-                html += "<li><a href=\"" + link.url + "\" target=\"_blank\">" + link.text + "</a></li>\n";
-            }
-            html += "</ul>\n" +
-                    "</div>";
-        }
-        return html;
-    };
-
     /**
      * returns a html div element containing an
      * unordered list with all images.
      * requires a list of image objects
      */
-    this.createImagesTable = function(images) {
-        var html = "";
-        if (images.length) {
-            html += "<div id=\"images-table\" class=\"images-table\">\n<h4>Abbildungen</h4>\n<ul>\n";
-            // create html
-            images.forEach(function(image) {
-                html += "<li>\n";
-                html += image.preCaption + "<br>\n";
-                html += image.title + "<br>\n";
+    this.createImagesTable = function(page) {
 
-                if (image.author !== undefined) {
-                    html += image.author + "<br>\n";
-                }
+        var images = $("img", page);
 
-                if (image.license !== undefined) {
-                    html += image.license + "<br>\n";
-                }
+        if (images.length > 0) {
+            // append table of images to end of page
+            $(page).append('<div id="images-table" class="images-table"><h4>Abbildungen</h4><ul></ul></div>');
 
-                if (image.url !== undefined) {
-                    html += "<a href=\"" + image.url + "\" target=\"_blank\">Quelle</a>\n";
-                }
+            // append images
+            images.each(function(index) {
+                // get metadata from title
+                var caption = $(this).attr('title')[0];
+                var author = $(this).attr('title')[1];
+                var license = $(this).attr('title')[2];
+                var url = $(this).attr('title')[3];
 
-                html += "</li>\n";
+                var imageString = '<li>Abb.' + (index + 1) + "<br>" + caption + '<br>' + author + '<br>' + license + '<br><a href="' + url + '" target="_blank">Quelle</a></li>';
+
+                $("#images-table ul", page).append(imageString);
             });
         }
-        html += "</ul>\n" +
-                "</div>";
-        return html;
+        return;
     };
 
     /**
@@ -710,7 +655,7 @@ angular.module('meanMarkdownApp')
      * unordered list with all level 1 headings.
      * requires a list of heading objects
      */
-    this.createTableOfContent = function(bodyHtml, headings, stories) {
+    /*this.createTableOfContent = function(bodyHtml, headings, stories) {
         stories = stories || false;
         var html = "";
 
@@ -766,13 +711,12 @@ angular.module('meanMarkdownApp')
 
         html += "</ul>\n</div>\n";
         return html;
-    };
+    };*/
 
     /**
      * requires pages (jquery selection from htmlString)
      */
     this.createOpMainzedNavigation = function(page) {
-
         var previousHeadingLevel;
         $("h1, h2", page).each(function(index) {
             if (index > 0) {  // skip jahresbericht title
@@ -800,6 +744,62 @@ angular.module('meanMarkdownApp')
                 }
             }
         });
+
+        return;
+    };
+
+    /**
+     * requires pages (jquery selection from htmlString)
+     */
+    this.createOpOlatNavigation = function(page) {
+
+        var headers = $("h1", page);
+        var stories = $(".story", page);
+        var images = $("#images-table", page);
+        var definitions = $("#definitions-table", page);
+
+        // append table of content div to top of page
+        $(page).prepend('<div id="headings-table" class="headings-table"><ul></ul></div>');
+
+        // append link to page-title it it exists
+        if ($("#page-title", page).length > 0) {
+            $("#headings-table ul", page).append("<li><a href=\"#page-title\">Top</a></li>");
+
+            // add seperator
+            $("#headings-table ul", page).append('<li class="seperator"></li>');
+        }
+
+        // append links to headings
+        headers.each(function() {
+            var headingsString = '<li><a href="#' + $(this).attr('id') + '">' + $(this).text() + '</a></li>';
+            $("#headings-table ul", page).append(headingsString);
+        });
+
+        // add seperator if stories exist
+        if (stories.length > 0) {
+            $("#headings-table ul", page).append('<li class="seperator"></li>');
+        }
+
+        // append links to stories
+        stories.each(function(index) {
+            var storyString = '<li class="story"><a href="#' + $(this).attr('id') + '">Story Teil ' + (index + 1) + '</a></li>';
+            $("#headings-table ul", page).append(storyString);
+        });
+
+        // add seperator if images, links or definitions table exist
+        if (images.length > 0 || definitions.length > 0) {
+            $("#headings-table ul", page).append('<li class="seperator"></li>');
+        }
+
+        // add link to images table if it exists
+        if (images.length > 0) {
+            $("#headings-table ul", page).append("<li><a href=\"#images-table\">Abbildungen</a></li>");
+        }
+
+        // add link to definitions-table if it exists
+        if (definitions.length > 0) {
+            $("#headings-table ul", page).append("<li><a href=\"#definitions-table\">Glossar</a></li>");
+        }
 
         return;
     };

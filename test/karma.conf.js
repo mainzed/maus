@@ -57,7 +57,7 @@ module.exports = function(config) {
 
     // reporter options
     mochaReporter: {
-      output: "autowatch"
+      //output: "autowatch"
     },
 
     // list of files / patterns to exclude

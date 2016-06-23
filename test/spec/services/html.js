@@ -58,91 +58,6 @@ describe('Service: HTMLService', function () {
             });
         });
 
-        describe('createLinksTable()', function() {
-
-            it('given linksArray should return div containing a list of all links', function() {
-
-                //var html = "some text before <a href='www.google.de'>Google</a> some text after";
-                var linksArray = [
-                    {
-                        url: "www.google.de",
-                        text: "Google"
-                    }, {
-                        url: "www.google2.de",
-                        text: "Google2"
-                    }
-                ];
-                var result =    "<div id=\"links-table\" class=\"links-table\">\n" +
-                                "<h4>Links</h4>\n" +
-                                "<ul>\n" +
-                                "<li><a href=\"www.google.de\" target=\"_blank\">Google</a></li>\n" +
-                                "<li><a href=\"www.google2.de\" target=\"_blank\">Google2</a></li>\n" +
-                                "</ul>\n" +
-                                "</div>";
-
-                expect(service.createLinksTable(linksArray)).toEqual(result);
-            });
-        });
-
-        describe('createImagesTable()', function() {
-
-            it('given imagesArray should return div containing a list of all images', function() {
-                var imagesArray = [
-                    {
-                        url: "www.google.de",
-                        caption: "This is the caption",
-                        author: "John Doe",
-                        license: "CC123",
-                        title: "Test-Image",
-                        preCaption: "Abb.1"
-                    }
-
-                ];
-                var table =    "<div id=\"images-table\" class=\"images-table\">\n" +
-                                "<h4>Abbildungen</h4>\n" +
-                                "<ul>\n" +
-                                "<li>\n" +
-                                "Abb.1<br>\n" +
-                                "Test-Image<br>\n" +
-                                "John Doe<br>\n" +
-                                "CC123<br>\n" +
-                                "<a href=\"www.google.de\" target=\"_blank\">Quelle</a>\n" +
-                                "</li>\n" +
-                                "</ul>\n" +
-                                "</div>";
-
-                expect(service.createImagesTable(imagesArray)).toEqual(table);
-            });
-
-            it('given image without author and license should ommit them', function() {
-                var imagesArray = [
-                    {
-                        url: "www.google.de",
-                        caption: "This is the caption",
-                        //author: "John Doe",
-                        //license: "CC123",
-                        title: "Test-Image",
-                        preCaption: "Abb.1"
-                    }
-
-                ];
-                var table =    "<div id=\"images-table\" class=\"images-table\">\n" +
-                                "<h4>Abbildungen</h4>\n" +
-                                "<ul>\n" +
-                                "<li>\n" +
-                                "Abb.1<br>\n" +
-                                "Test-Image<br>\n" +
-                                //"John Doe<br>\n" +
-                                //"CC123<br>\n" +
-                                "<a href=\"www.google.de\" target=\"_blank\">Quelle</a>\n" +
-                                "</li>\n" +
-                                "</ul>\n" +
-                                "</div>";
-
-                expect(service.createImagesTable(imagesArray)).toEqual(table);
-            });
-        });
-
         describe('createDefinitionsTable()', function() {
             beforeEach(function () {
                 // mock definitions request
@@ -365,78 +280,6 @@ describe('Service: HTMLService', function () {
                     //console.log(e);
                 }
             });
-
-            // it("should return markdown content as html", inject(function(definitionService) {
-            //
-            //     var config = {
-            //         addTitle: false,
-            //         addContentTable: false,
-            //         addImagesTable: false,
-            //         addLinksTable: false
-            //     };
-            //
-            //     var expected =  '<h1 id="h1-1">heading 1</h1>\n' +
-            //                     '<p>This is <strong>markdown</strong>!</p>\n';
-            //
-            //     definitionService.query(function(definitions) {
-            //         // gets sync mocked, so no done() needed!
-            //
-            //         var outputHtml = service.getOlat(file, definitions, config);
-            //
-            //         expect(definitions.length).toEqual(1);
-            //         expect(outputHtml).toEqual(expected);
-            //     });
-            // }));
-
-            // it("should add title to html", inject(function(definitionService) {
-            //
-            //     var config = {
-            //         addTitle: true,
-            //         addContentTable: false,
-            //         addImagesTable: false,
-            //         addLinksTable: false
-            //     };
-            //
-            //     var expected =  '<h1 class="page-title" id="page-title">Test File</h1>\n' +
-            //                     '<h1 id="h1-1">heading 1</h1>\n' +
-            //                     '<p>This is <strong>markdown</strong>!</p>\n';
-            //
-            //     definitionService.query(function(definitions) {
-            //         // gets sync mocked, so no done() needed!
-            //
-            //         var outputHtml = service.getOlat(file, definitions, config);
-            //
-            //         expect(definitions.length).toEqual(1);
-            //         expect(outputHtml).toEqual(expected);
-            //     });
-            // }));
-
-            it("should add table of content to html", inject(function(definitionService) {
-
-                var config = {
-                    addTitle: false,
-                    addContentTable: true,
-                    addImagesTable: false,
-                    addLinksTable: false
-                };
-
-                var expected =  '<div id="headings-table" class="headings-table">\n' +
-                                '<ul>\n' +
-                                '<li><a href="#h1-1">heading 1</a></li>\n' +
-                                '</ul>\n' +
-                                '</div>\n' +
-                                '<h1 id="h1-1">heading 1</h1>\n' +
-                                '<p>This is <strong>markdown</strong>!</p>\n';
-
-                definitionService.query(function(definitions) {
-                    // gets sync mocked, so no done() needed!
-
-                    var outputHtml = service.getOlat(file, definitions, config);
-
-                    expect(definitions.length).toEqual(1);
-                    expect(outputHtml).toEqual(expected);
-                });
-            }));
 
             it("should add table of definitions to html", inject(function(definitionService) {
 
@@ -838,27 +681,161 @@ describe('Service: HTMLService', function () {
 
         });*/
 
-    describe("getOpMainzed()", function() {
-        var file;
-        beforeEach(function() {
-            file = {
-                title: "Test File",
-                author: "John Doe",
-                type: "opMainzed",
-                markdown:   "# heading 1\n" +
-                            "This is markdown!"
-            };
-        });
+    describe("convertOpMainzedMarkdownToHTML()", function() {
 
         it("should return html", function() {
-            var expected =  "<div>\n" +
-                            '<h1 id="section-1">heading 1</h1>\n' +
-                            "<p>This is markdown!</p>\n" +
-                            "</div>";
+            var markdown = "# heading 1\nThis is markdown!";
+            var expected = '<h1 id="section-1">heading 1</h1>\n' +
+                            "<p>This is markdown!</p>\n";
 
-            expect(service.getOpMainzed(file)).toEqual(expected);
+            expect(service.convertOpMainzedMarkdownToHTML(markdown)).toEqual(expected);
+        });
+
+        it("should custom render headers");
+
+        it("should custom render images");
+
+        it("should custom render links");
+
+    });
+
+    describe("convertOpOlatMarkdownToHTML()", function() {
+
+        it("should return html", function() {
+            var markdown = "# heading 1\nThis is markdown!";
+            var expected = '<h1 id="h1-1">heading 1</h1>\n' +
+                            "<p>This is markdown!</p>\n";
+            expect(service.convertOpOlatMarkdownToHTML(markdown)).toEqual(expected);
+        });
+
+        it("should custom render headers");
+
+        it("should custom render images");
+
+        it("should custom render links");
+
+
+
+    });
+
+    describe("getOlat()", function() {
+        it("should return html", function() {
+            var definitions = [/*{
+                _id: "571725cd5c6b2bd90ed10b6e",
+                 word: "definition",
+                __v: 0,
+                url: "www.google.de",
+                text: "This is the definition description!",
+                updated_at: "2016-04-20T06:46:37.887Z",
+                author: "John Doe"
+            }*/];
+
+            var file = {
+                title: "Test File",
+                author: "John Doe",
+                type: "opOlat",
+                markdown: "# heading 1\n" +
+                            "This is **markdown**!"
+            };
+
+            var result = service.getOlat(file, definitions);
+            var expected = "<h1 id=\"h1-1\">heading 1</h1>\n<p>This is <strong>markdown</strong>!</p>\n";
+
+            expect(result).toBe(expected);
+        });
+
+        it("should add title", function() {
+            var file = {
+                title: "Test File",
+                author: "John Doe",
+                type: "opOlat",
+                markdown: "# heading 1\n" +
+                            "This is **markdown**!"
+            };
+
+            var config = {
+                addTitle: true,
+                addContentTable: false,
+                addImagesTable: false,
+                addLinksTable: false
+            };
+
+            var result = service.getOlat(file, [], config);
+            var expected = "<h1 class=\"page-title\" id=\"page-title\">" + file.title + "</h1><h1 id=\"h1-1\">heading 1</h1>\n<p>This is <strong>markdown</strong>!</p>\n";
+
+            expect(result).toBe(expected);
+        });
+
+        it("should add table of content", inject(function(definitionService) {
+            var file = {
+                title: "Test File",
+                author: "John Doe",
+                type: "opOlat",
+                markdown: "# heading 1\n" +
+                            "This is **markdown**!"
+            };
+
+            var config = {
+                addTitle: false,
+                addContentTable: true,
+                addImagesTable: false,
+                addLinksTable: false
+            };
+
+            var expected =  '<div id="headings-table" class="headings-table">' +
+                            '<ul>' +
+                            '<li><a href="#h1-1">heading 1</a></li>' +
+                            '</ul>' +
+                            '</div>' +
+                            '<h1 id="h1-1">heading 1</h1>\n' +
+                            '<p>This is <strong>markdown</strong>!</p>\n';
+
+            var result = service.getOlat(file, [], config);
+            expect(result).toBe(expected);
+        }));
+
+        it("should add table of content (with title)");
+        it("should add table of content (with stories)");
+
+        it("should add table of images", function() {
+            var file = {
+                title: "Test File",
+                author: "John Doe",
+                type: "opOlat",
+                markdown: "# heading 1\n" +
+                            "This is **markdown**! ![awesome-image](bilder/bild.jpg \"Caption this!; John Doe; CC BY-NA; www.source.com\")"
+            };
+
+            var config = {
+                addTitle: false,
+                addContentTable: false,
+                addImagesTable: true,
+                addLinksTable: false
+            };
+
+            var expected =  '<h1 id="h1-1">heading 1</h1>\n' +
+                            '<p>This is <strong>markdown</strong>!</p>\n' +
+                            "<div id=\"images-table\" class=\"images-table\">\n" +
+                                            "<h4>Abbildungen</h4>\n" +
+                                            "<ul>\n" +
+                                            "<li>\n" +
+                                            "Abb.1<br>\n" +
+                                            "Test-Image<br>\n" +
+                                            "John Doe<br>\n" +
+                                            "CC123<br>\n" +
+                                            "<a href=\"www.google.de\" target=\"_blank\">Quelle</a>\n" +
+                                            "</li>\n" +
+                                            "</ul>\n" +
+                                            "</div>";
+
+            var result = service.getOlat(file, [], config);
+
+            expect(result).toBe(expected);
 
         });
 
-    })
+        it("should add table of images (without author and license)");
+
+        it("should add table of (used) definitions");
+    });
 });
