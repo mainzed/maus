@@ -426,17 +426,23 @@ angular.module('meanMarkdownApp')
                     shortcut = content;
                 }
 
+                // workaround for pictureGroups, they aquire their
+                // enrichments themselves
+                if (category === "picturegroup") {
+                    //console.log("adding picture group!");
+                    me.replacePictureGroups(page, shortcut, enrichments, tag);
+                }
+
                 // get enrichment for the specified shortcut
                 var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
 
-
-
-
-                if (enrichment) {
+                if (enrichment) {  // picturegroup enrichments aquired later
                     var currentHTML;
+                    //console.log("before: " + category);
                     if (enrichment.filetype === "opMainzed") {
                         currentHTML = $("#read", page).html();
                         if (currentHTML.length < 1) {
+                            console.log("No div with id #read found in page");
                             throw Error("No div with id #read found in page");
                         }
                     } else {
@@ -445,10 +451,7 @@ angular.module('meanMarkdownApp')
                     }
 
                     // get multiple enrichments for pictuee group
-                    if (category === "picturegroup" && enrichment.filetype === "opMainzed") {
-                        me.replacePictureGroups(page, shortcut, enrichments, tag);
-
-                    } else if (category === "picture" && enrichment.filetype === "opMainzed") {
+                    if (category === "picture" && enrichment.filetype === "opMainzed") {
                         //console.log(enrichment);
                         var figureString = '<figure>\n' +
                                         '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
@@ -521,8 +524,13 @@ angular.module('meanMarkdownApp')
                 console.log("Picture '" + shortcut + "' not found!");
                 //throw Error("Picturegroup needs at least two pictures.");
             } else {
+
+                if (!enrichment.title) {
+                    console.log("missing image alt attribute");
+                    enrichment.title = "picture";
+                }
                 var figureString = '<figure>\n' +
-                                '<img src="' + enrichment.url + '" class="picture" alt="">\n' +
+                                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
                                 '<figcaption>\n' +
                                     enrichment.text +
                                 '</figcaption>\n' +

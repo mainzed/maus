@@ -656,6 +656,53 @@ describe('Service: HTMLService', function () {
 
         });
 
+        it('should replace picturegroup tag', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic1",
+                    __v: 0,
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe"
+                },{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic2",
+                    __v: 0,
+                    url: "www.some-other-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
+
+            var expected = '<div id="read"><div class="picturegroup">' +
+
+            // figure 1
+            '<figure>\n<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">\n<figcaption>\n' + enrichments[0].text + '</figcaption>\n</figure>' +
+
+            // figure 2
+            '<figure>\n<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">\n<figcaption>\n' + enrichments[1].text +
+
+            '</figcaption>\n</figure>' +
+            '</div></div>';
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect($(page).html()).toBe(expected);
+
+        });
+
 
     });
 
