@@ -23,7 +23,8 @@ h3 		{ 	font-size: 15px; line-height: 23px; margin: 10px 35% 8px 35%; font-weigh
 
 h1, h2, h3, h4 {	float: left; clear: left; padding-top: 20px;	}
 a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
-img 	{ 	height: 200px; cursor: pointer; }
+a img 	{	height: 20px;	}
+figure img 	{ 	height: 200px; cursor: pointer; }
 figcaption 	{	display: none;	}
 figure 	{	float: left; margin-left: 5px;   }
 iframe 	{	float: left; margin-left: 5px; }
@@ -94,6 +95,8 @@ strong 	{	font-weight: normal;	}
 #read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
 #footnotes, #imprint { float: left; clear: left;}
 #footnotes {margin: 0 35%; width: auto;}
+#footnotes div {margin-bottom: 20px; display: inline-block;}
+#footnotes div p {margin: 0;}
 
 /* footnotes */
 #footnotes img {width: 200px;}
