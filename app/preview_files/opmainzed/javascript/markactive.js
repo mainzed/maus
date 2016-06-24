@@ -26,4 +26,5 @@ $(window).scroll(function(){
    // Set/remove active class
    menuItems.removeClass("active");
    menuItems.filter("[href='#"+id+"']").addClass("active");
+   
 })

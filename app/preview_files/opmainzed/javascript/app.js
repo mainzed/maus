@@ -245,6 +245,8 @@ function showTableOfContent(){
     // set active layer
     $(".activeressource").removeClass("activeressource");
     $("#nav").addClass("activeressource");
+
+     $('#nav').animate({scrollTop:$(".active").offset().top}, 1200);
   
 }
 
