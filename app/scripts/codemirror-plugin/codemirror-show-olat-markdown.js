@@ -1,7 +1,7 @@
 'use strict';
 
 CodeMirror.defineOption("showOlatMarkdown", false,
-    
+
     function(codeMirror, newValue, oldValue) {
 
         if (oldValue === CodeMirror.Init) {
@@ -49,10 +49,26 @@ function storyTag(stream) {
 
   // html comments
   if (stream.match(/<!--(.*?)-->/)) {
-
     return "html-comment";
   }
 
+  // metatags
+  //var re = new RegExp(/^@.*$/, "m");
+  if (stream.match(/^@title:.*/)) {
+    return "metatag";
+  }
+
+  if (stream.match(/^@author:.*/)) {
+    return "metatag";
+  }
+
+  if (stream.match(/^@created:.*/)) {
+    return "metatag";
+  }
+
+  if (stream.match(/^@updated:.*/)) {
+    return "metatag";
+  }
 
   stream.eat(/./);
 }

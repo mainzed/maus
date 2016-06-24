@@ -129,7 +129,9 @@ angular.module('meanMarkdownApp')
         // make jQuery compatible
         var page = $("<div>" + htmlString + "</div>");
 
-        var html = this.convertOpMainzedMarkdownToHTML(file.markdown);
+        var metadata = this.getMetadata(file.markdown);
+        // metadata.author, metadata.title
+        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
 
         // add markdown content to page
         $("#read", page).append(html);
@@ -143,6 +145,46 @@ angular.module('meanMarkdownApp')
         // get html from page via jquery
         return page.html();
     };
+
+    /**
+     * extracts metadata from markdown and returns object containing all
+     * metadata as well as the cleaned up markdown
+     */
+    this.getMetadata = function(markdown) {
+        var result = {};
+
+        var cleanMarkdown = markdown;
+
+        // extract metadata from markdown
+        var matches;
+        matches = cleanMarkdown.match(/^@title:(.*)/);
+        if (matches) {
+            result.title = matches[1].trim();  // save
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");  // remove
+
+        }
+        matches = cleanMarkdown.match(/^@author:(.*)/);
+        if (matches) {
+            result.author = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        matches = cleanMarkdown.match(/^@created:(.*)/);
+        if (matches) {
+            result.created = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        matches = cleanMarkdown.match(/^@updated:(.*)/);
+        if (matches) {
+            result.updated = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        result.markdown = cleanMarkdown;
+        //console.log(result);
+        return result;
+    }
 
     this.wrapOlatHTML = function(html, title, isFolder) {
         var stylePath;
@@ -275,7 +317,6 @@ angular.module('meanMarkdownApp')
             }
 
         };
-
         return marked(markdown, { renderer: customRenderer });
     };
 
