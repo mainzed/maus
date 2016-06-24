@@ -94,6 +94,8 @@ angular.module('meanMarkdownApp')
      */
     this.getOpMainzed = function(file, definitions) {
 
+        var metadata = this.getMetadata(file.markdown);
+
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
                         '<div id="imagecontainer"></div>' +
@@ -107,7 +109,7 @@ angular.module('meanMarkdownApp')
                 			'</span>' +
 
                 			'<div id="titletextbg">' +
-                				'<h1 class="titletext title">mainzed jahresbericht <br>2015/2016</h1>' +
+                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
                 				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
                 			'</div>' +
 
@@ -129,7 +131,9 @@ angular.module('meanMarkdownApp')
         // make jQuery compatible
         var page = $("<div>" + htmlString + "</div>");
 
-        var html = this.convertOpMainzedMarkdownToHTML(file.markdown);
+
+        // metadata.author, metadata.title
+        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
 
         // add markdown content to page
         $("#read", page).append(html);
@@ -141,7 +145,50 @@ angular.module('meanMarkdownApp')
         this.replaceEnrichmentTags(page, definitions);
 
         // get html from page via jquery
-        return page.html();
+        //return page.html();
+
+        return this.wrapOpMainzedHTML(page.html(), metadata);
+
+    };
+
+    /**
+     * extracts metadata from markdown and returns object containing all
+     * metadata as well as the cleaned up markdown
+     */
+    this.getMetadata = function(markdown) {
+        var result = {};
+
+        var cleanMarkdown = markdown;
+
+        // extract metadata from markdown
+        var matches;
+        matches = cleanMarkdown.match(/^@title:(.*)/);
+        if (matches) {
+            result.title = matches[1].trim();  // save
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");  // remove
+
+        }
+        matches = cleanMarkdown.match(/^@author:(.*)/);
+        if (matches) {
+            result.author = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        matches = cleanMarkdown.match(/^@created:(.*)/);
+        if (matches) {
+            result.created = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        matches = cleanMarkdown.match(/^@updated:(.*)/);
+        if (matches) {
+            result.updated = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
+        result.markdown = cleanMarkdown;
+        //console.log(result);
+        return result;
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
@@ -187,13 +234,13 @@ angular.module('meanMarkdownApp')
                 "</html>";
     };
 
-    this.wrapOpMainzedHTML = function(html, title) {
+    this.wrapOpMainzedHTML = function(html, metadata) {
 
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 '<meta charset="UTF-8">' +
-                "<title>" + title + "</title>\n" +
+                "<title>" + metadata.title + "</title>\n" +
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
                 '<link rel="stylesheet" href="style/style.css">\n' +
@@ -275,7 +322,6 @@ angular.module('meanMarkdownApp')
             }
 
         };
-
         return marked(markdown, { renderer: customRenderer });
     };
 
@@ -321,9 +367,9 @@ angular.module('meanMarkdownApp')
             // used title attr for caption, author etc
             var tokens = title.split("; ");
             var caption = tokens[0].replace(/\\/g, "");
-            var author = tokens[1];
-            var license = tokens[2];
-            var url = tokens[3];
+            //var author = tokens[1];
+            //var license = tokens[2];
+            //var url = tokens[3];
             //var title = alt;
             var preCaption = "Abb." + ImageCounter;
 
@@ -448,7 +494,18 @@ angular.module('meanMarkdownApp')
 
                         // for opMainzed, add ressources to end of page
                         if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + marked(enrichment.text) + "</div>\n");
+
+                            var customRenderer = new marked.Renderer();
+                            customRenderer.link = function (linkUrl, noIdea, text) {
+                                if (!linkUrl.startsWith("#")) {
+                                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+                                }
+                            };
+
+                            var html = marked(enrichment.text, { renderer: customRenderer });
+
+
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
                         }
 
                     }

@@ -198,7 +198,7 @@ angular.module('meanMarkdownApp')
                 html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
             } else if ($scope.file.type === "opMainzed") {
                 html = HTMLService.getOpMainzed($scope.file, definitions);
-                html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
             }
 
 
@@ -238,7 +238,7 @@ angular.module('meanMarkdownApp')
 
             } else if ($scope.file.type === "opMainzed") {
                 html = HTMLService.getOpMainzed($scope.file, definitions);
-                html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
 
             } else if ($scope.file.type === "prMainzed") {
                 html = HTMLService.getPrMainzed($scope.file);
