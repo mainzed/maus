@@ -5,6 +5,8 @@ var mobile = false;
 
 $(document).ready(function() {
 
+    //$("html").niceScroll();
+
     //lazyload
     /*
     $("img").lazyload({
@@ -13,8 +15,11 @@ $(document).ready(function() {
     */
     
     // initScroller();
+    $("#read").addClass("readnoshift");
     checkBrowserWidth();
     console.log( $(window).scrollTop());
+
+
         
 
     // initialize menu
@@ -67,7 +72,7 @@ $(document).ready(function() {
     $( window ).resize(function() {
         checkBrowserWidth(); 
         console.log(mobile); 
-        clearRessource();
+        // clearRessource();
     });
 
 
@@ -126,7 +131,7 @@ $(document).ready(function() {
 function checkBrowserWidth(){
 
     var browserwidth = $( document ).width();
-    if (browserwidth < 800){
+    if (browserwidth < 801){
         mobile = true;
     }
     else {
@@ -160,6 +165,8 @@ function clearRessource(){
     $("#navicon").removeClass();
     $("#closeicon").removeClass();
     $(".activeressource").removeClass("activeressource");
+    $(".shiftread").removeClass("shiftread");
+    $("#read").addClass("readnoshift");
 
     // clear content
     $("#ressourcestext").text("");
@@ -189,6 +196,8 @@ function resetRessource(navicon, nav, closeicon){
     $("#navicon").removeClass();
     $("#closeicon").removeClass();
     $(".activeressource").removeClass("activeressource");
+    $(".shiftread").removeClass("shiftread");
+    $("#read").addClass("readnoshift");
     $("#titletextbg").hide();
     $("#imagecontainer").hide();  
 
@@ -227,6 +236,10 @@ function showTableOfContent(){
     } 
     else {
         $("#ressources").addClass("showdefinitions");
+        $("#read").removeClass("readnoshift");
+        $("#read").addClass("shiftread");
+
+        //$("#nav").scrollTop( 300 );
     }
 
     // set active layer
@@ -249,6 +262,8 @@ function showGlossar(clickedword){
     } 
     else {
         $("#ressources").addClass("showdefinitions");
+        $("#read").removeClass("readnoshift");
+        $("#read").addClass("shiftread");
     }
 
     // set active layer

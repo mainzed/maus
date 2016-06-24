@@ -26,10 +26,9 @@ a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
 a img 	{	height: 20px;	}
 figure img 	{ 	height: 200px; cursor: pointer; }
 figcaption 	{	display: none;	}
-figure 	{	float: left; margin-left: 5px;   }
+figure 	{	float: left; margin-left: 35%; clear: left;  }
 iframe 	{	float: left; margin-left: 5px; }
-i, em 	{ 	font-style: normal; }
-strong 	{	font-weight: normal;	}
+
 
 
 .citation 	{ 	margin: 40px 0; border-top: 1px solid #e7e7e7; display: inline-block;
@@ -47,7 +46,7 @@ strong 	{	font-weight: normal;	}
 
 
 /* listen im Text */
-#read {}
+.readnoshift {padding-left: 0;}
 #read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
 #read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
 #read li:before {    
@@ -70,6 +69,7 @@ strong 	{	font-weight: normal;	}
 						background-repeat: no-repeat !important; background-position: right !important; display: none; }
 
 .picturegroup 		{	margin: 200px 20%; float: left; }
+.picturegroup figure 	{	float: left; clear: none; margin-left: 5px; }
 
 
 /* start */
@@ -79,10 +79,10 @@ strong 	{	font-weight: normal;	}
 .coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; font-size: 12px; margin-right: 0;}
 
 /*Navigation*/
-#nav 			{	float: right; display: none; margin-top: 40px; overflow: auto; width: 258px; margin-right: 20px;  }
+#nav 			{	float: right; display: none; padding-top: 40px; overflow: auto; width: 258px; margin-right: 0; padding-right: 20px;  }
 #nav li ul 		{	margin-left: 30px;	}
-#nav li 		{	margin-top: 20px;	}
-#nav ul li 		{	margin-top: 0;	}
+#nav li 		{	margin-bottom: 30px;	}
+#nav ul li 		{	margin-bottom: 0;	}
 #nav a 			{	border: 0; color: black;	}
 
 /*Nav Icon*/
@@ -107,6 +107,7 @@ a.active  {font-weight: bold;}
 
 /*.minimalressource {width: 70px; background: white; opacity: 1;}*/
 .white {color: white;}
+
 
 
 
@@ -148,23 +149,42 @@ a.active  {font-weight: bold;}
 
 
 
+
+
+
 /* small screens */
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1300px) {
 	
 	/* Animation Classes */
 	.showpictures { margin-left: -1100px; background: black !important; }
 	.startanimation { margin-left: -1500px;}
 
 	#ressources img 	{ 	width: 800px;  }
-	#imagecontainer {position: absolute;  width: 900px;  }
+	#imagecontainer		{	position: absolute;  width: 900px;  }
+	#nav, #ressourcestext {	-webkit-overflow-scrolling: touch; 
+							overflow-y: auto; height: calc(100% - 40px);  }
+	#read ul 			{	margin: 20px 25%;	}
 
-	.title {font-size: 70px; line-height: 70px; top: 30%; left: 0; }
+	.title 	{	font-size: 70px; line-height: 70px; top: 30%; left: 0; }
 
 	p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 25%;  }
 	h1 		{ 	margin: 90px 25% 10px 25%; font-size: 60px;  }
 	h2 		{ 	font-size: 25px; line-height: 28px;  margin: 95px 25% 30px 25%; }
 	h3 		{ 	font-size: 15px; line-height: 23px; margin: 20px 25% 8px 25%;    }
 
+
+	
+
+}
+
+@media screen  and (max-width: 1300px) {
+
+	/*animation classes */
+	.shiftread {
+		padding-left: 100px;
+		-webkit-transition: width 1s; /* Safari */
+		transition: width 1s;
+	}
 }
 
 
@@ -183,8 +203,8 @@ a.active  {font-weight: bold;}
 	h1,h2,h3 {padding-top: 60px;}
 
 	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
-	img {	width: 100%; height: auto;	}
-	figure {margin-left: 0;}
+	figure img {	width: 100%; height: auto;	}
+	.picturegroup figure {margin-left: 0;}
 	figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
 	iframe {	width: 100%;	}
 
@@ -197,11 +217,7 @@ a.active  {font-weight: bold;}
 
 	#read ul {margin: 20px 5%;}
 	#read li {font-size: 19px; line-height: 24px; }
-	#read li:before {    
-		
-			margin-left: -17px;
-			 margin-right: 5px;
-		}
+	#read li:before {   margin-left: -17px; margin-right: 5px; }
 
 	#ressources a {color: black;}
 
@@ -210,14 +226,15 @@ a.active  {font-weight: bold;}
 	#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
 							width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s; }
 
-	#nav, #ressourcestext {	position: fixed; -webkit-overflow-scrolling: touch; top: 0; float: none; 
-							left: 5%; overflow: auto; width: 90%; margin-bottom: 20px; margin-top: 0; padding-top: 20px; }
+	#nav, #ressourcestext {	float: left; margin-top: 360px; -webkit-overflow-scrolling: touch;  height: 400px;
+							overflow-y: scroll; width: 90%; margin-bottom: 20px; padding-top: 20px; margin-left: 5%; }
 	
 	#nav.activeressource {height: 400px;}
 	#ressourcestext.activeressource {height: 250px; margin-top: 0; padding-top: 20px;}
 	#navicon {margin: 10px 0; left: 5%; top: 3px; z-index: 9999;}
 	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
 	#ressources img {width: 100%;}
+	
 
 
 
@@ -280,6 +297,7 @@ a.active  {font-weight: bold;}
 	p  	{	font-size: 16px; line-height: 22px; 	}
 
 	#read li {font-size: 16px; line-height: 22px; }
+	#nav, #ressourcestext {width: 95%;}
 
 	
 
