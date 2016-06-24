@@ -489,7 +489,18 @@ angular.module('meanMarkdownApp')
 
                         // for opMainzed, add ressources to end of page
                         if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + marked(enrichment.text) + "</div>\n");
+
+                            var customRenderer = new marked.Renderer();
+                            customRenderer.link = function (linkUrl, noIdea, text) {
+                                if (!linkUrl.startsWith("#")) {
+                                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+                                }
+                            };
+
+                            var html = marked(enrichment.text, { renderer: customRenderer });
+
+
+                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
                         }
 
                     }
