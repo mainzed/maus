@@ -94,6 +94,8 @@ angular.module('meanMarkdownApp')
      */
     this.getOpMainzed = function(file, definitions) {
 
+        var metadata = this.getMetadata(file.markdown);
+
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
                         '<div id="imagecontainer"></div>' +
@@ -107,7 +109,7 @@ angular.module('meanMarkdownApp')
                 			'</span>' +
 
                 			'<div id="titletextbg">' +
-                				'<h1 class="titletext title">mainzed jahresbericht <br>2015/2016</h1>' +
+                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
                 				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
                 			'</div>' +
 
@@ -129,7 +131,7 @@ angular.module('meanMarkdownApp')
         // make jQuery compatible
         var page = $("<div>" + htmlString + "</div>");
 
-        var metadata = this.getMetadata(file.markdown);
+
         // metadata.author, metadata.title
         var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
 
@@ -143,7 +145,10 @@ angular.module('meanMarkdownApp')
         this.replaceEnrichmentTags(page, definitions);
 
         // get html from page via jquery
-        return page.html();
+        //return page.html();
+
+        return this.wrapOpMainzedHTML(page.html(), metadata);
+
     };
 
     /**
@@ -184,7 +189,7 @@ angular.module('meanMarkdownApp')
         result.markdown = cleanMarkdown;
         //console.log(result);
         return result;
-    }
+    };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
         var stylePath;
@@ -229,13 +234,13 @@ angular.module('meanMarkdownApp')
                 "</html>";
     };
 
-    this.wrapOpMainzedHTML = function(html, title) {
+    this.wrapOpMainzedHTML = function(html, metadata) {
 
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 '<meta charset="UTF-8">' +
-                "<title>" + title + "</title>\n" +
+                "<title>" + metadata.title + "</title>\n" +
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
                 '<link rel="stylesheet" href="style/style.css">\n' +
@@ -362,9 +367,9 @@ angular.module('meanMarkdownApp')
             // used title attr for caption, author etc
             var tokens = title.split("; ");
             var caption = tokens[0].replace(/\\/g, "");
-            var author = tokens[1];
-            var license = tokens[2];
-            var url = tokens[3];
+            //var author = tokens[1];
+            //var license = tokens[2];
+            //var url = tokens[3];
             //var title = alt;
             var preCaption = "Abb." + ImageCounter;
 
