@@ -240,6 +240,9 @@ angular.module('meanMarkdownApp')
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 '<meta charset="UTF-8">' +
+            	'<meta name="viewport" content="width=device-width, initial-scale=1">' + 
+
+
                 "<title>" + metadata.title + "</title>\n" +
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
