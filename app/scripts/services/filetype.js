@@ -138,6 +138,7 @@ angular.module('meanMarkdownApp')
     /**
      * dynamically fills asset/snippet template and returns generated html string
      */
+     /*
     var storyCounter = 1;
     this.getAssetByFiletypeAndCategory = function(category, enrichment) {
         var filetype = enrichment.filetype;
@@ -157,6 +158,7 @@ angular.module('meanMarkdownApp')
         var template = obj.assets[category].html;
 
         if (category === "definition") {
+
             // fill template with enrichments
             template = this.populateDefinitions(template, enrichment);
 
@@ -188,7 +190,7 @@ angular.module('meanMarkdownApp')
     this.populateLinklists = function(template, enrichment) {
         template = template.replace("${text}", enrichment.text);
         return template;
-    };
+    };*/
 
     this.getAssetsForFiletype = function(filetype) {
         var obj = _.find(filetypes, function(item) {
