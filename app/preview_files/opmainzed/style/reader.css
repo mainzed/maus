@@ -21,7 +21,7 @@ h2 		{ 	font-size: 25px; line-height: 28px;  font-weight: normal; margin: 75px 3
 			letter-spacing: 0; font-weight: bold;}
 h3 		{ 	font-size: 15px; line-height: 23px; margin: 10px 35% 8px 35%; font-weight: normal;   }
 
-h4		{font-size: 19px;}
+h4		{font-size: 15px; line-height: 20px; margin-bottom: 20px;}
 h1, h2, h3, h4 {	float: left; clear: left; padding-top: 20px;	}
 a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
 a img 	{	height: 20px;	}
@@ -63,7 +63,7 @@ iframe 	{	float: left; margin-left: 5px; }
 						height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
 #ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
 #ressourcestext 	{ 	float: right; display: block; margin: 60px 20px 0 0; width: 258px; }
-#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 22px; }
+#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 20px; }
 .figcaption 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px; margin-right: 0;  }
 
 #imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
@@ -97,7 +97,7 @@ iframe 	{	float: left; margin-left: 5px; }
 #footnotes, #imprint { float: left; clear: left;}
 #footnotes {margin: 0 35%; width: auto; word-break: break-all;}
 #footnotes div {margin-bottom: 20px; display: inline-block;}
-#footnotes div p {margin: 0;}
+#footnotes div p {margin: 0; font-size: 15px; line-height: 20px;}
 
 /* footnotes */
 #footnotes img {width: 200px;}
@@ -236,14 +236,33 @@ a.active  {font-weight: bold;}
 	#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
 							width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s; }
 
-	#nav, #ressourcestext {	float: left; margin-top: 360px; -webkit-overflow-scrolling: touch;  height: 400px;
-							overflow-y: scroll; width: 90%; margin-bottom: 20px; padding-top: 20px; margin-left: 5%; }
+	#nav, #ressourcestext {	float: left; margin-top: 450px; -webkit-overflow-scrolling: touch;  height: 400px;
+							overflow-y: auto; width: 90%; margin-bottom: 20px; padding-top: 20px; margin-left: 5%; }
 	
-	#nav.activeressource {height: 400px;}
+	#nav.activeressource {height: 330px;}
 	#ressourcestext.activeressource {height: 250px; margin-top: 510px; padding-top: 20px;}
 	#navicon {margin: 10px 0; left: 5%; top: 3px; z-index: 9999;}
 	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
 	#ressources img {width: 100%;}
+	
+
+	#gradient {
+		height: 80px;
+		width: 100%;
+		    	
+    	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+0,e5e5e5+72,e5e5e5+100&0+0,1+72,1+100 */
+		background: -moz-linear-gradient(top,  rgba(229,229,229,0) 0%, rgba(229,229,229,1) 50%, rgba(229,229,229,1) 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(top,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 50%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to bottom,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 50%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00e5e5e5', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+
+    	position: absolute;
+    	bottom: 0;
+    	pointer-events: none;
+    	display: none;
+    	z-index: 99999999;
+	}
+
 	
 
 
@@ -253,14 +272,14 @@ a.active  {font-weight: bold;}
 		margin-top: -510px;
 		-webkit-transition: width 0.2s; /* Safari */
 		transition: width 0.2s;
-		background: #e4e4e4 !important;
+		background: #e5e5e5 !important;
 	 }
 
 	.showtableofcontent {
-		margin-top: -350px;
+		margin-top: -450px;
 		-webkit-transition: width 0.2s; /* Safari */
 		transition: width 0.2s;
-		background: #e4e4e4 !important;
+		background: #e5e5e5 !important;
 	}
 
 	.minifiedm {

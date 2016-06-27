@@ -46,7 +46,9 @@ $(document).ready(function() {
     $('#scrollmarker').waypoint({
         handler: function(direction) {
             if (direction == 'down'){
+                if ( !$( "#ressources" ).hasClass( "showdefinitions" ) ) {
                 clearRessource();
+                }
             }
             else {
                 showTitle();
@@ -71,14 +73,20 @@ $(document).ready(function() {
 
     $( window ).resize(function() {
         checkBrowserWidth(); 
-        console.log(mobile); 
-        // clearRessource();
+        resetLayout();
+        
     });
 
 
   $("a:not(.external-link)").click(function(event){     
         event.preventDefault();
-        $('html,body').animate({scrollTop:$(this.hash).offset().top}, 1200);
+        console.log($(this.hash).offset().top);
+        var scrollspeed = 1200;
+        if($(window).scrollTop() - $(this.hash).offset().top < 1000){
+            console.log("small");
+            scrollspeed = 600;
+        }
+        $('html,body').animate({scrollTop:$(this.hash).offset().top}, scrollspeed);
     });
 
 
@@ -137,7 +145,32 @@ function checkBrowserWidth(){
     else {
         mobile = false;
     }
-}    
+}  
+
+function resetLayout(){
+    var currentclass = $("#ressources").attr("class");
+    if(mobile){
+        if(currentclass.slice(-1) != "m" && currentclass != "showtableofcontent"){
+            currentclass = currentclass + "m";
+            $("#ressources").removeClass();
+            $("#ressources").addClass(currentclass);
+        }
+    }
+    else {
+        if(currentclass.slice(-1) == "m" || currentclass == "showtableofcontent"){
+            if(currentclass == "showtableofcontent"){
+                $("#ressources").removeClass();
+                $("#ressources").addClass("showdefinitions");
+                $("#read").addClass("shiftread");
+            }
+            else {
+                currentclass = currentclass.substring(0, currentclass.length - 1);
+                $("#ressources").removeClass();
+                $("#ressources").addClass(currentclass);
+            }
+        }
+    }
+}  
     
 
 
@@ -168,12 +201,14 @@ function clearRessource(){
     $(".shiftread").removeClass("shiftread");
     $("#read").addClass("readnoshift");
 
+
     // clear content
     $("#ressourcestext").text("");
     $("#ressources img").remove();
     $(".figcaption").remove();
     $("#titletextbg").hide();
     $("#imagecontainer").hide();  
+    $("#gradient").hide();
 
     // hide navigation elements
     $("#nav").hide();
@@ -205,6 +240,7 @@ function resetRessource(navicon, nav, closeicon){
     $("#ressourcestext").text("");
     $("#ressources img").remove();
     $(".figcaption").remove();
+    $("#gradient").hide();
 
     // nav elements
     if(navicon){
@@ -233,6 +269,7 @@ function showTableOfContent(){
     resetRessource(false, true, true);
     if(mobile){
         $("#ressources").addClass("showtableofcontent");
+        $("#gradient").show();
     } 
     else {
         $("#ressources").addClass("showdefinitions");
@@ -261,6 +298,7 @@ function showGlossar(clickedword){
     
     if(mobile){
         $("#ressources").addClass("showdefinitionsm");
+        $("#gradient").show();
     } 
     else {
         $("#ressources").addClass("showdefinitions");
