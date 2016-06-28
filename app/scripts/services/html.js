@@ -10,7 +10,7 @@
 angular.module('meanMarkdownApp')
   .service('HTMLService', function (definitionService, filetypeService) {
 
-    var usedDefs;  // store IDs of actually used defs
+    //var usedDefs;  // store IDs of actually used defs
     /**
      * generates OLAT html from markdown. provides a callback with the generated
      * HTML as parameter
@@ -113,6 +113,7 @@ angular.module('meanMarkdownApp')
                 				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
                 			'</div>' +
 
+                            '<div id="gradient"></div>' +
                             // navigation
                             "<ul id=\"nav\"></ul>\n" +
 
@@ -252,9 +253,7 @@ angular.module('meanMarkdownApp')
                 "</head>\n"+
                 "<body>\n" +
 
-                '<div id="titlepicture">' +
-            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
-            	'</div>' +
+
             	'<div id="scrollmarker"></div>' +
 
 
@@ -410,8 +409,8 @@ angular.module('meanMarkdownApp')
         //var enrichment;
 
         // reset used definitions
-        usedDefs = [];
-        var usedEnrichments = [];
+        //usedDefs = [];
+        //var usedEnrichments = [];
 
         // get all tags
         var tags = $(page).html().match(/\{(.*?)\}/g);
@@ -436,91 +435,50 @@ angular.module('meanMarkdownApp')
                     shortcut = content;
                 }
 
-                // workaround for pictureGroups, they aquire their
-                // enrichments themselves
+                /*var currentHTML;
+                if (enrichment.filetype === "opMainzed") {
+                    currentHTML = $("#read", page).html();
+                    if (currentHTML.length < 1) {
+                        console.log("No div with id #read found in page");
+                        throw Error("No div with id #read found in page");
+                    }
+                } else {
+                    currentHTML = $(page).html();
+                    //console.log(currentHTML);
+                }*/
+
+                //var snippet;
+                var enrichment;
+
                 if (category === "picturegroup") {
-                    //console.log("adding picture group!");
-                    me.replacePictureGroups(page, shortcut, enrichments, tag);
-                }
+                    me.replacePictureGroup(page, shortcut, enrichments, tag);
 
-                // get enrichment for the specified shortcut
-                var enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-
-                if (enrichment) {  // picturegroup enrichments aquired later
-                    var currentHTML;
-                    //console.log("before: " + category);
-                    if (enrichment.filetype === "opMainzed") {
-                        currentHTML = $("#read", page).html();
-                        if (currentHTML.length < 1) {
-                            console.log("No div with id #read found in page");
-                            throw Error("No div with id #read found in page");
-                        }
-                    } else {
-                        currentHTML = $(page).html();
-                        //console.log(currentHTML);
+                } else if (category === "picture") {
+                    enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+                    if (!enrichment) {
+                        console.log("unknown enrichment with shortcut: " + shortcut);
+                        throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
+                    me.replacePicture(tag, page, enrichment);
 
-                    // get multiple enrichments for pictuee group
-                    if (category === "picture" && enrichment.filetype === "opMainzed") {
-                        me.replacePicture(tag, page, enrichment);
-
-                    } else if (category === "citation" && enrichment.filetype === "opMainzed") {
-                        // TODO: configure in filetypes what enrichments are available for
-                        // each filetype
-                        if (!enrichment.text || !enrichment.author) {
-                            console.log("text or author missing!");
-                        }
-
-                        var citationString = '<div class="citation">' +
-                                                marked(enrichment.text) +
-                                                '<span class="author">' + enrichment.author + '</span>' +
-                                                '</div>';
-                        //console.log(currentHTML);
-                        // replace tag with newly created HTML
-                        $("#read", page).html(currentHTML.replace(tag, citationString));
-
-                    } else if (category === "definition") {
-                        //console.log("is a defintiion!!");
-                        // get snippet
-                        var snippet = filetypeService.getAssetByFiletypeAndCategory(category, enrichment);
-
-                        // replace tag with snippet
-                        if (enrichment.filetype === "opMainzed") {
-                            //console.log("insidie!!!");
-                            //console.log(currentHTML);
-                            $("#read", page).html(currentHTML.replace(tag, snippet));
-                        } else {
-                            //console.log(currentHTML);
-                            $(page).html(currentHTML.replace(tag, snippet));
-                            //console.log(currentHTML);
-                        }
-
-                        // for opMainzed, add ressources to end of page
-                        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-
-                            var customRenderer = new marked.Renderer();
-                            customRenderer.link = function (linkUrl, noIdea, text) {
-                                if (!linkUrl.startsWith("#")) {
-                                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
-                                }
-                            };
-
-                            var html = marked(enrichment.text, { renderer: customRenderer });
-
-
-                            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
-                        }
-
+                } else if (category === "citation") {
+                    // TODO: configure in filetypes what enrichments are available for
+                    // each filetype
+                    enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+                    if (!enrichment) {
+                        console.log("unknown enrichment with shortcut: " + shortcut);
+                        throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
+                    me.replaceCitation(page, enrichment, tag);
 
-                    // keep track of enrichments so resources arent inserted multiple times
-                    if (usedDefs.indexOf(enrichment._id) === -1) {  // skip duplicates
-                        usedDefs.push(enrichment._id);
-                    }
+                } else if (category === "definition") {
+                    me.replaceDefinition(page, shortcut, tag, enrichments);
 
-                    if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
-                        usedEnrichments.push(enrichment._id);
-                    }
+                } else if (category === "story") {
+
+                    enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+
+                    me.replaceStory(page, enrichment, tag);
                 }
 
             });
@@ -528,7 +486,7 @@ angular.module('meanMarkdownApp')
         return;
     };
 
-    this.replacePictureGroups = function(page, shortcut, enrichments, tag) {
+    this.replacePictureGroup = function(page, shortcut, enrichments, tag) {
         //console.log(shortcut);
         if (shortcut.length < 2) {
             console.log("Picturegroup needs at least two pictures.");
@@ -569,6 +527,10 @@ angular.module('meanMarkdownApp')
     };
 
     this.replacePicture = function(tag, page, enrichment) {
+        if (enrichment.filetype !== "opMainzed") {
+            console.log("filetype " + enrichment.filetype + "currently does not support picture tags");
+            throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
+        }
         if (!enrichment.title) {
             console.log("missing image alt attribute");
             enrichment.title = "picture";
@@ -585,6 +547,130 @@ angular.module('meanMarkdownApp')
         $("#read", page).html(currentHTML.replace(tag, figureString));
     };
 
+    this.replaceCitation = function(page, enrichment, tag) {
+        if (!enrichment.text || !enrichment.author) {
+            console.log("text or author missing for enrichment: " + enrichment.word);
+            throw Error("text or author missing for enrichment: " + enrichment.word);
+        }
+
+        var currentHTML = $("#read", page).html();
+        if (currentHTML.length < 1) {
+            console.log("No div with id #read found in page");
+            throw Error("No div with id #read found in page");
+        }
+
+        // TODO: replace with cöass story when opOlat
+        /*},
+        story: {
+            html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
+            title: "Zitate"
+        }
+        */
+        var citationString = '<div class="citation">' +
+                                marked(enrichment.text) +
+                                '<span class="author">' + enrichment.author + '</span>' +
+                                '</div>';
+        //console.log(currentHTML);
+        // replace tag with newly created HTML
+        $("#read", page).html(currentHTML.replace(tag, citationString));
+
+        return;
+    }
+
+    var storyCounter = 1;
+    this.replaceStory = function(page, enrichment, tag) {
+        //console.log(enrichment);
+        if (enrichment.filetype !== "opOlat") {
+            console.log("filetype: " + enrichment.filetype + " does not support the usage of story-tags");
+            throw Error("filetype: " + enrichment.filetype + " does not support the usage of story-tags");
+        }
+        var currentHTML = $(page).html();
+
+        // TODO: replace with cöass story when opOlat
+        /*},
+        story: {
+            html: "<div class=\"story\" id=\"story${counter}\">${text}</div>",
+            title: "Zitate"
+        }
+        */
+        var storyString = ['<div class="story">',
+                            marked(enrichment.text),
+                            '</div>'].join("");
+        storyCounter++;
+        //console.log(currentHTML);
+        // replace tag with newly created HTML
+        //TODO: dont replace in every function, just return the string and replace in seperate function
+        $(page).html(currentHTML.replace(tag, storyString));
+
+        return;
+    }
+
+    var usedEnrichments = [];
+    this.replaceDefinition = function(page, shortcut, tag, enrichments) {
+        var currentHTML;
+        var snippet;
+        var enrichment;
+        var customWord;
+
+        // check if custom word provided
+        var customWords = shortcut.match(/".*"/);
+        //console.log(customWord);
+        if (customWords) {
+            shortcut = shortcut.replace(customWords[0], "").trim();
+            customWord = customWords[0].replace('"', "").replace('"', "");
+        }
+
+        // get enrichment
+        enrichment = this.findEnrichmentByShortcut(enrichments, shortcut);
+
+        if (!enrichment) {
+            console.log("unknown enrichment with shortcut: " + shortcut);
+            throw Error("unknown enrichment with shortcut: " + shortcut);
+        }
+
+        if (enrichment.filetype === "opOlat") {
+            currentHTML = $(page).html();
+
+            snippet =  ["<a href=\"#definitions-table\" title=\"",
+                            enrichment.text,
+                            "\" class=\"definition\">",
+                            customWord || enrichment.word,
+                            "</a>"].join("");
+
+
+            $(page).html(currentHTML.replace(tag, snippet));
+
+        } else if (enrichment.filetype === "opMainzed") {
+            currentHTML = $("#read", page).html();
+            snippet =  ['<span id="',
+                            enrichment._id,
+                            '" class="shortcut">',
+                            customWord || enrichment.word,
+                            '</span>'].join("");
+
+            $("#read", page).html(currentHTML.replace(tag, snippet));
+        }
+
+        // for opMainzed, add ressources to end of page
+        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
+
+            var customRenderer = new marked.Renderer();
+            customRenderer.link = function (linkUrl, noIdea, text) {
+                if (!linkUrl.startsWith("#")) {
+                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+                }
+            };
+
+            var html = marked(enrichment.text, { renderer: customRenderer });
+
+
+            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
+        }
+
+        if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
+            usedEnrichments.push(enrichment._id);
+        }
+    }
     /**
      * wrapper to support the old function name
      */

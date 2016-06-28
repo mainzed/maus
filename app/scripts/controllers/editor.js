@@ -220,6 +220,36 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
+        console.log("load preview!");
+        // check file for includes
+        $scope.processIncludes($scope.file.markdown, function(markdown) {
+            console.log("works!");
+            // create copy if file object to prevent markdown in editor to display
+            // included content
+            $scope.fileCopy = angular.copy($scope.file);
+
+            $scope.fileCopy.markdown = markdown;
+
+            $scope.processHtml($scope.fileCopy, function(previewPath) {
+                // success
+                $scope.previewPath = previewPath;
+                $scope.openDesktopPreview();
+            });
+
+        }, function(error) {
+            console.log(error);
+            $scope.processHtml($scope.file, function(previewPath) {
+                // success
+                $scope.previewPath = previewPath;
+                $scope.openDesktopPreview();
+            });
+        });
+    };
+
+    /**
+     * requires file object that includes markdown author etc
+     */
+    $scope.processHtml = function(file, success) {
 
         var config = {
             addTitle: true,
@@ -233,22 +263,19 @@ angular.module('meanMarkdownApp')
             var html;
             // convert markdown to html
             if ($scope.file.type === "opOlat") {
-                html = HTMLService.getOlat($scope.file, definitions, config);
-                html = HTMLService.wrapOlatHTML(html, $scope.file.title);  // TODO: wrap html and save on server
+                html = HTMLService.getOlat(file, definitions, config);
+                html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
 
             } else if ($scope.file.type === "opMainzed") {
-                html = HTMLService.getOpMainzed($scope.file, definitions);
-                //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                html = HTMLService.getOpMainzed(file, definitions);
 
             } else if ($scope.file.type === "prMainzed") {
-                html = HTMLService.getPrMainzed($scope.file);
-                html = HTMLService.wrapPrMainzedHTML(html, $scope.file.title);
+                html = HTMLService.getPrMainzed(file);
+                html = HTMLService.wrapPrMainzedHTML(html, file.title);
             }
 
-
-
             var postData = {
-                "type": $scope.file.type,
+                "type": file.type,
                 "html": html,
                 "user_id": $scope.currentUser._id
             };
@@ -256,18 +283,14 @@ angular.module('meanMarkdownApp')
             $http.post('/api/savepreview', postData).then(function(data) {
 
                 //$scope.previewPath = data.data;  // returns path of newly created html
-                $scope.previewPath = data.data.previewPath;
-
-                //console.log("previewpath: " + data.data.previewPath);
-                //console.log(data.data);
-                $scope.openDesktopPreview();
+                success(data.data.previewPath);
 
             }, function() {
                 // error
                 console.log("something went wrong while trying to create preview");
             });
         });
-    };
+    }
 
     $scope.openDesktopPreview = function() {
         ngDialog.open({
@@ -361,6 +384,45 @@ angular.module('meanMarkdownApp')
             category: category,
             updated_at: timestmap // to be sorted to top
         });
+    };
+
+    $scope.processIncludes = function(markdown, success, failure) {
+
+        var filename;
+        var include = markdown.match(/^include\((.*)\)/m);
+
+        if (include) {
+            filename = include[1];
+
+            // get file
+            fileService.query(function(files) {
+                var fileContent = false;
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
+                        if (file.markdown) {
+                            fileContent = markdown.replace(include[0], file.markdown);
+                            break;
+                        }
+                    }
+                }
+                if (fileContent) {
+                    success(fileContent);
+                } else {
+                    failure("Could not include: " + filename + ". not found!");
+                }
+
+            }, function(error) {
+                // error
+                //console.log("failed inside!");
+                failure(error);
+            });
+        } else {
+            // no include found, just return markdown as is
+            success(markdown);
+        }
+        return;
+
     };
 
 
