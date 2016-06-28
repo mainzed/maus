@@ -26,17 +26,17 @@ h1, h2, h3, h4 {	float: left; clear: left; padding-top: 20px;	}
 a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
 a img 	{	height: 20px;	}
 figure img 	{ 	height: 200px; cursor: pointer; }
-figcaption 	{	display: none;	}
+figcaption 	{	display: none; font-size: 16px; line-height: 22px; }
 figure 	{	float: left; margin-left: 35%; clear: left;  }
 iframe 	{	float: left; margin-left: 5px; }
 
 
 
 .citation 	{ 	margin: 40px 0; border-top: 1px solid #e7e7e7; display: inline-block;
-				border-bottom: 1px solid #e7e7e7; margin: 100px 25%; padding-top: 20px; padding-bottom: 120px;}
+				border-bottom: 1px solid #e7e7e7; margin: 60px 25%; padding-top: 20px; padding-bottom: 120px;}
 .citation p { 	font-size: 30px; line-height: 40px; letter-spacing: 0; 
 				margin: 0; font-weight: 700;  }
-.citation .author {font-size: 16px;  float: left; margin-top: 20px; }
+.citation .author {font-size: 16px; line-height: 22px; float: left; margin-top: 20px; }
 #titletextbg {	background: white; width: 100%; height: 100%;}
 .title {font-size: 80px; line-height: 80px; font-family: "mainzeddisplay", sans-serif; 
 				font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
@@ -52,7 +52,7 @@ iframe 	{	float: left; margin-left: 5px; }
 #read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
 #read li:before {    
 	content: "—";
-	margin-left: -20px;
+	margin-left: -19px;
 	margin-right: 4px;
 }
 
@@ -71,11 +71,12 @@ iframe 	{	float: left; margin-left: 5px; }
 
 .picturegroup 		{	margin: 200px 20%; float: left; }
 .picturegroup figure 	{	float: left; clear: none; margin-left: 5px; }
-.shiftread .picturegroup { margin: 200px 0 200px 25%;}
+
 
 
 /* start */
-.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; }
+.start				{ 	position: absolute; bottom: 100px; left: 10%; color: black; font-size: 20px;
+						font-style: italic; }
 #titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../atmosphäre2.jpg"); 
 						background-size: cover; top: 0; z-index: -1; }
 .coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; line-height: 14px; font-size: 12px; margin: 0; color: white;}
@@ -85,20 +86,26 @@ iframe 	{	float: left; margin-left: 5px; }
 #nav li ul 		{	margin-left: 30px;	}
 #nav li 		{	margin-bottom: 30px;	}
 #nav ul li 		{	margin-bottom: 0;	}
-#nav a 			{	border: 0; color: black;	}
+#nav a 			{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
 
 /*Nav Icon*/
-#navicon { position: fixed; top: 22px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;}
-.left {float: left;}
+#navicon 		{ 	position: fixed; top: 22px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;	}
+.left 			{	float: left;	}
 
 /*Close Icon*/
-#closeicon {position: absolute; right: 20px; top: 15px; cursor: pointer; display: none; z-index: 99999;}
+#closeicon 		{	position: absolute; right: 20px; top: 15px; cursor: pointer; display: none; z-index: 99999;	}
+
+/* Shortcut Icon */
+.shortcut:after { 	content: "\e900"; font-family: "icomoon" !important; font-style: normal; font-size: 15px;
+    				font-weight: normal; margin-left: 2px; }
+
 	
 #read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
 #footnotes, #imprint { float: left; clear: left;}
 
 #imprint {margin: 100px 35%;}
 #imprint p {font-size: 15px; line-height: 20px; margin: 0; float: left; clear: left;}
+#imprint h3 {margin: 0;}
 #imprint h4 {margin: 0;}
 #imprint div {float: left; clear: left;}
 #footnotes {margin: 0 35%; width: auto; word-break: break-all; display: none;}
@@ -155,6 +162,17 @@ a.active  {font-weight: bold;}
 
 
 
+/* laptop */
+@media screen and (max-width: 1600px) {
+
+	.showpictures { 
+		margin-left: -800px;
+	   	background: black !important; 
+	   	-webkit-transition: width 1s; /* Safari */
+		transition: width 1s;
+	}
+
+}
 
 
 
@@ -184,7 +202,7 @@ a.active  {font-weight: bold;}
 	figure {	margin-left: 25%; }
 
 
-	
+	.shiftread .picturegroup { margin: 200px 0 200px 25%;}
 
 
 
@@ -217,26 +235,33 @@ a.active  {font-weight: bold;}
 	h3 	{	margin: 3px 5%; padding-top: 25px; font-size: 12px; 	}
 
 	/* navigation zone */
-	h1,h2,h3 {padding-top: 60px;}
+	h1,h2,h3 {padding-top: 70px;}
 
 	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
+	
 	figure img {	width: 100%; height: auto;	}
 	.picturegroup figure {margin-left: 0;}
 	figcaption 	{	display: block; margin-left: 5%; margin-bottom: 100px;	}
-	iframe {	width: 100%;	}
+	iframe {	width: 100%; margin-left: 0;	}
 
-	.title {font-size: 40px; line-height: 40px; top: auto; bottom: 70px;}
-
+	.title {font-size: 50px; line-height: 50px; top: auto; bottom: 70px; text-rendering: optimizeLegibility; }
+	.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; font-size: 15px;
+						font-style: italic; }
 	
-	.citation {margin: 100px 5%;}
-	.citation p {margin: 0; font-size: 30px; line-height: 30px;}
-	.picturegroup 		{	margin: 200px 0; float: left; }
+	
+	.citation {margin: 100px 5%; padding-bottom: 60px;}
+	.citation p {margin: 0; font-size: 35px; line-height: 38px;}
+	.picturegroup 		{	margin: 200px 0 100px 0; float: left; }
 
 	#read ul {margin: 20px 5%;}
 	#read li {font-size: 19px; line-height: 24px; }
 	#read li:before {   margin-left: -17px; margin-right: 5px; }
 
-	#nav a {color: black;}
+	#nav a {color: black; font-size: 16px; line-height: 22px;}
+	#ressourcestext {font-size: 16px; line-height: 22px;}
+
+
+	#imprint { margin: 100px 5%; }
 
 				
 	#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
@@ -245,30 +270,25 @@ a.active  {font-weight: bold;}
 							overflow: hidden; }
 
 	#nav, #ressourcestext {	float: left; margin-top: 450px; -webkit-overflow-scrolling: touch;  height: 400px;
-							overflow-y: auto; width: 90%; margin-bottom: 20px; padding-top: 20px; margin-left: 5%; }
+							overflow-y: auto; width: 90%; margin-bottom: 0; padding-top: 20px; margin-left: 5%; }
 	
 	#nav.activeressource {height: 330px;}
-	#ressourcestext.activeressource {height: 250px; margin-top: 510px; padding-top: 20px;}
+	#ressourcestext.activeressource {height: 270px; margin-top: 510px; padding-top: 20px;}
 	#navicon {margin: 10px 0; left: 5%; top: 3px; z-index: 9999;}
 	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
 	#ressources img {width: 100%;}
 	
 
 	#gradient {
-		height: 80px;
-		width: 100%;
-		    	
+		height: 50px; width: 100%;    	
     	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+0,e5e5e5+72,e5e5e5+100&0+0,1+72,1+100 */
-		background: -moz-linear-gradient(top,  rgba(229,229,229,0) 0%, rgba(229,229,229,1) 50%, rgba(229,229,229,1) 100%); /* FF3.6-15 */
-		background: -webkit-linear-gradient(top,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 50%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
-		background: linear-gradient(to bottom,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 50%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		background: -moz-linear-gradient(top,  rgba(229,229,229,0) 0%, rgba(229,229,229,1) 80%, rgba(229,229,229,1) 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(top,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 80%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to bottom,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 80%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00e5e5e5', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
 
-    	position: absolute;
-    	bottom: 0;
-    	pointer-events: none;
-    	display: none;
-    	z-index: 99999999;
+    	position: absolute; bottom: 0;
+    	pointer-events: none; display: none; z-index: 99999999;
 	}
 
 	
@@ -329,7 +349,7 @@ a.active  {font-weight: bold;}
 	h2 	{	font-size: 25px; line-height: 30px;  }
 	h3 	{	font-size: 10px; 	}
 
-	
+	.shortcut:after { 	 font-size: 12px;	}
 
 	p  	{	font-size: 16px; line-height: 22px; 	}
 
