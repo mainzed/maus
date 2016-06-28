@@ -14,5 +14,9 @@
 }
 
 .cm-metatag {
-    color: cornflowerblue; 
+    color: cornflowerblue;
+}
+
+.cm-include {
+    color: teal;
 }
