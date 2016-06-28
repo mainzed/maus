@@ -155,6 +155,7 @@ function resetLayout(){
             $("#ressources").removeClass();
             $("#ressources").addClass(currentclass);
         }
+        $("#read").removeClass("shiftread");
     }
     else {
         if(currentclass.slice(-1) == "m" || currentclass == "showtableofcontent"){
