@@ -43,12 +43,4 @@
 
 .shortcut:hover {text-decoration: underline;}
 
-.shortcut:after {
-    content: "\e900";
-    font-family: "icomoon" !important;
-    font-style: normal;
-    font-size: 15px;
-    font-weight: normal;
-    margin-left: 2px;
-}
 

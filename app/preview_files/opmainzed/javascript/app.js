@@ -291,7 +291,16 @@ function showTableOfContent(){
 function showGlossar(clickedword){
     
     resetRessource(false, false, true);
-
+    var scrollTop = $(window).scrollTop(),
+    elementOffset = clickedword.offset().top,
+    distance      = (elementOffset - scrollTop);
+    overlay       =  300;
+    scrollback    =  overlay - distance;
+    if (distance < overlay){
+         $('html,body').animate({
+            scrollTop: $(window).scrollTop() - scrollback
+        })
+    }
     // find tooltip text
     var identifier = clickedword.attr('id');            
     $("." + identifier).clone().appendTo("#ressourcestext");
