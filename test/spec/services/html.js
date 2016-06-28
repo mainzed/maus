@@ -838,8 +838,8 @@ describe('Service: HTMLService', function () {
         });
     });
 
-    describe("getOpMainzed", function() {
+    /*describe("getOpMainzed", function() {
         var definitions = [];
         service.getOpMainzed();
-    });
+    });*/
 });

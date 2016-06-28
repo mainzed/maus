@@ -70,6 +70,10 @@ function storyTag(stream) {
     return "metatag";
   }
 
+  if (stream.match(/^include\((.*)\)/m)) {
+      return "include";
+  }
+
   stream.eat(/./);
 }
 
