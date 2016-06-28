@@ -222,10 +222,11 @@ angular.module('meanMarkdownApp')
     $scope.onPreviewClick = function() {
 
         //console.log("load preview!");
+
         fileService.query(function(files) {
 
             var markdown = $scope.processIncludes($scope.file.markdown, files);
-
+            //console.log(markdown);
             $scope.fileCopy = angular.copy($scope.file);
             $scope.fileCopy.markdown = markdown;
 
@@ -390,7 +391,7 @@ angular.module('meanMarkdownApp')
                 // look for file
                 for (var j = 0; j < files.length; j++) {
                     var file = files[i];
-
+                    console.log(file.title);
                     if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
                         //console.log("inside");
                         if (file.markdown) {

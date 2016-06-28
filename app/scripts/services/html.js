@@ -658,7 +658,9 @@ angular.module('meanMarkdownApp')
 
             var customRenderer = new marked.Renderer();
             customRenderer.link = function (linkUrl, noIdea, text) {
-                if (!linkUrl.startsWith("#")) {
+                if (linkUrl.indexOf("#") === 0) {  // startsWith #
+                    return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+                } else {
                     return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
                 }
             };
