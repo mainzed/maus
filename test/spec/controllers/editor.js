@@ -27,71 +27,68 @@ describe('Controller: EditorCtrl', function () {
 
     describe("processIncludes()", function() {
 
-        beforeEach(function () {
-            // mock definitions request
-            httpBackend.when("GET", "/api/definitions")  // has to be same url that is used in service
-                .respond(200, [{
-                                _id: "571725cd5c6b2bd90ed10b6e",
-                                 word: "definition",
-                                __v: 0,
-                                url: "www.google.de",
-                                text: "This is the definition description!",
-                                updated_at: "2016-04-20T06:46:37.887Z",
-                                filetype: "opOlat",
-                                category: "definition",
-                                author: "John Doe"
-                        }]);
-        });
-
-        afterEach(function() {
-            try {
-                httpBackend.flush();
-                httpBackend.verifyNoOutstandingExpectation();
-                httpBackend.verifyNoOutstandingRequest();
-            } catch(e) {
-                // statements
-                //console.log(e);
-            }
-
-        });
-
-
-        it('should do nothing if no includes defined', function(done) {
+        it('should do nothing if no includes defined', function() {
             var markdown = [
                 "# heading 1",
                 "some text"
             ].join("/n");
+            var actual = scope.processIncludes(markdown, []);
 
-            var expected = markdown;
-            var actual;
-            scope.processIncludes(markdown, function() {
-                actual = markdown;
-                expect(1).toBe(2);
-                done();
-            });
-
-
-
+            expect(actual).toBe(markdown);
         });
 
         it('should replace include with content', function() {
-            var file = {
+            var files = [{
+                _id: "571725cd5c6b2bd90ed10b6e",
+                title: "some_other_file",
                 markdown: "content of included file!"
-            }
+            }];
+
             var markdown = [
                 "# heading 1",
                 "some text before",
-                "include some_other_file",
+                "include(some_other_file)",
                 "some text after"
             ].join("\n");
 
-            var actual = scope.processIncludes(markdown);
             var expected = [
                 "# heading 1",
                 "some text before",
                 "content of included file!",
                 "some text after"
             ].join("\n");
+            var actual = scope.processIncludes(markdown, files);
+
+            expect(actual).toBe(expected);
+        });
+
+        it("should replace two different includes", function() {
+            var files = [{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                    title: "some_other_file",
+                    markdown: "content of included file!"
+                },{
+                    _id: "571725cd5c6b2bd90ed12331",
+                    title: "even_another_file",
+                    markdown: "content of the other included file!"
+            }];
+
+            var markdown = [
+                "# heading 1",
+                "some text before",
+                "include(some_other_file)",
+                "include(even_another_file)",
+                "some text after"
+            ].join("\n");
+
+            var expected = [
+                "# heading 1",
+                "some text before",
+                "content of included file!",
+                "content of the other included file!",
+                "some text after"
+            ].join("\n");
+            var actual = scope.processIncludes(markdown, files);
 
             expect(actual).toBe(expected);
         });

@@ -241,7 +241,7 @@ angular.module('meanMarkdownApp')
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 '<meta charset="UTF-8">' +
-            	'<meta name="viewport" content="width=device-width, initial-scale=1">' + 
+            	'<meta name="viewport" content="width=device-width, initial-scale=1">' +
 
 
                 "<title>" + metadata.title + "</title>\n" +
@@ -253,7 +253,9 @@ angular.module('meanMarkdownApp')
                 "</head>\n"+
                 "<body>\n" +
 
-
+                '<div id="titlepicture">' +
+            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
+            	'</div>' +
             	'<div id="scrollmarker"></div>' +
 
 

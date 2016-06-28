@@ -39,7 +39,7 @@
           {{ "me" }}
         </button>
         <button ng-show="file.author !== currentUser.name" type="button" class="btn btn-link" ng-click="setFilter({ author: file.author })" ng-disabled="currentFilter['author']">
-          {{ file.author }}
+          {{ file.author.toLowerCase() }}
         </button>
       </td>
 
