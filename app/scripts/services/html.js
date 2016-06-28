@@ -412,7 +412,7 @@ angular.module('meanMarkdownApp')
 
         // reset used definitions
         //usedDefs = [];
-        //var usedEnrichments = [];
+        var usedEnrichments = [];
 
         // get all tags
         var tags = $(page).html().match(/\{(.*?)\}/g);
@@ -474,7 +474,7 @@ angular.module('meanMarkdownApp')
                     me.replaceCitation(page, enrichment, tag);
 
                 } else if (category === "definition") {
-                    me.replaceDefinition(page, shortcut, tag, enrichments);
+                    me.replaceDefinition(page, shortcut, tag, enrichments, usedEnrichments);
 
                 } else if (category === "story") {
 
@@ -607,8 +607,7 @@ angular.module('meanMarkdownApp')
         return;
     }
 
-    var usedEnrichments = [];
-    this.replaceDefinition = function(page, shortcut, tag, enrichments) {
+    this.replaceDefinition = function(page, shortcut, tag, enrichments, usedEnrichments) {
         var currentHTML;
         var snippet;
         var enrichment;
