@@ -146,12 +146,8 @@ describe('Service: HTMLService', function () {
                                 "</ul>\n" +
                                 "</div>\n";
 
-
-                definitionService.query(function(definitions) {
-
-                    var outputHtml = service.createDefinitionsTable(definitions, usedDefs);
-
-                    expect(definitions.length).toEqual(2);
+        describe('replaceStoryTags()', function() {
+                expect(definitions.length).toEqual(2);
 
                     expect(outputHtml).toEqual(expected);
                 });
@@ -840,5 +836,10 @@ describe('Service: HTMLService', function () {
 
             expect($(page).html()).toBe(expected);
         });
+    });
+
+    describe("getOpMainzed", function() {
+        var definitions = [];
+        service.getOpMainzed();
     });
 });
