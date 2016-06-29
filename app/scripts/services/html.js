@@ -634,51 +634,53 @@ angular.module('meanMarkdownApp')
             console.log("unknown enrichment with shortcut: " + shortcut);
             //throw Error("unknown enrichment with shortcut: " + shortcut);
         }
+        if (enrichment) {
+            if (enrichment.filetype === "opOlat") {
+                currentHTML = $(page).html();
 
-        if (enrichment.filetype === "opOlat") {
-            currentHTML = $(page).html();
-
-            snippet =  ["<a href=\"#definitions-table\" title=\"",
-                            enrichment.text,
-                            "\" class=\"definition\">",
-                            customWord || enrichment.word,
-                            "</a>"].join("");
+                snippet =  ["<a href=\"#definitions-table\" title=\"",
+                                enrichment.text,
+                                "\" class=\"definition\">",
+                                customWord || enrichment.word,
+                                "</a>"].join("");
 
 
-            $(page).html(currentHTML.replace(tag, snippet));
+                $(page).html(currentHTML.replace(tag, snippet));
 
-        } else if (enrichment.filetype === "opMainzed") {
-            currentHTML = $("#read", page).html();
-            snippet =  ['<span id="',
-                            enrichment._id,
-                            '" class="shortcut">',
-                            customWord || enrichment.word,
-                            '</span>'].join("");
+            } else if (enrichment.filetype === "opMainzed") {
+                currentHTML = $("#read", page).html();
+                snippet =  ['<span id="',
+                                enrichment._id,
+                                '" class="shortcut">',
+                                customWord || enrichment.word,
+                                '</span>'].join("");
 
-            $("#read", page).html(currentHTML.replace(tag, snippet));
+                $("#read", page).html(currentHTML.replace(tag, snippet));
+            }
+
+            // for opMainzed, add ressources to end of page
+            if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
+
+                var customRenderer = new marked.Renderer();
+                customRenderer.link = function (linkUrl, noIdea, text) {
+                    if (linkUrl.indexOf("#") === 0) {  // startsWith #
+                        return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+                    } else {
+                        return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+                    }
+                };
+
+                var html = marked(enrichment.text, { renderer: customRenderer });
+
+
+                $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
+            }
+
+            if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
+                usedEnrichments.push(enrichment._id);
+            }
         }
 
-        // for opMainzed, add ressources to end of page
-        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-
-            var customRenderer = new marked.Renderer();
-            customRenderer.link = function (linkUrl, noIdea, text) {
-                if (linkUrl.indexOf("#") === 0) {  // startsWith #
-                    return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
-                } else {
-                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
-                }
-            };
-
-            var html = marked(enrichment.text, { renderer: customRenderer });
-
-
-            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
-        }
-
-        if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
-            usedEnrichments.push(enrichment._id);
-        }
     }
     /**
      * wrapper to support the old function name
