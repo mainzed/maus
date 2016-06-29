@@ -56,6 +56,24 @@ $(document).ready(function() {
         }
     })    
 
+    // Tooltip
+    $('img').hover(function(e){
+            
+            
+            var text = $(this).next("figcaption").text();        
+            $('<div class="tooltip"></div>').text(text).appendTo('body');
+           
+           
+    }, function() {
+            
+                        $('.tooltip').remove();
+    }).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.tooltip')
+        .css({ top: mousey, left: mousex })
+    });
+
 
     // animierter Ankerlink
     /*
@@ -284,7 +302,14 @@ function showTableOfContent(){
     $(".activeressource").removeClass("activeressource");
     $("#nav").addClass("activeressource");
 
-     $('#nav').animate({scrollTop:$(".active").offset().top}, 1200);
+
+    console.log();
+    if($(".active").length > 0){
+        $('#nav').scrollTop($(".active").offset().top - $("#nav").offset().top);
+    }
+    else {
+        $('#nav').scrollTop(0);
+    }
   
 }
 
@@ -296,7 +321,7 @@ function showGlossar(clickedword){
     distance      = (elementOffset - scrollTop);
     overlay       =  300;
     scrollback    =  overlay - distance;
-    if (distance < overlay){
+    if (distance < overlay && mobile == true){
          $('html,body').animate({
             scrollTop: $(window).scrollTop() - scrollback
         })

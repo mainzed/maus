@@ -10,19 +10,18 @@
 }
 
 
-* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', sans-serif; letter-spacing: 0.02em;  
+* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', Arial, sans-serif; letter-spacing: 0.02em;  
 			list-style: none; text-decoration: none;  }
 html 	{	background: white;	}
 body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
 p  		{ 	font-size: 19px; line-height: 28px; margin: 10px 35%; float: left; clear: left; }
 h1 		{ 	margin: 70px 35% 10px 35%; font-weight: normal;
     		width: calc(100% - 60%); font-size: 60px; letter-spacing: 0;  }
-h2 		{ 	font-size: 25px; line-height: 28px;  font-weight: normal; margin: 75px 35% 30px 35%;
-			letter-spacing: 0; font-weight: bold;}
-h3 		{ 	font-size: 15px; line-height: 23px; margin: 10px 35% 8px 35%; font-weight: normal;   }
+h2 		{ 	font-size: 26px; line-height: 32px; margin: 75px 35% 30px 35%; letter-spacing: 0; }
+h3 		{ 	font-size: 19px; line-height: 28px; margin: 20px 35% -5px 35%;      }
 
 h4		{font-size: 15px; line-height: 20px; margin-bottom: 20px;}
-h1, h2, h3, h4 {	float: left; clear: left; padding-top: 20px;	}
+h1, h2, h3, h4 {	float: left; clear: left; padding-top: 30px;	}
 a 		{ 	font-style: none; color: blue; padding-bottom: 0; }
 a img 	{	height: 20px;	}
 figure img 	{ 	height: 200px; cursor: pointer; }
@@ -34,9 +33,9 @@ iframe 	{	float: left; margin-left: 5px; }
 
 .citation 	{ 	margin: 40px 0; border-top: 1px solid #e7e7e7; display: inline-block;
 				border-bottom: 1px solid #e7e7e7; margin: 60px 25%; padding-top: 20px; padding-bottom: 120px;}
-.citation p { 	font-size: 30px; line-height: 40px; letter-spacing: 0; 
-				margin: 0; font-weight: 700;  }
-.citation .author {font-size: 16px; line-height: 22px; float: left; margin-top: 20px; }
+.citation p { 	font-size: 35px; line-height: 45px; letter-spacing: 0; 
+				margin: 0; font-style: italic;  }
+.citation .author {font-size: 16px; line-height: 22px; float: left; margin-top: 20px; word-break: break-all; }
 #titletextbg {	background: white; width: 100%; height: 100%;}
 .title {font-size: 80px; line-height: 80px; font-family: "mainzeddisplay", sans-serif; 
 				font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
@@ -44,16 +43,16 @@ iframe 	{	float: left; margin-left: 5px; }
 .titletext {		}
 .shortcut {background: white;}
 #scrollmarker {position: absolute; top: 240px; width: 100px; height: 10px; background: transparent;}
-
+.tooltip {background: white; padding: 20px 20px 50px 20px; position:absolute; font-size: 15px; line-height: 22px;}
 
 /* listen im Text */
 .readnoshift {padding-left: 0;}
 #read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
-#read li {font-size: 19px; margin-left: 17px; margin-bottom: 10px; line-height: 28px;}
+#read li {font-size: 19px; margin-left: 23px; margin-bottom: 10px; line-height: 28px;}
 #read li:before {    
 	content: "—";
-	margin-left: -19px;
-	margin-right: 4px;
+	margin-left: -26px;
+	margin-right: 12px;
 }
 
 
@@ -63,7 +62,7 @@ iframe 	{	float: left; margin-left: 5px; }
 						height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
 #ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
 #ressourcestext 	{ 	float: right; display: block; margin: 60px 20px 0 0; width: 258px; }
-#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 20px; }
+#ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 20px; padding-bottom: 50px; }
 .figcaption 		{	color: white; position: absolute; right: 20px; bottom: 20px; text-align: right; font-size: 14px; margin-right: 0;  }
 
 #imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
@@ -89,7 +88,7 @@ iframe 	{	float: left; margin-left: 5px; }
 #nav a 			{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
 
 /*Nav Icon*/
-#navicon 		{ 	position: fixed; top: 22px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;	}
+#navicon 		{ 	position: fixed; top: 19px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;	}
 .left 			{	float: left;	}
 
 /*Close Icon*/
@@ -100,7 +99,7 @@ iframe 	{	float: left; margin-left: 5px; }
     				font-weight: normal; margin-left: 2px; }
 
 	
-#read, #footnotes {width: 100%; padding-bottom: 500px; margin: 0 auto; overflow: hidden; }
+#read, #footnotes {width: 100%; padding-bottom: 200px; margin: 0 auto; overflow: hidden; }
 #footnotes, #imprint { float: left; clear: left;}
 
 #imprint {margin: 100px 35%;}
@@ -178,7 +177,7 @@ a.active  {font-weight: bold;}
 
 
 /* small screens */
-@media screen and (max-width: 1300px) {
+@media screen and (max-height: 700px) {
 	
 	/* Animation Classes */
 	.showpictures { margin-left: -1100px; background: black !important; }
@@ -232,12 +231,12 @@ a.active  {font-weight: bold;}
 	
 	h1 	{ 	margin: 20px 5% 0 5%; width: calc(100% - 10%); margin-top: 128px; font-size: 45px; line-height: 50px; letter-spacing: 0;  }
 	h2 	{	margin: 30px 5%; font-size: 29px; line-height: 34px; letter-spacing: 0; width: 90%; }
-	h3 	{	margin: 3px 5%; padding-top: 25px; font-size: 12px; 	}
+	h3 	{	margin: 3px 5%; padding-top: 25px; font-size: 19px; line-height: 27px; 	}
 
 	/* navigation zone */
 	h1,h2,h3 {padding-top: 70px;}
 
-	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 0 5%;	}
+	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 20px 5%;	}
 	
 	figure img {	width: 100%; height: auto;	}
 	.picturegroup figure {margin-left: 0;}
@@ -255,13 +254,14 @@ a.active  {font-weight: bold;}
 
 	#read ul {margin: 20px 5%;}
 	#read li {font-size: 19px; line-height: 24px; }
-	#read li:before {   margin-left: -17px; margin-right: 5px; }
+	#read li:before {   margin-left: -24px; margin-right: 10px; }
 
 	#nav a {color: black; font-size: 16px; line-height: 22px;}
 	#ressourcestext {font-size: 16px; line-height: 22px;}
 
 
 	#imprint { margin: 100px 5%; }
+	.tooltip {display: none;}
 
 				
 	#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
@@ -274,7 +274,7 @@ a.active  {font-weight: bold;}
 	
 	#nav.activeressource {height: 330px;}
 	#ressourcestext.activeressource {height: 270px; margin-top: 510px; padding-top: 20px;}
-	#navicon {margin: 10px 0; left: 5%; top: 3px; z-index: 9999;}
+	#navicon {margin: 10px 0; left: 4.7%; top: 3px; z-index: 9999;}
 	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
 	#ressources img {width: 100%;}
 	
@@ -347,11 +347,11 @@ a.active  {font-weight: bold;}
 	
 	h1 	{ 	font-size: 35px; line-height: 40px;  }
 	h2 	{	font-size: 25px; line-height: 30px;  }
-	h3 	{	font-size: 10px; 	}
+	h3 	{	font-size: 16px; line-height: 22px; 	}
 
 	.shortcut:after { 	 font-size: 12px;	}
 
-	p  	{	font-size: 16px; line-height: 22px; 	}
+	p  	{	font-size: 16px; line-height: 22px; margin: 10px 5%; 	}
 
 	#read li {font-size: 16px; line-height: 22px; }
 	#nav, #ressourcestext {width: 85%;}
