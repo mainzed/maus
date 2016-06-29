@@ -412,6 +412,16 @@ describe('Service: HTMLService', function () {
 
             service.replaceEnrichmentTags(page, enrichments);
             expect($(page).html()).toBe(expected);
+
+            // should have appended two new spans
+            expect($("#read span", page).length).toBe(2);
+
+            // should have appended two new divs to footnotes
+            expect($("#footnotes div", page).length).toBe(2);
+
+            // check div content
+            expect($("#footnotes div h4", page).last().html()).toBe("someDefinedWordWithALink");
+
         });
 
         it("should replace definition with custom word using legacy definition syntax");
@@ -520,6 +530,17 @@ describe('Service: HTMLService', function () {
 
         });
 
+        it("should reset used definitions for each new function call");
+
+        it("should not throw error if enrichment does not exist", function() {
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{definition: def1}</div></div>');
+            var handler = function() {
+                service.replaceEnrichmentTags(page, []);
+            };
+            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+        })
     });
 
     describe("replaceEnrichmentTags() for opOlat", function() {
@@ -636,50 +657,6 @@ describe('Service: HTMLService', function () {
         it('should replace legacy syntax story tag')
     });
 
-
-        // it('should replace story tag for opOlat', function() {
-        //     var enrichments = [
-        //         {
-        //             _id: "571725cd5c6b2bd90ed10b6e",
-        //              word: "story1",
-        //             __v: 0,
-        //             text: "story text!",
-        //             updated_at: "2016-04-20T06:46:37.887Z",
-        //             filetype: "opOlat",
-        //             category: "story",
-        //             author: "John Doe"
-        //         }
-        //     ];
-        //
-        //     var inputHtml = "content before story {story: story1} content after!";  // string is not a defined definition
-        //     var expected = "content before story <div class=\"story\" id=\"story1\">story text!</div> content after!";
-        //
-        //     var outputHtml = service.replaceEnrichmentTags(inputHtml, enrichments);
-        //
-        //     expect(enrichments.length).toBe(1);
-        //     expect(outputHtml).toBe(expected);
-        //
-        // });
-
-        /*it('should replace definition tag',function() {
-
-            var inputHtml = "<p>This string with a {definition: def1}!</p>";
-            var expected = "<p>This string with a <a href=\"#definitions-table\" title=\"This is the definition description!\" class=\"definition\">someDefinedWord</a>!</p>";
-            var outputHtml;
-            var definitions = definitionService.query();
-
-            var outputHtml = service.replaceDefinitionTags(inputHtml, definitions);
-            //done();
-            //expect(definitions[0].word).toEqual("someDefinedWord");
-            //console.log(definitions);
-
-            expect(outputHtml).toEqual(expected);
-
-            //expect(1).toBe(2);
-            //console.log("done!");
-
-        });*/
-
     describe("getMetadata()", function() {
 
         it("should extract title and clean markdown", function() {
@@ -711,6 +688,16 @@ describe('Service: HTMLService', function () {
 
             expect(result.created).toEqual("05.05.2015");
             expect(result.updated).toEqual("06.05.2015");
+            expect(result.markdown).toEqual(expected);
+        });
+
+        it("should extract cover-description and clean markdown", function() {
+            var markdown = "@cover-description: some description";
+            var expected = '';
+
+            var result = service.getMetadata(markdown);
+
+            expect(result.coverDescription).toEqual("some description");
             expect(result.markdown).toEqual(expected);
         });
 
@@ -884,12 +871,39 @@ describe('Service: HTMLService', function () {
 
             expect($(page).html()).toBe(expected);
         });
+
     });
 
-    /*describe("getOpMainzed", function() {
-        var definitions = [];
-        service.getOpMainzed();
-    });*/
+    describe("getOpMainzed()", function() {
 
-    it("should add div titlepicture");
+        it("should add all required divs and uls", function() {
+            var file = {
+                markdown: "some markdown text"
+            };
+            //var expected = ""
+            var actual = service.getOpMainzed(file, [], {});
+            var page = $('<div>' + actual + '</div>');
+
+            expect($("div#titlepicture", page).length).toBe(1);
+            expect($("div#gradient", page).length).toBe(1);
+            expect($("div#footnotes", page).length).toBe(1);
+            expect($("div#read", page).length).toBe(1);
+            expect($("ul#nav", page).length).toBe(1);
+            expect($("div#titletextbg", page).length).toBe(1);
+            expect($("div#ressourcestext", page).length).toBe(1);
+            expect($("div#imagecontainer", page).length).toBe(1);
+        });
+
+        it("should append converted markdown to read element", function() {
+            var file = {
+                markdown: "some markdown text"
+            };
+            var actual = service.getOpMainzed(file, [], {});
+            var page = $('<div>' + actual + '</div>');
+            expect($("#read", page).html()).toBe('<p>some markdown text</p>\n');
+        });
+
+
+    });
+
 });

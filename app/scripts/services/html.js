@@ -187,6 +187,12 @@ angular.module('meanMarkdownApp')
             cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
         }
 
+        matches = cleanMarkdown.match(/^@cover-description:(.*)/);
+        if (matches) {
+            result.coverDescription = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
         result.markdown = cleanMarkdown;
         //console.log(result);
         return result;
@@ -459,7 +465,7 @@ angular.module('meanMarkdownApp')
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
                     if (!enrichment) {
                         console.log("unknown enrichment with shortcut: " + shortcut);
-                        throw Error("unknown enrichment with shortcut: " + shortcut);
+                        //throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
                     me.replacePicture(tag, page, enrichment);
 
@@ -469,7 +475,7 @@ angular.module('meanMarkdownApp')
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
                     if (!enrichment) {
                         console.log("unknown enrichment with shortcut: " + shortcut);
-                        throw Error("unknown enrichment with shortcut: " + shortcut);
+                        //throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
                     me.replaceCitation(page, enrichment, tag);
 
@@ -626,7 +632,7 @@ angular.module('meanMarkdownApp')
 
         if (!enrichment) {
             console.log("unknown enrichment with shortcut: " + shortcut);
-            throw Error("unknown enrichment with shortcut: " + shortcut);
+            //throw Error("unknown enrichment with shortcut: " + shortcut);
         }
 
         if (enrichment.filetype === "opOlat") {

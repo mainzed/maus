@@ -383,6 +383,7 @@ angular.module('meanMarkdownApp')
     $scope.processIncludes = function(markdown, files) {
 
         var includes = markdown.match(/include\((.*)\)/g);
+
         if (includes) {
             for (var i = 0; i < includes.length; i++) {
                 //var include = includes[i];
@@ -390,8 +391,8 @@ angular.module('meanMarkdownApp')
 
                 // look for file
                 for (var j = 0; j < files.length; j++) {
-                    var file = files[i];
-                    console.log(file.title);
+                    var file = files[j];
+                    //console.log(files);
                     if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
                         //console.log("inside");
                         if (file.markdown) {
