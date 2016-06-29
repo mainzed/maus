@@ -21,6 +21,7 @@ angular.module('meanMarkdownApp')
 
         $scope.files = fileService.query();
         $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
+
         //console.log($scope.filetypes);
         /*if ($scope.currentUser.group !== "admin") {
 

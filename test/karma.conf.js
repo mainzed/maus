@@ -48,8 +48,9 @@ module.exports = function(config) {
       // endbower
       'app/scripts/**/*.js',
 
-      'test/spec/services/html.js',  // replace services with ** later
-      'test/spec/controllers/*.js'  // replace services with ** later
+      //'test/spec/services/html.js',  // replace services with ** later
+      'test/spec/services/*.js',
+      //'test/spec/controllers/*.js'  // replace services with ** later
     ],
 
     // define custom reportes (use mocha-like reporter)

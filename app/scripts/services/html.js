@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (definitionService, filetypeService) {
+  .service('HTMLService', function (definitionService, filetypeService, MetadataService) {
 
     //var usedDefs;  // store IDs of actually used defs
     /**
@@ -94,7 +94,9 @@ angular.module('meanMarkdownApp')
      */
     this.getOpMainzed = function(file, definitions) {
 
-        var metadata = this.getMetadata(file.markdown);
+        var metadata = MetadataService.getAndReplace(file.markdown);
+        var markdown = metadata.markdown;
+        //var coverDescription = metada.
 
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
@@ -152,50 +154,70 @@ angular.module('meanMarkdownApp')
 
     };
 
-    /**
-     * extracts metadata from markdown and returns object containing all
-     * metadata as well as the cleaned up markdown
-     */
-    this.getMetadata = function(markdown) {
-        var result = {};
+    this.getOpMainzed2 = function(file, definitions) {
 
-        var cleanMarkdown = markdown;
+        var metadata = MetadataService.getAndReplace(file.markdown);
 
-        // extract metadata from markdown
-        var matches;
-        matches = cleanMarkdown.match(/^@title:(.*)/);
-        if (matches) {
-            result.title = matches[1].trim();  // save
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");  // remove
+        var conversion = new OpOlatConversion();
 
-        }
-        matches = cleanMarkdown.match(/^@author:(.*)/);
-        if (matches) {
-            result.author = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+        conversion.appendToPage([
+            
+        ].join(""))
 
-        matches = cleanMarkdown.match(/^@created:(.*)/);
-        if (matches) {
-            result.created = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+        // create template
+        var htmlString = '<div id="ressourceswrapper">' +
+                        '<div id="imagecontainer"></div>' +
+        		        '<div id="ressources">' +
+        			        '<span id="navicon">' +
+        			            '<span class="icon-toc"></span>' +
+        			        '</span>' +
 
-        matches = cleanMarkdown.match(/^@updated:(.*)/);
-        if (matches) {
-            result.updated = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+                			'<span id="closeicon">' +
+                				'<span class="icon-close"></span>' +
+                			'</span>' +
 
-        matches = cleanMarkdown.match(/^@cover-description:(.*)/);
-        if (matches) {
-            result.coverDescription = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+                			'<div id="titletextbg">' +
+                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
+                				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
+                			'</div>' +
 
-        result.markdown = cleanMarkdown;
-        //console.log(result);
-        return result;
+                            '<div id="gradient"></div>' +
+                            // navigation
+                            "<ul id=\"nav\"></ul>\n" +
+
+                            // glossar texts get appended here
+        			        '<div id="ressourcestext"></div>' +
+
+        		        '</div>' +
+        	        '</div>' +
+
+                    // markdown content goes here
+                    '<div id="read"></div>\n' +
+
+                    // glossar resources go here and will be activated via js
+                    "<div id='footnotes'></div>\n";
+
+        // make jQuery compatible
+        var page = $("<div>" + htmlString + "</div>");
+
+
+        // metadata.author, metadata.title
+        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
+
+        // add markdown content to page
+        $("#read", page).append(html);
+
+        // enrich page: add headings to navigation
+        this.createOpMainzedNavigation(page);
+
+        // enrich page: convert tags and add resources to end of document
+        this.replaceEnrichmentTags(page, definitions);
+
+        // get html from page via jquery
+        //return page.html();
+
+        return this.wrapOpMainzedHTML(page.html(), metadata);
+
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {

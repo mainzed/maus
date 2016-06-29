@@ -26,6 +26,8 @@ angular.module('meanMarkdownApp')
         fileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
 
+            $scope.file.active = $scope.currentUser.name;
+
             // lock editor if news
             if ($scope.file.type === "news" && $scope.currentUser.group !== "admin") {
                 $scope.editor.setOption("readOnly", true);
@@ -33,8 +35,13 @@ angular.module('meanMarkdownApp')
 
             // get defined assets/snippets to determine what tabs to display in enrichments table
             $scope.assets = filetypeService.getAssetsForFiletype(file.type);
-        });
 
+            // save active state
+            fileService.update({ id: $scope.file._id }, $scope.file, function(newFile) {
+                console.log(newFile);
+            });
+
+        });
 
     };
 
@@ -192,22 +199,41 @@ angular.module('meanMarkdownApp')
         var html;
         definitionService.query(function(definitions) {
 
-            if ($scope.file.type === "opOlat") {
-                // convert markdown to html
-                html = HTMLService.getOlat($scope.file, definitions, config);
-                html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
-            } else if ($scope.file.type === "opMainzed") {
-                html = HTMLService.getOpMainzed($scope.file, definitions);
-                //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
-            }
 
 
-            // init download
-            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
-            var downloadLink = angular.element('<a></a>');
-            downloadLink.attr('href', window.URL.createObjectURL(blob));
-            downloadLink.attr('download', filename);
-            downloadLink[0].click();
+            fileService.query(function(files) {
+
+                var markdown = $scope.processIncludes($scope.file.markdown, files);
+
+                //console.log(markdown);
+                $scope.fileCopy = angular.copy($scope.file);
+                $scope.fileCopy.markdown = markdown;
+
+                if ($scope.file.type === "opOlat") {
+                    // convert markdown to html
+                    html = HTMLService.getOlat($scope.fileCopy, definitions, config);
+                    html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
+                } else if ($scope.file.type === "opMainzed") {
+                    html = HTMLService.getOpMainzed($scope.fileCopy, definitions);
+                    //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                }
+
+
+                // init download
+                var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
+                var downloadLink = angular.element('<a></a>');
+                downloadLink.attr('href', window.URL.createObjectURL(blob));
+                downloadLink.attr('download', filename);
+                downloadLink[0].click();
+
+            });
+
+
+
+
+
+
+
         });
     };
 
@@ -499,7 +525,22 @@ angular.module('meanMarkdownApp')
      */
     $(window).bind('beforeunload', function(){
         if ($scope.unsavedChanges) {
+
+            /*$scope.file.active = "";
+
+            // save active state
+            fileService.update({ id: $scope.file._id }, $scope.file, function(newFile) {
+                console.log(newFile);
+
+            });*/
+
             return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
+
+
+
         }
+        /*if ($scope.unsavedChanges) {
+            console.log("still unsaved!");
+        }*/
     });
 });

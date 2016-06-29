@@ -688,51 +688,6 @@ describe('Service: HTMLService', function () {
         it('should replace legacy syntax story tag')
     });
 
-    describe("getMetadata()", function() {
-
-        it("should extract title and clean markdown", function() {
-            var markdown = "@title: Title1\n# heading 1\nThis is markdown!";
-            var expected = '# heading 1\nThis is markdown!';
-
-            var result = service.getMetadata(markdown);
-
-            expect(result.title).toEqual("Title1");
-            expect(result.markdown).toEqual(expected);
-        });
-
-        it("should extract author and clean markdown", function() {
-            var markdown = "@author: John Doe\n# heading 1\nThis is markdown!";
-            var expected = '# heading 1\nThis is markdown!';
-
-            var result = service.getMetadata(markdown);
-
-            expect(result.author).toEqual("John Doe");
-            //expect(result.author).toEqual("John Doe");
-            expect(result.markdown).toEqual(expected);
-        });
-
-        it("should extract dates and clean markdown", function() {
-            var markdown = "@created: 05.05.2015\n@updated: 06.05.2015\n# heading 1\nThis is markdown!";
-            var expected = '# heading 1\nThis is markdown!';
-
-            var result = service.getMetadata(markdown);
-
-            expect(result.created).toEqual("05.05.2015");
-            expect(result.updated).toEqual("06.05.2015");
-            expect(result.markdown).toEqual(expected);
-        });
-
-        it("should extract cover-description and clean markdown", function() {
-            var markdown = "@cover-description: some description";
-            var expected = '';
-
-            var result = service.getMetadata(markdown);
-
-            expect(result.coverDescription).toEqual("some description");
-            expect(result.markdown).toEqual(expected);
-        });
-
-    })
     describe("convertOpMainzedMarkdownToHTML()", function() {
 
         it("should return html", function() {
