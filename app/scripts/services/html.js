@@ -187,6 +187,12 @@ angular.module('meanMarkdownApp')
             cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
         }
 
+        matches = cleanMarkdown.match(/^@cover-description:(.*)/);
+        if (matches) {
+            result.coverDescription = matches[1].trim();
+            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
+        }
+
         result.markdown = cleanMarkdown;
         //console.log(result);
         return result;
@@ -241,6 +247,9 @@ angular.module('meanMarkdownApp')
                 "<html lang=\"de\">\n" +
                 "<head>\n" +
                 '<meta charset="UTF-8">' +
+            	'<meta name="viewport" content="width=device-width, initial-scale=1">' +
+
+
                 "<title>" + metadata.title + "</title>\n" +
 
                 '<link rel="stylesheet" href="style/reader.css">\n' +
@@ -250,7 +259,9 @@ angular.module('meanMarkdownApp')
                 "</head>\n"+
                 "<body>\n" +
 
-
+                '<div id="titlepicture">' +
+            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
+            	'</div>' +
             	'<div id="scrollmarker"></div>' +
 
 
@@ -407,7 +418,7 @@ angular.module('meanMarkdownApp')
 
         // reset used definitions
         //usedDefs = [];
-        //var usedEnrichments = [];
+        var usedEnrichments = [];
 
         // get all tags
         var tags = $(page).html().match(/\{(.*?)\}/g);
@@ -454,7 +465,7 @@ angular.module('meanMarkdownApp')
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
                     if (!enrichment) {
                         console.log("unknown enrichment with shortcut: " + shortcut);
-                        throw Error("unknown enrichment with shortcut: " + shortcut);
+                        //throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
                     me.replacePicture(tag, page, enrichment);
 
@@ -464,12 +475,12 @@ angular.module('meanMarkdownApp')
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
                     if (!enrichment) {
                         console.log("unknown enrichment with shortcut: " + shortcut);
-                        throw Error("unknown enrichment with shortcut: " + shortcut);
+                        //throw Error("unknown enrichment with shortcut: " + shortcut);
                     }
                     me.replaceCitation(page, enrichment, tag);
 
                 } else if (category === "definition") {
-                    me.replaceDefinition(page, shortcut, tag, enrichments);
+                    me.replaceDefinition(page, shortcut, tag, enrichments, usedEnrichments);
 
                 } else if (category === "story") {
 
@@ -602,8 +613,7 @@ angular.module('meanMarkdownApp')
         return;
     }
 
-    var usedEnrichments = [];
-    this.replaceDefinition = function(page, shortcut, tag, enrichments) {
+    this.replaceDefinition = function(page, shortcut, tag, enrichments, usedEnrichments) {
         var currentHTML;
         var snippet;
         var enrichment;
@@ -622,7 +632,7 @@ angular.module('meanMarkdownApp')
 
         if (!enrichment) {
             console.log("unknown enrichment with shortcut: " + shortcut);
-            throw Error("unknown enrichment with shortcut: " + shortcut);
+            //throw Error("unknown enrichment with shortcut: " + shortcut);
         }
 
         if (enrichment.filetype === "opOlat") {
@@ -653,7 +663,9 @@ angular.module('meanMarkdownApp')
 
             var customRenderer = new marked.Renderer();
             customRenderer.link = function (linkUrl, noIdea, text) {
-                if (!linkUrl.startsWith("#")) {
+                if (linkUrl.indexOf("#") === 0) {  // startsWith #
+                    return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+                } else {
                     return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
                 }
             };

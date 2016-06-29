@@ -220,14 +220,14 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
-        console.log("load preview!");
-        // check file for includes
-        $scope.processIncludes($scope.file.markdown, function(markdown) {
-            console.log("works!");
-            // create copy if file object to prevent markdown in editor to display
-            // included content
-            $scope.fileCopy = angular.copy($scope.file);
 
+        //console.log("load preview!");
+
+        fileService.query(function(files) {
+
+            var markdown = $scope.processIncludes($scope.file.markdown, files);
+            //console.log(markdown);
+            $scope.fileCopy = angular.copy($scope.file);
             $scope.fileCopy.markdown = markdown;
 
             $scope.processHtml($scope.fileCopy, function(previewPath) {
@@ -236,14 +236,8 @@ angular.module('meanMarkdownApp')
                 $scope.openDesktopPreview();
             });
 
-        }, function(error) {
-            console.log(error);
-            $scope.processHtml($scope.file, function(previewPath) {
-                // success
-                $scope.previewPath = previewPath;
-                $scope.openDesktopPreview();
-            });
         });
+
     };
 
     /**
@@ -364,9 +358,11 @@ angular.module('meanMarkdownApp')
         //$scope.hasChanges = false;
 
         $scope.definitions.forEach(function(definition) {
-            console.log(definition);
+
+
             //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             if (definition._id) {
+                //console.log(definition);
                 definitionService.update({id: definition._id}, definition);
 
             } else {  // new definition
@@ -386,43 +382,31 @@ angular.module('meanMarkdownApp')
         });
     };
 
-    $scope.processIncludes = function(markdown, success, failure) {
+    $scope.processIncludes = function(markdown, files) {
 
-        var filename;
-        var include = markdown.match(/^include\((.*)\)/m);
+        var includes = markdown.match(/include\((.*)\)/g);
 
-        if (include) {
-            filename = include[1];
+        if (includes) {
+            for (var i = 0; i < includes.length; i++) {
+                //var include = includes[i];
+                var filename = includes[i].match(/include\((.*)\)/m)[1];
 
-            // get file
-            fileService.query(function(files) {
-                var fileContent = false;
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
+                // look for file
+                for (var j = 0; j < files.length; j++) {
+                    var file = files[j];
+                    //console.log(files);
                     if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
+                        //console.log("inside");
                         if (file.markdown) {
-                            fileContent = markdown.replace(include[0], file.markdown);
+                            //console.log(includes[i]);
+                            markdown = markdown.replace(includes[i], file.markdown);
                             break;
                         }
                     }
                 }
-                if (fileContent) {
-                    success(fileContent);
-                } else {
-                    failure("Could not include: " + filename + ". not found!");
-                }
-
-            }, function(error) {
-                // error
-                //console.log("failed inside!");
-                failure(error);
-            });
-        } else {
-            // no include found, just return markdown as is
-            success(markdown);
+            }
         }
-        return;
-
+        return markdown;
     };
 
 
