@@ -211,6 +211,7 @@ router.put('/definitions/:id', function (req, res) {
         word: definition.word,
         author: definition.author,
         text: definition.text,
+        title: definition.title,
         license: definition.license,
         url: definition.url,
         filetype: definition.filetype

@@ -363,6 +363,9 @@ angular.module('meanMarkdownApp')
             //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             if (definition._id) {
                 //console.log(definition);
+                if (definition.category === "picture") {
+                    console.log(definition);
+                }
                 definitionService.update({id: definition._id}, definition);
 
             } else {  // new definition
