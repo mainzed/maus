@@ -532,7 +532,7 @@ describe('Service: HTMLService', function () {
 
         it("should reset used definitions for each new function call");
 
-        it("should not throw error if enrichment does not exist", function() {
+        it("should not throw error if definition does not exist", function() {
 
             // make jQuery compatible
             var page = $('<div><div id="read">{definition: def1}</div></div>');
@@ -541,6 +541,37 @@ describe('Service: HTMLService', function () {
             };
             expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
         })
+
+        it("should not throw error if legacy definition does not exist", function() {
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{def1}</div></div>');
+            var handler = function() {
+                service.replaceEnrichmentTags(page, []);
+            };
+            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+        })
+
+        it("should not throw error if picture enrichment does not exist", function() {
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picture: pic1}</div></div>');
+            var handler = function() {
+                service.replaceEnrichmentTags(page, []);
+            };
+            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+        });
+
+        it("should not throw error if citation enrichment does not exist", function() {
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{citation: cit1}</div></div>');
+            var handler = function() {
+                service.replaceEnrichmentTags(page, []);
+            };
+            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: cit1"));
+        });
+
     });
 
     describe("replaceEnrichmentTags() for opOlat", function() {

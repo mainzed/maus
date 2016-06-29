@@ -13,7 +13,7 @@ var User = require('../models/user');
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
-    console.log("checking!");
+    //console.log("checking!");
 	// if user is authenticated in the session, call the next() to call the next request handler
 	// Passport adds this method to request object. A middleware is allowed to add properties to
 	// request and response objects
@@ -211,6 +211,7 @@ router.put('/definitions/:id', function (req, res) {
         word: definition.word,
         author: definition.author,
         text: definition.text,
+        license: definition.license,
         url: definition.url,
         filetype: definition.filetype
     };
