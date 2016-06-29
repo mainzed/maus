@@ -84,8 +84,9 @@ iframe 	{	float: left; margin-left: 5px; }
 #nav 			{	float: right; display: none; padding-top: 40px; overflow: auto; width: 258px; margin-right: 0; padding-right: 20px;  }
 #nav li ul 		{	margin-left: 30px;	}
 #nav li 		{	margin-bottom: 30px;	}
-#nav ul li 		{	margin-bottom: 0;	}
-#nav a 			{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
+#nav ul li 		{	margin: 7px 0;	}
+#nav li a 	{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
+#nav ul li a 	{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
 
 /*Nav Icon*/
 #navicon 		{ 	position: fixed; top: 19px; left: 20px; width: 15px; height: 15px; cursor: pointer; display: block;	}
@@ -249,7 +250,7 @@ a.active  {font-weight: bold;}
 	
 	
 	.citation {margin: 100px 5%; padding-bottom: 60px;}
-	.citation p {margin: 0; font-size: 35px; line-height: 38px;}
+	.citation p {margin: 0; font-size: 30px; line-height: 38px; letter-spacing: 0.02em;}
 	.picturegroup 		{	margin: 200px 0 100px 0; float: left; }
 
 	#read ul {margin: 20px 5%;}
@@ -257,6 +258,10 @@ a.active  {font-weight: bold;}
 	#read li:before {   margin-left: -24px; margin-right: 10px; }
 
 	#nav a {color: black; font-size: 16px; line-height: 22px;}
+	#nav ul li 		{	margin: 0;	}
+	#nav li a 	{	border: 0; color: black; font-weight: bold; line-height: 24px; margin-bottom: 5px; display: block;	}
+	#nav ul li a 	{	border: 0; color: black; font-weight: normal; font-size: 15px; line-height: 21px; margin-bottom: 0;	}
+
 	#ressourcestext {font-size: 16px; line-height: 22px;}
 
 
@@ -355,13 +360,13 @@ a.active  {font-weight: bold;}
 
 	#read li {font-size: 16px; line-height: 22px; }
 	#nav, #ressourcestext {width: 85%;}
-
+	#nav ul li 		{	margin: 7px 0;	}
 	
 
 	.title {font-size: 32px; line-height: 30px; bottom: 50px; }
 	#titlepicture  {background-position-x: -100px;}
 
-	.citation p {font-size: 28px; line-height: 28px;}
+	.citation p {font-size: 23px; line-height: 28px;}
 
 	.startanimationm {
 		margin-top: -630px;
