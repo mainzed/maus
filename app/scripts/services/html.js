@@ -316,7 +316,7 @@ angular.module('meanMarkdownApp')
                             '</div>' +
 
                             '<div>' +
-                                'Gestaltung: Matthias Duffner mit Axel Kunz und Sarah Pittroff' +
+                                'Gestaltung: Matthias Dufner mit Axel Kunz und Sarah Pittroff' +
                             '</div>' +
 
                         '</div>' +
@@ -422,22 +422,7 @@ angular.module('meanMarkdownApp')
             // used title attr for caption, author etc
             var tokens = title.split("; ");
             var caption = tokens[0].replace(/\\/g, "");
-            //var author = tokens[1];
-            //var license = tokens[2];
-            //var url = tokens[3];
-            //var title = alt;
             var preCaption = "Abb." + ImageCounter;
-
-            // not needed for rendering, but to access them later
-            /*images.push({
-                url: url,
-                caption: caption,
-                author: author,
-                license: license,
-                title: title,
-                preCaption: preCaption
-            });*/
-            //var html = "";
 
             ImageCounter++;
 
@@ -488,18 +473,6 @@ angular.module('meanMarkdownApp')
                     shortcut = content;
                 }
 
-                /*var currentHTML;
-                if (enrichment.filetype === "opMainzed") {
-                    currentHTML = $("#read", page).html();
-                    if (currentHTML.length < 1) {
-                        console.log("No div with id #read found in page");
-                        throw Error("No div with id #read found in page");
-                    }
-                } else {
-                    currentHTML = $(page).html();
-                    //console.log(currentHTML);
-                }*/
-
                 //var snippet;
                 var enrichment;
 
@@ -512,7 +485,6 @@ angular.module('meanMarkdownApp')
                         me.replacePicture(tag, page, enrichment);
                     }
 
-
                 } else if (category === "citation") {
                     // TODO: configure in filetypes what enrichments are available for
                     // each filetype
@@ -520,7 +492,6 @@ angular.module('meanMarkdownApp')
                     if (enrichment) {
                         me.replaceCitation(page, enrichment, tag);
                     }
-
 
                 } else if (category === "definition") {
                     me.replaceDefinition(page, shortcut, tag, enrichments, usedEnrichments);
@@ -933,6 +904,12 @@ angular.module('meanMarkdownApp')
                 }
             }
         });
+
+        // prepend link to cover
+        $("ul#nav", page).prepend('<li><a href="#titlepicture">Cover</a></li>');
+
+        // append link to imprint
+        $("ul#nav", page).append('<li><a href="#imprint">Impressum</a></li>');
 
         return;
     };
