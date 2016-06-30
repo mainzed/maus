@@ -587,13 +587,14 @@ angular.module('meanMarkdownApp')
         var figureString;
         var authorString = "";
         var licenseString = "";
+        var metadataString = "";
 
         if (enrichment.author) {
-            authorString = '<span class="author">' + enrichment.author + '</span>';
+            authorString = '<span class="author">Autor: ' + enrichment.author + '</span>';
         }
 
         if (enrichment.license) {
-            licenseString = '<span class="license">' + enrichment.license + '</span>';
+            licenseString = '<span class="license">Lizenz: ' + enrichment.license + '</span>';
         }
 
         if (!enrichment.title) {
@@ -601,13 +602,21 @@ angular.module('meanMarkdownApp')
             enrichment.title = "picture";
         }
 
+        if (authorString || licenseString) {
+            metadataString = [
+                '<div class="picture-metadata">',
+                    authorString,
+                    licenseString,
+                '</div>'
+            ].join("");
+        }
+
         figureString = [
             '<figure id="' + enrichment._id + '">',
                 '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">',
                 '<figcaption>',
                     enrichment.text,
-                    authorString,
-                    licenseString,
+                    metadataString,
                 '</figcaption>',
             '</figure>'
         ].join("");
@@ -728,23 +737,15 @@ angular.module('meanMarkdownApp')
 
                 var html = marked(enrichment.text, { renderer: customRenderer });
 
+                var metadataString = getDefinitionFootnoteString(enrichment);
 
                 $("#footnotes", page).append([
                     "<div class=\"" + enrichment._id + "\">",
                         "<h4>" + enrichment.word + "</h4>",
                         html,
-                        //TODO: <span class="description">
+                        metadataString,
                     "</div>"
                 ].join(""));
-
-                // append author to footnoes div
-                if (enrichment.author) {
-                    $("#footnotes div." + enrichment._id, page).append('<span class="author">' + enrichment.author + '</span>');
-                }
-
-                if (enrichment.author) {
-                    $("#footnotes div." + enrichment._id, page).append('<span class="website">' + enrichment.url + '</span>');
-                }
             }
 
             if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
@@ -752,6 +753,39 @@ angular.module('meanMarkdownApp')
             }
         }
     };
+
+
+    // private function
+    function getDefinitionFootnoteString(enrichment) {
+
+        var authorString = "";
+        var websiteString = "";
+        var metadataString;
+
+        if (enrichment.author) {
+            authorString = '<span class="author">Autor: ' + enrichment.author + '</span>';
+        }
+
+        if (enrichment.url) {
+            websiteString = [
+                '<span class="website">',
+                    'Website: ',
+                    '<a href="' + enrichment.url + '" target="_blank">' + enrichment.url + '</a>',
+                '</span>'
+            ].join("");
+        }
+
+        if (authorString || websiteString) {
+            metadataString = [
+                '<div class="definition-metadata">',
+                    authorString,
+                    websiteString,
+                '</div>'
+            ].join("");
+        }
+
+        return metadataString;
+    }
 
     /**
      * wrapper to support the old function name

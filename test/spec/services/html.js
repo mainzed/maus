@@ -294,6 +294,52 @@ describe('Service: HTMLService', function () {
             expect($(page).html()).toBe(expected);
         });
 
+        it('should replace definition tag with author and website', function() {
+            var definitions = [{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                    word: "someDefinedWord",
+                    url: "www.google.de",
+                    text: "This is the definition description!",
+                    //updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "definition",
+                    author: "John Doe"
+            }];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
+
+            var expected = [
+                "<div id=\"read\">",
+                    "<p>",
+                        "String with a ",
+                        "<span id=\"" + definitions[0]._id + "\" class=\"shortcut\">",
+                            definitions[0].word,
+                        "</span>",
+                        "!",
+                    "</p>",
+                '</div>',
+
+                '<div id=\"footnotes\">',
+                    '<div class=\"' + definitions[0]._id + '\">',
+                        '<h4>' + definitions[0].word + '</h4>',
+                        '<p>' + definitions[0].text + '</p>\n',
+                        '<div class="definition-metadata">',
+                            '<span class="author">Autor: John Doe</span>',
+                            '<span class="website">Website: ',
+                                '<a href="www.google.de" target="_blank">www.google.de</a>',
+                            '</span>',
+                        '</div>',
+                    '</div>',
+                '</div>'
+            ].join("");
+
+            //page = $("<div>" + inputHtml + "</div>");
+
+            service.replaceEnrichmentTags(page, definitions);
+            expect($(page).html()).toBe(expected);
+        });
+
         it('should replace definition tag that contains a link', function() {
             var enrichments = [
                 {
@@ -479,8 +525,10 @@ describe('Service: HTMLService', function () {
                         '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
                         '<figcaption>',
                             enrichments[0].text,
-                            '<span class="author">John Doe</span>',
-                            '<span class="license">license1</span>',
+                            '<div class="picture-metadata">',
+                                '<span class="author">Autor: John Doe</span>',
+                                '<span class="license">Lizenz: license1</span>',
+                            '</div>',
                         '</figcaption>',
                     '</figure>',
                 '</div>'
@@ -578,8 +626,10 @@ describe('Service: HTMLService', function () {
                             '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
                             '<figcaption>',
                                 enrichments[0].text,
-                                '<span class="author">John Doe</span>',
-                                '<span class="license">cc-by-sa 3.0</span>',
+                                '<div class="picture-metadata">',
+                                    '<span class="author">Autor: John Doe</span>',
+                                    '<span class="license">Lizenz: cc-by-sa 3.0</span>',
+                                '</div>',
                             '</figcaption>',
                         '</figure>',
 
@@ -587,8 +637,10 @@ describe('Service: HTMLService', function () {
                             '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
                             '<figcaption>',
                                 enrichments[1].text,
-                                '<span class="author">Jane Doe</span>',
-                                '<span class="license">cc-by-sa 4.0</span>',
+                                '<div class="picture-metadata">',
+                                    '<span class="author">Autor: Jane Doe</span>',
+                                    '<span class="license">Lizenz: cc-by-sa 4.0</span>',
+                                '</div>',
                             '</figcaption>',
                         '</figure>',
                     '</div>',
