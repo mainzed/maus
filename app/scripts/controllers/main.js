@@ -52,7 +52,7 @@ angular.module('meanMarkdownApp')
                     file.active = active.users;
                 } else {
                     // if file not found, remove active state
-                    file.active = false;
+                    file.active = [];
                 }
             });
         });

@@ -46,7 +46,6 @@ module.exports.updateFile = function(id, file, callback) {
         author: file.author,
         title: file.title,
         type: file.type,
-        active: file.active,
         markdown: file.markdown,
         updated_by: file.updated_by,
         private: file.private
