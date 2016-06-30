@@ -304,6 +304,27 @@ angular.module('meanMarkdownApp')
                 				'</address>' +
                 			'</div>' +
                 		'</div>' +
+
+                        '<div class="persons">' +
+
+                            '<div>' +
+                                'Herausgeber: Kai-Christian Bruhn' +
+                            '</div>' +
+
+                            '<div>' +
+                                'Redaktion: Anne Klammt' +
+                            '</div>' +
+
+                            '<div>' +
+                                'Gestaltung: Matthias Duffner mit Axel Kunz und Sarah Pittroff' +
+                            '</div>' +
+
+                        '</div>' +
+
+                        '<div>' +
+                            'PDF DOI #####' +
+                        '</div>' +
+
                 	'</div>' +
 
                 '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
