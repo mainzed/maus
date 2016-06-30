@@ -554,6 +554,17 @@ angular.module('meanMarkdownApp')
                             '</figure>';
 
                 $(".picturegroup", page).last().append(figureString);
+
+                // append license, source/website, author
+                if (enrichment.author) {
+                    var authorString = '<span class="author">' + enrichment.author + '</span>';
+                    $("figure#" + enrichment._id, page).find("figcaption").append(authorString);
+                }
+
+                if (enrichment.license) {
+                    var licenseString = '<span class="license">' + enrichment.license + '</span>';
+                    $("figure#" + enrichment._id, page).find("figcaption").append(licenseString);
+                }
             }
         });
     };
