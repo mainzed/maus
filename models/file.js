@@ -8,10 +8,12 @@ var fileSchema = new Schema({
     title: String,
     markdown: String,
     type: String,
-    active: { type: String, default: "" },
+    active: { type: String, default: "none" },
     private: { type: Boolean, default: false },
     updated_by: { type: String, default: "author" },
-    updated_at: { type: Date, default: Date.now }
+    //updated_at: { type: Date, default: Date.now }
+},{
+    timestamps: true  // creates updatedAt and createdAt
 });
 
 var File = module.exports = mongoose.model('File', fileSchema);
@@ -59,3 +61,39 @@ module.exports.deleteFile = function(id, callback) {
     };
     File.remove(query, callback);
 };
+
+// check for avtivity status every couple minutes
+setInterval(function() {
+    console.log("check for active state");
+    File.find(function(err, files) {
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (file.active !== "none" && file.updatedAt) {
+                var now = new Date();
+                var minutes = Math.round((now.getTime() - file.updatedAt.getTime()) / 1000 / 60);
+
+                // reset active state back to none if file hasnt changed
+                // within last 10 minutes
+                if (minutes > 20) {
+                    console.log("file hasnt been changed within last 20 minutes, resetting active state");
+
+                    var update = {
+                        author: file.author,
+                        title: file.title,
+                        type: file.type,
+                        active: "none",
+                        markdown: file.markdown,
+                        updated_by: file.updated_by,
+                        private: file.private
+                    };
+
+                    File.findOneAndUpdate({_id: file._id}, update, function() {
+                        console.log("reset of active state successfull!");
+                    });
+
+                }
+
+            }
+        }
+    });
+}, 5000);

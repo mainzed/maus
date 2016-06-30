@@ -24,13 +24,13 @@
     <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author.toLowerCase() === currentUser.name.toLowerCase() || file.private === false">
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
-          <!--<span ng-show="file.active" class="active-file" style="color: red;">{{ file.active }}</span> -->{{ file.title }} 
+          <span ng-show="file.active !== 'none'" class="active-file" style="color: red; margin-right: 5px;">{{ file.active }}</span>{{ file.title }}
         </a>
       </td>
 
       <td>
-        <button type="button" class="btn btn-link" ng-click="setFilter({ updated_at: file.updated_at })" ng-disabled="currentFilter['updated_at']">
-          {{ getFormattedDate(file.updated_at) }}
+        <button type="button" class="btn btn-link" ng-click="setFilter({ updated_at: file.updated_at })" ng-disabled="currentFilter['updatedAt']">
+          {{ getFormattedDate(file.updatedAt) }}
         </button>
       </td>
 

@@ -38,7 +38,7 @@ angular.module('meanMarkdownApp')
 
             // save active state
             fileService.update({ id: $scope.file._id }, $scope.file, function(newFile) {
-                console.log(newFile);
+                //console.log(newFile);
             });
 
         });
@@ -110,11 +110,17 @@ angular.module('meanMarkdownApp')
                 scope: $scope
             }).then(function(success) {
                 // user confirmed to go back to files
+                $scope.removeActiveState(function() {
+                    console.log("remove state");
+                });
                 $location.path("/files");
             }, function(error) {
                 // user cancelled
             });
         } else {  // no changes, go back without asking
+            $scope.removeActiveState(function() {
+                console.log("remove state");
+            });
             $location.path("/files");
         }
     };
@@ -438,8 +444,6 @@ angular.module('meanMarkdownApp')
         return markdown;
     };
 
-
-
     $scope.onHelpClick = function() {
         $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");
     };
@@ -455,6 +459,15 @@ angular.module('meanMarkdownApp')
         $scope.onDefinitionClick();
     });*/
 
+    $scope.removeActiveState = function(success) {
+        // remove active state from file
+        $scope.file.active = "none";
+
+        // save active state
+        fileService.update({ id: $scope.file._id }, $scope.file, function(newFile) {
+            success(newFile);
+        });
+    };
 
     // link hotkey
     $(document).keydown(function (e) {
@@ -524,21 +537,20 @@ angular.module('meanMarkdownApp')
      * prompt when trying to refresh with unsaved changes
      */
     $(window).bind('beforeunload', function(){
-        if ($scope.unsavedChanges) {
+        // this.removeActiveState(function() {
+        //     //console.log("unload");
+        //     if ($scope.unsavedChanges) {
+        //         //this.removeActiveState();
+        //
+        //
+        //     }
+        // });
+        //this.removeActiveState(function() {
+        //    console.log("remove active");
+        //});
+        //console.log("want to close!");
+        return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
 
-            /*$scope.file.active = "";
-
-            // save active state
-            fileService.update({ id: $scope.file._id }, $scope.file, function(newFile) {
-                console.log(newFile);
-
-            });*/
-
-            return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
-
-
-
-        }
         /*if ($scope.unsavedChanges) {
             console.log("still unsaved!");
         }*/

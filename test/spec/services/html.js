@@ -518,7 +518,7 @@ describe('Service: HTMLService', function () {
             // make jQuery compatible
             var page = $('<div><div id="read">{citation: citation1}</div></div>');
 
-            var expected = '<div id="read"><div class="citation">' +
+            var expected = '<div id="read"><div class="citation hyphenate">' +
                             '<p>' + enrichments[0].text + '</p>\n' +
                             '<span class="author">' + enrichments[0].author + '</span>' +
                             '</div></div>';
@@ -692,7 +692,7 @@ describe('Service: HTMLService', function () {
 
         it("should return html", function() {
             var markdown = "# heading 1\nThis is markdown!";
-            var expected = '<h1 id="section-1">heading 1</h1>\n' +
+            var expected = '<h1 id="section-1" class="hyphenate">heading 1</h1>\n' +
                             "<p>This is markdown!</p>\n";
 
             expect(service.convertOpMainzedMarkdownToHTML(markdown)).toEqual(expected);

@@ -161,7 +161,7 @@ angular.module('meanMarkdownApp')
         var conversion = new OpOlatConversion();
 
         conversion.appendToPage([
-            
+
         ].join(""))
 
         // create template
@@ -333,15 +333,15 @@ angular.module('meanMarkdownApp')
                 h2Counter = 0;
                 h3Counter = 0;
 
-                return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
+                return '<h1 id="section-' + h1Counter + '" class="hyphenate">' + text + '</h1>\n';
             } else if (level === 2) {
                 h2Counter++;
                 h3Counter = 0;
-                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
+                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '" class="hyphenate">' + text + '</h2>\n';
 
             } else if (level === 3) {
                 h3Counter++;
-                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
+                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '" class="hyphenate">' + text + '</h3>\n';
             }
         };
 
@@ -596,7 +596,7 @@ angular.module('meanMarkdownApp')
             title: "Zitate"
         }
         */
-        var citationString = '<div class="citation">' +
+        var citationString = '<div class="citation hyphenate">' +
                                 marked(enrichment.text) +
                                 '<span class="author">' + enrichment.author + '</span>' +
                                 '</div>';

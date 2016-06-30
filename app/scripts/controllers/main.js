@@ -233,7 +233,6 @@ angular.module('meanMarkdownApp')
 
     $scope.onDeleteUserClick = function(id) {
         UserService.remove({id: id}, function() {
-
             // remove file from local array without reloading
             var index = _.findIndex($scope.users, {_id: id});
             $scope.users.splice(index, 1);
@@ -276,5 +275,47 @@ angular.module('meanMarkdownApp')
             alert("Bitte Chrome benutzen!!");
         }
     }
+
+    // refresh active state every couple seconds
+    setInterval(function() {
+      //console.log("loading files!!!");
+      // query for active files
+      //$scope.files.shift();
+      //console.log()
+      if ($location.url() === "/files") {
+          var copyFiles = $scope.files;
+
+          for (var i = 0; i < copyFiles.length; i++) {
+              var currentFile = copyFiles[i];
+
+              fileService.get({id: currentFile._id }, function(newFile) {
+
+                  if (currentFile.active !== newFile.active) {
+                      //console.log(newFile.title + " has changed status from: " + currentFile.active + " to : " + newFile.active);
+                      //console.log(newFile.active);
+                      // only update active, nothing else
+                      $scope.files.forEach(function(f) {
+                          if (f._id === newFile._id) {
+                              f.active = newFile.active;
+                          }
+                      });
+
+                  } else if (newFile.active === "none") {
+                      $scope.files.forEach(function(f) {
+                          if (f._id === newFile._id) {
+                              f.active = newFile.active;
+                          }
+                      });
+                  }
+              });
+          }
+
+      };
+      //$scope.files = fileService.query();
+  }, 10000);
+
+
+
+
 
   });
