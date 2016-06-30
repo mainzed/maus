@@ -282,9 +282,10 @@ angular.module('meanMarkdownApp')
                 "<body>\n" +
 
                 '<div id="titlepicture">' +
-            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
+            		'<p class="coverdescription titletext">' + metadata.coverDescription + '</p>' +
             	'</div>' +
-            	'<div id="scrollmarker"></div>' +
+
+                '<div id="scrollmarker"></div>' +
 
 
                 html +
@@ -312,6 +313,7 @@ angular.module('meanMarkdownApp')
 
                 '<script src="javascript/app.js"></script>' +
                 '<script src="javascript/markactive.js"></script>' +
+                '<script src="javascript/hyphenate.js"></script>' +
 
                 "</body>\n"+
                 "</html>";
@@ -846,69 +848,6 @@ angular.module('meanMarkdownApp')
         }
         return;
     };
-
-    /**
-     * returns a html div element containing an
-     * unordered list with all level 1 headings.
-     * requires a list of heading objects
-     */
-    /*this.createTableOfContent = function(bodyHtml, headings, stories) {
-        stories = stories || false;
-        var html = "";
-
-        html += "<div id=\"headings-table\" class=\"headings-table\">\n" +
-                "<ul>\n";
-
-        // link to top if page title exists
-        if (html.match("id=\"page-title\"")) {
-            html += "<li><a href=\"#page-title\">Top</a></li>\n";
-            html += "<li class=\"seperator\"></li>\n";
-        }
-
-
-        // headings
-        if (headings.length > 0) {
-            // create html
-            headings.forEach(function(heading) {
-                if (heading.level === 1) {  // skip all but h1
-                    html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" +
-                        heading.text +
-                        "</a></li>\n";
-                }
-            });
-        }
-
-        // add stories
-        if (stories.length > 0) {
-            html += "<li class=\"seperator\"></li>\n";
-            stories.forEach(function(story) {
-                html += "<li class=\"story\"><a href=\"#story" + story.counter + "\">" + story.name + "</a></li>\n";
-            });
-        }
-
-        // add seperator if images, links or definitions table exist
-        if (bodyHtml.match("id=\"images-table\"") || bodyHtml.match("id=\"links-table\"") || bodyHtml.match("id=\"definitions-table\"")) {
-            html += "<li class=\"seperator\"></li>\n";
-        }
-
-        // add link to images-table if it exists
-        if (bodyHtml.match("id=\"images-table\"")) {
-            html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
-        }
-
-        // add link to links-table if it exists
-        if (bodyHtml.match(/id=\"links-table\"/)) {
-            html += "<li><a href=\"#links-table\">Links</a></li>\n";
-        }
-
-        // add link to definitions-table if it exists
-        if (bodyHtml.match("id=\"definitions-table\"")) {
-            html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
-        }
-
-        html += "</ul>\n</div>\n";
-        return html;
-    };*/
 
     /**
      * requires pages (jquery selection from htmlString)
