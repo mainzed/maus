@@ -8,7 +8,8 @@ var path = require('path');
 // mongoose models
 var File = require('../models/file');
 var Definition = require('../models/definition');
-var ArchivedFile = require('../models/archivedFile');
+var ArchivedFile = require('../models/archivedfile');
+var ActiveFile = require('../models/activefile');
 var User = require('../models/user');
 
 //Used for routes that must be authenticated.
@@ -284,6 +285,59 @@ router.delete('/archivedfiles/:id', function (req, res) {
             throw err;
         }
         res.json(archivedFile);
+    });
+});
+
+// active files
+router.get('/activefiles', function (req, res) {
+    ActiveFile.find(function(err, activefiles) {
+        if (err) {
+            throw err;
+        }
+        res.json(activefiles);
+    });
+});
+
+router.get('/activefiles/:id', function (req, res) {
+    var id = req.params.id;
+    ActiveFile.find({fileID: id}, function(err, activefiles) {
+        if (err) {
+            throw err;
+        }
+        res.json(activefiles);
+    });
+});
+
+router.post('/activefiles', function (req, res) {
+    var file = req.body;
+    ActiveFile.create(file, function(err, activefile) {
+        if (err) {
+            throw err;
+        }
+        res.json(activefile);
+    });
+});
+
+
+router.put('/activefiles/:id', function (req, res) {
+    var id = req.params.id;
+    var file = req.body;
+
+    ActiveFile.findOneAndUpdate({_id: id}, file, function(err, activefile) {
+        if (err) {
+            throw err;
+        }
+        res.json(activefile);
+    });
+});
+
+router.delete('/activefiles/:id', function (req, res) {
+    var id = req.params.id;
+    ActiveFile.remove({_id: id}, function(err, activefile) {
+        if (err) {
+            throw err;
+        }
+        res.json(activefile);
     });
 });
 

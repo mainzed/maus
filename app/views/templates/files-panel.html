@@ -24,7 +24,7 @@
     <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author.toLowerCase() === currentUser.name.toLowerCase() || file.private === false">
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
-          <span ng-show="file.active !== 'none'" class="active-file" style="color: red; margin-right: 5px;">{{ file.active }}</span>{{ file.title }}
+          <span ng-show="file.active" style="color: red; margin-right: 5px;" ng-repeat="username in file.active">{{ username }}</span>{{ file.title }}
         </a>
       </td>
 

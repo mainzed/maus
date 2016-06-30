@@ -8,7 +8,7 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService, UserService) {
+  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService, UserService, ActiveFileService) {
 
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -19,7 +19,10 @@ angular.module('meanMarkdownApp')
         $scope.currentUser = AuthService.getUser();
         $scope.group = AuthService.getUserGroup();
 
-        $scope.files = fileService.query();
+        $scope.files = fileService.query(function() {
+            $scope.appendActiveState();
+        });
+
         $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
 
         //console.log($scope.filetypes);
@@ -32,6 +35,27 @@ angular.module('meanMarkdownApp')
             //console.log($scope.filetypes);
         }*/
         $scope.checkforfirefox();
+    };
+
+    $scope.appendActiveState = function() {
+        ActiveFileService.query(function(activeFiles) {
+            // loop files
+            $scope.files.forEach(function(file) {
+
+
+                var active = _.find(activeFiles, function(o) {
+                    return o.fileID === file._id;
+                });
+
+                // set active if not already
+                if (active) {
+                    file.active = active.users;
+                } else {
+                    // if file not found, remove active state
+                    file.active = false;
+                }
+            });
+        });
     };
 
     $scope.onCreateNewFile = function() {
@@ -274,44 +298,14 @@ angular.module('meanMarkdownApp')
         if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
             alert("Bitte Chrome benutzen!!");
         }
-    }
+    };
 
     // refresh active state every couple seconds
     setInterval(function() {
-      //console.log("loading files!!!");
-      // query for active files
-      //$scope.files.shift();
-      //console.log()
-      if ($location.url() === "/files") {
-          var copyFiles = $scope.files;
-
-          for (var i = 0; i < copyFiles.length; i++) {
-              var currentFile = copyFiles[i];
-
-              fileService.get({id: currentFile._id }, function(newFile) {
-
-                  if (currentFile.active !== newFile.active) {
-                      //console.log(newFile.title + " has changed status from: " + currentFile.active + " to : " + newFile.active);
-                      //console.log(newFile.active);
-                      // only update active, nothing else
-                      $scope.files.forEach(function(f) {
-                          if (f._id === newFile._id) {
-                              f.active = newFile.active;
-                          }
-                      });
-
-                  } else if (newFile.active === "none") {
-                      $scope.files.forEach(function(f) {
-                          if (f._id === newFile._id) {
-                              f.active = newFile.active;
-                          }
-                      });
-                  }
-              });
-          }
-
-      };
-      //$scope.files = fileService.query();
-  }, 60000);///
+        console.log("refreshing active files");
+        if ($location.url() === "/files") {
+            $scope.appendActiveState();
+        }
+    }, 30000);
 
   });
