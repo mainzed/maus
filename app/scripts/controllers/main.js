@@ -312,10 +312,6 @@ angular.module('meanMarkdownApp')
 
       };
       //$scope.files = fileService.query();
-  }, 10000);
-
-
-
-
+  }, 60000);///
 
   });
