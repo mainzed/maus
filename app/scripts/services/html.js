@@ -95,7 +95,7 @@ angular.module('meanMarkdownApp')
     this.getOpMainzed = function(file, definitions) {
 
         var metadata = MetadataService.getAndReplace(file.markdown);
-        var markdown = metadata.markdown;
+        //var markdown = metadata.markdown;
         //var coverDescription = metada.
 
         // create template
@@ -485,21 +485,19 @@ angular.module('meanMarkdownApp')
 
                 } else if (category === "picture") {
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                    if (!enrichment) {
-                        console.log("unknown enrichment with shortcut: " + shortcut);
-                        //throw Error("unknown enrichment with shortcut: " + shortcut);
+                    if (enrichment) {
+                        me.replacePicture(tag, page, enrichment);
                     }
-                    me.replacePicture(tag, page, enrichment);
+
 
                 } else if (category === "citation") {
                     // TODO: configure in filetypes what enrichments are available for
                     // each filetype
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                    if (!enrichment) {
-                        console.log("unknown enrichment with shortcut: " + shortcut);
-                        //throw Error("unknown enrichment with shortcut: " + shortcut);
+                    if (enrichment) {
+                        me.replaceCitation(page, enrichment, tag);
                     }
-                    me.replaceCitation(page, enrichment, tag);
+
 
                 } else if (category === "definition") {
                     me.replaceDefinition(page, shortcut, tag, enrichments, usedEnrichments);
@@ -507,8 +505,10 @@ angular.module('meanMarkdownApp')
                 } else if (category === "story") {
 
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+                    if (enrichment) {
+                        me.replaceStory(page, enrichment, tag);
+                    }
 
-                    me.replaceStory(page, enrichment, tag);
                 }
 
             });
@@ -559,13 +559,13 @@ angular.module('meanMarkdownApp')
     this.replacePicture = function(tag, page, enrichment) {
         if (enrichment.filetype !== "opMainzed") {
             console.log("filetype " + enrichment.filetype + "currently does not support picture tags");
-            throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
+            //throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
         }
         if (!enrichment.title) {
             console.log("missing image alt attribute");
             enrichment.title = "picture";
         }
-        var figureString = '<figure>\n' +
+        var figureString = '<figure id="' + enrichment._id + '">\n' +
                         '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
                         '<figcaption>\n' +
                             enrichment.text +
@@ -575,18 +575,34 @@ angular.module('meanMarkdownApp')
         // replace tag with newly created HTML
         var currentHTML = $("#read", page).html();
         $("#read", page).html(currentHTML.replace(tag, figureString));
+
+        // append license, source/website, author
+        if (enrichment.author) {
+            var authorString = '<span class="author">' + enrichment.author + '</span>';
+            $("figure#" + enrichment._id, page).find("figcaption").append(authorString);
+        }
+
+        if (enrichment.license) {
+            var licenseString = '<span class="license">' + enrichment.license + '</span>';
+            $("figure#" + enrichment._id, page).find("figcaption").append(licenseString);
+        }
+
+        /*if (enrichment.author) {
+            $("#footnotes div." + enrichment._id, page).append('<span class="website">' + enrichment.url + '</span>');
+        }*/
+
     };
 
     this.replaceCitation = function(page, enrichment, tag) {
         if (!enrichment.text || !enrichment.author) {
             console.log("text or author missing for enrichment: " + enrichment.word);
-            throw Error("text or author missing for enrichment: " + enrichment.word);
+            //throw Error("text or author missing for enrichment: " + enrichment.word);
         }
 
         var currentHTML = $("#read", page).html();
         if (currentHTML.length < 1) {
             console.log("No div with id #read found in page");
-            throw Error("No div with id #read found in page");
+            //throw Error("No div with id #read found in page");
         }
 
         // TODO: replace with cöass story when opOlat
@@ -652,10 +668,6 @@ angular.module('meanMarkdownApp')
         // get enrichment
         enrichment = this.findEnrichmentByShortcut(enrichments, shortcut);
 
-        if (!enrichment) {
-            console.log("unknown enrichment with shortcut: " + shortcut);
-            //throw Error("unknown enrichment with shortcut: " + shortcut);
-        }
         if (enrichment) {
             if (enrichment.filetype === "opOlat") {
                 currentHTML = $(page).html();
@@ -695,15 +707,30 @@ angular.module('meanMarkdownApp')
                 var html = marked(enrichment.text, { renderer: customRenderer });
 
 
-                $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
+                $("#footnotes", page).append([
+                    "<div class=\"" + enrichment._id + "\">",
+                        "<h4>" + enrichment.word + "</h4>",
+                        html,
+                        //TODO: <span class="description">
+                    "</div>"
+                ].join(""));
+
+                // append author to footnoes div
+                if (enrichment.author) {
+                    $("#footnotes div." + enrichment._id, page).append('<span class="author">' + enrichment.author + '</span>');
+                }
+
+                if (enrichment.author) {
+                    $("#footnotes div." + enrichment._id, page).append('<span class="website">' + enrichment.url + '</span>');
+                }
             }
 
             if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
                 usedEnrichments.push(enrichment._id);
             }
         }
+    };
 
-    }
     /**
      * wrapper to support the old function name
      */
