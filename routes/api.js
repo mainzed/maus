@@ -8,8 +8,8 @@ var path = require('path');
 // mongoose models
 var File = require('../models/file');
 var Definition = require('../models/definition');
-var ArchivedFile = require('../models/archivedfile');
-var ActiveFile = require('../models/activefile');
+var ArchivedFile = require('../models/archivedFile');
+var ActiveFile = require('../models/activeFile');
 var User = require('../models/user');
 
 //Used for routes that must be authenticated.
