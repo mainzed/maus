@@ -541,30 +541,8 @@ angular.module('meanMarkdownApp')
                 console.log("Picture '" + shortcut + "' not found!");
                 //throw Error("Picturegroup needs at least two pictures.");
             } else {
-
-                if (!enrichment.title) {
-                    console.log("missing image alt attribute");
-                    enrichment.title = "picture";
-                }
-                var figureString = '<figure>\n' +
-                                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
-                                '<figcaption>\n' +
-                                    enrichment.text +
-                                '</figcaption>\n' +
-                            '</figure>';
-
-                $(".picturegroup", page).last().append(figureString);
-
-                // append license, source/website, author
-                if (enrichment.author) {
-                    var authorString = '<span class="author">' + enrichment.author + '</span>';
-                    $("figure#" + enrichment._id, page).find("figcaption").append(authorString);
-                }
-
-                if (enrichment.license) {
-                    var licenseString = '<span class="license">' + enrichment.license + '</span>';
-                    $("figure#" + enrichment._id, page).find("figcaption").append(licenseString);
-                }
+                var pictureString = getPictureString(enrichment);
+                $(".picturegroup", page).last().append(pictureString);
             }
         });
     };
@@ -574,37 +552,47 @@ angular.module('meanMarkdownApp')
             console.log("filetype " + enrichment.filetype + "currently does not support picture tags");
             //throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
         }
+
+        var pictureString = getPictureString(enrichment);
+
+        // replace tag with newly created HTML
+        var currentHTML = $("#read", page).html();
+        $("#read", page).html(currentHTML.replace(tag, pictureString));
+
+    };
+
+    // private function
+    function getPictureString(enrichment) {
+        var figureString;
+        var authorString = "";
+        var licenseString = "";
+
+        if (enrichment.author) {
+            authorString = '<span class="author">' + enrichment.author + '</span>';
+        }
+
+        if (enrichment.license) {
+            licenseString = '<span class="license">' + enrichment.license + '</span>';
+        }
+
         if (!enrichment.title) {
             console.log("missing image alt attribute");
             enrichment.title = "picture";
         }
-        var figureString = '<figure id="' + enrichment._id + '">\n' +
-                        '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
-                        '<figcaption>\n' +
-                            enrichment.text +
-                        '</figcaption>\n' +
-                    '</figure>';
-        //console.log(currentHTML);
-        // replace tag with newly created HTML
-        var currentHTML = $("#read", page).html();
-        $("#read", page).html(currentHTML.replace(tag, figureString));
 
-        // append license, source/website, author
-        if (enrichment.author) {
-            var authorString = '<span class="author">' + enrichment.author + '</span>';
-            $("figure#" + enrichment._id, page).find("figcaption").append(authorString);
-        }
+        figureString = [
+            '<figure id="' + enrichment._id + '">',
+                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">',
+                '<figcaption>',
+                    enrichment.text,
+                    authorString,
+                    licenseString,
+                '</figcaption>',
+            '</figure>'
+        ].join("");
 
-        if (enrichment.license) {
-            var licenseString = '<span class="license">' + enrichment.license + '</span>';
-            $("figure#" + enrichment._id, page).find("figcaption").append(licenseString);
-        }
-
-        /*if (enrichment.author) {
-            $("#footnotes div." + enrichment._id, page).append('<span class="website">' + enrichment.url + '</span>');
-        }*/
-
-    };
+        return figureString;
+    }
 
     this.replaceCitation = function(page, enrichment, tag) {
         if (!enrichment.text || !enrichment.author) {

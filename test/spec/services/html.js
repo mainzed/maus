@@ -438,7 +438,53 @@ describe('Service: HTMLService', function () {
             // make jQuery compatible
             var page = $('<div><div id="read">{picture: pic1}</div></div>');
 
-            var expected = '<div id="read"><figure id="571725cd5c6b2bd90ed10b6e">\n<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">\n<figcaption>\n' + enrichments[0].text + '</figcaption>\n</figure></div>';
+            var expected = [
+                '<div id="read">',
+                    '<figure id="571725cd5c6b2bd90ed10b6e">',
+                        '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
+                        '<figcaption>',
+                            enrichments[0].text,
+                        '</figcaption>',
+                    '</figure>',
+                '</div>'
+            ].join("");
+
+            service.replaceEnrichmentTags(page, enrichments);
+
+            expect(enrichments.length).toBe(1);
+            expect($(page).html()).toBe(expected);
+        });
+
+        it('should replace picture tag with license and author', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                    word: "pic1",
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    license: "license1",
+                    author: "John Doe"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picture: pic1}</div></div>');
+
+            var expected = [
+                '<div id="read">',
+                    '<figure id="571725cd5c6b2bd90ed10b6e">',
+                        '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
+                        '<figcaption>',
+                            enrichments[0].text,
+                            '<span class="author">John Doe</span>',
+                            '<span class="license">license1</span>',
+                        '</figcaption>',
+                    '</figure>',
+                '</div>'
+            ].join("");
 
             service.replaceEnrichmentTags(page, enrichments);
 
@@ -450,43 +496,104 @@ describe('Service: HTMLService', function () {
         it('should replace picturegroup tag', function() {
             var enrichments = [
                 {
-                    _id: "571725cd5c6b2bd90ed10b6e",
+                    _id: "571725cd5c6b2bd90ed1231236e",
                      word: "pic1",
-                    __v: 0,
                     url: "www.some-picture.com",
                     text: "This is the caption.",
                     title: "This is the alt",
-                    updated_at: "2016-04-20T06:46:37.887Z",
                     filetype: "opMainzed",
-                    category: "picture",
-                    author: "John Doe"
+                    category: "picture"
                 },{
                     _id: "571725cd5c6b2bd90ed10b6e",
                      word: "pic2",
-                    __v: 0,
                     url: "www.some-other-picture.com",
                     text: "This is the caption.",
                     title: "This is the alt",
-                    updated_at: "2016-04-20T06:46:37.887Z",
                     filetype: "opMainzed",
-                    category: "picture",
-                    author: "John Doe"
+                    category: "picture"
                 }
             ];
 
             // make jQuery compatible
             var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
 
-            var expected = '<div id="read"><div class="picturegroup">' +
+            var expected = [
+                '<div id="read">',
+                    '<div class="picturegroup">',
+                        '<figure id="571725cd5c6b2bd90ed1231236e">',
+                            '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
+                            '<figcaption>',
+                                enrichments[0].text,
+                            '</figcaption>',
+                        '</figure>',
 
-            // figure 1
-            '<figure>\n<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">\n<figcaption>\n' + enrichments[0].text + '</figcaption>\n</figure>' +
+                        '<figure id="571725cd5c6b2bd90ed10b6e">',
+                            '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
+                            '<figcaption>',
+                                enrichments[1].text,
+                            '</figcaption>',
+                        '</figure>',
+                    '</div>',
+                '</div>'
+            ].join("");
 
-            // figure 2
-            '<figure>\n<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">\n<figcaption>\n' + enrichments[1].text +
+            service.replaceEnrichmentTags(page, enrichments);
 
-            '</figcaption>\n</figure>' +
-            '</div></div>';
+            expect($(page).html()).toBe(expected);
+
+        });
+
+        it('should replace picturegroup with licenses and authors', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed1231236e",
+                     word: "pic1",
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "John Doe",
+                    license: "cc-by-sa 3.0"
+                },{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic2",
+                    url: "www.some-other-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    filetype: "opMainzed",
+                    category: "picture",
+                    author: "Jane Doe",
+                    license: "cc-by-sa 4.0"
+                }
+            ];
+
+            // make jQuery compatible
+            var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
+
+            var expected = [
+                '<div id="read">',
+                    '<div class="picturegroup">',
+                        '<figure id="571725cd5c6b2bd90ed1231236e">',
+                            '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
+                            '<figcaption>',
+                                enrichments[0].text,
+                                '<span class="author">John Doe</span>',
+                                '<span class="license">cc-by-sa 3.0</span>',
+                            '</figcaption>',
+                        '</figure>',
+
+                        '<figure id="571725cd5c6b2bd90ed10b6e">',
+                            '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
+                            '<figcaption>',
+                                enrichments[1].text,
+                                '<span class="author">Jane Doe</span>',
+                                '<span class="license">cc-by-sa 4.0</span>',
+                            '</figcaption>',
+                        '</figure>',
+                    '</div>',
+                '</div>'
+            ].join("");
 
             service.replaceEnrichmentTags(page, enrichments);
 
