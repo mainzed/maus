@@ -410,7 +410,7 @@ router.get('/definitionsdownload', function (req, res) {
 
 		});
 		try {
-			fs.unlinkSync(path.join(__dirname, "../definitions.zip"));
+			fs.unlinkSync(path.join(__dirname, "../export_folder/definitions.zip"));
 		} catch(err) {
 			//
 		}
@@ -419,11 +419,11 @@ router.get('/definitionsdownload', function (req, res) {
 		var zip5 = new EasyZip();
 		zip5.zipFolder('export_folder',function(){
 			//console.log("works");
-			zip5.writeToFile('definitions.zip');
+			zip5.writeToFile(path.join(__dirname, "../export_folder/definitions.zip"));
 
 			res.setHeader('Content-Type', 'application/zip');
 			res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
-			res.sendFile(path.join(__dirname, "../definitions.zip"));
+			res.sendFile(path.join(__dirname, "../export_folder/definitions.zip"));
 		});
 
 		//var data = zip.generate({base64:false,compression:'DEFLATE'});
