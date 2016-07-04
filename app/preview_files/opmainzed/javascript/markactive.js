@@ -1,3 +1,6 @@
+// code is based on the example found on
+// http://stackoverflow.com/questions/9979827/change-active-menu-item-on-page-scroll
+
 // Cache selectors
 var topMenu = $("#nav"),
     // All list items
@@ -8,7 +11,7 @@ var topMenu = $("#nav"),
       if (item.length) { return item; }
     });
 
-// Bind to scroll
+
 $(window).scroll(function(){
    // Get container scroll position
    var fromTop = $(this).scrollTop() + 100;

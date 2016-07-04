@@ -8,11 +8,11 @@ $(document).ready(function() {
     //$("html").niceScroll();
 
     //lazyload
-    /*
+    
     $("img").lazyload({
         threshold : 200
     });
-    */
+    
     
     // initScroller();
     $("#read").addClass("readnoshift");
@@ -57,34 +57,21 @@ $(document).ready(function() {
     })    
 
     // Tooltip
-    $('img').hover(function(e){
-            
-            
-            var text = $(this).next("figcaption").text();        
-            $('<div class="tooltip"></div>').text(text).appendTo('body');
-           
-           
-    }, function() {
-            
-                        $('.tooltip').remove();
-    }).mousemove(function(e) {
-        var mousex = e.pageX + 20; //Get X coordinates
-        var mousey = e.pageY + 10; //Get Y coordinates
-        $('.tooltip')
-        .css({ top: mousey, left: mousex })
-    });
+    if(!mobile && !is_iPad){
+        $('img').hover(function(e){
+            var text = $(this).next("figcaption").html();        
+            $('<div class="tooltip"></div>').html(text).appendTo('body');
+        }, function() {
+            $('.tooltip').remove();
+        }).mousemove(function(e) {
+            var mouseX = e.pageX + 20; 
+            var mouseY = e.pageY + 10; 
+            $('.tooltip')
+                .css({ top: mouseY, left: mouseX })
+        });
+    }
 
-
-    // animierter Ankerlink
-    /*
-    $('a').click(function(){
-        $('body, html').animate({
-            scrollTop: $( $(this).attr('href') ).offset().top
-        }, 1200);
-        return false;
-    });
-    */
-  
+     
  
 
 }); //close ready
@@ -105,6 +92,11 @@ $(document).ready(function() {
             scrollspeed = 600;
         }
         $('html,body').animate({scrollTop:$(this.hash).offset().top}, scrollspeed);
+
+        //windows phone 
+        setTimeout(function(){
+            window.scrollTo(0, $(this.hash).offset().top);
+        }, scrollspeed + 80)
     });
 
 
@@ -152,6 +144,20 @@ $(document).ready(function() {
     $('.picture').click(function(e){
         zoomPicture($(this));
         e.stopPropagation();
+    });
+
+
+
+    // exceptions
+    $( ".picturegroup" ).each( function(){
+        console.log($(this).prev());
+    });
+
+    // exceptions
+    $( "h1" ).each( function(){
+        if ($(this).next().is('p')){
+            $(this).addClass("h1ex");
+        }
     });
 
 function checkBrowserWidth(){
@@ -225,6 +231,7 @@ function clearRessource(){
     $("#ressourcestext").text("");
     $("#ressources img").remove();
     $(".figcaption").remove();
+    $("#ressources .picture-metadata").remove();
     $("#titletextbg").hide();
     $("#imagecontainer").hide();  
     $("#gradient").hide();
@@ -250,8 +257,6 @@ function resetRessource(navicon, nav, closeicon){
     $("#navicon").removeClass();
     $("#closeicon").removeClass();
     $(".activeressource").removeClass("activeressource");
-    $(".shiftread").removeClass("shiftread");
-    $("#read").addClass("readnoshift");
     $("#titletextbg").hide();
     $("#imagecontainer").hide();  
 
@@ -259,6 +264,7 @@ function resetRessource(navicon, nav, closeicon){
     $("#ressourcestext").text("");
     $("#ressources img").remove();
     $(".figcaption").remove();
+    $("#ressources .picture-metadata").remove();
     $("#gradient").hide();
 
     // nav elements
@@ -303,9 +309,9 @@ function showTableOfContent(){
     $("#nav").addClass("activeressource");
 
 
-    console.log();
     if($(".active").length > 0){
-        $('#nav').scrollTop($(".active").offset().top - $("#nav").offset().top);
+        $('#nav').scrollTop(0);
+        $('#nav').scrollTop($(".active").offset().top - $("#nav").offset().top - 100);
     }
     else {
         $('#nav').scrollTop(0);
@@ -358,7 +364,7 @@ function zoomPicture(clickedpicture){
     if(!mobile){
         resetRessource(true, false, true);
         var source = clickedpicture.attr('src');     
-        var figcaption = $('<p class="figcaption">' + clickedpicture.next("figcaption").text() + '</p>');      
+        var figcaption = $('<p class="figcaption">' + clickedpicture.next("figcaption").html() + '</p>');      
         //var zoomedpicture = $("<img src='" + source + "' />");        
         //zoomedpicture.appendTo("#ressources");
         figcaption.appendTo("#ressources"); 
@@ -381,11 +387,4 @@ function zoomPicture(clickedpicture){
     }
 }
 
-/*
-function initScroller() {
-                var anchor = document.getElementsByTagName("a");
-                for (var i=0; i<anchor.length; ++i) {
-                    anchor[i].onclick = Scroller;
-                }
-            }
-*/        
+   
