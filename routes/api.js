@@ -419,13 +419,16 @@ router.get('/definitionsdownload', function (req, res) {
 		}
 
 		var zip5 = new EasyZip();
-		zip5.zipFolder('export_folder',function(){
+		zip5.zipFolder(path.join(__dirname, "../export_folder/definitions"),function(){
 			//console.log("works");
-			zip5.writeToFile(definitionsFile);
+			zip5.writeToFile(definitionsFile, function() {
 
-			res.setHeader('Content-Type', 'application/zip');
-			res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
-			res.sendFile(definitionsFile);
+				res.setHeader('Content-Type', 'application/zip');
+				res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
+				res.sendFile(definitionsFile);
+			});
+
+
 		});
 
     });
