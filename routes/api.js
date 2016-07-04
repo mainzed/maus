@@ -409,7 +409,11 @@ router.get('/definitionsdownload', function (req, res) {
 			}
 
 		});
-
+		try {
+			fs.unlinkSync(path.join(__dirname, "../definitions.zip"));
+		} catch(err) {
+			//
+		}
 
 
 		var zip5 = new EasyZip();
