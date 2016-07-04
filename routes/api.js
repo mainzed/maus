@@ -398,7 +398,7 @@ router.get('/definitionsdownload', function (req, res) {
 				var filename = definition.word + ".md";
 				var content = definition.text;
 
-				var outputPath = path.join(__dirname, "../export_folder/", filename);
+				var outputPath = path.join(__dirname, "../export_folder/definitions/", filename);
 
 				// create file for each definition
 				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
@@ -409,28 +409,24 @@ router.get('/definitionsdownload', function (req, res) {
 			}
 
 		});
+
+		var definitionsFile = path.join(__dirname, "../export_folder/definitions.zip");
+
 		try {
-			fs.unlinkSync(path.join(__dirname, "../export_folder/definitions.zip"));
+			fs.unlinkSync(definitionsFile);
 		} catch(err) {
 			//
 		}
 
-
 		var zip5 = new EasyZip();
 		zip5.zipFolder('export_folder',function(){
 			//console.log("works");
-			zip5.writeToFile(path.join(__dirname, "../export_folder/definitions.zip"));
+			zip5.writeToFile(definitionsFile);
 
 			res.setHeader('Content-Type', 'application/zip');
 			res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
-			res.sendFile(path.join(__dirname, "../export_folder/definitions.zip"));
+			res.sendFile(definitionsFile);
 		});
-
-		//var data = zip.generate({base64:false,compression:'DEFLATE'});
-		//console.log(data); // ugly data
-
-		//res.json({ message: "works"});
-
 
     });
 
