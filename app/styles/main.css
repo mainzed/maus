@@ -409,3 +409,7 @@ textarea:focus {background: white; resize: vertical; height: 100px; cursor: text
 }
 
 .fullwidth {width: 100% !important;}
+
+.active-file {
+    color: tomato;
+}

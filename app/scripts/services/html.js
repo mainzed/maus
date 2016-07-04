@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (definitionService, filetypeService) {
+  .service('HTMLService', function (definitionService, filetypeService, MetadataService) {
 
     //var usedDefs;  // store IDs of actually used defs
     /**
@@ -94,7 +94,9 @@ angular.module('meanMarkdownApp')
      */
     this.getOpMainzed = function(file, definitions) {
 
-        var metadata = this.getMetadata(file.markdown);
+        var metadata = MetadataService.getAndReplace(file.markdown);
+        //var markdown = metadata.markdown;
+        //var coverDescription = metada.
 
         // create template
         var htmlString = '<div id="ressourceswrapper">' +
@@ -152,50 +154,70 @@ angular.module('meanMarkdownApp')
 
     };
 
-    /**
-     * extracts metadata from markdown and returns object containing all
-     * metadata as well as the cleaned up markdown
-     */
-    this.getMetadata = function(markdown) {
-        var result = {};
+    this.getOpMainzed2 = function(file, definitions) {
 
-        var cleanMarkdown = markdown;
+        var metadata = MetadataService.getAndReplace(file.markdown);
 
-        // extract metadata from markdown
-        var matches;
-        matches = cleanMarkdown.match(/^@title:(.*)/);
-        if (matches) {
-            result.title = matches[1].trim();  // save
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");  // remove
+        var conversion = new OpOlatConversion();
 
-        }
-        matches = cleanMarkdown.match(/^@author:(.*)/);
-        if (matches) {
-            result.author = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+        conversion.appendToPage([
 
-        matches = cleanMarkdown.match(/^@created:(.*)/);
-        if (matches) {
-            result.created = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+        ].join(""))
 
-        matches = cleanMarkdown.match(/^@updated:(.*)/);
-        if (matches) {
-            result.updated = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+        // create template
+        var htmlString = '<div id="ressourceswrapper">' +
+                        '<div id="imagecontainer"></div>' +
+        		        '<div id="ressources">' +
+        			        '<span id="navicon">' +
+        			            '<span class="icon-toc"></span>' +
+        			        '</span>' +
 
-        matches = cleanMarkdown.match(/^@cover-description:(.*)/);
-        if (matches) {
-            result.coverDescription = matches[1].trim();
-            cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
-        }
+                			'<span id="closeicon">' +
+                				'<span class="icon-close"></span>' +
+                			'</span>' +
 
-        result.markdown = cleanMarkdown;
-        //console.log(result);
-        return result;
+                			'<div id="titletextbg">' +
+                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
+                				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
+                			'</div>' +
+
+                            '<div id="gradient"></div>' +
+                            // navigation
+                            "<ul id=\"nav\"></ul>\n" +
+
+                            // glossar texts get appended here
+        			        '<div id="ressourcestext"></div>' +
+
+        		        '</div>' +
+        	        '</div>' +
+
+                    // markdown content goes here
+                    '<div id="read"></div>\n' +
+
+                    // glossar resources go here and will be activated via js
+                    "<div id='footnotes'></div>\n";
+
+        // make jQuery compatible
+        var page = $("<div>" + htmlString + "</div>");
+
+
+        // metadata.author, metadata.title
+        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
+
+        // add markdown content to page
+        $("#read", page).append(html);
+
+        // enrich page: add headings to navigation
+        this.createOpMainzedNavigation(page);
+
+        // enrich page: convert tags and add resources to end of document
+        this.replaceEnrichmentTags(page, definitions);
+
+        // get html from page via jquery
+        //return page.html();
+
+        return this.wrapOpMainzedHTML(page.html(), metadata);
+
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
@@ -260,9 +282,10 @@ angular.module('meanMarkdownApp')
                 "<body>\n" +
 
                 '<div id="titlepicture">' +
-            		'<p class="coverdescription titletext">Skizze des mainzed</p>' +
+            		'<p class="coverdescription titletext">' + metadata.coverDescription + '</p>' +
             	'</div>' +
-            	'<div id="scrollmarker"></div>' +
+
+                '<div id="scrollmarker"></div>' +
 
 
                 html +
@@ -281,6 +304,27 @@ angular.module('meanMarkdownApp')
                 				'</address>' +
                 			'</div>' +
                 		'</div>' +
+
+                        '<div class="persons">' +
+
+                            '<div>' +
+                                'Herausgeber: Kai-Christian Bruhn' +
+                            '</div>' +
+
+                            '<div>' +
+                                'Redaktion: Anne Klammt' +
+                            '</div>' +
+
+                            '<div>' +
+                                'Gestaltung: Matthias Dufner mit Axel Kunz und Sarah Pittroff' +
+                            '</div>' +
+
+                        '</div>' +
+
+                        '<div>' +
+                            'PDF DOI #####' +
+                        '</div>' +
+
                 	'</div>' +
 
                 '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
@@ -290,6 +334,7 @@ angular.module('meanMarkdownApp')
 
                 '<script src="javascript/app.js"></script>' +
                 '<script src="javascript/markactive.js"></script>' +
+                '<script src="javascript/hyphenate.js"></script>' +
 
                 "</body>\n"+
                 "</html>";
@@ -311,15 +356,15 @@ angular.module('meanMarkdownApp')
                 h2Counter = 0;
                 h3Counter = 0;
 
-                return '<h1 id="section-' + h1Counter + '">' + text + '</h1>\n';
+                return '<h1 id="section-' + h1Counter + '" class="hyphenate">' + text + '</h1>\n';
             } else if (level === 2) {
                 h2Counter++;
                 h3Counter = 0;
-                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '"">' + text + '</h2>\n';
+                return '<h2 id="section-' + h1Counter + "-" + h2Counter + '" class="hyphenate">' + text + '</h2>\n';
 
             } else if (level === 3) {
                 h3Counter++;
-                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '"">' + text + '</h3>\n';
+                return '<h3 id="section-' + h1Counter + "-" + h2Counter + "-" + h3Counter + '" class="hyphenate">' + text + '</h3>\n';
             }
         };
 
@@ -377,22 +422,7 @@ angular.module('meanMarkdownApp')
             // used title attr for caption, author etc
             var tokens = title.split("; ");
             var caption = tokens[0].replace(/\\/g, "");
-            //var author = tokens[1];
-            //var license = tokens[2];
-            //var url = tokens[3];
-            //var title = alt;
             var preCaption = "Abb." + ImageCounter;
-
-            // not needed for rendering, but to access them later
-            /*images.push({
-                url: url,
-                caption: caption,
-                author: author,
-                license: license,
-                title: title,
-                preCaption: preCaption
-            });*/
-            //var html = "";
 
             ImageCounter++;
 
@@ -443,18 +473,6 @@ angular.module('meanMarkdownApp')
                     shortcut = content;
                 }
 
-                /*var currentHTML;
-                if (enrichment.filetype === "opMainzed") {
-                    currentHTML = $("#read", page).html();
-                    if (currentHTML.length < 1) {
-                        console.log("No div with id #read found in page");
-                        throw Error("No div with id #read found in page");
-                    }
-                } else {
-                    currentHTML = $(page).html();
-                    //console.log(currentHTML);
-                }*/
-
                 //var snippet;
                 var enrichment;
 
@@ -463,21 +481,17 @@ angular.module('meanMarkdownApp')
 
                 } else if (category === "picture") {
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                    if (!enrichment) {
-                        console.log("unknown enrichment with shortcut: " + shortcut);
-                        //throw Error("unknown enrichment with shortcut: " + shortcut);
+                    if (enrichment) {
+                        me.replacePicture(tag, page, enrichment);
                     }
-                    me.replacePicture(tag, page, enrichment);
 
                 } else if (category === "citation") {
                     // TODO: configure in filetypes what enrichments are available for
                     // each filetype
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
-                    if (!enrichment) {
-                        console.log("unknown enrichment with shortcut: " + shortcut);
-                        //throw Error("unknown enrichment with shortcut: " + shortcut);
+                    if (enrichment) {
+                        me.replaceCitation(page, enrichment, tag);
                     }
-                    me.replaceCitation(page, enrichment, tag);
 
                 } else if (category === "definition") {
                     me.replaceDefinition(page, shortcut, tag, enrichments, usedEnrichments);
@@ -485,8 +499,10 @@ angular.module('meanMarkdownApp')
                 } else if (category === "story") {
 
                     enrichment = me.findEnrichmentByShortcut(enrichments, shortcut);
+                    if (enrichment) {
+                        me.replaceStory(page, enrichment, tag);
+                    }
 
-                    me.replaceStory(page, enrichment, tag);
                 }
 
             });
@@ -517,19 +533,8 @@ angular.module('meanMarkdownApp')
                 console.log("Picture '" + shortcut + "' not found!");
                 //throw Error("Picturegroup needs at least two pictures.");
             } else {
-
-                if (!enrichment.title) {
-                    console.log("missing image alt attribute");
-                    enrichment.title = "picture";
-                }
-                var figureString = '<figure>\n' +
-                                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
-                                '<figcaption>\n' +
-                                    enrichment.text +
-                                '</figcaption>\n' +
-                            '</figure>';
-
-                $(".picturegroup", page).last().append(figureString);
+                var pictureString = getPictureString(enrichment);
+                $(".picturegroup", page).last().append(pictureString);
             }
         });
     };
@@ -537,34 +542,69 @@ angular.module('meanMarkdownApp')
     this.replacePicture = function(tag, page, enrichment) {
         if (enrichment.filetype !== "opMainzed") {
             console.log("filetype " + enrichment.filetype + "currently does not support picture tags");
-            throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
+            //throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
         }
+
+        var pictureString = getPictureString(enrichment);
+
+        // replace tag with newly created HTML
+        var currentHTML = $("#read", page).html();
+        $("#read", page).html(currentHTML.replace(tag, pictureString));
+
+    };
+
+    // private function
+    function getPictureString(enrichment) {
+        var figureString;
+        var authorString = "";
+        var licenseString = "";
+        var metadataString = "";
+
+        if (enrichment.author) {
+            authorString = '<span class="author">Autor: ' + enrichment.author + '</span>';
+        }
+
+        if (enrichment.license) {
+            licenseString = '<span class="license">Lizenz: ' + enrichment.license + '</span>';
+        }
+
         if (!enrichment.title) {
             console.log("missing image alt attribute");
             enrichment.title = "picture";
         }
-        var figureString = '<figure>\n' +
-                        '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">\n' +
-                        '<figcaption>\n' +
-                            enrichment.text +
-                        '</figcaption>\n' +
-                    '</figure>';
-        //console.log(currentHTML);
-        // replace tag with newly created HTML
-        var currentHTML = $("#read", page).html();
-        $("#read", page).html(currentHTML.replace(tag, figureString));
-    };
+
+        if (authorString || licenseString) {
+            metadataString = [
+                '<div class="picture-metadata">',
+                    authorString,
+                    licenseString,
+                '</div>'
+            ].join("");
+        }
+
+        figureString = [
+            '<figure id="' + enrichment._id + '">',
+                '<img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">',
+                '<figcaption>',
+                    enrichment.text,
+                    metadataString,
+                '</figcaption>',
+            '</figure>'
+        ].join("");
+
+        return figureString;
+    }
 
     this.replaceCitation = function(page, enrichment, tag) {
         if (!enrichment.text || !enrichment.author) {
             console.log("text or author missing for enrichment: " + enrichment.word);
-            throw Error("text or author missing for enrichment: " + enrichment.word);
+            //throw Error("text or author missing for enrichment: " + enrichment.word);
         }
 
         var currentHTML = $("#read", page).html();
         if (currentHTML.length < 1) {
             console.log("No div with id #read found in page");
-            throw Error("No div with id #read found in page");
+            //throw Error("No div with id #read found in page");
         }
 
         // TODO: replace with cöass story when opOlat
@@ -574,7 +614,7 @@ angular.module('meanMarkdownApp')
             title: "Zitate"
         }
         */
-        var citationString = '<div class="citation">' +
+        var citationString = '<div class="citation hyphenate">' +
                                 marked(enrichment.text) +
                                 '<span class="author">' + enrichment.author + '</span>' +
                                 '</div>';
@@ -630,56 +670,93 @@ angular.module('meanMarkdownApp')
         // get enrichment
         enrichment = this.findEnrichmentByShortcut(enrichments, shortcut);
 
-        if (!enrichment) {
-            console.log("unknown enrichment with shortcut: " + shortcut);
-            //throw Error("unknown enrichment with shortcut: " + shortcut);
+        if (enrichment) {
+            if (enrichment.filetype === "opOlat") {
+                currentHTML = $(page).html();
+
+                snippet =  ["<a href=\"#definitions-table\" title=\"",
+                                enrichment.text,
+                                "\" class=\"definition\">",
+                                customWord || enrichment.word,
+                                "</a>"].join("");
+
+
+                $(page).html(currentHTML.replace(tag, snippet));
+
+            } else if (enrichment.filetype === "opMainzed") {
+                currentHTML = $("#read", page).html();
+                snippet =  ['<span id="',
+                                enrichment._id,
+                                '" class="shortcut">',
+                                customWord || enrichment.word,
+                                '</span>'].join("");
+
+                $("#read", page).html(currentHTML.replace(tag, snippet));
+            }
+
+            // for opMainzed, add ressources to end of page
+            if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
+
+                var customRenderer = new marked.Renderer();
+                customRenderer.link = function (linkUrl, noIdea, text) {
+                    if (linkUrl.indexOf("#") === 0) {  // startsWith #
+                        return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+                    } else {
+                        return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+                    }
+                };
+
+                var html = marked(enrichment.text, { renderer: customRenderer });
+
+                var metadataString = getDefinitionFootnoteString(enrichment);
+
+                $("#footnotes", page).append([
+                    "<div class=\"" + enrichment._id + "\">",
+                        "<h4>" + enrichment.word + "</h4>",
+                        html,
+                        metadataString,
+                    "</div>"
+                ].join(""));
+            }
+
+            if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
+                usedEnrichments.push(enrichment._id);
+            }
+        }
+    };
+
+
+    // private function
+    function getDefinitionFootnoteString(enrichment) {
+
+        var authorString = "";
+        var websiteString = "";
+        var metadataString;
+
+        if (enrichment.author) {
+            authorString = '<span class="author">Autor: ' + enrichment.author + '</span>';
         }
 
-        if (enrichment.filetype === "opOlat") {
-            currentHTML = $(page).html();
-
-            snippet =  ["<a href=\"#definitions-table\" title=\"",
-                            enrichment.text,
-                            "\" class=\"definition\">",
-                            customWord || enrichment.word,
-                            "</a>"].join("");
-
-
-            $(page).html(currentHTML.replace(tag, snippet));
-
-        } else if (enrichment.filetype === "opMainzed") {
-            currentHTML = $("#read", page).html();
-            snippet =  ['<span id="',
-                            enrichment._id,
-                            '" class="shortcut">',
-                            customWord || enrichment.word,
-                            '</span>'].join("");
-
-            $("#read", page).html(currentHTML.replace(tag, snippet));
+        if (enrichment.url) {
+            websiteString = [
+                '<span class="website">',
+                    '<a href="' + enrichment.url + '" target="_blank">Website</a>',
+                '</span>'
+            ].join("");
         }
 
-        // for opMainzed, add ressources to end of page
-        if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
-
-            var customRenderer = new marked.Renderer();
-            customRenderer.link = function (linkUrl, noIdea, text) {
-                if (linkUrl.indexOf("#") === 0) {  // startsWith #
-                    return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
-                } else {
-                    return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
-                }
-            };
-
-            var html = marked(enrichment.text, { renderer: customRenderer });
-
-
-            $("#footnotes", page).append("<div class=\"" + enrichment._id + "\">" + "<h4>" + enrichment.word + "</h4>" + html + "</div>\n");
+        if (authorString || websiteString) {
+            metadataString = [
+                '<div class="definition-metadata">',
+                    authorString,
+                    websiteString,
+                '</div>'
+            ].join("");
         }
 
-        if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates
-            usedEnrichments.push(enrichment._id);
-        }
+        return metadataString;
     }
+
     /**
      * wrapper to support the old function name
      */
@@ -797,69 +874,6 @@ angular.module('meanMarkdownApp')
     };
 
     /**
-     * returns a html div element containing an
-     * unordered list with all level 1 headings.
-     * requires a list of heading objects
-     */
-    /*this.createTableOfContent = function(bodyHtml, headings, stories) {
-        stories = stories || false;
-        var html = "";
-
-        html += "<div id=\"headings-table\" class=\"headings-table\">\n" +
-                "<ul>\n";
-
-        // link to top if page title exists
-        if (html.match("id=\"page-title\"")) {
-            html += "<li><a href=\"#page-title\">Top</a></li>\n";
-            html += "<li class=\"seperator\"></li>\n";
-        }
-
-
-        // headings
-        if (headings.length > 0) {
-            // create html
-            headings.forEach(function(heading) {
-                if (heading.level === 1) {  // skip all but h1
-                    html += "<li><a href=\"#h" + heading.level + "-" + heading.counter + "\">" +
-                        heading.text +
-                        "</a></li>\n";
-                }
-            });
-        }
-
-        // add stories
-        if (stories.length > 0) {
-            html += "<li class=\"seperator\"></li>\n";
-            stories.forEach(function(story) {
-                html += "<li class=\"story\"><a href=\"#story" + story.counter + "\">" + story.name + "</a></li>\n";
-            });
-        }
-
-        // add seperator if images, links or definitions table exist
-        if (bodyHtml.match("id=\"images-table\"") || bodyHtml.match("id=\"links-table\"") || bodyHtml.match("id=\"definitions-table\"")) {
-            html += "<li class=\"seperator\"></li>\n";
-        }
-
-        // add link to images-table if it exists
-        if (bodyHtml.match("id=\"images-table\"")) {
-            html += "<li><a href=\"#images-table\">Abbildungen</a></li>\n";
-        }
-
-        // add link to links-table if it exists
-        if (bodyHtml.match(/id=\"links-table\"/)) {
-            html += "<li><a href=\"#links-table\">Links</a></li>\n";
-        }
-
-        // add link to definitions-table if it exists
-        if (bodyHtml.match("id=\"definitions-table\"")) {
-            html += "<li><a href=\"#definitions-table\">Glossar</a></li>\n";
-        }
-
-        html += "</ul>\n</div>\n";
-        return html;
-    };*/
-
-    /**
      * requires pages (jquery selection from htmlString)
      */
     this.createOpMainzedNavigation = function(page) {
@@ -890,6 +904,12 @@ angular.module('meanMarkdownApp')
                 }
             }
         });
+
+        // prepend link to cover
+        $("ul#nav", page).prepend('<li><a href="#titlepicture">Cover</a></li>');
+
+        // append link to imprint
+        $("ul#nav", page).append('<li><a href="#imprint">Impressum</a></li>');
 
         return;
     };

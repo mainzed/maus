@@ -11,7 +11,7 @@ angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService,
         $document, $http, $filter, $window, fileService, AuthService, ngDialog,
-        definitionService, filetypeService) {
+        definitionService, filetypeService, ActiveFileService) {
 
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -26,6 +26,8 @@ angular.module('meanMarkdownApp')
         fileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
 
+            //$scope.file.active = $scope.currentUser.name;
+
             // lock editor if news
             if ($scope.file.type === "news" && $scope.currentUser.group !== "admin") {
                 $scope.editor.setOption("readOnly", true);
@@ -33,8 +35,11 @@ angular.module('meanMarkdownApp')
 
             // get defined assets/snippets to determine what tabs to display in enrichments table
             $scope.assets = filetypeService.getAssetsForFiletype(file.type);
-        });
 
+            // save active state
+            $scope.markFileAsActive();
+
+        });
 
     };
 
@@ -57,6 +62,74 @@ angular.module('meanMarkdownApp')
         showMarkdownLineBreaks: true,  // custom
         showOlatMarkdown: true, // custom OLAT
         scrollbarStyle: null
+    };
+
+    $scope.markFileAsActive = function() {
+        ActiveFileService.query(function(activeFiles) {
+            //console.log(activeFiles);
+
+            var entry = _.find(activeFiles, function(o) {
+                return o.fileID === $scope.file._id;
+            });
+
+            if (entry) {
+                // update active file
+                // check if user already marked
+                if (entry.users.indexOf($scope.currentUser.name) === -1) {
+                    // add user if missing
+                    entry.users.push($scope.currentUser.name);
+
+                    ActiveFileService.update({ id: entry._id }, entry, function() {
+                        console.log("updated active file!");
+                    });
+
+                }
+                // if user already marked, do nothing
+            } else {
+                // add file to active files
+                var newActiveFile = {
+                    fileID: $scope.file._id,
+                    users: [$scope.currentUser.name]
+                };
+
+                ActiveFileService.save(newActiveFile, function() {
+                    console.log("marked file as active!");
+                });
+            }
+        });
+    };
+
+    $scope.markFileAsInactive = function() {
+
+        ActiveFileService.query(function(activeFiles) {
+            // remove current user from active files users
+            var entry = _.find(activeFiles, function(o) {
+                return o.fileID === $scope.file._id;
+            });
+
+            if (entry) {
+                // remove user if exists
+                var index = entry.users.indexOf($scope.currentUser.name);
+
+                if (index > -1) {
+
+                    if (entry.users.length > 1) {
+                        // if more than the current user, just remove the user from array
+                        entry.users.splice(index, 1);
+                        ActiveFileService.update({ id: entry._id }, entry, function() {
+                            console.log("updated active file!");
+                        });
+                    } else {
+                        // when this user is the only active, remove file from db
+                        ActiveFileService.delete({ id: entry._id }, function() {
+                            console.log("removed active file!");
+                        });
+                    }
+
+
+                }
+            }
+        });
     };
 
     // listeners
@@ -103,11 +176,15 @@ angular.module('meanMarkdownApp')
                 scope: $scope
             }).then(function(success) {
                 // user confirmed to go back to files
+                $scope.markFileAsInactive();
+
                 $location.path("/files");
             }, function(error) {
                 // user cancelled
             });
         } else {  // no changes, go back without asking
+            $scope.markFileAsInactive();
+
             $location.path("/files");
         }
     };
@@ -192,22 +269,41 @@ angular.module('meanMarkdownApp')
         var html;
         definitionService.query(function(definitions) {
 
-            if ($scope.file.type === "opOlat") {
-                // convert markdown to html
-                html = HTMLService.getOlat($scope.file, definitions, config);
-                html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
-            } else if ($scope.file.type === "opMainzed") {
-                html = HTMLService.getOpMainzed($scope.file, definitions);
-                //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
-            }
 
 
-            // init download
-            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
-            var downloadLink = angular.element('<a></a>');
-            downloadLink.attr('href', window.URL.createObjectURL(blob));
-            downloadLink.attr('download', filename);
-            downloadLink[0].click();
+            fileService.query(function(files) {
+
+                var markdown = $scope.processIncludes($scope.file.markdown, files);
+
+                //console.log(markdown);
+                $scope.fileCopy = angular.copy($scope.file);
+                $scope.fileCopy.markdown = markdown;
+
+                if ($scope.file.type === "opOlat") {
+                    // convert markdown to html
+                    html = HTMLService.getOlat($scope.fileCopy, definitions, config);
+                    html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
+                } else if ($scope.file.type === "opMainzed") {
+                    html = HTMLService.getOpMainzed($scope.fileCopy, definitions);
+                    //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                }
+
+
+                // init download
+                var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
+                var downloadLink = angular.element('<a></a>');
+                downloadLink.attr('href', window.URL.createObjectURL(blob));
+                downloadLink.attr('download', filename);
+                downloadLink[0].click();
+
+            });
+
+
+
+
+
+
+
         });
     };
 
@@ -363,6 +459,9 @@ angular.module('meanMarkdownApp')
             //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             if (definition._id) {
                 //console.log(definition);
+                if (definition.category === "picture") {
+                    console.log(definition);
+                }
                 definitionService.update({id: definition._id}, definition);
 
             } else {  // new definition
@@ -409,8 +508,6 @@ angular.module('meanMarkdownApp')
         return markdown;
     };
 
-
-
     $scope.onHelpClick = function() {
         $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");
     };
@@ -419,13 +516,6 @@ angular.module('meanMarkdownApp')
         //console.log($scope.file.type, toolname);
         return filetypeService.isValidToolForType(filetype, toolname);
     };
-
-    // listen to click on a enrichmenttag
-    /*$(document).on('click', 'span.cm-markdown-definition', function(){
-        var category = $(this).text().replace("{", "").replace("}", "").split(":")[0];
-        $scope.onDefinitionClick();
-    });*/
-
 
     // link hotkey
     $(document).keydown(function (e) {
@@ -495,8 +585,22 @@ angular.module('meanMarkdownApp')
      * prompt when trying to refresh with unsaved changes
      */
     $(window).bind('beforeunload', function(){
-        if ($scope.unsavedChanges) {
-            return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
-        }
+        // this.removeActiveState(function() {
+        //     //console.log("unload");
+        //     if ($scope.unsavedChanges) {
+        //         //this.removeActiveState();
+        //
+        //
+        //     }
+        // });
+        //this.removeActiveState(function() {
+        //    console.log("remove active");
+        //});
+        //console.log("want to close!");
+        return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
+
+        /*if ($scope.unsavedChanges) {
+            console.log("still unsaved!");
+        }*/
     });
 });

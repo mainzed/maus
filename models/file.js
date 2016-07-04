@@ -8,9 +8,12 @@ var fileSchema = new Schema({
     title: String,
     markdown: String,
     type: String,
+    //active: { type: String, default: "none" },
     private: { type: Boolean, default: false },
     updated_by: { type: String, default: "author" },
-    updated_at: { type: Date, default: Date.now }
+    //updated_at: { type: Date, default: Date.now }
+},{
+    timestamps: true  // creates updatedAt and createdAt
 });
 
 var File = module.exports = mongoose.model('File', fileSchema);

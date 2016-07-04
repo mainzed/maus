@@ -48,8 +48,9 @@ module.exports = function(config) {
       // endbower
       'app/scripts/**/*.js',
 
-      'test/spec/services/html.js',  // replace services with ** later
-      'test/spec/controllers/*.js'  // replace services with ** later
+      //'test/spec/services/html.js',  // replace services with ** later
+      'test/spec/services/*.js',
+      //'test/spec/controllers/*.js'  // replace services with ** later
     ],
 
     // define custom reportes (use mocha-like reporter)
@@ -57,7 +58,7 @@ module.exports = function(config) {
 
     // reporter options
     mochaReporter: {
-      //output: "autowatch"
+      output: "minimal"
     },
 
     // list of files / patterns to exclude
