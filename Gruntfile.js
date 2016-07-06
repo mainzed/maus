@@ -527,7 +527,8 @@ module.exports = function (grunt) {
         // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
         'usemin',
 
-        //'htmlmin'  // minify index.html
+        // minify index.html
+        'htmlmin'
     ]);
 
     /*grunt.registerTask('default', [
