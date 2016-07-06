@@ -4,6 +4,8 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');  // write files
 var path = require('path');
+//var zip = new require('node-zip')();
+var EasyZip = require('easy-zip').EasyZip;
 
 // mongoose models
 var File = require('../models/file');
@@ -380,8 +382,57 @@ router.post('/savepreview', function (req, res) {
                 previewPath: path.join("preview_files/", type.toLowerCase(), filename)
             });
         }
+    });
+});
+
+router.get('/definitionsdownload', function (req, res) {
+
+	Definition.find(function(err, definitions) {
+        if (err) {
+            throw err;
+        }
+        //res.json(definitions);
+		definitions.forEach(function(definition) {
+
+			if (definition.category === "definition" && definition.word) {
+				var filename = definition.word + ".md";
+				var content = definition.text;
+
+				var outputPath = path.join(__dirname, "../export_folder/definitions/", filename);
+
+				// create file for each definition
+				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
+					if (err) {
+						console.log(err);
+					}
+				});
+			}
+
+		});
+
+		var definitionsFile = path.join(__dirname, "../export_folder/definitions.zip");
+
+		try {
+			fs.unlinkSync(definitionsFile);
+		} catch(err) {
+			//
+		}
+
+		var zip5 = new EasyZip();
+		zip5.zipFolder(path.join(__dirname, "../export_folder/definitions"),function(){
+			//console.log("works");
+			zip5.writeToFile(definitionsFile, function() {
+
+				res.setHeader('Content-Type', 'application/zip');
+				res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
+				res.sendFile(definitionsFile);
+			});
+
+
+		});
 
     });
+
 });
 
 module.exports = router;
