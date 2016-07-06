@@ -29,6 +29,15 @@
   color: #1f1f1f;
 }
 
+::-webkit-scrollbar {
+width: 4px;
+height: 4px;
+margin-right: 2px; }
+
+::-webkit-scrollbar-thumb {
+background-color: rgba(0, 0, 0, 0.2);
+-webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.10),inset 0 -1px 0 rgba(0,0,0,0.07); }
+
 .plusposition {position: absolute; left: 50%; bottom: 10%; width: 50px; margin-left: -25px; cursor: pointer; }
 
 .form-control {border: 0; font-size: 16px; color: #1f1f1f;}
@@ -82,6 +91,13 @@ tbody tr:nth-child(even) {
 
 }
 .filegroup input {text-overflow: ellipsis; width: 100%;}
+.filegroup thead tr {}
+.filegroup thead {}
+.filegroup tbody {}
+
+.browser td:nth-child(2), .browser th:nth-child(2){
+  width: 50%;
+}
 
 .historytable td  {width: 25%; min-width: 200px;}
 .clickspan {min-width: 50px; min-height: 30px; display: block; cursor: pointer; width: 100%; overflow: hidden; text-overflow: ellipsis;}
@@ -303,7 +319,7 @@ img {background-color: none !important;}
 
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
-.ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px; overflow: hidden;}
+.ngdialog.ngdialog-theme-default .ngdialog-content { width: 90%; padding: 10px; height: 90%; overflow-y: scroll;}
 .ngdialog.smalldialog .ngdialog-content {
   width: 400px; padding: 10px;
   -webkit-animation: ngdialog-flyin .5s;
@@ -375,6 +391,7 @@ textarea{
     height: 30px;
     display: block;
     max-width: 100%;
+    margin-left: 4px;
     background: none;
     resize: none;
     border: none;
@@ -382,12 +399,21 @@ textarea{
     border-color: transparent !important;
     overflow: hidden;
     outline: none;
-    width: 100%;
+    width: calc(100% - 7px);
 }
 
 
 textarea:hover {background: white; cursor: pointer;}
-textarea:focus {background: white; resize: vertical; height: 100px; cursor: text;}
+textarea:focus {background: white; height: 100px; cursor: text; overflow: auto;}
+
+.JCLRgrip .JColResizer {
+  width: 6px !important;
+  background-color: #f0f0f0 !important;
+  border-left: 1px solid #e3e3e3;
+  border-right: 1px solid  #e3e3e3;
+  opacity: 1 !important;
+  min-height: 500px;
+}
 
 /* preview */
 .preview {
