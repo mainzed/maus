@@ -41,7 +41,16 @@ angular.module('meanMarkdownApp')
 
         });
 
+       
+
     };
+
+    $scope.initResizable = function(){
+         // init jquery col resizable plugin
+        $(function(){
+          $(".filegroup").colResizable();
+        });
+    }
 
     $scope.showSuccess = false;
     $scope.showError = false;

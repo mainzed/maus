@@ -88,6 +88,13 @@ tbody tr:nth-child(even) {
 
 }
 .filegroup input {text-overflow: ellipsis; width: 100%;}
+.filegroup thead tr {}
+.filegroup thead {}
+.filegroup tbody {}
+
+.browser td:nth-child(2), .browser th:nth-child(2){
+  width: 50%;
+}
 
 .historytable td  {width: 25%; min-width: 200px;}
 .clickspan {min-width: 50px; min-height: 30px; display: block; cursor: pointer; width: 100%; overflow: hidden; text-overflow: ellipsis;}
@@ -309,7 +316,7 @@ img {background-color: none !important;}
 
 /* dialog */
 .ngdialog.ngdialog-theme-default {padding: 20px 0;}
-.ngdialog.ngdialog-theme-default .ngdialog-content { width: 80%; padding: 10px; overflow: hidden;}
+.ngdialog.ngdialog-theme-default .ngdialog-content { width: 90%; padding: 10px; overflow: hidden;}
 .ngdialog.smalldialog .ngdialog-content {
   width: 400px; padding: 10px;
   -webkit-animation: ngdialog-flyin .5s;
