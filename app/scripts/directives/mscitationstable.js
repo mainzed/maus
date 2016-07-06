@@ -9,7 +9,7 @@
 angular.module('meanMarkdownApp')
   .directive('msCitationsTable', function () {
     return {
-      templateUrl: '../views/templates/citations-table.html',
+      templateUrl: 'views/citations-table.html',
       restrict: 'E'
     };
   });

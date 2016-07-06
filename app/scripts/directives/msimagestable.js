@@ -9,7 +9,7 @@
 angular.module('meanMarkdownApp')
   .directive('msImagesTable', function () {
     return {
-      templateUrl: '../views/templates/images-table.html',
+      templateUrl: 'views/images-table.html',
       restrict: 'E'
     };
   });

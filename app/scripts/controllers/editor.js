@@ -171,7 +171,7 @@ angular.module('meanMarkdownApp')
 
         if ($scope.unsavedChanges) {
             ngDialog.openConfirm({
-                template: "./views/templates/dialog_confirm_home.html",
+                template: "views/dialog_confirm_home.html",
                 className: 'smalldialog',
                 scope: $scope
             }).then(function(success) {
@@ -248,7 +248,7 @@ angular.module('meanMarkdownApp')
         $scope.filename = $scope.file.title.replace(/\s/g, "_") + ".html";
 
         ngDialog.open({
-            template: "./views/templates/dialog_export.html",
+            template: "views/dialog_export.html",
             className: "smalldialog",
             disableAnimation: true,
             scope: $scope
@@ -384,7 +384,7 @@ angular.module('meanMarkdownApp')
 
     $scope.openDesktopPreview = function() {
         ngDialog.open({
-            template: "./views/templates/dialog_preview.html",
+            template: "views/dialog_preview.html",
             disableAnimation: true,
             closeByDocument: true,  // enable clicking on background to close dialog
             //className: 'ngdialog-theme-default',
@@ -395,7 +395,7 @@ angular.module('meanMarkdownApp')
 
     $scope.openMobilePreview = function() {
         ngDialog.open({
-            template: "./views/templates/dialog_preview.html",
+            template: "views/dialog_preview.html",
             disableAnimation: true,
             closeByDocument: true,  // enable clicking on background to close dialog
             className:'ngdialog-theme-default preview-mobile',
@@ -405,7 +405,7 @@ angular.module('meanMarkdownApp')
 
     $scope.onMobileClick = function() {
         ngDialog.open({
-            template: "./views/templates/dialog_preview.html",
+            template: "views/dialog_preview.html",
             disableAnimation: true,
             closeByDocument: true,  // enable clicking on background to close dialog
             className: 'ngdialog-theme-default mobile-view',
@@ -424,7 +424,7 @@ angular.module('meanMarkdownApp')
     // handler for click on button "Glossareintrag"
     $scope.onDefinitionClick = function() {
         ngDialog.open({
-            template: "./views/templates/dialog_definitions.html",
+            template: "views/dialog_definitions.html",
             scope: $scope,
             disableAnimation: true,
             preCloseCallback: function() {

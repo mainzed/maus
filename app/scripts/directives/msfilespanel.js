@@ -9,7 +9,7 @@
 angular.module('meanMarkdownApp')
   .directive('msFilesPanel', function ($filter) {
     return {
-        templateUrl: '../views/templates/files-panel.html',
+        templateUrl: 'views/files-panel.html',
         restrict: 'E',
         //scope: true,  // isolated scope for each instance
 

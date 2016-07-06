@@ -7,7 +7,6 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
-
 module.exports = function (grunt) {
 
     // Time how long tasks take. Can help when optimizing build times
@@ -302,15 +301,12 @@ module.exports = function (grunt) {
         //     }
         //   }
         // },
-        // uglify: {
-        //   dist: {
-        //     files: {
-        //       '<%= yeoman.dist %>/scripts/scripts.js': [
-        //         '<%= yeoman.dist %>/scripts/scripts.js'
-        //       ]
-        //     }
-        //   }
-        // },
+        uglify: {
+            options: {
+                report: 'min',
+                mangle: false
+            }
+        },
         // concat: {
         //   dist: {}
         // },
@@ -389,36 +385,37 @@ module.exports = function (grunt) {
 
         // Copies remaining files to places other tasks can use
         copy: {
-          dist: {
-            files: [{
-              expand: true,
-              dot: true,
-              cwd: '<%= yeoman.app %>',
-              dest: '<%= yeoman.dist %>',
-              src: [
-                '*.{ico,png,txt}',
-                '*.html',
-                'images/{,*/}*.{webp}',
-                'styles/fonts/{,*/}*.*'
-              ]
-            }, {
-              expand: true,
-              cwd: '.tmp/images',
-              dest: '<%= yeoman.dist %>/images',
-              src: ['generated/*']
-            }, {
-              expand: true,
-              cwd: 'bower_components/bootstrap/dist',
-              src: 'fonts/*',
-              dest: '<%= yeoman.dist %>'
-            }]
-          },
-          styles: {
-            expand: true,
-            cwd: '<%= yeoman.app %>/styles',
-            dest: '.tmp/styles/',
-            src: '{,*/}*.css'
-          }
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        '*.{ico,png,txt}',
+                        '*.html',
+                        'images/{,*/}*.{webp}',
+                        'styles/fonts/{,*/}*.*'
+                    ]
+                },{
+                    expand: true,
+                    cwd: '.tmp/images',
+                    dest: '<%= yeoman.dist %>/images',
+                    src: ['generated/*']
+                }, {
+                    expand: true,
+                    cwd: 'bower_components/bootstrap/dist',
+                    src: 'fonts/*',
+                    dest: '<%= yeoman.dist %>'
+                }]
+            },
+
+            styles: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/styles',
+                dest: '.tmp/styles/',
+                src: '{,*/}*.css'
+            }
         },
 
         // Run some tasks in parallel to speed up the build process
@@ -446,10 +443,6 @@ module.exports = function (grunt) {
 
         // express server settings (use my custom server instead of default grunt serve)
         express: {
-          options: {
-              //port: 3000,
-              //debug: true
-          },
           server: {
               options: {
                   script: 'server.js'
@@ -461,7 +454,7 @@ module.exports = function (grunt) {
     // load all plugins automatically using the package.json file
     grunt.loadNpmTasks('grunt-express-server');
 
-    grunt.registerTask('serve', 'Compile then start the express web server', function (target) {
+    grunt.registerTask('serve', 'Compile then start the express web server', function () {
         /*if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
         }*/
@@ -482,34 +475,53 @@ module.exports = function (grunt) {
         'wiredep',
         //'concurrent:test',
         //'postcss',
-        'connect:test',
+        'connect:test',   // connect to test server
         'karma'
     ]);
 
     grunt.registerTask('build', [
-        'clean:dist',  // deletes /dist
-        'wiredep',   // add bower references
 
-        'useminPrepare',  // prepares files for concat, uglify and cssmin
+        // deletes /dist
+        'clean:dist',
 
-        'concurrent:dist',   // run image minify and copy styles
+        // update bower references
+        'wiredep',
+
+        // prepares files for concat, uglify and cssmin (in memory)
+        'useminPrepare',
+
+        // do multiple tasks concurrently (at the same time)
+        // run image minify and copy them to /dist
+        // and copy styles to .tmp
+        'concurrent:dist',
 
         'postcss',
 
-        'ngtemplates',  // stores all angular views/templates in the scripts.js
+        // stores all angular views/templates in .tmp/templateCache.js
+        // also adds a reference to it into the final index.html
+        'ngtemplates',
 
-        'concat',  // creates vendor.js and scripts.js (just merges, doesnt minify)
-        'ngAnnotate',  // makes angular code save for minification
+        // creates vendor.js and scripts.js (just merges, doesnt minify)
+        // copies them to folder .tmp/concat/scripts
+        'concat',
 
-        'copy:dist',  // copy app files to /dist
+        // makes angular-files in .tmp/concat/scripts save for minification
+        'ngAnnotate',
+
+        // copy app files to /dist (all but javascript and css files in .tmp)
+        'copy:dist',
+
         //'cdnify',  // replaces bower components with cdns when possible
-        'cssmin',  // minify css
+
+        // minify styles in .tmp/styles and copies them to /dist
+        'cssmin',
 
         // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
         // the result to /dist/scripts
         'uglify',
 
-        //'filerev',      // gives cryptic names to files :) (browser caching)
+        // gives cryptic names to files :) (browser caching)
+        'filerev',
 
         // replaces references to scripts and styles in index.html with links
         // to the minified versions (vender.js, scripts.js, vendor.css, main.css)

@@ -15,6 +15,7 @@
     "_": false,
     "$": false,
     "_": false,
-    "marked": false
+    "marked": false,
+    "CodeMirror": false
   }
 }

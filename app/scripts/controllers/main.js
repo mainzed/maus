@@ -61,7 +61,7 @@ angular.module('meanMarkdownApp')
     $scope.onCreateNewFile = function() {
         $scope.newFile = {};  // filled by dialog
         ngDialog.open({
-            template: "./views/templates/dialog_new_file.html",
+            template: "views/dialog_new_file.html",
             className: "smalldialog",
             disableAnimation: true,
             closeByDocument: true,  // enable clicking on background to close dialog
@@ -96,7 +96,7 @@ angular.module('meanMarkdownApp')
     $scope.onRemoveClick = function(id) {
 
         ngDialog.openConfirm({
-            template: "./views/templates/dialog_confirm_delete.html",
+            template: "views/dialog_confirm_delete.html",
             className: "smalldialog",
             disableAnimation: true,
             scope: $scope
@@ -140,7 +140,7 @@ angular.module('meanMarkdownApp')
             $scope.file = file;
 
             ngDialog.open({
-                template: "./views/templates/dialog_edit_file.html",
+                template: "views/dialog_edit_file.html",
                 className: "smalldialog",
                 disableAnimation: true,
                 scope: $scope
@@ -154,7 +154,7 @@ angular.module('meanMarkdownApp')
             $scope.archivedFiles = files;
 
             ngDialog.open({
-                template: "./views/templates/dialog_history.html",
+                template: "views/dialog_history.html",
                 disableAnimation: true,
                 scope: $scope
             });
@@ -249,7 +249,7 @@ angular.module('meanMarkdownApp')
     }
     $scope.onUsersClick = function() {
         ngDialog.open({
-            template: "./views/templates/dialog_users.html",
+            template: "views/dialog_users.html",
             disableAnimation: true,
             scope: $scope
         });

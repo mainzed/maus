@@ -357,7 +357,7 @@ router.post('/savepreview', function (req, res) {
     if (type === "opOlat" || type === "opMainzed" || type === "prMainzed") {
         //outputPath = __dirname + "../app/preview_files/" + type.toLowerCase() + "/preview_" + userID + ".html";
         var filename = "/preview_" + userID + ".html";
-        outputPath = path.join(__dirname, "../app/preview_files/", type.toLowerCase(), filename);
+        outputPath = path.join(__dirname, "../preview_files/", type.toLowerCase(), filename);
         console.log("trying to save file of type: " + type + " to: " + outputPath);
         //console.log(__dirname);
     } else {

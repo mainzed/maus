@@ -9,7 +9,7 @@
 angular.module('meanMarkdownApp')
   .directive('msDefinitionsTable', function () {
     return {
-      templateUrl: '../views/templates/definitions-table.html',
+      templateUrl: 'views/definitions-table.html',
       restrict: 'E'
     };
   });

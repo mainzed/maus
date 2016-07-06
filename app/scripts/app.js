@@ -37,13 +37,9 @@ angular
         //controllerAs: 'main'
       })
       .when('/editor/:id', {
-          templateUrl: './views/editor.html',
+          templateUrl: 'views/editor.html',
           controller: 'EditorCtrl'
       })
-      /*.when('/history/:id', {
-          templateUrl: './views/history.html',
-          controller: 'MainCtrl'
-      })*/
       .otherwise({
         redirectTo: '/'
       });

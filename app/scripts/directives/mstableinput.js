@@ -9,7 +9,7 @@
 angular.module('meanMarkdownApp')
   .directive('msTableInput', function () {
     return {
-      templateUrl: '../views/templates/table-input.html',
+      templateUrl: 'views/table-input.html',
       restrict: 'E',
       //scope: true,
       scope: {

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css styles/vendor.css -->
+    <!-- build:css(./) styles/vendor.css -->
     <!-- bower:css -->
     <link rel='stylesheet' href='bower_components/font-awesome/css/font-awesome.css' />
     <link rel='stylesheet' href='bower_components/codemirror/lib/codemirror.css' />
@@ -14,20 +14,19 @@
     <link rel='stylesheet' href='bower_components/ng-dialog/css/ngDialog.css' />
     <link rel='stylesheet' href='bower_components/ng-dialog/css/ngDialog-theme-default.css' />
     <link rel='stylesheet' href='bower_components/nanoscroller/bin/css/nanoscroller.css' />
-    <link rel='stylesheet' href='bower_components/leaflet/dist/leaflet.css' />
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
+    <link rel="stylesheet" href="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
     <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/style.css">
+    <!-- endbuild -->
+
     <link rel="shortcut icon" href="images/mausicon.ico" type="image/x-icon" />
     <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
-    <!-- endbuild -->
-
 
   </head>
   <body>
@@ -59,7 +58,7 @@
        ga('send', 'pageview');
     </script>
 
-    <!-- build:js scripts/vendor.js -->
+    <!-- build:js(./) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
@@ -79,8 +78,6 @@
     <script src="bower_components/angular-css/angular-css.js"></script>
     <script src="bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
     <script src="bower_components/angular-nanoscroller/scrollable.js"></script>
-    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
-    <script src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js"></script>
     <script src="bower_components/jquery.mousestop/jquery.event.mousestop.js"></script>
     <script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
@@ -93,7 +90,7 @@
         <script src="scripts/controllers/editor.js"></script>
         <script src="scripts/services/files.js"></script>
         <script src="scripts/services/definition.js"></script>
-        <script src="scripts/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
+        <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
         <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
         <script src="scripts/services/html.js"></script>
         <script src="scripts/services/archivedfile.js"></script>

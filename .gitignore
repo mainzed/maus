@@ -1,9 +1,8 @@
 /node_modules
 /.tmp
 /.sass-cache
-/app/bower_components
-/app/preview_files/opolat/preview*.html
-/app/preview_files/prmainzed/preview*.html
-/app/preview_files/opmainzed/preview*.html
-
+/bower_components
+/preview_files/opolat/preview*.html
+/preview_files/prmainzed/preview*.html
+/preview_files/opmainzed/preview*.html
 /dist
