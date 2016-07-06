@@ -14,8 +14,8 @@ var api = require('./routes/api');
 var authenticate = require('./routes/authenticate')(passport); //
 
 // middleware
-app.use(compression());
-app.use(logger('dev'));
+app.use(compression());  // compress static content using gzip
+app.use(logger('dev'));  // morgan
 app.use(session({
     secret: "everything is awesome!",
     resave: true,
@@ -28,8 +28,8 @@ initPassport(passport);
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.use('/preview_files',  express.static(__dirname + '/preview_files'));
 
-app.use(express.static(__dirname + '/app'));  // development
-//app.use(express.static(__dirname + '/dist'));  // production
+//app.use(express.static(__dirname + '/app'));  // development
+app.use(express.static(__dirname + '/dist'));  // production
 
 
 app.use(bodyParser.json());
