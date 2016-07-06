@@ -415,6 +415,13 @@ module.exports = function (grunt) {
                 cwd: '<%= yeoman.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+
+            fontawesome: {
+                expand: true,
+                cwd: 'bower_components/font-awesome/fonts',
+                dest: '<%= yeoman.dist %>/fonts',
+                src: '{,*/}*.*'
             }
         },
 
@@ -428,6 +435,7 @@ module.exports = function (grunt) {
           ],
           dist: [
             'copy:styles',
+            'copy:fontawesome',  // copy fonts folder manually
             'imagemin',
             //'svgmin'
           ]
@@ -435,10 +443,18 @@ module.exports = function (grunt) {
 
         // Test settings
         karma: {
-          unit: {
-            configFile: 'test/karma.conf.js',
-            singleRun: false  // overwrites config setting
-          }
+
+            // used with grunt test
+            unit: {
+                configFile: 'test/karma.conf.js',
+                singleRun: false  // overwrites config setting
+            },
+
+            // used with grunt build
+            build: {
+                configFile: 'test/karma.conf.js',
+                singleRun: true  // overwrites config setting
+            }
         },
 
         // express server settings (use my custom server instead of default grunt serve)
@@ -460,7 +476,7 @@ module.exports = function (grunt) {
         }*/
 
         grunt.task.run([
-          //'clean:server',
+          'clean:server',
           'wiredep',
           //'concurrent:server',
           //'postcss:server',
@@ -474,12 +490,14 @@ module.exports = function (grunt) {
         //'clean:server',
         'wiredep',
         //'concurrent:test',
-        //'postcss',
+        'postcss',
         'connect:test',   // connect to test server
-        'karma'
+        'karma:unit'
     ]);
 
     grunt.registerTask('build', [
+        // run unit tests once
+        'karma:build',
 
         // deletes /dist
         'clean:dist',
@@ -497,6 +515,9 @@ module.exports = function (grunt) {
 
         'postcss',
 
+        // copy app files to /dist (all but javascript and css files in .tmp)
+        'copy:dist',
+
         // stores all angular views/templates in .tmp/templateCache.js
         // also adds a reference to it into the final index.html
         'ngtemplates',
@@ -508,11 +529,6 @@ module.exports = function (grunt) {
         // makes angular-files in .tmp/concat/scripts save for minification
         'ngAnnotate',
 
-        // copy app files to /dist (all but javascript and css files in .tmp)
-        'copy:dist',
-
-        //'cdnify',  // replaces bower components with cdns when possible
-
         // minify styles in .tmp/styles and copies them to /dist
         'cssmin',
 
@@ -522,6 +538,9 @@ module.exports = function (grunt) {
 
         // gives cryptic names to files :) (browser caching)
         'filerev',
+
+        // replaces bower components with cdns when possible in index.html
+        //'cdnify',
 
         // replaces references to scripts and styles in index.html with links
         // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
