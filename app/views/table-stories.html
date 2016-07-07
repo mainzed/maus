@@ -1,0 +1,39 @@
+
+<table class="filegroup nomargin fullwidth browser" ng-init="initResizable()">
+
+  <thead>
+   <tr class="noborder">
+     <th></th> <!-- insert icon -->
+     <th>Shortcut</th>
+     <th>Inhalt Story</th>
+     <th></th> <!-- remove icon -->
+   </tr>
+ </thead>
+
+  <tbody>
+    <!--<tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'">-->
+    <tr ng-repeat="definition in definitions | filter: {category: category, filetype: file.type} | filter:filterBox |  orderBy: '-updated_at'">
+      <td>
+        <a ng-click="closeThisDialog(); addStory(definition)" class="choose">
+          <i class="fa fa-play" aria-hidden="true"></i>
+        </a>
+      </td>
+      <td>
+        <textarea type="text" ng-model="definition.word" placeholder="Shortcut" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.text" placeholder="Inhalt" focus-on-visibility></textarea>
+      </td>
+
+      <!-- remove -->
+      <td>
+        <button type="button" ng-show="definition._id" class="btn btn-default" ng-click="onRemoveDefinitionClick(definition._id)">
+          <span class="icon-trash"></span>
+        </button>
+      </td>
+
+    </tr><!-- end repeat -->
+
+  </tbody>
+</table>

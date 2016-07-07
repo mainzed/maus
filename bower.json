@@ -21,7 +21,8 @@
     "jquery.mousestop": "^0.1.2",
     "jquery": "^2.2.3",
     "angular-filter": "^0.5.8",
-    "lodash": "^4.13.1"
+    "lodash": "^4.13.1",
+    "col-resizable": "*"
   },
   "resolutions": {
     "angular": "^1.4.0",

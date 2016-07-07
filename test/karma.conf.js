@@ -41,6 +41,7 @@ module.exports = function(config) {
       'bower_components/jquery.mousestop/jquery.event.mousestop.js',
       'bower_components/angular-filter/dist/angular-filter.min.js',
       'bower_components/lodash/lodash.js',
+      'bower_components/col-resizable/colResizable-1.6.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

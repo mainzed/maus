@@ -1,0 +1,61 @@
+
+
+
+  <table class="filegroup nomargin fullwidth browser">
+
+     <thead>
+      <tr class="noborder">
+        <th></th> <!-- insert icon -->
+        <th>Shortcut</th>
+        <th>Alt</th>
+        <th>Bildunterschrift</th>
+        <th>Lizenz</th>
+        <th>Quelle</th>
+        <th>Author</th>
+        <th></th> <!-- remove icon -->
+      </tr>
+    </thead>
+
+  <tbody>
+    <!--<tr ng-repeat="definition in definitions | filter:{ filetype: file.type }| filter:filterBox | orderBy: '-updated_at'">-->
+    <tr ng-repeat="definition in definitions | filter: {category: category, filetype: file.type} | filter:filterBox |  orderBy: '-updated_at'">
+      <td>
+        <a ng-click="closeThisDialog(); addImage(definition)" class="choose">
+          <i class="fa fa-play" aria-hidden="true"></i>
+        </a>
+      </td>
+      <td>
+        <textarea type="text" ng-model="definition.word" placeholder="Word" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.title" placeholder="Alt" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.text" placeholder="Bildunterschrift" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.license" placeholder="Lizenz" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.url" placeholder="Bild-URL" focus-on-visibility></textarea>
+      </td>
+
+      <td>
+        <textarea type="text" ng-model="definition.author" placeholder="Autor" focus-on-visibility></textarea>
+      </td>
+
+      <!-- remove -->
+      <td>
+        <button ng-show="definition._id" type="button" class="btn btn-default" ng-click="onRemoveDefinitionClick(definition._id)">
+          <span class="icon-trash"></span>
+        </button>
+      </td>
+
+    </tr><!-- end repeat -->
+
+  </tbody>
+</table>
