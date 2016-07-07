@@ -389,7 +389,7 @@ angular.module('meanMarkdownApp')
                 console.log("something went wrong while trying to create preview");
             });
         });
-    }
+    };
 
     $scope.openDesktopPreview = function() {
         ngDialog.open({
