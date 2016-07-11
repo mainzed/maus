@@ -444,9 +444,13 @@ router.get('/picturesdownload', function (req, res) {
         //res.json(definitions);
 		definitions.forEach(function(definition) {
 
-			if (definition.category === "picture" && definition.text) {
+			if (definition.category === "picture" && definition.text && definition.license && definition.author) {
 				var filename = definition.word + ".md";
-				var content = definition.text;
+				var content = [
+                    definition.text,
+                    "Lizenz: " + definition.license,
+                    "Autor: " + definition.author,
+                ].join("\n");
 
 				var outputPath = path.join(__dirname, "../export_folder/pictures/", filename);
 
