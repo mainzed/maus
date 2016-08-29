@@ -385,104 +385,104 @@ router.post('/savepreview', function (req, res) {
     });
 });
 
-router.get('/definitionsdownload', function (req, res) {
+// router.get('/definitionsdownload', function (req, res) {
+//
+// 	Definition.find(function(err, definitions) {
+//         if (err) {
+//             throw err;
+//         }
+//         //res.json(definitions);
+// 		definitions.forEach(function(definition) {
+//
+// 			if (definition.category === "definition" && definition.word) {
+// 				var filename = definition.word + ".md";
+// 				var content = definition.text;
+//
+// 				var outputPath = path.join(__dirname, "../export_folder/definitions/", filename);
+//
+// 				// create file for each definition
+// 				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
+// 					if (err) {
+// 						console.log(err);
+// 					}
+// 				});
+// 			}
+//
+// 		});
+//
+// 		var definitionsFile = path.join(__dirname, "../export_folder/definitions.zip");
+//
+// 		try {
+// 			fs.unlinkSync(definitionsFile);
+// 		} catch(err) {
+// 			//
+// 		}
+//
+// 		var zip5 = new EasyZip();
+// 		zip5.zipFolder(path.join(__dirname, "../export_folder/definitions"),function(){
+// 			//console.log("works");
+// 			zip5.writeToFile(definitionsFile, function() {
+//
+// 				res.setHeader('Content-Type', 'application/zip');
+// 				res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
+// 				res.sendFile(definitionsFile);
+// 			});
+//
+//
+// 		});
+//
+//     });
+//
+// });
 
-	Definition.find(function(err, definitions) {
-        if (err) {
-            throw err;
-        }
-        //res.json(definitions);
-		definitions.forEach(function(definition) {
-
-			if (definition.category === "definition" && definition.word) {
-				var filename = definition.word + ".md";
-				var content = definition.text;
-
-				var outputPath = path.join(__dirname, "../export_folder/definitions/", filename);
-
-				// create file for each definition
-				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
-					if (err) {
-						console.log(err);
-					}
-				});
-			}
-
-		});
-
-		var definitionsFile = path.join(__dirname, "../export_folder/definitions.zip");
-
-		try {
-			fs.unlinkSync(definitionsFile);
-		} catch(err) {
-			//
-		}
-
-		var zip5 = new EasyZip();
-		zip5.zipFolder(path.join(__dirname, "../export_folder/definitions"),function(){
-			//console.log("works");
-			zip5.writeToFile(definitionsFile, function() {
-
-				res.setHeader('Content-Type', 'application/zip');
-				res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
-				res.sendFile(definitionsFile);
-			});
-
-
-		});
-
-    });
-
-});
-
-router.get('/picturesdownload', function (req, res) {
-
-	Definition.find(function(err, definitions) {
-        if (err) {
-            throw err;
-        }
-        //res.json(definitions);
-		definitions.forEach(function(definition) {
-
-			if (definition.category === "picture" && definition.text && definition.license && definition.author) {
-				var filename = definition.word + ".md";
-				var content = [
-                    definition.text,
-                    "Lizenz: " + definition.license,
-                    "Autor: " + definition.author,
-                ].join("\n");
-
-				var outputPath = path.join(__dirname, "../export_folder/pictures/", filename);
-
-				// create file for each definition
-				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
-					if (err) {
-						console.log(err);
-					}
-				});
-			}
-
-		});
-
-		var definitionsFile = path.join(__dirname, "../export_folder/pictures.zip");
-
-		try {
-			fs.unlinkSync(definitionsFile);
-		} catch(err) {
-			//
-		}
-
-		var zip5 = new EasyZip();
-		zip5.zipFolder(path.join(__dirname, "../export_folder/pictures"),function(){
-			//console.log("works");
-			zip5.writeToFile(definitionsFile, function() {
-
-				res.setHeader('Content-Type', 'application/zip');
-				res.setHeader('Content-Disposition', 'attachment; filename=pictures.zip');
-				res.sendFile(definitionsFile);
-			});
-		});
-    });
-});
+// router.get('/picturesdownload', function (req, res) {
+//
+// 	Definition.find(function(err, definitions) {
+//         if (err) {
+//             throw err;
+//         }
+//         //res.json(definitions);
+// 		definitions.forEach(function(definition) {
+//
+// 			if (definition.category === "picture" && definition.text && definition.license && definition.author) {
+// 				var filename = definition.word + ".md";
+// 				var content = [
+//                     definition.text,
+//                     "Lizenz: " + definition.license,
+//                     "Autor: " + definition.author,
+//                 ].join("\n");
+//
+// 				var outputPath = path.join(__dirname, "../export_folder/pictures/", filename);
+//
+// 				// create file for each definition
+// 				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
+// 					if (err) {
+// 						console.log(err);
+// 					}
+// 				});
+// 			}
+//
+// 		});
+//
+// 		var definitionsFile = path.join(__dirname, "../export_folder/pictures.zip");
+//
+// 		try {
+// 			fs.unlinkSync(definitionsFile);
+// 		} catch(err) {
+// 			//
+// 		}
+//
+// 		var zip5 = new EasyZip();
+// 		zip5.zipFolder(path.join(__dirname, "../export_folder/pictures"),function(){
+// 			//console.log("works");
+// 			zip5.writeToFile(definitionsFile, function() {
+//
+// 				res.setHeader('Content-Type', 'application/zip');
+// 				res.setHeader('Content-Disposition', 'attachment; filename=pictures.zip');
+// 				res.sendFile(definitionsFile);
+// 			});
+// 		});
+//     });
+// });
 
 module.exports = router;

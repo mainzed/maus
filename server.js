@@ -2,7 +2,7 @@
 
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 3000;  //
+var port = process.env.PORT || 3002;  //
 var logger = require('morgan');
 var passport = require('passport');
 var session = require('express-session');
