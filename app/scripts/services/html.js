@@ -316,13 +316,14 @@ angular.module('meanMarkdownApp')
                             '</div>' +
 
                             '<div>' +
-                                'Gestaltung: Matthias Dufner mit Axel Kunz und Sarah Pittroff' +
+                                'Gestaltung: Matthias Dufner und Sarah Pittroff<br>' +
+                                'Web-Development: Axel Kunz und Matthias Dufner' +
                             '</div>' +
 
                         '</div>' +
 
                         '<div>' +
-                            'PDF DOI #####' +
+                            '<a href="http://nbn-resolving.org/urn:nbn:de:hebis:77-publ-546123">Der Jahresbericht als PDF</a>' +
                         '</div>' +
 
                 	'</div>' +
