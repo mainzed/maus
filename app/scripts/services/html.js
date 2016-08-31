@@ -264,7 +264,7 @@ angular.module('meanMarkdownApp')
     };
 
     this.wrapOpMainzedHTML = function(html, metadata) {
-
+        
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"de\">\n" +
                 "<head>\n" +

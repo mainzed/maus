@@ -14,6 +14,7 @@ angular.module('meanMarkdownApp')
         $location.path("/login");
     }
 
+    console.log("works!");
     // check if already logged in, if not, redirect to login page
     $scope.init = function() {
         $scope.currentUser = AuthService.getUser();

@@ -16,7 +16,7 @@ angular.module('meanMarkdownApp')
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
     }
-
+    console.log("works!");
     $scope.init = function() {
 
         $scope.currentUser = AuthService.getUser();
