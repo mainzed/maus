@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (definitionService, filetypeService, MetadataService) {
+  .service('HTMLService', function (definitionService, filetypeService, MetadataService, TemplateService) {
 
     //var usedDefs;  // store IDs of actually used defs
     /**
@@ -57,167 +57,40 @@ angular.module('meanMarkdownApp')
         return $(page).html();
     };
 
-    this.getPrMainzed = function(file) {
-        var customRenderer = new marked.Renderer();
-
-        // custom heading renderer
-        //var headings = [];
-        var counter = 0;
-        customRenderer.heading = function (text, level) {
-            counter++;
-
-            var closeDiv = "";
-
-            if (counter > 1) {
-                closeDiv = "</div>";
-            }
-
-            return  '<div class="slide" id="slide' + counter + '">\n' +
-                    '<h' + level + ' id="h' + level + '-'+ counter + '">' + text + '</h' + level + '>\n';
-        };
-
-        var html = marked(file.markdown, { renderer: customRenderer });
-
-        // append last closing div tag
-        html += "</div>";
-
-        //console.log(html);
-
-        //html = wrapPrMainzedHTML(html, file.title);
-
-        return html;
-    };
-
     /**
      * requires all available definitions to be obtained before running.
      * returns generated html.
      */
-    this.getOpMainzed = function(file, definitions) {
-
-        var metadata = MetadataService.getAndReplace(file.markdown);
-        //var markdown = metadata.markdown;
-        //var coverDescription = metada.
-
-        // create template
-        var htmlString = '<div id="ressourceswrapper">' +
-                        '<div id="imagecontainer"></div>' +
-        		        '<div id="ressources">' +
-        			        '<span id="navicon">' +
-        			            '<span class="icon-toc"></span>' +
-        			        '</span>' +
-
-                			'<span id="closeicon">' +
-                				'<span class="icon-close"></span>' +
-                			'</span>' +
-
-                			'<div id="titletextbg">' +
-                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
-                				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
-                			'</div>' +
-
-                            '<div id="gradient"></div>' +
-                            // navigation
-                            "<ul id=\"nav\"></ul>\n" +
-
-                            // glossar texts get appended here
-        			        '<div id="ressourcestext"></div>' +
-
-        		        '</div>' +
-        	        '</div>' +
-
-                    // markdown content goes here
-                    '<div id="read"></div>\n' +
-
-                    // glossar resources go here and will be activated via js
-                    "<div id='footnotes'></div>\n";
-
-        // make jQuery compatible
-        var page = $("<div>" + htmlString + "</div>");
-
-
-        // metadata.author, metadata.title
-        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
-
-        // add markdown content to page
-        $("#read", page).append(html);
-
-        // enrich page: add headings to navigation
-        this.createOpMainzedNavigation(page);
-
-        // enrich page: convert tags and add resources to end of document
-        this.replaceEnrichmentTags(page, definitions);
-
-        // get html from page via jquery
-        //return page.html();
-
-        return this.wrapOpMainzedHTML(page.html(), metadata);
-
-    };
-
-    this.getOpMainzed2 = function(file, definitions) {
+    this.getOpMainzed = function(file, definitions, success) {
+        var me = this;
 
         var metadata = MetadataService.getAndReplace(file.markdown);
 
-        var conversion = new OpOlatConversion();
+        TemplateService.getOpMainzed(function(template) {
 
-        conversion.appendToPage([
+            // make html string jQuery compatible
+            var page = $("<div>" + template + "</div>");
 
-        ].join(""))
+            // insert title
+            $("title", page).text(metadata.title);
+            $("h1.titletext", page).text(metadata.title);
 
-        // create template
-        var htmlString = '<div id="ressourceswrapper">' +
-                        '<div id="imagecontainer"></div>' +
-        		        '<div id="ressources">' +
-        			        '<span id="navicon">' +
-        			            '<span class="icon-toc"></span>' +
-        			        '</span>' +
+            // insert cover description
+            $("p.coverdescription", page).text(metadata.coverDescription);
 
-                			'<span id="closeicon">' +
-                				'<span class="icon-close"></span>' +
-                			'</span>' +
+            // insert main content
+            var content = me.convertOpMainzedMarkdownToHTML(metadata.markdown);
+            $("#read", page).append(content);
 
-                			'<div id="titletextbg">' +
-                				'<h1 class="titletext title">' + metadata.title + '</h1>' +
-                				'<a class="start titletext" href="#read">Jetzt lesen</a>' +
-                			'</div>' +
+            // enrich page: add navigation by listing all headings
+            me.createOpMainzedNavigation(page);
 
-                            '<div id="gradient"></div>' +
-                            // navigation
-                            "<ul id=\"nav\"></ul>\n" +
+            // enrich page: convert tags and add resources to end of document
+            me.replaceEnrichmentTags(page, definitions);
 
-                            // glossar texts get appended here
-        			        '<div id="ressourcestext"></div>' +
-
-        		        '</div>' +
-        	        '</div>' +
-
-                    // markdown content goes here
-                    '<div id="read"></div>\n' +
-
-                    // glossar resources go here and will be activated via js
-                    "<div id='footnotes'></div>\n";
-
-        // make jQuery compatible
-        var page = $("<div>" + htmlString + "</div>");
-
-
-        // metadata.author, metadata.title
-        var html = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
-
-        // add markdown content to page
-        $("#read", page).append(html);
-
-        // enrich page: add headings to navigation
-        this.createOpMainzedNavigation(page);
-
-        // enrich page: convert tags and add resources to end of document
-        this.replaceEnrichmentTags(page, definitions);
-
-        // get html from page via jquery
-        //return page.html();
-
-        return this.wrapOpMainzedHTML(page.html(), metadata);
-
+            // return ready page
+            success(page.html());
+        });
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {
@@ -241,102 +114,6 @@ angular.module('meanMarkdownApp')
                 html + "\n" +
                 "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
                 "<script src=\"javascript/app.js\"></script>\n" +
-                "</body>\n"+
-                "</html>";
-    };
-
-    this.wrapPrMainzedHTML = function(html, title) {
-
-        return "<!DOCTYPE html>\n" +
-                "<html lang=\"de\">\n" +
-                "<head>\n" +
-                "<title>" + title + "</title>\n" +
-                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n" +
-                "<meta property=\"dc:creator\" content=\"Kai Christian Bruhn, Matthias Dufner, Thomas Engel, Axel Kunz\" />\n" +
-                '<link rel="stylesheet" href="style/prmainzed.css">\n' +
-                "</head>\n"+
-                "<body>\n" +
-                html + "\n" +
-                "<script src=\"https://code.jquery.com/jquery-2.2.3.min.js\"></script>\n" +
-                "<script src=\"javascript/app.js\"></script>\n" +
-                "</body>\n"+
-                "</html>";
-    };
-
-    this.wrapOpMainzedHTML = function(html, metadata) {
-        
-        return "<!DOCTYPE html>\n" +
-                "<html lang=\"de\">\n" +
-                "<head>\n" +
-                '<meta charset="UTF-8">' +
-            	'<meta name="viewport" content="width=device-width, initial-scale=1">' +
-
-
-                "<title>" + metadata.title + "</title>\n" +
-
-                '<link rel="stylesheet" href="style/reader.css">\n' +
-                '<link rel="stylesheet" href="style/style.css">\n' +
-                '<link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700|Roboto:400,400i,700" rel="stylesheet">' +
-                '<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">' +
-                "</head>\n"+
-                "<body>\n" +
-
-                '<div id="titlepicture">' +
-            		'<p class="coverdescription titletext">' + metadata.coverDescription + '</p>' +
-            	'</div>' +
-
-                '<div id="scrollmarker"></div>' +
-
-
-                html +
-
-                    '<div id="imprint">' +
-                		'<h3>Impressum</h3>' +
-                		'<p>Angaben gemäß § 5 TMG:</p>' +
-                		'<div class="address" about="#mainzed" typeof="foaf:Organization">' +
-                			'<span class="organisationnameimprint" property="foaf:name">' +
-                				'mainzed - Mainzer Zentrum für Digitalit&auml;t in den Geistes- und Kulturwissenschaften			</span><br>' +
-                			'<div rel="vcard:hasAddress">' +
-                				'<address>' +
-                				'c/o Hochschule Mainz University of Applied Sciences<br>' +
-                				'<div property="vcard:street-address">Lucy-Hillebrandtstr.2</div>' +
-                				'<span property="vcard:postal-code">55128</span> <span property="vcard:locality">Mainz</span>, <span property="vcard:country-name">Germany</span>' +
-                				'</address>' +
-                			'</div>' +
-                		'</div>' +
-
-                        '<div class="persons">' +
-
-                            '<div>' +
-                                'Herausgeber: Kai-Christian Bruhn' +
-                            '</div>' +
-
-                            '<div>' +
-                                'Redaktion: Anne Klammt' +
-                            '</div>' +
-
-                            '<div>' +
-                                'Gestaltung: Matthias Dufner und Sarah Pittroff<br>' +
-                                'Web-Development: Axel Kunz und Matthias Dufner' +
-                            '</div>' +
-
-                        '</div>' +
-
-                        '<div>' +
-                            '<a href="http://nbn-resolving.org/urn:nbn:de:hebis:77-publ-546123">Der Jahresbericht als PDF</a>' +
-                        '</div>' +
-
-                	'</div>' +
-
-                '<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>' +
-                '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>' +
-                '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>' +
-                '<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>' +
-
-                '<script src="javascript/app.js"></script>' +
-                '<script src="javascript/markactive.js"></script>' +
-                '<script src="javascript/hyphenate.js"></script>' +
-
                 "</body>\n"+
                 "</html>";
     };
@@ -725,7 +502,6 @@ angular.module('meanMarkdownApp')
             }
         }
     };
-
 
     // private function
     function getDefinitionFootnoteString(enrichment) {

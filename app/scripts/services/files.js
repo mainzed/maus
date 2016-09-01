@@ -14,32 +14,3 @@ angular.module('meanMarkdownApp')
 				'update': { method: 'PUT' }
 			});
   	});
-
-/* default ::
-
-{ 'get':    {method:'GET'},
-  'save':   {method:'POST'},
-  'query':  {method:'GET', isArray:true},
-  'remove': {method:'DELETE'},
-  'delete': {method:'DELETE'} };
-
-
-
-Resource.query(function(data) {
-    // success handler
-}, function(error) {
-    // error handler
-});
-
-Resource.query({
-    'query': 'thequery'
-},function(data) {
-    // success handler
-}, function(error) {
-    // error handler
-});
-
-
-
-
-  */

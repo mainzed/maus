@@ -24,29 +24,13 @@
         Spickzettel
     </button>
 
-
-    <!-- image, links & storyscript buttons -->
     <div class="btn-group marginleft" role="group">
 
-      <!-- image button -->
-      <!--<button ng-show="isValidToolForType(file.type, 'imagetag')" class="btn btn-default btn-sm" ng-click="onImageClick()" data-toggle="tooltip" title="Insert Image (Ctrl + I)">
-        Bild
-    </button>-->
-
-      <!-- definition-button -->
+      <!-- enrichment button -->
       <button class="btn btn-default btn-sm" ng-click="onDefinitionClick()" ng-disabled="file.type === 'news' && currentUser.group !== 'admin'">
         Anreichern
       </button>
 
-      <!-- link button -->
-      <!--<button ng-show="isValidToolForType(file.type, 'linktag')" class="btn btn-default btn-sm" ng-click="onLinkClick()" data-toggle="tooltip" title="Ctrl + L">
-        Link
-    </button>-->
-
-      <!-- storyscript button -->
-      <!--<button ng-show="isValidToolForType(file.type, 'storytag')" class="btn btn-default btn-sm" ng-click="onStoryScriptClick()" data-toggle="tooltip" title="Insert Storytag">
-        Story
-    </button>-->
     </div>
 
     <!-- export -->

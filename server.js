@@ -30,8 +30,8 @@ initPassport(passport);
 app.use('/bower_components',  express.static(__dirname + '/bower_components', { maxAge: oneDay }));
 app.use('/preview_files',  express.static(__dirname + '/preview_files', { maxAge: oneDay }));
 
-//app.use(express.static(__dirname + '/app'));  // development
-app.use(express.static(__dirname + '/dist'));  // production
+app.use(express.static(__dirname + '/app'));  // development
+//app.use(express.static(__dirname + '/dist'));  // production
 
 
 app.use(bodyParser.json());
@@ -42,6 +42,7 @@ require('./database.js');
 
 // security//
 app.disable('x-powered-by');
+
 
 //app.use('/', index);
 app.use('/auth', authenticate);

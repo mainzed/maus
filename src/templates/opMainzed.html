@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      <!-- page title here -->
+    </title>
+    <link rel="stylesheet" href="style/reader.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link href="https://fonts.googleapis.com/css?family=RobotoSlab:700|Roboto:400,400i,700" rel="stylesheet">
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+  </head>
+  <body>
+
+    <div id="titlepicture">
+      <p class="coverdescription titletext"></p>
+    </div>
+
+    <div id="scrollmarker"></div>
+
+    <div id="ressourceswrapper">
+
+      <div id="imagecontainer"></div>
+
+      <div id="ressources">
+
+        <span id="navicon">
+            <span class="icon-toc"></span>
+        </span>
+
+  			<span id="closeicon">
+  				<span class="icon-close"></span>
+  			</span>
+
+  			<div id="titletextbg">
+  				<h1 class="titletext title"></h1>
+  				<a class="start titletext" href="#read">Jetzt lesen</a>
+  			</div>
+
+        <div id="gradient"></div>
+
+        <!-- navigation, filled dynamically -->
+        <ul id="nav"></ul>
+
+        <!-- glossar texts, filled dynamically -->
+        <div id="ressourcestext"></div>
+
+      </div><!-- end ressources -->
+
+    </div><!-- end ressourceswrapper -->
+
+    <!-- markdown content goes here -->
+    <div id="read"></div>
+
+    <!-- glossar resources go here and will be activated via js -->
+    <div id=footnotes></div>"
+
+    <div id="imprint">
+      <h3>Impressum</h3>
+      <p>Angaben gemäß § 5 TMG:</p>
+      <div class="address" about="#mainzed" typeof="foaf:Organization">
+        <span class="organisationnameimprint" property="foaf:name">
+          mainzed - Mainzer Zentrum für Digitalit&auml;t in den Geistes- und Kulturwissenschaften
+        </span>
+        <br>
+        <div rel="vcard:hasAddress">
+          <address>
+            c/o Hochschule Mainz University of Applied Sciences<br>
+            <div property="vcard:street-address">Lucy-Hillebrand-Straße 2</div>
+            <span property="vcard:postal-code">55128</span> <span property="vcard:locality">Mainz</span>, <span property="vcard:country-name">Germany</span>
+          </address>
+        </div>
+      </div>
+      <div class="persons">
+        <div>
+            Herausgeber: Kai-Christian Bruhn
+        </div>
+        <div>
+            Redaktion: Anne Klammt
+        </div>
+        <div>
+            Gestaltung: Matthias Dufner und Sarah Pittroff<br>
+            Web-Development: Axel Kunz und Matthias Dufner
+        </div>
+      </div>
+      <!-- pdf download -->
+      <div>
+        <a href="http://nbn-resolving.org/urn:nbn:de:hebis:77-publ-546123">Der Jahresbericht als PDF</a>
+      </div>
+    </div><!-- end imprint -->
+
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nanoscroller/0.8.7/javascripts/jquery.nanoscroller.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>
+    <script src="javascript/app.js"></script>
+    <script src="javascript/markactive.js"></script>
+    <script src="javascript/hyphenate.js"></script>
+
+  </body>
+</html>

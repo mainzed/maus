@@ -15,6 +15,8 @@ angular.module('meanMarkdownApp')
         $location.path("/files");
     }
 
+    console.log("loaded LoginController!");
+
     $scope.onLoginSubmit = function() {
         $scope.validating = true;  // used to disable login button while validating
 

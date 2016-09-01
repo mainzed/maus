@@ -1037,6 +1037,22 @@ describe('Service: HTMLService', function () {
             expect($("#read", page).html()).toBe('<p>some markdown text</p>\n');
         });
 
+        it("should append persons to imprint", function() {
+            var file = {
+                markdown: "some markdown text"
+            };
+            var actual = service.getOpMainzed(file, [], {});
+            var page = $('<div>' + actual + '</div>');
+            var expected = [
+                '<div>Herausgeber: Kai-Christian Bruhn</div>',
+                '<div>Redaktion: Anne Klammt</div>',
+                '<div>Gestaltung: Matthias Dufner und Sarah Pittroff<br>',
+                'Web-Development: Axel Kunz und Matthias Dufner</div>'
+            ].join("");
+
+            expect($("#imprint .persons", page).html()).toBe(expected);
+        });
+
 
     });
 

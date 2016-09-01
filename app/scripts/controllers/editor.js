@@ -16,11 +16,10 @@ angular.module('meanMarkdownApp')
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
     }
-    console.log("works!");
+
     $scope.init = function() {
 
         $scope.currentUser = AuthService.getUser();
-
 
         // get file based on id provided in address bar
         fileService.get({ id: $routeParams.id }, function(file) {
@@ -40,9 +39,6 @@ angular.module('meanMarkdownApp')
             $scope.markFileAsActive();
 
         });
-
-
-
     };
 
     $scope.initResizable = function(){
@@ -292,28 +288,22 @@ angular.module('meanMarkdownApp')
                     // convert markdown to html
                     html = HTMLService.getOlat($scope.fileCopy, definitions, config);
                     html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
+                    initDownload(filename, html);
                 } else if ($scope.file.type === "opMainzed") {
-                    html = HTMLService.getOpMainzed($scope.fileCopy, definitions);
-                    //html = HTMLService.wrapOpMainzedHTML(html, $scope.file.title);
+                    HTMLService.getOpMainzed($scope.fileCopy, definitions, function(html) {
+                        initDownload(filename, html);
+                    });
                 }
-
-
-                // init download
-                var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
-                var downloadLink = angular.element('<a></a>');
-                downloadLink.attr('href', window.URL.createObjectURL(blob));
-                downloadLink.attr('download', filename);
-                downloadLink[0].click();
-
             });
-
-
-
-
-
-
-
         });
+
+        function initDownload(filename, html) {
+            var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
+            var downloadLink = angular.element('<a></a>');
+            downloadLink.attr('href', window.URL.createObjectURL(blob));
+            downloadLink.attr('download', filename);
+            downloadLink[0].click();
+        }
     };
 
     $scope.onUndoClick = function() {
@@ -326,8 +316,6 @@ angular.module('meanMarkdownApp')
 
     $scope.onPreviewClick = function() {
 
-        //console.log("load preview!");
-
         fileService.query(function(files) {
 
             var markdown = $scope.processIncludes($scope.file.markdown, files);
@@ -336,12 +324,22 @@ angular.module('meanMarkdownApp')
             $scope.fileCopy.markdown = markdown;
 
             $scope.processHtml($scope.fileCopy, function(previewPath) {
-                // success
-                $scope.previewPath = previewPath;
-                $scope.openDesktopPreview();
+                openDesktopPreview(previewPath);
             });
 
         });
+
+        function openDesktopPreview(previewPath) {
+            // add random number to force cache refresh
+            $scope.previewPath = previewPath + "?random=" + Math.round(Math.random() * 1000000);
+            console.log($scope.previewPath);
+            ngDialog.open({
+                template: "views/dialog_preview.html",
+                disableAnimation: true,
+                closeByDocument: true,  // enable clicking on background to close dialog
+                scope: $scope
+            });
+        }
 
     };
 
@@ -364,63 +362,31 @@ angular.module('meanMarkdownApp')
             if ($scope.file.type === "opOlat") {
                 html = HTMLService.getOlat(file, definitions, config);
                 html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
+                showPreview(html, success);
 
             } else if ($scope.file.type === "opMainzed") {
-                html = HTMLService.getOpMainzed(file, definitions);
-
-            } else if ($scope.file.type === "prMainzed") {
-                html = HTMLService.getPrMainzed(file);
-                html = HTMLService.wrapPrMainzedHTML(html, file.title);
+                 HTMLService.getOpMainzed(file, definitions, function(html) {
+                    //success
+                    showPreview(html, success);
+                });
             }
 
-            var postData = {
-                "type": file.type,
-                "html": html,
-                "user_id": $scope.currentUser._id
-            };
+            function showPreview(html, success) {
+                var postData = {
+                    "type": file.type,
+                    "html": html,
+                    "user_id": $scope.currentUser._id
+                };
 
-            $http.post('/api/savepreview', postData).then(function(data) {
-
-                //$scope.previewPath = data.data;  // returns path of newly created html
-                success(data.data.previewPath);
-
-            }, function() {
-                // error
-                console.log("something went wrong while trying to create preview");
-            });
+                $http.post('/api/savepreview', postData).then(function(data) {
+                    success(data.data.previewPath);
+                }, function() {
+                    console.log("something went wrong while trying to create preview");
+                });
+            }
         });
     };
 
-    $scope.openDesktopPreview = function() {
-        ngDialog.open({
-            template: "views/dialog_preview.html",
-            disableAnimation: true,
-            closeByDocument: true,  // enable clicking on background to close dialog
-            //className: 'ngdialog-theme-default',
-            //className: $scope.dialogClass,
-            scope: $scope
-        });
-    };
-
-    $scope.openMobilePreview = function() {
-        ngDialog.open({
-            template: "views/dialog_preview.html",
-            disableAnimation: true,
-            closeByDocument: true,  // enable clicking on background to close dialog
-            className:'ngdialog-theme-default preview-mobile',
-            scope: $scope
-        });
-    };
-
-    $scope.onMobileClick = function() {
-        ngDialog.open({
-            template: "views/dialog_preview.html",
-            disableAnimation: true,
-            closeByDocument: true,  // enable clicking on background to close dialog
-            className: 'ngdialog-theme-default mobile-view',
-            scope: $scope
-        });
-    };
 
     /**
      * update markdown service when editor changes
@@ -522,30 +488,6 @@ angular.module('meanMarkdownApp')
         return filetypeService.isValidToolForType(filetype, toolname);
     };
 
-    // link hotkey
-    $(document).keydown(function (e) {
-        var code = e.keyCode || e.which;
-        // shiftKey ctrlKey
-        if(e.ctrlKey && code === 76) { // Shift + L
-            console.log("Ctrl + L");
-            $scope.onLinkClick();
-            e.preventDefault();  // stop save action
-
-        }
-    });
-
-    // image hotkey
-    $(document).keydown(function (e) {
-        var code = e.keyCode || e.which;
-        // shiftKey ctrlKey
-        if(e.ctrlKey && code === 73) {
-            console.log("Ctrl + I");
-            $scope.onImageClick();
-            e.preventDefault();  // stop save action
-
-        }
-    });
-
     // save hotkey
     $(document).keydown(function (e) {
         var code = e.keyCode || e.which;
@@ -567,23 +509,6 @@ angular.module('meanMarkdownApp')
             $scope.onUndoClick();
             e.preventDefault();
         }
-    });
-
-    $(window).resize(function () {
-        // fitEditorHeight();
-    });
-
-    var timer;
-    var stoppedElement=document.getElementsByTagName("body")[0];   // store element for faster access
-
-    function mouseStopped(){                                 // the actual function that is called
-        //$("#editor-tools").css("opacity", "0.4");
-    }
-
-    window.addEventListener("mousemove",function(){
-        //$("#editor-tools").css("opacity", "1");
-        //clearTimeout(timer);
-        //timer=setTimeout(mouseStopped,1400);
     });
 
     /**

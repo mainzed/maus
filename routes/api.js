@@ -364,11 +364,9 @@ router.post('/savepreview', function (req, res) {
         res.status(500).send('Filetype ' + type + 'not supported!');
     }
 
-    //var finalPath =  path.join(__dirname, outputPath);
-
-    //console.log(finalPath);
-
     var options = { flag : 'w' };
+
+    console.log(outputPath);
     fs.writeFile(outputPath , html, options, function(err) {
         if (err) {
             console.log(err);
@@ -377,6 +375,8 @@ router.post('/savepreview', function (req, res) {
             //console.log("created " + outputPath);
             console.log("saved file successfully!!!!");
             res.status(200);
+            //res.sendFile(outputPath);
+
             res.json({
                 message: "success",
                 previewPath: path.join("preview_files/", type.toLowerCase(), filename)
@@ -484,5 +484,11 @@ router.post('/savepreview', function (req, res) {
 // 		});
 //     });
 // });
+
+// templates
+router.get('/templates/opmainzed', function (req, res) {
+    res.status(200);
+    res.sendFile(path.join(__dirname, "../src/templates/opMainzed.html"));
+});
 
 module.exports = router;
