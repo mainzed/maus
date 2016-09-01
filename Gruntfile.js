@@ -497,7 +497,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         // run unit tests once
-        'karma:build',
+        //'karma:build',
 
         // deletes /dist
         'clean:dist',
