@@ -227,505 +227,6 @@ describe('Service: HTMLService', function () {
         });
     }); // end OLAT
 
-    describe('MainzedPresentation functions', function() {
-
-        describe('getPrMainzed()', function() {
-            var file;
-            beforeEach(function() {
-                file = {
-                    title: "Test File",
-                    author: "John Doe",
-                    type: "opOlat",
-                    markdown:   "# heading 1\n" +
-                                "This is markdown!"
-                };
-            });
-
-            it("should return html", function() {
-                var expected =  "<div class=\"slide\" id=\"slide1\">\n" +
-                                '<h1 id="h1-1">heading 1</h1>\n' +
-                                "<p>This is markdown!</p>\n" +
-                                "</div>";
-
-                expect(service.getPrMainzed(file)).toEqual(expected);
-
-            });
-        });
-
-    });
-
-    describe('replaceEnrichmentTags() for opMainzed', function() {
-        var enrichments = [
-            {
-                _id: "571725cd5c6b2bd90ed10b6e",
-                word: "someDefinedWord",
-                //url: "www.google.de",
-                text: "This is the definition description!",
-                //updated_at: "2016-04-20T06:46:37.887Z",
-                filetype: "opMainzed",
-                category: "definition"
-                //author: "John Doe"
-            },{
-                _id: "571725cd5c6b2bd90ed10b6e",
-                 word: "pic1",
-                url: "www.some-picture.com",
-                text: "This is the caption.",
-                title: "This is the alt",
-                updated_at: "2016-04-20T06:46:37.887Z",
-                filetype: "opMainzed",
-                category: "picture"
-                //author: "John Doe"
-            }
-        ];
-
-        it('should replace definition tag', function() {
-            // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
-
-            //var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
-
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
-            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
-            "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div></div>";
-
-            //page = $("<div>" + inputHtml + "</div>");
-
-            service.replaceEnrichmentTags(page, enrichments);
-            expect($(page).html()).toBe(expected);
-        });
-
-        it('should replace definition tag with author and website', function() {
-            var definitions = [{
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                    word: "someDefinedWord",
-                    url: "www.google.de",
-                    text: "This is the definition description!",
-                    //updated_at: "2016-04-20T06:46:37.887Z",
-                    filetype: "opMainzed",
-                    category: "definition",
-                    author: "John Doe"
-            }];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
-
-            var expected = [
-                "<div id=\"read\">",
-                    "<p>",
-                        "String with a ",
-                        "<span id=\"" + definitions[0]._id + "\" class=\"shortcut\">",
-                            definitions[0].word,
-                        "</span>",
-                        "!",
-                    "</p>",
-                '</div>',
-
-                '<div id=\"footnotes\">',
-                    '<div class=\"' + definitions[0]._id + '\">',
-                        '<h4>' + definitions[0].word + '</h4>',
-                        '<p>' + definitions[0].text + '</p>\n',
-                        '<div class="definition-metadata">',
-                            '<span class="author">Autor: John Doe</span>',
-                            '<span class="website">',
-                                '<a href="www.google.de" target="_blank">Website</a>',
-                            '</span>',
-                        '</div>',
-                    '</div>',
-                '</div>'
-            ].join("");
-
-            //page = $("<div>" + inputHtml + "</div>");
-
-            service.replaceEnrichmentTags(page, definitions);
-            expect($(page).html()).toBe(expected);
-        });
-
-        it('should replace definition tag that contains a link', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "someDefinedWordWithALink",
-                    text: "This is the definition description! and it contains a [link](http://www.google.de)",
-                    updated_at: "2016-04-20T06:46:37.887Z",
-                    filetype: "opMainzed",
-                    category: "definition"
-                    //author: "John Doe"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWordWithALink}!</p></div><div id="footnotes"></div></div>');
-
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
-            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
-            "<h4>" + enrichments[0].word + "</h4><p>This is the definition description! and it contains a <a href=\"http://www.google.de\" class=\"external-link\" target=\"_blank\">link</a></p>\n</div></div>";
-
-            service.replaceEnrichmentTags(page, enrichments);
-            expect($(page).html()).toBe(expected);
-        });
-
-        it("should give internal links a class", function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "someDefinedWordWithALink",
-                    //url: "www.google.de",
-                    text: "This is the definition description! and it contains a [internal-link](#some-anchor)",
-                    updated_at: "2016-04-20T06:46:37.887Z",
-                    filetype: "opMainzed",
-                    category: "definition"
-                    //author: "John Doe"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWordWithALink}!</p></div><div id="footnotes"></div></div>');
-
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
-            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
-            "<h4>" + enrichments[0].word + "</h4><p>This is the definition description! and it contains a <a href=\"#some-anchor\" class=\"internal-link\">internal-link</a></p>\n</div></div>";
-
-            service.replaceEnrichmentTags(page, enrichments);
-            expect($(page).html()).toBe(expected);
-        });
-
-        it("should replace definition with custom word", function() {
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord "my custom word"}!</p></div><div id="footnotes"></div></div>');
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            var actual = $(page).html();
-            var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + "my custom word" + "</span>!</p>" +
-            "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
-            "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div></div>";
-
-            expect(actual).toBe(expected);
-        });
-
-        it('should replace multiple definition tags', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                    word: "someDefinedWord",
-                    text: "Some description!",
-                    filetype: "opMainzed",
-                    category: "definition"
-                    //author: "John Doe"
-                },{
-                    _id: "571725cd5c6b2bd90easdasd",
-                    word: "someDefinedWordWithALink",
-                    text: "This is the definition description! and it contains a [link](http://www.google.de)",
-                    filetype: "opMainzed",
-                    category: "definition"
-                    //author: "John Doe"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p><p>{definition: someDefinedWordWithALink}</p></div><div id="footnotes"></div></div>');
-
-            var expected = ['<div id="read"><p>String with a <span id="',
-                            enrichments[0]._id,
-                            '" class="shortcut">',
-                            enrichments[0].word,
-                            "</span>!</p>",
-                            "<p>",
-                            '<span id="571725cd5c6b2bd90easdasd" class="shortcut">',
-                            'someDefinedWordWithALink',
-                            '</span>',
-                            "</p>",
-                            "</div>",
-
-                            '<div id="footnotes">',
-                                // definition 1
-                                '<div class="571725cd5c6b2bd90ed10b6e">',
-                                '<h4>someDefinedWord</h4>',
-                                '<p>Some description!</p>\n',
-                                '</div>',
-
-                                // definition 2
-                                '<div class="571725cd5c6b2bd90easdasd">',
-                                '<h4>someDefinedWordWithALink</h4>',
-                                '<p>This is the definition description! and it contains a <a href="http://www.google.de" class="external-link" target="_blank">link</a></p>\n',
-                                '</div>',
-                            "</div>"
-                        ].join("");
-
-            service.replaceEnrichmentTags(page, enrichments);
-            expect($(page).html()).toBe(expected);
-
-            // should have appended two new spans
-            expect($("#read span", page).length).toBe(2);
-
-            // should have appended two new divs to footnotes
-            expect($("#footnotes div", page).length).toBe(2);
-
-            // check div content
-            expect($("#footnotes div h4", page).last().html()).toBe("someDefinedWordWithALink");
-
-        });
-
-        it("should replace definition with custom word using legacy definition syntax");
-
-        it('should replace picture tag', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "pic1",
-                    url: "www.some-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture"
-                    //author: "John Doe"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{picture: pic1}</div></div>');
-
-            var expected = [
-                '<div id="read">',
-                    '<figure id="571725cd5c6b2bd90ed10b6e">',
-                        '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
-                        '<figcaption>',
-                            enrichments[0].text,
-                        '</figcaption>',
-                    '</figure>',
-                '</div>'
-            ].join("");
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            expect(enrichments.length).toBe(1);
-            expect($(page).html()).toBe(expected);
-        });
-
-        it('should replace picture tag with license and author', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                    word: "pic1",
-                    url: "www.some-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture",
-                    license: "license1",
-                    author: "John Doe"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{picture: pic1}</div></div>');
-
-            var expected = [
-                '<div id="read">',
-                    '<figure id="571725cd5c6b2bd90ed10b6e">',
-                        '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
-                        '<figcaption>',
-                            enrichments[0].text,
-                            '<div class="picture-metadata">',
-                                '<span class="author">Autor: John Doe</span>',
-                                '<span class="license">Lizenz: license1</span>',
-                            '</div>',
-                        '</figcaption>',
-                    '</figure>',
-                '</div>'
-            ].join("");
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            expect(enrichments.length).toBe(1);
-            expect($(page).html()).toBe(expected);
-
-        });
-
-        it('should replace picturegroup tag', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed1231236e",
-                     word: "pic1",
-                    url: "www.some-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture"
-                },{
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "pic2",
-                    url: "www.some-other-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
-
-            var expected = [
-                '<div id="read">',
-                    '<div class="picturegroup">',
-                        '<figure id="571725cd5c6b2bd90ed1231236e">',
-                            '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
-                            '<figcaption>',
-                                enrichments[0].text,
-                            '</figcaption>',
-                        '</figure>',
-
-                        '<figure id="571725cd5c6b2bd90ed10b6e">',
-                            '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
-                            '<figcaption>',
-                                enrichments[1].text,
-                            '</figcaption>',
-                        '</figure>',
-                    '</div>',
-                '</div>'
-            ].join("");
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            expect($(page).html()).toBe(expected);
-
-        });
-
-        it('should replace picturegroup with licenses and authors', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed1231236e",
-                     word: "pic1",
-                    url: "www.some-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture",
-                    author: "John Doe",
-                    license: "cc-by-sa 3.0"
-                },{
-                    _id: "571725cd5c6b2bd90ed10b6e",
-                     word: "pic2",
-                    url: "www.some-other-picture.com",
-                    text: "This is the caption.",
-                    title: "This is the alt",
-                    filetype: "opMainzed",
-                    category: "picture",
-                    author: "Jane Doe",
-                    license: "cc-by-sa 4.0"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
-
-            var expected = [
-                '<div id="read">',
-                    '<div class="picturegroup">',
-                        '<figure id="571725cd5c6b2bd90ed1231236e">',
-                            '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
-                            '<figcaption>',
-                                enrichments[0].text,
-                                '<div class="picture-metadata">',
-                                    '<span class="author">Autor: John Doe</span>',
-                                    '<span class="license">Lizenz: cc-by-sa 3.0</span>',
-                                '</div>',
-                            '</figcaption>',
-                        '</figure>',
-
-                        '<figure id="571725cd5c6b2bd90ed10b6e">',
-                            '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
-                            '<figcaption>',
-                                enrichments[1].text,
-                                '<div class="picture-metadata">',
-                                    '<span class="author">Autor: Jane Doe</span>',
-                                    '<span class="license">Lizenz: cc-by-sa 4.0</span>',
-                                '</div>',
-                            '</figcaption>',
-                        '</figure>',
-                    '</div>',
-                '</div>'
-            ].join("");
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            expect($(page).html()).toBe(expected);
-
-        });
-
-        it('should replace citation tag', function() {
-            var enrichments = [
-                {
-                    _id: "571725cd5c6b2bd90ed10b61",
-                     word: "citation1",
-                    __v: 0,
-                    text: "This is the citation.",
-                    author: "John Doe",
-                    updated_at: "2016-04-20T06:46:37.887Z",
-                    filetype: "opMainzed",
-                    category: "citation"
-                }
-            ];
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{citation: citation1}</div></div>');
-
-            var expected = '<div id="read"><div class="citation hyphenate">' +
-                            '<p>' + enrichments[0].text + '</p>\n' +
-                            '<span class="author">' + enrichments[0].author + '</span>' +
-                            '</div></div>';
-
-
-            service.replaceEnrichmentTags(page, enrichments);
-
-            expect($(page).html()).toBe(expected);
-
-        });
-
-        it("should reset used definitions for each new function call");
-
-        it("should not throw error if definition does not exist", function() {
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{definition: def1}</div></div>');
-            var handler = function() {
-                service.replaceEnrichmentTags(page, []);
-            };
-            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
-        })
-
-        it("should not throw error if legacy definition does not exist", function() {
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{def1}</div></div>');
-            var handler = function() {
-                service.replaceEnrichmentTags(page, []);
-            };
-            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
-        })
-
-        it("should not throw error if picture enrichment does not exist", function() {
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{picture: pic1}</div></div>');
-            var handler = function() {
-                service.replaceEnrichmentTags(page, []);
-            };
-            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
-        });
-
-        it("should not throw error if citation enrichment does not exist", function() {
-
-            // make jQuery compatible
-            var page = $('<div><div id="read">{citation: cit1}</div></div>');
-            var handler = function() {
-                service.replaceEnrichmentTags(page, []);
-            };
-            expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: cit1"));
-        });
-
-    });
-
     describe("replaceEnrichmentTags() for opOlat", function() {
         it('should replace definition tag', function() {
             var enrichments = [
@@ -1010,50 +511,517 @@ describe('Service: HTMLService', function () {
 
     describe("getOpMainzed()", function() {
 
-        it("should add all required divs and uls", function() {
+        it("should enrich template with markdown content", function() {
             var file = {
-                markdown: "some markdown text"
+                title: "Test File",
+                author: "John Doe",
+                type: "opMainzed",
+                markdown: [
+                    "@title: some title",
+                    "# heading 1",
+                    "This is **markdown**"
+                ].join("\n")
             };
-            //var expected = ""
-            var actual = service.getOpMainzed(file, [], {});
-            var page = $('<div>' + actual + '</div>');
-
-            expect($("div#titlepicture", page).length).toBe(1);
-            expect($("div#gradient", page).length).toBe(1);
-            expect($("div#footnotes", page).length).toBe(1);
-            expect($("div#read", page).length).toBe(1);
-            expect($("ul#nav", page).length).toBe(1);
-            expect($("div#titletextbg", page).length).toBe(1);
-            expect($("div#ressourcestext", page).length).toBe(1);
-            expect($("div#imagecontainer", page).length).toBe(1);
-        });
-
-        it("should append converted markdown to read element", function() {
-            var file = {
-                markdown: "some markdown text"
-            };
-            var actual = service.getOpMainzed(file, [], {});
-            var page = $('<div>' + actual + '</div>');
-            expect($("#read", page).html()).toBe('<p>some markdown text</p>\n');
-        });
-
-        it("should append persons to imprint", function() {
-            var file = {
-                markdown: "some markdown text"
-            };
-            var actual = service.getOpMainzed(file, [], {});
-            var page = $('<div>' + actual + '</div>');
-            var expected = [
-                '<div>Herausgeber: Kai-Christian Bruhn</div>',
-                '<div>Redaktion: Anne Klammt</div>',
-                '<div>Gestaltung: Matthias Dufner und Sarah Pittroff<br>',
-                'Web-Development: Axel Kunz und Matthias Dufner</div>'
+            var definitions = [];
+            var template = [
+                "<html>",
+                  "<head>",
+                    "<title></title>",
+                  "</head>",
+                  "<body>",
+                    "<div id='read'></div>",
+                  "</body>",
+                "</html>"
             ].join("");
 
-            expect($("#imprint .persons", page).html()).toBe(expected);
+            var expectedHtml = [
+                "<html>",
+                  "<head>",
+                    "<title>some title</title>",
+                  "</head>",
+                  "<body>",
+                    '<div id="read">',
+                      '<h1 id="section-1" class="hyphenate">heading 1</h1>\n',
+                      '<p>This is <strong>markdown</strong></p>\n',
+                    '</div>',
+                  "</body>",
+                "</html>"
+            ].join("");
+            var actualHtml = service.getOpMainzed(file, definitions, template);
+            expect(actualHtml).toBe(expectedHtml);
         });
 
+        describe('replaceEnrichmentTags()', function() {
+            var enrichments = [
+                {
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                    word: "someDefinedWord",
+                    //url: "www.google.de",
+                    text: "This is the definition description!",
+                    //updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "definition"
+                    //author: "John Doe"
+                },{
+                    _id: "571725cd5c6b2bd90ed10b6e",
+                     word: "pic1",
+                    url: "www.some-picture.com",
+                    text: "This is the caption.",
+                    title: "This is the alt",
+                    updated_at: "2016-04-20T06:46:37.887Z",
+                    filetype: "opMainzed",
+                    category: "picture"
+                    //author: "John Doe"
+                }
+            ];
 
+            it('should replace definition tag', function() {
+                // make jQuery compatible
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
+
+                //var inputHtml = "<p>String with a {definition: someDefinedWord}!</p>";  // string is not a defined definition
+
+                var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
+                "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+                "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div></div>";
+
+                //page = $("<div>" + inputHtml + "</div>");
+
+                service.replaceEnrichmentTags(page, enrichments);
+                expect($(page).html()).toBe(expected);
+            });
+
+            it('should replace definition tag with author and website', function() {
+                var definitions = [{
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                        word: "someDefinedWord",
+                        url: "www.google.de",
+                        text: "This is the definition description!",
+                        //updated_at: "2016-04-20T06:46:37.887Z",
+                        filetype: "opMainzed",
+                        category: "definition",
+                        author: "John Doe"
+                }];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p></div><div id="footnotes"></div></div>');
+
+                var expected = [
+                    "<div id=\"read\">",
+                        "<p>",
+                            "String with a ",
+                            "<span id=\"" + definitions[0]._id + "\" class=\"shortcut\">",
+                                definitions[0].word,
+                            "</span>",
+                            "!",
+                        "</p>",
+                    '</div>',
+
+                    '<div id=\"footnotes\">',
+                        '<div class=\"' + definitions[0]._id + '\">',
+                            '<h4>' + definitions[0].word + '</h4>',
+                            '<p>' + definitions[0].text + '</p>\n',
+                            '<div class="definition-metadata">',
+                                '<span class="author">Autor: John Doe</span>',
+                                '<span class="website">',
+                                    '<a href="www.google.de" target="_blank">Website</a>',
+                                '</span>',
+                            '</div>',
+                        '</div>',
+                    '</div>'
+                ].join("");
+
+                //page = $("<div>" + inputHtml + "</div>");
+
+                service.replaceEnrichmentTags(page, definitions);
+                expect($(page).html()).toBe(expected);
+            });
+
+            it('should replace definition tag that contains a link', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                         word: "someDefinedWordWithALink",
+                        text: "This is the definition description! and it contains a [link](http://www.google.de)",
+                        updated_at: "2016-04-20T06:46:37.887Z",
+                        filetype: "opMainzed",
+                        category: "definition"
+                        //author: "John Doe"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWordWithALink}!</p></div><div id="footnotes"></div></div>');
+
+                var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
+                "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+                "<h4>" + enrichments[0].word + "</h4><p>This is the definition description! and it contains a <a href=\"http://www.google.de\" class=\"external-link\" target=\"_blank\">link</a></p>\n</div></div>";
+
+                service.replaceEnrichmentTags(page, enrichments);
+                expect($(page).html()).toBe(expected);
+            });
+
+            it("should give internal links a class", function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                         word: "someDefinedWordWithALink",
+                        //url: "www.google.de",
+                        text: "This is the definition description! and it contains a [internal-link](#some-anchor)",
+                        updated_at: "2016-04-20T06:46:37.887Z",
+                        filetype: "opMainzed",
+                        category: "definition"
+                        //author: "John Doe"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWordWithALink}!</p></div><div id="footnotes"></div></div>');
+
+                var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + enrichments[0].word + "</span>!</p>" +
+                "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+                "<h4>" + enrichments[0].word + "</h4><p>This is the definition description! and it contains a <a href=\"#some-anchor\" class=\"internal-link\">internal-link</a></p>\n</div></div>";
+
+                service.replaceEnrichmentTags(page, enrichments);
+                expect($(page).html()).toBe(expected);
+            });
+
+            it("should replace definition with custom word", function() {
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord "my custom word"}!</p></div><div id="footnotes"></div></div>');
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                var actual = $(page).html();
+                var expected = "<div id=\"read\"><p>String with a <span id=\"" + enrichments[0]._id + "\" class=\"shortcut\">" + "my custom word" + "</span>!</p>" +
+                "</div><div id=\"footnotes\"><div class=\"" + enrichments[0]._id + "\">" +
+                "<h4>" + enrichments[0].word + "</h4><p>" + enrichments[0].text + "</p>\n</div></div>";
+
+                expect(actual).toBe(expected);
+            });
+
+            it('should replace multiple definition tags', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                        word: "someDefinedWord",
+                        text: "Some description!",
+                        filetype: "opMainzed",
+                        category: "definition"
+                        //author: "John Doe"
+                    },{
+                        _id: "571725cd5c6b2bd90easdasd",
+                        word: "someDefinedWordWithALink",
+                        text: "This is the definition description! and it contains a [link](http://www.google.de)",
+                        filetype: "opMainzed",
+                        category: "definition"
+                        //author: "John Doe"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read"><p>String with a {definition: someDefinedWord}!</p><p>{definition: someDefinedWordWithALink}</p></div><div id="footnotes"></div></div>');
+
+                var expected = ['<div id="read"><p>String with a <span id="',
+                                enrichments[0]._id,
+                                '" class="shortcut">',
+                                enrichments[0].word,
+                                "</span>!</p>",
+                                "<p>",
+                                '<span id="571725cd5c6b2bd90easdasd" class="shortcut">',
+                                'someDefinedWordWithALink',
+                                '</span>',
+                                "</p>",
+                                "</div>",
+
+                                '<div id="footnotes">',
+                                    // definition 1
+                                    '<div class="571725cd5c6b2bd90ed10b6e">',
+                                    '<h4>someDefinedWord</h4>',
+                                    '<p>Some description!</p>\n',
+                                    '</div>',
+
+                                    // definition 2
+                                    '<div class="571725cd5c6b2bd90easdasd">',
+                                    '<h4>someDefinedWordWithALink</h4>',
+                                    '<p>This is the definition description! and it contains a <a href="http://www.google.de" class="external-link" target="_blank">link</a></p>\n',
+                                    '</div>',
+                                "</div>"
+                            ].join("");
+
+                service.replaceEnrichmentTags(page, enrichments);
+                expect($(page).html()).toBe(expected);
+
+                // should have appended two new spans
+                expect($("#read span", page).length).toBe(2);
+
+                // should have appended two new divs to footnotes
+                expect($("#footnotes div", page).length).toBe(2);
+
+                // check div content
+                expect($("#footnotes div h4", page).last().html()).toBe("someDefinedWordWithALink");
+
+            });
+
+            it("should replace definition with custom word using legacy definition syntax");
+
+            it('should replace picture tag', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                         word: "pic1",
+                        url: "www.some-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture"
+                        //author: "John Doe"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{picture: pic1}</div></div>');
+
+                var expected = [
+                    '<div id="read">',
+                        '<figure id="571725cd5c6b2bd90ed10b6e">',
+                            '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
+                            '<figcaption>',
+                                enrichments[0].text,
+                            '</figcaption>',
+                        '</figure>',
+                    '</div>'
+                ].join("");
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                expect(enrichments.length).toBe(1);
+                expect($(page).html()).toBe(expected);
+            });
+
+            it('should replace picture tag with license and author', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                        word: "pic1",
+                        url: "www.some-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture",
+                        license: "license1",
+                        author: "John Doe"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{picture: pic1}</div></div>');
+
+                var expected = [
+                    '<div id="read">',
+                        '<figure id="571725cd5c6b2bd90ed10b6e">',
+                            '<img src="www.some-picture.com" class="picture" alt="' + enrichments[0].title + '">',
+                            '<figcaption>',
+                                enrichments[0].text,
+                                '<div class="picture-metadata">',
+                                    '<span class="author">Autor: John Doe</span>',
+                                    '<span class="license">Lizenz: license1</span>',
+                                '</div>',
+                            '</figcaption>',
+                        '</figure>',
+                    '</div>'
+                ].join("");
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                expect(enrichments.length).toBe(1);
+                expect($(page).html()).toBe(expected);
+
+            });
+
+            it('should replace picturegroup tag', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed1231236e",
+                         word: "pic1",
+                        url: "www.some-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture"
+                    },{
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                         word: "pic2",
+                        url: "www.some-other-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
+
+                var expected = [
+                    '<div id="read">',
+                        '<div class="picturegroup">',
+                            '<figure id="571725cd5c6b2bd90ed1231236e">',
+                                '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
+                                '<figcaption>',
+                                    enrichments[0].text,
+                                '</figcaption>',
+                            '</figure>',
+
+                            '<figure id="571725cd5c6b2bd90ed10b6e">',
+                                '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
+                                '<figcaption>',
+                                    enrichments[1].text,
+                                '</figcaption>',
+                            '</figure>',
+                        '</div>',
+                    '</div>'
+                ].join("");
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                expect($(page).html()).toBe(expected);
+
+            });
+
+            it('should replace picturegroup with licenses and authors', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed1231236e",
+                         word: "pic1",
+                        url: "www.some-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture",
+                        author: "John Doe",
+                        license: "cc-by-sa 3.0"
+                    },{
+                        _id: "571725cd5c6b2bd90ed10b6e",
+                         word: "pic2",
+                        url: "www.some-other-picture.com",
+                        text: "This is the caption.",
+                        title: "This is the alt",
+                        filetype: "opMainzed",
+                        category: "picture",
+                        author: "Jane Doe",
+                        license: "cc-by-sa 4.0"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{picturegroup: pic1, pic2}</div></div>');
+
+                var expected = [
+                    '<div id="read">',
+                        '<div class="picturegroup">',
+                            '<figure id="571725cd5c6b2bd90ed1231236e">',
+                                '<img src="' + enrichments[0].url + '" class="picture" alt="' + enrichments[0].title + '">',
+                                '<figcaption>',
+                                    enrichments[0].text,
+                                    '<div class="picture-metadata">',
+                                        '<span class="author">Autor: John Doe</span>',
+                                        '<span class="license">Lizenz: cc-by-sa 3.0</span>',
+                                    '</div>',
+                                '</figcaption>',
+                            '</figure>',
+
+                            '<figure id="571725cd5c6b2bd90ed10b6e">',
+                                '<img src="' + enrichments[1].url + '" class="picture" alt="' + enrichments[1].title + '">',
+                                '<figcaption>',
+                                    enrichments[1].text,
+                                    '<div class="picture-metadata">',
+                                        '<span class="author">Autor: Jane Doe</span>',
+                                        '<span class="license">Lizenz: cc-by-sa 4.0</span>',
+                                    '</div>',
+                                '</figcaption>',
+                            '</figure>',
+                        '</div>',
+                    '</div>'
+                ].join("");
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                expect($(page).html()).toBe(expected);
+
+            });
+
+            it('should replace citation tag', function() {
+                var enrichments = [
+                    {
+                        _id: "571725cd5c6b2bd90ed10b61",
+                         word: "citation1",
+                        __v: 0,
+                        text: "This is the citation.",
+                        author: "John Doe",
+                        updated_at: "2016-04-20T06:46:37.887Z",
+                        filetype: "opMainzed",
+                        category: "citation"
+                    }
+                ];
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{citation: citation1}</div></div>');
+
+                var expected = '<div id="read"><div class="citation hyphenate">' +
+                                '<p>' + enrichments[0].text + '</p>\n' +
+                                '<span class="author">' + enrichments[0].author + '</span>' +
+                                '</div></div>';
+
+
+                service.replaceEnrichmentTags(page, enrichments);
+
+                expect($(page).html()).toBe(expected);
+
+            });
+
+            it("should reset used definitions for each new function call");
+
+            it("should not throw error if definition does not exist", function() {
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{definition: def1}</div></div>');
+                var handler = function() {
+                    service.replaceEnrichmentTags(page, []);
+                };
+                expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+            })
+
+            it("should not throw error if legacy definition does not exist", function() {
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{def1}</div></div>');
+                var handler = function() {
+                    service.replaceEnrichmentTags(page, []);
+                };
+                expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+            })
+
+            it("should not throw error if picture enrichment does not exist", function() {
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{picture: pic1}</div></div>');
+                var handler = function() {
+                    service.replaceEnrichmentTags(page, []);
+                };
+                expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: def1"));
+            });
+
+            it("should not throw error if citation enrichment does not exist", function() {
+
+                // make jQuery compatible
+                var page = $('<div><div id="read">{citation: cit1}</div></div>');
+                var handler = function() {
+                    service.replaceEnrichmentTags(page, []);
+                };
+                expect(handler).not.toThrow(new Error("unknown enrichment with shortcut: cit1"));
+            });
+
+        });
     });
 
 });

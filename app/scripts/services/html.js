@@ -61,36 +61,46 @@ angular.module('meanMarkdownApp')
      * requires all available definitions to be obtained before running.
      * returns generated html.
      */
-    this.getOpMainzed = function(file, definitions, success) {
-        var me = this;
+    this.getOpMainzed = function(file, definitions, template) {
 
         var metadata = MetadataService.getAndReplace(file.markdown);
 
-        TemplateService.getOpMainzed(function(template) {
+        // insert title in head (not possible with jQuery)
+        if (metadata.title) {
+            var templateTitle = template.match(/<title[^>]*>([^<]*(?:(?!<\/?title)<[^<]*)*)<\/title\s*>/i);
+            template = template.replace(templateTitle[0], "<title>" + metadata.title + "</title>");
+        }
 
-            // make html string jQuery compatible
-            var page = $("<div>" + template + "</div>");
+        // extract body for the use with jQuery to preserve head and html tags
+        var templateBody = template.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i)[1];
 
-            // insert title
-            $("title", page).text(metadata.title);
-            $("h1.titletext", page).text(metadata.title);
+        // make html string jQuery compatible
+        var body = $("<div>" + templateBody + "</div>");
+        
+        // insert title
+        if (metadata.title) {
+            $("h1.titletext", body).text(metadata.title);
+        }
 
-            // insert cover description
-            $("p.coverdescription", page).text(metadata.coverDescription);
+        // insert cover description
+        if (metadata.coverDescription) {
+            $("p.coverdescription", body).text(metadata.coverDescription);
+        }
 
-            // insert main content
-            var content = me.convertOpMainzedMarkdownToHTML(metadata.markdown);
-            $("#read", page).append(content);
+        // insert main content
+        var main = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
+        $("#read", body).append(main);
 
-            // enrich page: add navigation by listing all headings
-            me.createOpMainzedNavigation(page);
+        // enrich page: add navigation by listing all headings
+        this.createOpMainzedNavigation(body);
 
-            // enrich page: convert tags and add resources to end of document
-            me.replaceEnrichmentTags(page, definitions);
+        // enrich page: convert tags and add resources to end of document
+        this.replaceEnrichmentTags(body, definitions);
 
-            // return ready page
-            success(page.html());
-        });
+        // replace body in template
+        template = template.replace(templateBody, body.html());
+
+        return template;
     };
 
     this.wrapOlatHTML = function(html, title, isFolder) {

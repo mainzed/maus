@@ -11,7 +11,7 @@ angular.module('meanMarkdownApp')
   .controller('EditorCtrl', function (
         $scope, $location, $timeout, $routeParams, HTMLService,
         $document, $http, $filter, $window, fileService, AuthService, ngDialog,
-        definitionService, filetypeService, ActiveFileService) {
+        definitionService, filetypeService, ActiveFileService, TemplateService) {
 
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -290,7 +290,12 @@ angular.module('meanMarkdownApp')
                     html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
                     initDownload(filename, html);
                 } else if ($scope.file.type === "opMainzed") {
-                    HTMLService.getOpMainzed($scope.fileCopy, definitions, function(html) {
+                    // jahresbericht
+
+                    TemplateService.getOpMainzed(function(template) {
+
+                        // modify template
+                        html = HTMLService.getOpMainzed($scope.fileCopy, definitions, template);
                         initDownload(filename, html);
                     });
                 }
@@ -365,10 +370,16 @@ angular.module('meanMarkdownApp')
                 showPreview(html, success);
 
             } else if ($scope.file.type === "opMainzed") {
-                 HTMLService.getOpMainzed(file, definitions, function(html) {
-                    //success
+
+                // get template
+                TemplateService.getOpMainzed(function(template) {
+
+                    // modify template
+                    var html = HTMLService.getOpMainzed(file, definitions, template);
                     showPreview(html, success);
+
                 });
+
             }
 
             function showPreview(html, success) {

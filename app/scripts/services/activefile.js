@@ -13,11 +13,3 @@ angular.module('meanMarkdownApp').factory('ActiveFileService', function ($resour
             'update': { method: 'PUT' }
         });
 });
-
-/*
-    get()
-    query()
-    save()
-    remove()
-    delete()
-*/

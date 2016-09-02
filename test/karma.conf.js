@@ -56,7 +56,7 @@ module.exports = function(config) {
 
     // reporter options
     mochaReporter: {
-      output: "minimal"
+      //output: "minimal"
     },
 
     // list of files / patterns to exclude
