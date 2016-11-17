@@ -17,3 +17,7 @@ echo "build using grunt..."
 grunt build
 
 echo "restart maus app via pm2"
+# pm2 restart maus
+pm2 stop maus
+pm2 delete maus
+pm2 start ~/webapps/mdwriter/server/server.js --name="maus"
