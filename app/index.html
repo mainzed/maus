@@ -71,38 +71,44 @@
     <script src="bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
     <script src="bower_components/angular-nanoscroller/scrollable.js"></script>
     <script src="bower_components/jquery.mousestop/jquery.event.mousestop.js"></script>
-    <script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
+    <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/col-resizable/colResizable-1.6.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/editor.js"></script>
-        <script src="scripts/services/files.js"></script>
-        <script src="scripts/services/definition.js"></script>
         <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
         <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
-        <script src="scripts/services/html.js"></script>
-        <script src="scripts/services/archivedfile.js"></script>
+
+        <script src="scripts/app.js"></script>
+
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/editor.js"></script>
         <script src="scripts/controllers/login.js"></script>
-        <script src="scripts/services/auth.js"></script>
+
         <script src="scripts/directives/msfilespanel.js"></script>
         <script src="scripts/directives/mseditortoolbar.js"></script>
         <script src="scripts/directives/focusOnVisibility.js"></script>
         <script src="scripts/directives/msfilterbutton.js"></script>
-        <script src="scripts/services/filetype.js"></script>
-        <script src="scripts/services/users.js"></script>
         <script src="scripts/directives/mscheckbox.js"></script>
         <script src="scripts/directives/msdefinitionstable.js"></script>
         <script src="scripts/directives/msimagestable.js"></script>
         <script src="scripts/directives/msstoriestable.js"></script>
         <script src="scripts/directives/mscitationstable.js"></script>
+
+        <script src="scripts/services/auth.js"></script>
+        <script src="scripts/services/files.js"></script>
+        <script src="scripts/services/definition.service.js"></script>
+        <script src="scripts/services/html.js"></script>
+        <script src="scripts/services/archivedfile.js"></script>
+        <script src="scripts/services/filetype.js"></script>
+        <script src="scripts/services/users.js"></script>
         <script src="scripts/services/metadata.js"></script>
         <script src="scripts/services/activefile.js"></script>
-        <script src="scripts/services/templateservice.js"></script>
+        <script src="scripts/services/template.service.js"></script>
+        <script src="scripts/services/config.service.js"></script>
+        <script src="scripts/services/preview.service.js"></script>
         <!-- endbuild -->
 </body>
 </html>

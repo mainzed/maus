@@ -50,9 +50,8 @@ angular.module('meanMarkdownApp')
             result.coverDescription = matches[1].trim();
             cleanMarkdown = cleanMarkdown.replace(matches[0] + "\n", "");
         }
-
         result.markdown = cleanMarkdown;
-        //console.log(result);
+
         return result;
     };
   });

@@ -8,8 +8,8 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .factory('archivedFileService', function ($resource) {
-    return $resource("/api/archivedfiles/:id", null, 
+  .factory('archivedFileService', function ($resource, ConfigService) {
+    return $resource(ConfigService.API_PATH + "/archivedfiles/:id", null,
         {
             'update': { method: 'PUT' }
         });

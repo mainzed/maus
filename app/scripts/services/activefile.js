@@ -7,8 +7,8 @@
  * # activefile
  * Service in the meanMarkdownApp.
  */
-angular.module('meanMarkdownApp').factory('ActiveFileService', function ($resource) {
-    return $resource("/api/activefiles/:id", null,
+angular.module('meanMarkdownApp').factory('ActiveFileService', function ($resource, ConfigService) {
+    return $resource(ConfigService.API_PATH + "/activefiles/:id", null,
         {
             'update': { method: 'PUT' }
         });

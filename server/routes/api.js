@@ -16,7 +16,7 @@ var User = require('../models/user');
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
-    //console.log("checking!");
+
 	// if user is authenticated in the session, call the next() to call the next request handler
 	// Passport adds this method to request object. A middleware is allowed to add properties to
 	// request and response objects
@@ -40,12 +40,12 @@ function isAuthenticated (req, res, next) {
  * PUT /tickets/12 - Updates ticket #12
  * DELETE /tickets/12 - Deletes ticket #12
  */
- router.get('/users', function (req, res) {
-     User.find(function(err, users) {
-         if (err) {
-             throw err;
-         }
-         res.json(users);
+router.get('/users', function (req, res) {
+    User.find(function(err, users) {
+        if (err) {
+            throw err;
+        }
+        res.json(users);
      });
  });
 
@@ -97,10 +97,6 @@ function isAuthenticated (req, res, next) {
      });
 
  });
-
-//Register the authentication middleware
-// intercepts requests to /files when not authenticated
-//router.use('/api/files', isAuthenticated);
 
 router.get('/files', function (req, res) {
     File.getFiles(function(err, files) {
@@ -259,27 +255,6 @@ router.get('/archivedfiles/:id', function (req, res) {
     });
 });
 
-/*router.post('/archivedfiles', function (req, res) {
-    var file = req.body;
-    File.addFile(file, function(err, file) {
-        if (err) {
-            throw err;
-        }
-        res.json(file);
-    });
-});*/
-
-/*router.put('/files/:id', function (req, res) {
-    var id = req.params.id;
-    var file = req.body;
-    File.updateFile(id, file, function(err, file) {
-        if (err) {
-            throw err;
-        }
-        res.json(file);
-    });
-});*/
-
 router.delete('/archivedfiles/:id', function (req, res) {
     var id = req.params.id;
     ArchivedFile.remove({_id: id}, function(err, archivedFile) {
@@ -344,151 +319,48 @@ router.delete('/activefiles/:id', function (req, res) {
 });
 
 // post html string and save it as preview.html
-router.post('/savepreview', function (req, res) {
-    console.log("trying to save preview file ...");
-    //console.log(__dirname);
-
+router.post('/preview', function (req, res) {
+    function isValidType(type) {
+        return type === "opOlat" || type === "opMainzed" || type === "prMainzed";
+    }
     var html = req.body.html;
     var type = req.body.type;
     var userID = req.body.user_id;
-    var outputPath;
 
-
-    if (type === "opOlat" || type === "opMainzed" || type === "prMainzed") {
-        //outputPath = __dirname + "../app/preview_files/" + type.toLowerCase() + "/preview_" + userID + ".html";
-        var filename = "/preview_" + userID + ".html";
-        outputPath = path.join(__dirname, "../preview_files/", type.toLowerCase(), filename);
-        console.log("trying to save file of type: " + type + " to: " + outputPath);
-        //console.log(__dirname);
-    } else {
+    if (!isValidType(type)) {
         res.status(500).send('Filetype ' + type + 'not supported!');
     }
 
-    var options = { flag : 'w' };
+    var filename = "/preview_" + userID + ".html";
+    var outputPath = path.join(__dirname, "../preview/", type.toLowerCase(), filename);
 
-    console.log(outputPath);
-    fs.writeFile(outputPath , html, options, function(err) {
+    fs.writeFile(outputPath, html, { flag : 'w' }, function(err) {
         if (err) {
-            console.log(err);
             res.status(500).send('Error while trying to save preview!');
         } else {
-            //console.log("created " + outputPath);
-            console.log("saved file successfully!!!!");
             res.status(200);
-            //res.sendFile(outputPath);
-
             res.json({
                 message: "success",
-                previewPath: path.join("preview_files/", type.toLowerCase(), filename)
+                previewPath: path.join("preview_files", type.toLowerCase(), filename)
             });
         }
     });
 });
 
-// router.get('/definitionsdownload', function (req, res) {
-//
-// 	Definition.find(function(err, definitions) {
-//         if (err) {
-//             throw err;
-//         }
-//         //res.json(definitions);
-// 		definitions.forEach(function(definition) {
-//
-// 			if (definition.category === "definition" && definition.word) {
-// 				var filename = definition.word + ".md";
-// 				var content = definition.text;
-//
-// 				var outputPath = path.join(__dirname, "../export_folder/definitions/", filename);
-//
-// 				// create file for each definition
-// 				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
-// 					if (err) {
-// 						console.log(err);
-// 					}
-// 				});
-// 			}
-//
-// 		});
-//
-// 		var definitionsFile = path.join(__dirname, "../export_folder/definitions.zip");
-//
-// 		try {
-// 			fs.unlinkSync(definitionsFile);
-// 		} catch(err) {
-// 			//
-// 		}
-//
-// 		var zip5 = new EasyZip();
-// 		zip5.zipFolder(path.join(__dirname, "../export_folder/definitions"),function(){
-// 			//console.log("works");
-// 			zip5.writeToFile(definitionsFile, function() {
-//
-// 				res.setHeader('Content-Type', 'application/zip');
-// 				res.setHeader('Content-Disposition', 'attachment; filename=definitions.zip');
-// 				res.sendFile(definitionsFile);
-// 			});
-//
-//
-// 		});
-//
-//     });
-//
-// });
-
-// router.get('/picturesdownload', function (req, res) {
-//
-// 	Definition.find(function(err, definitions) {
-//         if (err) {
-//             throw err;
-//         }
-//         //res.json(definitions);
-// 		definitions.forEach(function(definition) {
-//
-// 			if (definition.category === "picture" && definition.text && definition.license && definition.author) {
-// 				var filename = definition.word + ".md";
-// 				var content = [
-//                     definition.text,
-//                     "Lizenz: " + definition.license,
-//                     "Autor: " + definition.author,
-//                 ].join("\n");
-//
-// 				var outputPath = path.join(__dirname, "../export_folder/pictures/", filename);
-//
-// 				// create file for each definition
-// 				fs.writeFile(outputPath , content, { flag : 'w' }, function(err) {
-// 					if (err) {
-// 						console.log(err);
-// 					}
-// 				});
-// 			}
-//
-// 		});
-//
-// 		var definitionsFile = path.join(__dirname, "../export_folder/pictures.zip");
-//
-// 		try {
-// 			fs.unlinkSync(definitionsFile);
-// 		} catch(err) {
-// 			//
-// 		}
-//
-// 		var zip5 = new EasyZip();
-// 		zip5.zipFolder(path.join(__dirname, "../export_folder/pictures"),function(){
-// 			//console.log("works");
-// 			zip5.writeToFile(definitionsFile, function() {
-//
-// 				res.setHeader('Content-Type', 'application/zip');
-// 				res.setHeader('Content-Disposition', 'attachment; filename=pictures.zip');
-// 				res.sendFile(definitionsFile);
-// 			});
-// 		});
-//     });
-// });
-
-// templates
 router.get('/templates/opmainzed', function (req, res) {
-    res.status(200);
-    res.sendFile(path.join(__dirname, "../src/templates/opMainzed.html"));
+    var filePath = path.join(__dirname, "../templates/opMainzed.html");
+    fs.access(filePath, function(err) {
+        if (err) {
+            if (err.code === "ENOENT") {
+              res.status(500).send('Files does not exist!');
+              return;
+            } else {
+              throw err;
+            }
+        }
+        res.status(200);
+        res.sendFile(filePath);
+    });
 });
 
 module.exports = router;

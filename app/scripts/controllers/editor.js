@@ -8,11 +8,24 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('EditorCtrl', function (
-        $scope, $location, $timeout, $routeParams, HTMLService,
-        $document, $http, $filter, $window, fileService, AuthService, ngDialog,
-        definitionService, filetypeService, ActiveFileService, TemplateService) {
-
+.controller('EditorCtrl', function (
+    $scope,
+    $location,
+    $timeout,
+    $routeParams,
+    HTMLService,
+    $document,
+    PreviewService,
+    $filter,
+    $window,
+    fileService,
+    AuthService,
+    ngDialog,
+    DefinitionService,
+    filetypeService,
+    ActiveFileService,
+    TemplateService
+) {
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
     }
@@ -115,9 +128,7 @@ angular.module('meanMarkdownApp')
             if (entry) {
                 // remove user if exists
                 var index = entry.users.indexOf($scope.currentUser.name);
-
                 if (index > -1) {
-
                     if (entry.users.length > 1) {
                         // if more than the current user, just remove the user from array
                         entry.users.splice(index, 1);
@@ -130,14 +141,10 @@ angular.module('meanMarkdownApp')
                             console.log("removed active file!");
                         });
                     }
-
-
                 }
             }
         });
     };
-
-    // listeners
 
     $scope.onSaveClick = function() {
 
@@ -182,7 +189,6 @@ angular.module('meanMarkdownApp')
             }).then(function(success) {
                 // user confirmed to go back to files
                 $scope.markFileAsInactive();
-
                 $location.path("/files");
             }, function(error) {
                 // user cancelled
@@ -272,12 +278,8 @@ angular.module('meanMarkdownApp')
             //isFolder: isFolder
         };
         var html;
-        definitionService.query(function(definitions) {
-
-
-
+        DefinitionService.query(function(definitions) {
             fileService.query(function(files) {
-
                 var markdown = $scope.processIncludes($scope.file.markdown, files);
 
                 //console.log(markdown);
@@ -320,81 +322,62 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
-
         fileService.query(function(files) {
-
             var markdown = $scope.processIncludes($scope.file.markdown, files);
-            //console.log(markdown);
+
             $scope.fileCopy = angular.copy($scope.file);
             $scope.fileCopy.markdown = markdown;
 
-            $scope.processHtml($scope.fileCopy, function(previewPath) {
-                openDesktopPreview(previewPath);
-            });
-
-        });
-
-        function openDesktopPreview(previewPath) {
-            // add random number to force cache refresh
-            $scope.previewPath = previewPath + "?random=" + Math.round(Math.random() * 1000000);
-            console.log($scope.previewPath);
-            ngDialog.open({
-                template: "views/dialog_preview.html",
-                disableAnimation: true,
-                closeByDocument: true,  // enable clicking on background to close dialog
-                scope: $scope
-            });
-        }
-
-    };
-
-    /**
-     * requires file object that includes markdown author etc
-     */
-    $scope.processHtml = function(file, success) {
-
-        var config = {
-            addTitle: true,
-            addContentTable: true,
-            addImagesTable: true,
-            //addLinksTable: true,
-            addDefinitionsTable: true
-        };
-
-        definitionService.query(function(definitions) {
-            var html;
-            // convert markdown to html
-            if ($scope.file.type === "opOlat") {
-                html = HTMLService.getOlat(file, definitions, config);
-                html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
-                showPreview(html, success);
-
-            } else if ($scope.file.type === "opMainzed") {
-
-                // get template
-                TemplateService.getOpMainzed(function(template) {
-
-                    // modify template
-                    var html = HTMLService.getOpMainzed(file, definitions, template);
-                    showPreview(html, success);
-
-                });
-
-            }
-
-            function showPreview(html, success) {
+            $scope.processHtml($scope.fileCopy).then(function(html) {
                 var postData = {
-                    "type": file.type,
+                    "type": $scope.fileCopy.type,
                     "html": html,
                     "user_id": $scope.currentUser._id
                 };
 
-                $http.post('/api/savepreview', postData).then(function(data) {
-                    success(data.data.previewPath);
-                }, function() {
-                    console.log("something went wrong while trying to create preview");
+                // save preview file to server and load as iframe in dialog
+                PreviewService.save(postData).then(function(previewPath) {
+                    $scope.previewPath = previewPath;
+                    ngDialog.open({
+                        template: "views/dialog_preview.html",
+                        disableAnimation: true,
+                        scope: $scope
+                    });
                 });
-            }
+            });
+        });
+    };
+
+    /**
+     * requires file object that includes markdown author etc
+     * @returns void
+     */
+    $scope.processHtml = function(file) {
+        return new Promise(function(resolve) {
+            var config = {
+                addTitle: true,
+                addContentTable: true,
+                addImagesTable: true,
+                // addLinksTable: true,
+                addDefinitionsTable: true
+            };
+
+            DefinitionService.query(function(definitions) {
+                var html;
+                // convert markdown to html
+                if ($scope.file.type === "opOlat") {
+                    html = HTMLService.getOlat(file, definitions, config);
+                    html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
+                    resolve(html);
+                } else if ($scope.file.type === "opMainzed") {
+                    // get template
+                    TemplateService.getOpMainzed(function(template) {
+                        // modify template
+                        var html = HTMLService.getOpMainzed(file, definitions, template);
+                        resolve(html);
+                    });
+                }
+            });
         });
     };
 
@@ -421,11 +404,11 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.getDefinitions = function() {
-        $scope.definitions = definitionService.query();
+        $scope.definitions = DefinitionService.query();
     };
 
     $scope.onRemoveDefinitionClick = function(id) {
-        definitionService.remove({id: id}, function() {
+        DefinitionService.remove({id: id}, function() {
             // success
             // remove from local definitions array without reloading
             var index = _.findIndex($scope.definitions, {_id: id});
@@ -437,17 +420,11 @@ angular.module('meanMarkdownApp')
      * saves all defintions in case they were changed
      */
     $scope.onApplyDefinitionChanges = function() {
-        //$scope.hasChanges = false;
-
         $scope.definitions.forEach(function(definition) {
-
-
-            //definition.filetype = $scope.file.type;  // workaround, append filetype everytime
             if (definition._id) {
-                definitionService.update({id: definition._id}, definition);
-
+                DefinitionService.update({id: definition._id}, definition);
             } else {  // new definition
-                definitionService.save(definition);
+                DefinitionService.save(definition);
             }
         });
     };
@@ -495,7 +472,6 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.isValidToolForType = function(filetype, toolname) {
-        //console.log($scope.file.type, toolname);
         return filetypeService.isValidToolForType(filetype, toolname);
     };
 

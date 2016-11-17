@@ -8,9 +8,8 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (definitionService, filetypeService, MetadataService, TemplateService) {
+  .service('HTMLService', function (DefinitionService, MetadataService, TemplateService) {
 
-    //var usedDefs;  // store IDs of actually used defs
     /**
      * generates OLAT html from markdown. provides a callback with the generated
      * HTML as parameter
@@ -76,7 +75,7 @@ angular.module('meanMarkdownApp')
 
         // make html string jQuery compatible
         var body = $("<div>" + templateBody + "</div>");
-        
+
         // insert title
         if (metadata.title) {
             $("h1.titletext", body).text(metadata.title);
@@ -554,7 +553,7 @@ angular.module('meanMarkdownApp')
     /**
      * helper function that loops through all enrichments and finds match
      */
-     // TODO: access enrichments directly via definitionService
+     // TODO: access enrichments directly via DefinitionService
     this.findEnrichmentByShortcut = function(enrichments, shortcut) {
         var result;
         enrichments.forEach(function(enrichment) {

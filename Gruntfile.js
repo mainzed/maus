@@ -6,7 +6,6 @@
 // 'test/spec/{,*/}*.js'
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
-
 module.exports = function (grunt) {
 
     // Time how long tasks take. Can help when optimizing build times
@@ -69,16 +68,7 @@ module.exports = function (grunt) {
               '.tmp/styles/{,*/}*.css',
               '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
             ]
-          },
-
-
-            // express: {
-            //     files: ['**/*.js'],
-            //     tasks:  ['express'],
-            //     options: {
-            //         spawn: false // for grunt-contrib-watch v0.5.0+, "nospawn: true" for lower versions. Without this option specified express won't be reloaded
-            //     }
-            // }
+          }
         },
 
         // The actual grunt server settings
@@ -96,8 +86,8 @@ module.exports = function (grunt) {
                 return [
                   connect.static('.tmp'),
                   connect().use(
-                    '/app/bower_components',
-                    connect.static('./app/bower_components')
+                    '/bower_components',
+                    connect.static('./bower_components')
                   ),
                   connect().use(
                     '/app/styles',
@@ -110,18 +100,7 @@ module.exports = function (grunt) {
           },
           test: {
             options: {
-              port: 9001,
-              middleware: function (connect) {
-                return [
-                  connect.static('.tmp'),
-                  connect.static('test'),
-                  connect().use(
-                    '/app/bower_components',
-                    connect.static('./app/bower_components')
-                  ),
-                  connect.static(appConfig.app)
-                ];
-              }
+              port: 9001
             }
           },
           dist: {
@@ -478,10 +457,10 @@ module.exports = function (grunt) {
         grunt.task.run([
           'clean:server',
           'wiredep',
-          //'concurrent:server',
-          //'postcss:server',
-          'express',  // added this to use custom express server
-          //'connect:livereload',
+          'concurrent:server',
+          'postcss:server',
+          //'express',  // added this to use custom express server
+          'connect:livereload',
           'watch'
         ]);
     });

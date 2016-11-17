@@ -8,8 +8,18 @@
  * Controller of the meanMarkdownApp
  */
 angular.module('meanMarkdownApp')
-  .controller('MainCtrl', function ($scope, $location, $routeParams, fileService, archivedFileService, ngDialog, AuthService, filetypeService, UserService, ActiveFileService) {
-
+.controller('MainCtrl', function (
+    $scope,
+    $location,
+    $routeParams,
+    fileService,
+    archivedFileService,
+    ngDialog,
+    AuthService,
+    filetypeService,
+    UserService,
+    ActiveFileService
+) {
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
     }
@@ -26,16 +36,6 @@ angular.module('meanMarkdownApp')
         });
 
         $scope.filetypes = filetypeService.getAll();  // get allowed filetypes
-
-        //console.log($scope.filetypes);
-        /*if ($scope.currentUser.group !== "admin") {
-
-            $scope.filetypes = _.remove($scope.filetypes, function(o) {
-                return o.type !== 'news';
-            });
-
-            //console.log($scope.filetypes);
-        }*/
         $scope.checkforfirefox();
     };
 
@@ -43,8 +43,6 @@ angular.module('meanMarkdownApp')
         ActiveFileService.query(function(activeFiles) {
             // loop files
             $scope.files.forEach(function(file) {
-
-
                 var active = _.find(activeFiles, function(o) {
                     return o.fileID === file._id;
                 });

@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('AuthService', function ($cookieStore, $location, $http, UserService) {
+.service('AuthService', function ($cookieStore, $location, $http, UserService, ConfigService) {
 
     this.getUser = function() {
         return $cookieStore.get('currentUser');
@@ -34,9 +34,8 @@ angular.module('meanMarkdownApp')
         var data = {
             username: username,
             password: password
-        }
-
-        $http.post('/auth/login', data).then(function(res) {
+        };
+        $http.post(ConfigService.API_PATH + '/auth/login', data).then(function(res) {
             // success
             if (res.data.user !== null && res.data.state === "success") {
 
@@ -55,36 +54,10 @@ angular.module('meanMarkdownApp')
             // error
             failure("could not connect to server!");
         });
-
-        /*// TODO: replace this with actual server login
-        var isValid = false;
-        users.forEach(function(item) {
-            if (item.name === username) {
-
-                // check password
-                if (item.password === password) {
-                    isValid = true;
-
-                    $cookieStore.put('currentUser', {
-                        name: item.name,
-                        group: item.group,
-                        _id: item._id
-                    });
-                    success();
-                }
-            }
-        });
-
-        if (!isValid) {
-            failure();
-        }*/
     };
 
     this.signup = function(username, password, success, failure) {
-        //console.log(users);
         UserService.query(function(users) {
-            //success(users);
-
             // check if user already exists
             var exists = _.find(users, function(user) {
                 return user.username === username;
@@ -100,7 +73,7 @@ angular.module('meanMarkdownApp')
                 };
 
                 // trying to sign up
-                $http.post('/auth/signup', data).then(function(res) {
+                $http.post(ConfigService.API_PATH + '/auth/signup', data).then(function(res) {
                     // success
                     //console.log(res);
                     if (res.data.user !== null && res.data.state === "success") {
@@ -126,8 +99,6 @@ angular.module('meanMarkdownApp')
         }, function() {
             failure({ message: "could not connect to users db!"});
         });
-
-
     };
 
     this.logout = function() {
