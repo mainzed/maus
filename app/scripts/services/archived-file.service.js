@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc service
@@ -7,10 +7,10 @@
  * # archivedFile
  * Service in the meanMarkdownApp.
  */
-angular.module('meanMarkdownApp')
-  .factory('archivedFileService', function ($resource, ConfigService) {
+angular.module("meanMarkdownApp")
+  .factory("ArchivedFileService", function ($resource, ConfigService) {
     return $resource(ConfigService.API_PATH + "/archivedfiles/:id", null,
         {
-            'update': { method: 'PUT' }
+            "update": { method: "PUT" }
         });
   });

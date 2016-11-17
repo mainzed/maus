@@ -18,11 +18,11 @@ angular.module('meanMarkdownApp')
     PreviewService,
     $filter,
     $window,
-    fileService,
+    FileService,
     AuthService,
     ngDialog,
     DefinitionService,
-    filetypeService,
+    ConfigService,
     ActiveFileService,
     TemplateService
 ) {
@@ -35,7 +35,7 @@ angular.module('meanMarkdownApp')
         $scope.currentUser = AuthService.getUser();
 
         // get file based on id provided in address bar
-        fileService.get({ id: $routeParams.id }, function(file) {
+        FileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
 
             //$scope.file.active = $scope.currentUser.name;
@@ -45,13 +45,14 @@ angular.module('meanMarkdownApp')
                 $scope.editor.setOption("readOnly", true);
             }
 
-            // get defined assets/snippets to determine what tabs to display in enrichments table
-            $scope.assets = filetypeService.getAssetsForFiletype(file.type);
-
             // save active state
             $scope.markFileAsActive();
 
         });
+    };
+
+    $scope.hasEnrichment = function(type, enrichment) {
+        return ConfigService.hasEnrichment(type, enrichment);
     };
 
     $scope.initResizable = function(){
@@ -166,7 +167,7 @@ angular.module('meanMarkdownApp')
             updated_by: $scope.currentUser.name
         };
 
-        fileService.update({ id: id }, newFile, function() {
+        FileService.update({ id: id }, newFile, function() {
             // success
             $scope.unsavedChanges = false;
             $scope.showSuccess = true;
@@ -279,7 +280,7 @@ angular.module('meanMarkdownApp')
         };
         var html;
         DefinitionService.query(function(definitions) {
-            fileService.query(function(files) {
+            FileService.query(function(files) {
                 var markdown = $scope.processIncludes($scope.file.markdown, files);
 
                 //console.log(markdown);
@@ -322,7 +323,7 @@ angular.module('meanMarkdownApp')
     };
 
     $scope.onPreviewClick = function() {
-        fileService.query(function(files) {
+        FileService.query(function(files) {
             var markdown = $scope.processIncludes($scope.file.markdown, files);
 
             $scope.fileCopy = angular.copy($scope.file);
@@ -381,17 +382,23 @@ angular.module('meanMarkdownApp')
         });
     };
 
-
     /**
      * update markdown service when editor changes
      */
     $scope.onEditorChange = function() {
-        //$scope.file.markdown = $scope.editor.getValue();  // TODO: set file.markdown as ng-model
         $scope.unsavedChanges = true;  // gets reset on save
     };
 
     // handler for click on button "Glossareintrag"
     $scope.onDefinitionClick = function() {
+        $scope.definitions = DefinitionService.query();
+
+        // select first enrichment by default
+        var template = ConfigService.getTemplateByType($scope.file.type);
+        if (template && template.enrichments) {
+            $scope.category = template.enrichments[0];
+        }
+
         ngDialog.open({
             template: "views/dialog_definitions.html",
             scope: $scope,
@@ -401,10 +408,6 @@ angular.module('meanMarkdownApp')
                 $scope.editMode = false;
             }
         });
-    };
-
-    $scope.getDefinitions = function() {
-        $scope.definitions = DefinitionService.query();
     };
 
     $scope.onRemoveDefinitionClick = function(id) {
@@ -469,10 +472,6 @@ angular.module('meanMarkdownApp')
 
     $scope.onHelpClick = function() {
         $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");
-    };
-
-    $scope.isValidToolForType = function(filetype, toolname) {
-        return filetypeService.isValidToolForType(filetype, toolname);
     };
 
     // save hotkey

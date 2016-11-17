@@ -1,13 +1,11 @@
 
-<!--<span class="tableheader fullwidth">Definitions</span>-->
+<button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="hasEnrichment(file.type, 'definition')">Definitionen</button>
+<button type="button" class="btn btn-default" ng-click="category = 'picture'" ng-show="hasEnrichment(file.type, 'image')">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'citation'" ng-show="hasEnrichment(file.type, 'citation')">Zitate</button>
+<button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="hasEnrichment(file.type, 'story')">Storyelemente</button>
+<button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="hasEnrichment(file.type, 'linklist')">Linklisten</button>
 
-<button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="assets.definition">Definitionen</button>
-<button type="button" class="btn btn-default" ng-click="category = 'picture'" ng-show="assets.image">Bilder</button>
-<button type="button" class="btn btn-default" ng-click="category = 'citation'" ng-show="assets.citation">Zitate</button>
-<button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="assets.story">Storyelemente</button>
-<button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="assets.linklist">Linklisten</button>
-
-<div class="container" ng-init="getDefinitions(); category = 'definition'">
+<div class="container">
 
   <!-- search box -->
   <input type="search" class="form-control definitionsearch" placeholder="Search" ng-model="filterBox">

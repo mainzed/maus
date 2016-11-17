@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-  .service('HTMLService', function (DefinitionService, MetadataService, TemplateService) {
+  .service('HTMLService', function (DefinitionService, MetadataService) {
 
     /**
      * generates OLAT html from markdown. provides a callback with the generated

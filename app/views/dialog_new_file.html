@@ -13,7 +13,7 @@
   <div class="form-group">
     <label for="typeInput">Type</label>
     <select class="form-control" id="typeInput" ng-model="newFile.type" ng-init="newFile.type = 'opOlat'">
-      <option ng-repeat="filetype in filetypes" value="{{filetype.type}}">{{ filetype.displayname }}</option>
+      <option ng-repeat="template in templates" value="{{ template.type }}" ng-if="canCreate(template)">{{ template.name }}</option>
     </select>
   </div>
 

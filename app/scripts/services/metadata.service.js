@@ -1,14 +1,13 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc service
- * @name meanMarkdownApp.metadata
+ * @name meanMarkdownApp.MetadataService
  * @description
- * # metadata
  * Service in the meanMarkdownApp.
  */
-angular.module('meanMarkdownApp')
-  .service('MetadataService', function () {
+angular.module("meanMarkdownApp")
+.service("MetadataService", function () {
 
     /**
      * extracts metadata from markdown and returns object containing all
@@ -54,4 +53,4 @@ angular.module('meanMarkdownApp')
 
         return result;
     };
-  });
+});

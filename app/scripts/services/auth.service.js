@@ -1,25 +1,24 @@
-'use strict';
+"use strict";
 
 /**
  * @ngdoc service
- * @name meanMarkdownApp.auth
+ * @name meanMarkdownApp.AuthService
  * @description
- * # auth
  * Service in the meanMarkdownApp.
  */
-angular.module('meanMarkdownApp')
-.service('AuthService', function ($cookieStore, $location, $http, UserService, ConfigService) {
+angular.module("meanMarkdownApp")
+.service("AuthService", function ($cookieStore, $location, $http, UserService, ConfigService) {
 
     this.getUser = function() {
-        return $cookieStore.get('currentUser');
+        return $cookieStore.get("currentUser");
     };
 
     this.getUserGroup = function() {
-        return $cookieStore.get('currentUser').group;
+        return $cookieStore.get("currentUser").group;
     };
 
     this.isAuthenticated = function() {
-        if ($cookieStore.get('currentUser')) {
+        if ($cookieStore.get("currentUser")) {
             return true;
         } else {
             return false;
@@ -35,11 +34,11 @@ angular.module('meanMarkdownApp')
             username: username,
             password: password
         };
-        $http.post(ConfigService.API_PATH + '/auth/login', data).then(function(res) {
+        $http.post(ConfigService.API_PATH + "/auth/login", data).then(function(res) {
             // success
             if (res.data.user !== null && res.data.state === "success") {
 
-                $cookieStore.put('currentUser', {
+                $cookieStore.put("currentUser", {
                     name: res.data.user.username,
                     group: res.data.user.group,
                     _id: res.data.user._id
@@ -49,7 +48,6 @@ angular.module('meanMarkdownApp')
             } else {
                 failure("password or username incorrect!");
             }
-
         }, function(res) {
             // error
             failure("could not connect to server!");
@@ -73,12 +71,12 @@ angular.module('meanMarkdownApp')
                 };
 
                 // trying to sign up
-                $http.post(ConfigService.API_PATH + '/auth/signup', data).then(function(res) {
+                $http.post(ConfigService.API_PATH + "/auth/signup", data).then(function(res) {
                     // success
                     //console.log(res);
                     if (res.data.user !== null && res.data.state === "success") {
 
-                        $cookieStore.put('currentUser', {
+                        $cookieStore.put("currentUser", {
                             name: res.data.user.username,
                             //group: item.group,
                             _id: res.data.user._id
@@ -102,7 +100,7 @@ angular.module('meanMarkdownApp')
     };
 
     this.logout = function() {
-        $cookieStore.remove('currentUser');
+        $cookieStore.remove("currentUser");
         $location.path("/login");
     };
 
