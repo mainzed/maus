@@ -1,6 +1,6 @@
 
 <!-- search box -->
-<input type="search" placeholder="Search" ng-model="filesFilterBox">
+<input type="search" placeholder="Filter" ng-model="filesFilterBox">
 
 <!-- show currently active filter -->
 <ms-filter-button></ms-filter-button>
@@ -21,7 +21,7 @@
 
 
     <!-- only show documents of the current user or documents that are not private and nd are in the same group -->
-    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updated_at'" ng-show="file.author.toLowerCase() === currentUser.name.toLowerCase() || file.private === false">
+    <tr ng-repeat="file in value | filter:currentFilter | orderBy:'-updatedAt'" ng-show="file.author.toLowerCase() === currentUser.name.toLowerCase() || file.private === false">
       <td class="colfilename">
         <a ng-href="#/editor/{{file._id}}">
           <span ng-show="file.active && file.active !== 'none'" style="color: red; margin-right: 5px;" ng-repeat="user in file.active track by $index">{{ user }}</span>{{ file.title }}
