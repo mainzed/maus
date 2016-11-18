@@ -4,8 +4,6 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');  // write files
 var path = require('path');
-//var zip = new require('node-zip')();
-var EasyZip = require('easy-zip').EasyZip;
 
 // mongoose models
 var File = require('../models/file');

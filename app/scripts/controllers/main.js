@@ -27,7 +27,6 @@ angular.module('meanMarkdownApp')
     // check if already logged in, if not, redirect to login page
     $scope.init = function() {
         $scope.currentUser = AuthService.getUser();
-        $scope.group = AuthService.getUserGroup();
 
         $scope.files = FileService.query(function() {
             $scope.appendActiveState();
@@ -36,8 +35,24 @@ angular.module('meanMarkdownApp')
         $scope.checkforfirefox();
     };
 
+    /**
+     * Returns true if the template is public or the current user is an admin.
+     * file.
+     * @param {Object} template
+     * @returns {boolean}
+     */
     $scope.canCreate = function(template) {
         return !template.adminOnly || $scope.currentUser.group === "admin";
+    };
+
+    /**
+     * Returns true if the current user is either an admin or the author of the
+     * file.
+     * @param {Object} file
+     * @returns {boolean}
+     */
+    $scope.canEdit = function(file) {
+        return file.author === $scope.currentUser.name || $scope.currentUser.group === "admin";
     };
 
     $scope.appendActiveState = function() {

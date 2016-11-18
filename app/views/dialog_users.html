@@ -1,23 +1,35 @@
 <h3>User management</h3>
 <div class="container" ng-init="getUsers()">
 
-    <div ng-repeat="user in users" class="row">
-        <div class="col-md-3">
-            {{ user.username }}
-        </div>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="user in users | orderBy: 'username'">
+                <td>
+                    {{ user.username }}
+                    <span ng-if="user.username === currentUser.name">(me)</span>
+                </td>
 
-        <!-- group selection  dropdown -->
-        <div class="col-md-3">
-          <!--label for="userGroupSelect">Group</label>-->
-          <select class="form-control" id="userGroupSelect" ng-model="user.group" ng-change="onUserChange(user)" ng-disabled="user.username === currentUser.name && currentUser.group === 'admin'">
-            <option>admin</option>
-            <option>user</option>
-          </select>
-        </div>
+                <!-- role -->
+                <td>
+                    <select class="form-control" id="userGroupSelect" ng-model="user.group" ng-change="onUserChange(user)" ng-disabled="user.username === currentUser.name && currentUser.group === 'admin'">
+                        <option>admin</option>
+                        <option>user</option>
+                    </select>
+                </td>
 
-        <div class="col-md-3">
-            <button type="button" class="btn btn-default" ng-click="onDeleteUserClick(user._id)" ng-disabled="user.username === currentUser.name">delete</button>
-        </div>
-    </div>
+                <!-- delete -->
+                <td>
+                    <button type="button" class="btn btn-default" ng-click="onDeleteUserClick(user._id)" ng-disabled="user.username === currentUser.name">delete</button>
+                </td>
+          </tr>
+        </tbody>
+    </table>
 
 </div>

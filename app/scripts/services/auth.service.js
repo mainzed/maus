@@ -34,7 +34,7 @@ angular.module("meanMarkdownApp")
             username: username,
             password: password
         };
-        $http.post(ConfigService.API_PATH + "/auth/login", data).then(function(res) {
+        $http.post(ConfigService.AUTH_PATH + "/login", data).then(function(res) {
             // success
             if (res.data.user !== null && res.data.state === "success") {
 
@@ -71,7 +71,7 @@ angular.module("meanMarkdownApp")
                 };
 
                 // trying to sign up
-                $http.post(ConfigService.API_PATH + "/auth/signup", data).then(function(res) {
+                $http.post(ConfigService.AUTH_PATH + "/signup", data).then(function(res) {
                     // success
                     //console.log(res);
                     if (res.data.user !== null && res.data.state === "success") {

@@ -14,10 +14,8 @@ all required frontend libraries. You may need to install bower globally first by
 If you haven't, fire up the MongoDB daemon by running `mongod`. Create a local MongoDB database
 with the name "markdownstore" by running `mongo` (in a separate terminal window) and then `use markdownstore`.
 
-Run `node server/server.js` to start an express server on port 3000 that will conncet to the created store and provide the api for the AngularJS app.
-
-Run `grunt serve` to start a grunt development server on port 9000 that serves
-the AngularJS app.
+Run `npm start` to start an express server on port 3000 that will serve the app. Delete the "/dist" folder if it
+exists or express will serve it instead.
 
 Running `grunt test` will run the unit tests with karma.
 

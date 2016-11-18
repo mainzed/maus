@@ -67,22 +67,22 @@
              </a>
             </li>
 
-            <!-- history, show only if exists -->
+            <!-- history -->
             <li ng-show="hasArchived.indexOf(file._id) > -1">
               <a ng-click="onHistoryClick(file._id)"  data-toggle="tooltip" title="Show History">
                 Frühere Versionen
                </a>
             </li>
 
-            <!-- edit. only show when author -->
-            <li>
-              <a class="" ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings" >
+            <!-- edit metadata -->
+            <li ng-if="canEdit(file)">
+              <a ng-click="onEditClick(file._id)" data-toggle="tooltip" title="File Settings" >
                 Editieren
               </a>
             </li>
 
             <!-- delete -->
-            <li>
+            <li ng-if="canEdit(file)">
               <a class="" ng-click="onRemoveClick(file._id)" data-toggle="tooltip" title="File Settings" >
                 Löschen
               </a>

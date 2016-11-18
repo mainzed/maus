@@ -55,10 +55,6 @@ module.exports = function(passport){
 		},
 		function(req, username, password, done) {
 
-			console.log("\n\n\n\n\ntrying to sign up!\n\n\n\n\n");
-			console.log(username);
-			console.log(password);
-
 			// find a user in mongo with provided username
 			User.findOne({ 'username' :  username }, function(err, user) {
 				// In case of any error, return using the done method
@@ -92,11 +88,11 @@ module.exports = function(passport){
 		})
 	);
 
-	var isValidPassword = function(user, password){
+	var isValidPassword = function(user, password) {
 		return bCrypt.compareSync(password, user.password);
 	};
 	// Generates hash using bCrypt
-	var createHash = function(password){
+	var createHash = function(password) {
 		return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 	};
 
