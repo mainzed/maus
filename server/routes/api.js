@@ -339,7 +339,7 @@ router.post('/preview', function (req, res) {
             res.status(200);
             res.json({
                 message: "success",
-                previewPath: path.join("preview_files", type.toLowerCase(), filename)
+                previewPath: path.join("preview", type.toLowerCase(), filename)
             });
         }
     });
