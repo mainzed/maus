@@ -23,7 +23,6 @@ angular.module('meanMarkdownApp')
     ngDialog,
     DefinitionService,
     ConfigService,
-    ActiveFileService,
     TemplateService
 ) {
     if (!AuthService.isAuthenticated()) {
@@ -38,16 +37,10 @@ angular.module('meanMarkdownApp')
         FileService.get({ id: $routeParams.id }, function(file) {
             $scope.file = file;
 
-            //$scope.file.active = $scope.currentUser.name;
-
             // lock editor if news
             if ($scope.file.type === "news" && $scope.currentUser.group !== "admin") {
                 $scope.editor.setOption("readOnly", true);
             }
-
-            // save active state
-            $scope.markFileAsActive();
-
         });
     };
 
@@ -81,70 +74,6 @@ angular.module('meanMarkdownApp')
         showMarkdownLineBreaks: true,  // custom
         showOlatMarkdown: true, // custom OLAT
         scrollbarStyle: null
-    };
-
-    $scope.markFileAsActive = function() {
-        ActiveFileService.query(function(activeFiles) {
-            //console.log(activeFiles);
-
-            var entry = _.find(activeFiles, function(o) {
-                return o.fileID === $scope.file._id;
-            });
-
-            if (entry) {
-                // update active file
-                // check if user already marked
-                if (entry.users.indexOf($scope.currentUser.name) === -1) {
-                    // add user if missing
-                    entry.users.push($scope.currentUser.name);
-
-                    ActiveFileService.update({ id: entry._id }, entry, function() {
-                        console.log("updated active file!");
-                    });
-
-                }
-                // if user already marked, do nothing
-            } else {
-                // add file to active files
-                var newActiveFile = {
-                    fileID: $scope.file._id,
-                    users: [$scope.currentUser.name]
-                };
-
-                ActiveFileService.save(newActiveFile, function() {
-                    console.log("marked file as active!");
-                });
-            }
-        });
-    };
-
-    $scope.markFileAsInactive = function() {
-
-        ActiveFileService.query(function(activeFiles) {
-            // remove current user from active files users
-            var entry = _.find(activeFiles, function(o) {
-                return o.fileID === $scope.file._id;
-            });
-
-            if (entry) {
-                // remove user if exists
-                var index = entry.users.indexOf($scope.currentUser.name);
-                if (index > -1) {
-                    if (entry.users.length > 1) {
-                        // if more than the current user, just remove the user from array
-                        entry.users.splice(index, 1);
-                        ActiveFileService.update({ id: entry._id }, entry, function() {
-                            console.log("updated active file!");
-                        });
-                    } else {
-                        // when this user is the only active, remove file from db
-                        ActiveFileService.delete({ id: entry._id }, function() {
-                            console.log("removed active file!");
-                        });
-                    }
-                }
-            }
-        });
     };
 
     $scope.onSaveClick = function() {
@@ -189,14 +118,11 @@ angular.module('meanMarkdownApp')
                 scope: $scope
             }).then(function(success) {
                 // user confirmed to go back to files
-                $scope.markFileAsInactive();
                 $location.path("/files");
             }, function(error) {
                 // user cancelled
             });
         } else {  // no changes, go back without asking
-            $scope.markFileAsInactive();
-
             $location.path("/files");
         }
     };

@@ -17,8 +17,7 @@ angular.module('meanMarkdownApp')
     ngDialog,
     AuthService,
     ConfigService,
-    UserService,
-    ActiveFileService
+    UserService
 ) {
     if (!AuthService.isAuthenticated()) {
         $location.path("/login");
@@ -29,7 +28,6 @@ angular.module('meanMarkdownApp')
         $scope.currentUser = AuthService.getUser();
 
         $scope.files = FileService.query(function() {
-            $scope.appendActiveState();
         });
         $scope.templates = ConfigService.templates;
         $scope.checkforfirefox();
@@ -53,25 +51,6 @@ angular.module('meanMarkdownApp')
      */
     $scope.canEdit = function(file) {
         return file.author === $scope.currentUser.name || $scope.currentUser.group === "admin";
-    };
-
-    $scope.appendActiveState = function() {
-        ActiveFileService.query(function(activeFiles) {
-            // loop files
-            $scope.files.forEach(function(file) {
-                var active = _.find(activeFiles, function(o) {
-                    return o.fileID === file._id;
-                });
-
-                // set active if not already
-                if (active) {
-                    file.active = active.users;
-                } else {
-                    // if file not found, remove active state
-                    file.active = [];
-                }
-            });
-        });
     };
 
     $scope.onCreateNewFile = function() {
@@ -286,12 +265,5 @@ angular.module('meanMarkdownApp')
             alert("Bitte Chrome benutzen!!");
         }
     };
-
-    // refresh active state every couple seconds
-    setInterval(function() {
-        if ($location.url() === "/files") {
-            $scope.appendActiveState();
-        }
-    }, 30000);
 
 });
