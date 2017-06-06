@@ -8,7 +8,7 @@
  * Service in the meanMarkdownApp.
  */
 angular.module('meanMarkdownApp')
-.service('HTMLService', function (DefinitionService, MetadataService) {
+.service('HTMLService', function (DefinitionService) {
   /**
    * generates OLAT html from markdown. provides a callback with the generated
    * HTML as parameter
@@ -61,42 +61,42 @@ angular.module('meanMarkdownApp')
    */
   this.getOpMainzed = function(file, definitions, template) {
 
-      var metadata = MetadataService.getAndReplace(file.markdown);
+      //var metadata = MetadataService.getAndReplace(file.markdown);
 
       // insert title in head (not possible with jQuery)
-      if (metadata.title) {
-          var templateTitle = template.match(/<title[^>]*>([^<]*(?:(?!<\/?title)<[^<]*)*)<\/title\s*>/i);
-          template = template.replace(templateTitle[0], "<title>" + metadata.title + "</title>");
-      }
+    //   if (metadata.title) {
+    //       var templateTitle = template.match(/<title[^>]*>([^<]*(?:(?!<\/?title)<[^<]*)*)<\/title\s*>/i);
+    //       template = template.replace(templateTitle[0], "<title>" + metadata.title + "</title>");
+    //   }
 
       // extract body for the use with jQuery to preserve head and html tags
-      var templateBody = template.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i)[1];
+    //   var templateBody = template.match(/<body[^>]*>([^<]*(?:(?!<\/?body)<[^<]*)*)<\/body\s*>/i)[1];
 
-      // make html string jQuery compatible
-      var body = $("<div>" + templateBody + "</div>");
+    //   // make html string jQuery compatible
+    //   var body = $("<div>" + templateBody + "</div>");
 
       // insert title
-      if (metadata.title) {
-          $("h1.titletext", body).text(metadata.title);
-      }
+    //   if (metadata.title) {
+    //       $("h1.titletext", body).text(metadata.title);
+    //   }
 
       // insert cover description
-      if (metadata.coverDescription) {
-          $("p.coverdescription", body).text(metadata.coverDescription);
-      }
+    //   if (metadata.coverDescription) {
+    //       $("p.coverdescription", body).text(metadata.coverDescription);
+    //   }
 
       // insert main content
       //var main = this.convertOpMainzedMarkdownToHTML(metadata.markdown);
       //$("#read", body).append(main);
 
       // enrich page: add navigation by listing all headings
-      this.createOpMainzedNavigation(body);
+      //this.createOpMainzedNavigation(body);
 
       // enrich page: convert tags and add resources to end of document
       this.replaceEnrichmentTags(body, definitions);
 
       // replace body in template
-      template = template.replace(templateBody, body.html());
+      //template = template.replace(templateBody, body.html());
 
       return template;
   };
@@ -407,6 +407,7 @@ angular.module('meanMarkdownApp')
 
       // check if custom word provided
       var customWords = shortcut.match(/".*"/);
+
       //console.log(customWord);
       if (customWords) {
           shortcut = shortcut.replace(customWords[0], "").trim();
@@ -418,16 +419,16 @@ angular.module('meanMarkdownApp')
 
       if (enrichment) {
           if (enrichment.filetype === "opOlat") {
-              currentHTML = $(page).html();
+            currentHTML = $(page).html();
 
-              snippet =  ["<a href=\"#definitions-table\" title=\"",
-                              enrichment.text,
-                              "\" class=\"definition\">",
-                              customWord || enrichment.word,
-                              "</a>"].join("");
+            snippet =  ["<a href=\"#definitions-table\" title=\"",
+                            enrichment.text,
+                            "\" class=\"definition\">",
+                            customWord || enrichment.word,
+                            "</a>"].join("");
 
 
-              $(page).html(currentHTML.replace(tag, snippet));
+            $(page).html(currentHTML.replace(tag, snippet));
 
           } else if (enrichment.filetype === "opMainzed") {
               currentHTML = $("#read", page).html();
@@ -616,43 +617,6 @@ angular.module('meanMarkdownApp')
           });
       }
       return;
-  };
-
-  /**
-   * requires pages (jquery selection from htmlString)
-   */
-  this.createOpMainzedNavigation = function(page) {
-    var previousHeadingLevel;
-    $("h1, h2", page).each(function(index) {
-      if (index > 0) {  // skip jahresbericht title
-        // generate string
-        var headingString = "<a href=\"#" + $(this).attr('id') + "\">" + $(this).text() + "</a>";
-
-        // append string based on level
-        if ($(this).is("h1")) {
-          $("#nav", page).append("<li>" + headingString + "</li>");
-          previousHeadingLevel = 1;
-        } else if ($(this).is("h2")) {  // h2
-          if (previousHeadingLevel === 1) {
-            // if previous was 1, open new ul and append li
-            $("#nav li", page).last().append("<ul><li>" + headingString + "</li></ul>");
-
-          } else if (previousHeadingLevel === 2) {
-            //  if previous was 2, just append to ul
-            $("#nav ul", page).last().append("<li>" + headingString + "</li>");
-          }
-          previousHeadingLevel = 2;
-        }
-      }
-    });
-
-    // prepend link to cover
-    $("ul#nav", page).prepend('<li><a href="#titlepicture">Cover</a></li>');
-
-    // append link to imprint
-    $("ul#nav", page).append('<li><a href="#imprint">Impressum</a></li>');
-
-    return;
   };
 
   /**

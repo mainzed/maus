@@ -4,7 +4,17 @@
 
   "jahresbericht": {
     "template-path": "templates/jahresbericht/main.html",
-    "main-section-id": "read"
+    "main-section-selector": "#read",
+    "metadata": {
+      "title-selectors": ["title", "h1.titletext"],
+      "cover-description-selectors": ["p.coverdescription"]
+    },
+    "elements": {
+      "definition": {
+        "template-path": "templates/jahresbericht/definition.html"
+      }
+    }
+
   }
 
 }
