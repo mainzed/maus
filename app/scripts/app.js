@@ -10,19 +10,19 @@
  */
 angular
   .module("meanMarkdownApp", [
-    "ngAnimate",
+    //"ngAnimate",
     "ngCookies",
     "ngResource",
     "ngRoute",
     "ngSanitize",
-    "ngTouch",
-    "ui.codemirror",
+    //"ngTouch",
+    //"ui.codemirror",
     "ngDialog",
-    "ngCssInjector",
-    "sun.scrollable",
+    //"ngCssInjector",
+    //"sun.scrollable",
     "angular.filter"
   ])
-  .config(function ($routeProvider) {
+  .config(function($routeProvider, $locationProvider) {
     $routeProvider
       .when("/", {
         redirectTo: "/login"
@@ -42,4 +42,7 @@ angular
       .otherwise({
         redirectTo: "/"
       });
+
+      // use # isntead of the newer #!
+      $locationProvider.hashPrefix('');
   });

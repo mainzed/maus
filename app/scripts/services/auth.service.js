@@ -57,7 +57,7 @@ angular.module("meanMarkdownApp")
     this.signup = function(username, password, success, failure) {
         UserService.query(function(users) {
             // check if user already exists
-            var exists = _.find(users, function(user) {
+            var exists = users.find(function(user) {
                 return user.username === username;
             });
 

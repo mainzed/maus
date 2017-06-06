@@ -1,112 +1,107 @@
 <!doctype html>
 <html ng-app="meanMarkdownApp">
-  <head>
-    <meta charset="utf-8">
-    <title>maus - markdown for lazy users</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(./) styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel='stylesheet' href='bower_components/font-awesome/css/font-awesome.css' />
-    <link rel='stylesheet' href='bower_components/codemirror/lib/codemirror.css' />
-    <link rel='stylesheet' href='bower_components/bootstrap/dist/css/bootstrap.css' />
-    <link rel='stylesheet' href='bower_components/ng-dialog/css/ngDialog.css' />
-    <link rel='stylesheet' href='bower_components/ng-dialog/css/ngDialog-theme-default.css' />
-    <link rel='stylesheet' href='bower_components/nanoscroller/bin/css/nanoscroller.css' />
-    <!-- endbower -->
-    <!-- endbuild -->
 
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
-    <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/style.css">
-    <!-- endbuild -->
+<head>
+  <meta charset="utf-8">
+  <title>maus - markdown for lazy users</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <!-- build:css(./) styles/vendor.css -->
+  <link rel='stylesheet' href='node_modules/font-awesome/css/font-awesome.css' />
+  <link rel='stylesheet' href='node_modules/codemirror/lib/codemirror.css' />
+  <link rel='stylesheet' href='node_modules/bootstrap/dist/css/bootstrap.css' />
+  <link rel='stylesheet' href='node_modules/ng-dialog/css/ngDialog.css' />
+  <link rel='stylesheet' href='node_modules/ng-dialog/css/ngDialog-theme-default.css' />
+  <!--
+  <link rel='stylesheet' href='bower_components/nanoscroller/bin/css/nanoscroller.css' />-->
+  <!-- endbuild -->
 
-    <link rel="shortcut icon" href="images/mausicon.ico" type="image/x-icon" />
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
+  <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/style.css">
+  <!-- endbuild -->
 
-  </head>
-  <body>
-    <!--[if lte IE 8]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+  <link rel="shortcut icon" href="images/mausicon.ico" type="image/x-icon" />
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100'
+    rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
+    rel='stylesheet' type='text/css'>
 
-    <div class="container">
-      <div ng-view="" class="view"></div>
-    </div>
+</head>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<body>
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
+  <div class="container">
+    <div ng-view="" class="view"></div>
+  </div>
 
-    <!-- build:js(./) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="bower_components/marked/lib/marked.js"></script>
-    <script src="bower_components/codemirror/lib/codemirror.js"></script>
-    <script src="bower_components/codemirror/mode/markdown/markdown.js"></script>
-    <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
-    <script src="bower_components/ngcssinjector/dist/ngcssinjector.min.js"></script>
-    <script src="bower_components/angular-css/angular-css.js"></script>
-    <script src="bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
-    <script src="bower_components/angular-nanoscroller/scrollable.js"></script>
-    <script src="bower_components/jquery.mousestop/jquery.event.mousestop.js"></script>
-    <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
-    <script src="bower_components/lodash/lodash.js"></script>
-    <script src="bower_components/col-resizable/colResizable-1.6.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
+  <!-- build:js(./) scripts/vendor.js -->
+  <script src="node_modules/jquery/dist/jquery.js"></script>
 
-        <!-- build:js scripts/scripts.js -->
-        <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
-        <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
+  <!-- angular modules -->
+  <script src="node_modules/angular/angular.js"></script>
+  <script src="node_modules/angular-cookies/angular-cookies.js"></script>
+  <script src="node_modules/angular-resource/angular-resource.js"></script>
+  <script src="node_modules/angular-route/angular-route.js"></script>
+  <script src="node_modules/angular-sanitize/angular-sanitize.js"></script>
 
-        <script src="scripts/app.js"></script>
+  <!-- angular plugins -->
+  <script src="node_modules/ng-dialog/js/ngDialog.js"></script>
+  <script src="node_modules/angular-filter/dist/angular-filter.js"></script>
+  
 
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/editor.js"></script>
-        <script src="scripts/controllers/login.js"></script>
+  <!-- other stuff -->
+  <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="node_modules/marked/lib/marked.js"></script>
+  <script src="node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="node_modules/codemirror/mode/markdown/markdown.js"></script>
+  <script src="node_modules/angular-ui-codemirror/src/ui-codemirror.js"></script>
+  
+  <!--
+  <script src="bower_components/ngcssinjector/dist/ngcssinjector.min.js"></script>
+  <script src="bower_components/angular-css/angular-css.js"></script>
+  <script src="bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
+  <script src="bower_components/angular-nanoscroller/scrollable.js"></script>
+  <script src="bower_components/jquery.mousestop/jquery.event.mousestop.js"></script>
+  
+  <script src="bower_components/col-resizable/colResizable-1.6.js"></script>-->
+  <!-- endbuild -->
 
-        <script src="scripts/directives/msfilespanel.js"></script>
-        <script src="scripts/directives/mseditortoolbar.js"></script>
-        <script src="scripts/directives/focusOnVisibility.js"></script>
-        <script src="scripts/directives/msfilterbutton.js"></script>
-        <script src="scripts/directives/mscheckbox.js"></script>
-        <script src="scripts/directives/msdefinitionstable.js"></script>
-        <script src="scripts/directives/msimagestable.js"></script>
-        <script src="scripts/directives/msstoriestable.js"></script>
-        <script src="scripts/directives/mscitationstable.js"></script>
+  <!-- build:js scripts/scripts.js -->
+  <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
+  <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
 
-        <script src="scripts/services/auth.service.js"></script>
-        <script src="scripts/services/file.service.js"></script>
-        <script src="scripts/services/definition.service.js"></script>
-        <script src="scripts/services/html.service.js"></script>
-        <script src="scripts/services/archived-file.service.js"></script>
-        <script src="scripts/services/user.service.js"></script>
-        <script src="scripts/services/metadata.service.js"></script>
-        <script src="scripts/services/active-file.service.js"></script>
-        <script src="scripts/services/template.service.js"></script>
-        <script src="scripts/services/config.service.js"></script>
-        <script src="scripts/services/preview.service.js"></script>
-        <!-- endbuild -->
+  <script src="scripts/app.js"></script>
+
+  <script src="scripts/controllers/main.js"></script>
+  <script src="scripts/controllers/editor.js"></script>
+  <script src="scripts/controllers/login.js"></script>
+
+  <script src="scripts/directives/msfilespanel.js"></script>
+  <script src="scripts/directives/mseditortoolbar.js"></script>
+  <script src="scripts/directives/focusOnVisibility.js"></script>
+  <script src="scripts/directives/msfilterbutton.js"></script>
+  <script src="scripts/directives/mscheckbox.js"></script>
+  <script src="scripts/directives/msdefinitionstable.js"></script>
+  <script src="scripts/directives/msimagestable.js"></script>
+  <script src="scripts/directives/msstoriestable.js"></script>
+  <script src="scripts/directives/mscitationstable.js"></script>
+
+  <script src="scripts/services/auth.service.js"></script>
+  <script src="scripts/services/file.service.js"></script>
+  <script src="scripts/services/definition.service.js"></script>
+  <script src="scripts/services/html.service.js"></script>
+  <script src="scripts/services/archived-file.service.js"></script>
+  <script src="scripts/services/user.service.js"></script>
+  <script src="scripts/services/metadata.service.js"></script>
+  <script src="scripts/services/active-file.service.js"></script>
+  <script src="scripts/services/template.service.js"></script>
+  <script src="scripts/services/config.service.js"></script>
+  <script src="scripts/services/preview.service.js"></script>
+  <!-- endbuild -->
 </body>
+
 </html>

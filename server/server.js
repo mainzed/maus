@@ -33,8 +33,9 @@ app.use("/preview",  express.static(__dirname + "/preview", { maxAge: oneDay }))
 // serve either /app or /dist
 fs.access(path.resolve(__dirname, "../dist"), function(err) {
     if (err) {
+        // TODO: check build process
         console.log("production version '/dist' not found. run 'grunt build'. serving the development version '/app' ...");
-        app.use('/bower_components',  express.static(path.resolve(__dirname, "../bower_components"), { maxAge: oneDay }));
+        app.use('/node_modules',  express.static(path.resolve(__dirname, "../node_modules"), { maxAge: oneDay }));
         app.use(express.static(path.resolve(__dirname, "../app")));
     } else {
         console.log("production version /dist found. serving ...");
@@ -46,6 +47,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// connect to mongoDB
 require("./database.js");
 
 // security
