@@ -62,19 +62,18 @@ angular.module('meanMarkdownApp')
    * makes editor available to rest of controller
    */
   $scope.onCodeMirrorLoaded = function (_editor) {
-    console.log("codemirror loaded")
     $scope.editor = _editor  // for global settings
   }
 
   $scope.editorOptions = {
-      lineWrapping: true,
-      lineNumbers: false,
-      //mode: 'markdown',  // CurlyBraceWrappedText
-      showTrailingSpace: false,
-      showMarkdownLineBreaks: true,  // custom
-      showOlatMarkdown: true, // custom OLAT
-      scrollbarStyle: null
-  };
+    lineWrapping: true,
+    lineNumbers: false,
+    mode: 'markdown',  // CurlyBraceWrappedText
+    showTrailingSpace: false,
+    showMarkdownLineBreaks: true,  // custom
+    showOlatMarkdown: true, // custom OLAT
+    scrollbarStyle: null
+  }
 
   $scope.onSaveClick = function() {
 
@@ -248,32 +247,35 @@ angular.module('meanMarkdownApp')
       $scope.editor.redo();
   };
 
-  $scope.onPreviewClick = function() {
-      FileService.query(function(files) {
-          var markdown = $scope.processIncludes($scope.file.markdown, files);
+  $scope.onPreviewClick = function () {
+    FileService.query(function (files) {
+      var markdown = $scope.processIncludes($scope.file.markdown, files)
 
-          $scope.fileCopy = angular.copy($scope.file);
-          $scope.fileCopy.markdown = markdown;
+      $scope.fileCopy = angular.copy($scope.file)
+      $scope.fileCopy.markdown = markdown
 
-          $scope.processHtml($scope.fileCopy).then(function(html) {
-              var postData = {
-                  "type": $scope.fileCopy.type,
-                  "html": html,
-                  "user_id": $scope.currentUser._id
-              };
+      $scope.processHtml($scope.fileCopy).then(function (html) {
+        var postData = {
+          'type': $scope.fileCopy.type,
+          'html': html,
+          'user_id': $scope.currentUser._id
+        }
 
-              // save preview file to server and load as iframe in dialog
-              PreviewService.save(postData).then(function(previewPath) {
-                  $scope.previewPath = previewPath;
-                  ngDialog.open({
-                      template: "views/dialog_preview.html",
-                      disableAnimation: true,
-                      scope: $scope
-                  });
-              });
-          });
-      });
-  };
+        // save preview file to server and load as iframe in dialog
+        PreviewService.save(postData).then(function (previewPath) {
+          // add random number to request to force cache reload
+          var randNum = Math.floor((Math.random() * 10000000) + 1)
+          $scope.previewPath = previewPath + '?time=' + randNum
+
+          ngDialog.open({
+            template: 'views/dialog_preview.html',
+            disableAnimation: true,
+            scope: $scope
+          })
+        })
+      })
+    })
+  }
 
   /**
    * requires file object that includes markdown author etc

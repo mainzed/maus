@@ -39,23 +39,41 @@ function isAuthenticated (req, res, next) {
  * DELETE /tickets/12 - Deletes ticket #12
  */
 router.get('/users', function (req, res) {
-    User.find(function(err, users) {
-        if (err) {
-            throw err;
-        }
-        res.json(users);
-     });
- });
+  User.find(function (err, users) {
+    if (err) {
+      throw err
+    }
+    var result = users.map(function (user) {
+      var obj = {}
+      obj._id = user._id
+      obj.username = user.username
+      obj.group = user.group
+      obj.createdAt = user.createdAt
+      obj.updatedAt = user.updatedAt
+      return obj
+    })
+    res.json(result)
+  })
+})
 
- router.get('/users/:id', function (req, res) {
-     var id = req.params.id;
-     User.findById(id, function(err, user) {
-         if (err) {
-             res.status(404).send('Not found');
-         }
-         res.json(user);
-     });
- });
+router.get('/users/:id', function (req, res) {
+  var id = req.params.id
+  User.findById(id, function (err, user) {
+    if (err) {
+      res.status(404).send('Not found')
+    }
+
+    // filter result
+    var result = {}
+    result._id = user._id
+    result.username = user.username
+    result.group = user.group
+    result.createdAt = user.createdAt
+    result.updatedAt = user.updatedAt
+
+    res.json(result)
+  })
+})
 
  router.post('/users', function (req, res) {
      var user = req.body;
