@@ -9,15 +9,16 @@
  */
 angular.module('meanMarkdownApp')
 .controller('EditorCtrl', function (
-  $scope,
-  $location,
-  $timeout,
-  $routeParams,
-  HTMLService,
   $document,
-  PreviewService,
   $filter,
+  $http,
+  $location,
+  $routeParams,
+  $scope,
+  $timeout,
   $window,
+  HTMLService,
+  PreviewService,
   FileService,
   AuthService,
   ngDialog,
@@ -248,32 +249,29 @@ angular.module('meanMarkdownApp')
   };
 
   $scope.onPreviewClick = function () {
-    FileService.query(function (files) {
-      var markdown = $scope.processIncludes($scope.file.markdown, files)
+    var type = $scope.file.type
+    if (type === 'opMainzed') {
+      type = 'jahresbericht'
+    }
+    var postData = {
+      'type': type,
+      'markdown': $scope.file.markdown,
+      'user_id': $scope.currentUser._id
+    }
 
-      $scope.fileCopy = angular.copy($scope.file)
-      $scope.fileCopy.markdown = markdown
+    // get preview path
+    $http.post(ConfigService.API_PATH + '/preview', postData).then(function (res) {
+      // open dialog
+      var randNum = Math.floor((Math.random() * 10000000) + 1)
+      $scope.previewPath = res.data.previewPath + '?time=' + randNum
 
-      $scope.processHtml($scope.fileCopy).then(function (html) {
-        var postData = {
-          'type': $scope.fileCopy.type,
-          'html': html,
-          'user_id': $scope.currentUser._id
-        }
-
-        // save preview file to server and load as iframe in dialog
-        PreviewService.save(postData).then(function (previewPath) {
-          // add random number to request to force cache reload
-          var randNum = Math.floor((Math.random() * 10000000) + 1)
-          $scope.previewPath = previewPath + '?time=' + randNum
-
-          ngDialog.open({
-            template: 'views/dialog_preview.html',
-            disableAnimation: true,
-            scope: $scope
-          })
-        })
+      ngDialog.open({
+        template: 'views/dialog_preview.html',
+        disableAnimation: true,
+        scope: $scope
       })
+    }, function error (res) {
+        reject(res)
     })
   }
 
@@ -281,33 +279,35 @@ angular.module('meanMarkdownApp')
    * requires file object that includes markdown author etc
    * @returns void
    */
-  $scope.processHtml = function(file) {
-      return new Promise(function(resolve) {
-          var config = {
-              addTitle: true,
-              addContentTable: true,
-              addImagesTable: true,
-              // addLinksTable: true,
-              addDefinitionsTable: true
-          };
+  $scope.processHtml = function (file) {
+    return new Promise(function (resolve) {
+      var config = {
+        addTitle: true,
+        addContentTable: true,
+        addImagesTable: true,
+        // addLinksTable: true,
+        addDefinitionsTable: true
+      }
 
-          DefinitionService.query(function(definitions) {
-              var html;
-              // convert markdown to html
-              if ($scope.file.type === "opOlat") {
-                  html = HTMLService.getOlat(file, definitions, config);
-                  html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
+      DefinitionService.query(function(definitions) {
+          var html;
+          // convert markdown to html
+          if ($scope.file.type === "opOlat") {
+              html = HTMLService.getOlat(file, definitions, config);
+              html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
+              resolve(html);
+
+          } else if ($scope.file.type === "opMainzed") {
+              // TODO: replace with server methods
+              // get template
+              TemplateService.getOpMainzed(function(template) {
+                  // modify template
+                  var html = HTMLService.getOpMainzed(file, definitions, template);
                   resolve(html);
-              } else if ($scope.file.type === "opMainzed") {
-                  // get template
-                  TemplateService.getOpMainzed(function(template) {
-                      // modify template
-                      var html = HTMLService.getOpMainzed(file, definitions, template);
-                      resolve(html);
-                  });
-              }
-          });
+              });
+          }
       });
+    });
   };
 
   /**

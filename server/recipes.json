@@ -1,0 +1,10 @@
+
+{
+  "olat": [],
+
+  "jahresbericht": {
+    "template-path": "templates/jahresbericht/main.html",
+    "main-section-id": "read"
+  }
+
+}

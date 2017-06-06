@@ -27,8 +27,9 @@ app.use(session({
 var initPassport = require("./passport-init");
 initPassport(passport);
 
-var oneDay = 86400000;
-app.use("/preview",  express.static(__dirname + "/preview", { maxAge: oneDay }));
+// preview files
+var oneDay = 86400000
+app.use('/preview', express.static(path.join(__dirname, 'preview'), { maxAge: oneDay }))
 
 // serve either /app or /dist
 fs.access(path.resolve(__dirname, "../dist"), function(err) {
