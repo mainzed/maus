@@ -7,6 +7,7 @@ var marked = require('marked')
 
 var renderer = require('./renderers/jahresbericht')
 var Definition = require('./models/definition')
+var File = require('./models/file')
 
 var RECIPES_PATH = 'recipes.json'
 
@@ -28,14 +29,16 @@ class Converter {
         // TODO: resolve custom elements
         this.getPageFromTemplate(recipe['template-path']).then((page) => {
           this.getMetadata(this.markdown).then((markdown) => {
-            this.markdown = markdown
-            this.insertContent(page).then((page) => {
-              this.resolveElements(page).then((page) => {
-                this.createNavigation(page).then((page) => {
-                  // TODO: use metadata
-                  // TODO: resolve elements
-                  this.page = page
-                  resolve(page.html())
+            this.resolveIncludes(markdown).then((markdown) => {
+              this.markdown = markdown
+              this.insertContent(page).then((page) => {
+                this.resolveElements(page).then((page) => {
+                  this.createNavigation(page).then((page) => {
+                    // TODO: use metadata
+                    // TODO: resolve elements
+                    this.page = page
+                    resolve(page.html())
+                  })
                 })
               })
             })
@@ -70,7 +73,38 @@ class Converter {
     })
   }
 
-  // TODO: getMetadata - and remove
+  resolveIncludes (markdown) {
+    return new Promise((resolve, reject) => {
+      var promises = []
+      var includes = this.getIncludes(markdown)
+
+      includes.forEach((include) => {
+        promises.push(this.findIncludeAndGetReplacement(include))
+      })
+
+      Promise.all(promises).then((promises) => {
+        promises.forEach((promise) => {
+          markdown = markdown.replace(promise.include.original, promise.replacement)
+        })
+        resolve(markdown)
+      })
+    })
+  }
+
+  getIncludes (markdown) {
+    var includesList = []
+    // find them
+    var includes = markdown.match(/include\((.*?)\)/g)
+
+    includes.forEach((include) => {
+      var fileName = include.replace('include(', '').replace(')', '')
+      includesList.push({
+        original: include,
+        fileName: fileName
+      })
+    })
+    return includesList
+  }
 
   // converts markdown to HTML and inserts it into the template's main section
   insertContent (page) {
@@ -200,19 +234,24 @@ class Converter {
       var elements = this.getElements(page)
 
       elements.forEach((element) => {
-        console.log("FIRST RUN")
         if (element.category === 'definition') {
           promises.push(this.findDefinitionAndGetReplacement(element))
+        } else if (element.category === 'citation') {
+          promises.push(this.findCitationAndGetReplacement(element))
+        } else if (element.category === 'story') {
+          promises.push(this.findStoryAndGetReplacement(element))
         }
+      })
 
-        Promise.all(promises).then((promises) => {
-          // REPLACE ALL OF THEM
-          promises.forEach((promise) => {
-            var newContent = page(this.recipe['main-section-selector']).html().replace(promise.element.markdown, promise.replacement)
-            page(this.recipe['main-section-selector']).html(newContent)
-          })
-          resolve(page)
+      // actually replace them
+      Promise.all(promises).then((promises) => {
+        console.log(promises.length)
+        promises.forEach((promise) => {
+          console.log(promise.element.markdown)
+          var newContent = page(this.recipe['main-section-selector']).html().replace(promise.element.markdown, promise.replacement)
+          page(this.recipe['main-section-selector']).html(newContent)
         })
+        resolve(page)
       })
     })
   }
@@ -245,12 +284,103 @@ class Converter {
         'filetype': type,
         'word': element.shortcut,
         'category': element.category
-      }, 'word text', (err, definition) => {
+      }, 'word text author url', (err, definition) => {
         if (err) reject(err)
 
         // TODO: use template and insert element specifics
-        var tag = `<span id="${definition._id}" class="shortcut">${definition.word}</span>`
+        var tag = `<span id="${definition._id}" class="shortcut">
+                    ${definition.word}
+                    <span class="definition">
+                      <span class="definition-title">${definition.text}</span>
+                      <span class="definition-text">${definition.word}</span>
+                      <span class="definition-author">${definition.author}</span>
+                      <span class="definition-website">${definition.url}</span>
+                    </span>
+                  </span>`
+
+        /*
+                  <span class="metadata">
+                        <span class="author">Autor: ${definition.author}</span>
+                        <span class="website"><a href="${definition.url}" target="_blank">Website</a></span>
+                      </span>
+                      */
+        // TODO: convert to markdown
+        // var customRenderer = new marked.Renderer();
+        //     customRenderer.link = function (linkUrl, noIdea, text) {
+        //       if (linkUrl.indexOf("#") === 0) {  // startsWith #
+        //         return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+        //       } else {
+        //         return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+        //       }
+        //     };
+
+        //     var html = marked(enrichment.text, { renderer: customRenderer });
+
         resolve({element: element, replacement: tag})
+      })
+    })
+  }
+
+  findCitationAndGetReplacement (element) {
+    return new Promise((resolve, reject) => {
+      // legacy
+      var type = this.type
+      if (type === 'jahresbericht') {
+        type = 'opMainzed'
+      }
+
+      Definition.findOne({
+        'filetype': type,
+        'word': element.shortcut,
+        'category': element.category
+      }, 'word text author url', (err, definition) => {
+        if (err) reject(err)
+
+        // TODO: use template and insert element specifics
+        var content = marked(definition.text)
+        var tag = `<div class="citation hyphenate">
+                     ${content}
+                     <span class="author">${definition.author}</span>
+                   </div>`
+        resolve({element: element, replacement: tag})
+      })
+    })
+  }
+
+  findStoryAndGetReplacement (element) {
+    return new Promise((resolve, reject) => {
+      // legacy
+      var type = this.type
+      if (type === 'jahresbericht') {
+        type = 'opMainzed'
+      }
+
+      Definition.findOne({
+        'filetype': type,
+        'word': element.shortcut,
+        'category': element.category
+      }, 'word text author url', (err, definition) => {
+        if (err) reject(err)
+
+        // TODO: use template and insert element specifics
+        var content = marked(definition.text)
+        var tag = `<div class="story">${content}</div>`
+        resolve({element: element, replacement: tag})
+      })
+    })
+  }
+
+  findIncludeAndGetReplacement (include) {
+    return new Promise((resolve, reject) => {
+      // legacy
+      var type = this.type
+      if (type === 'jahresbericht') {
+        type = 'opMainzed'
+      }
+
+      File.findOne({'type': type, 'title': include.fileName}, 'markdown', (err, file) => {
+        if (err) reject(err)
+        resolve({include: include, replacement: file.markdown})
       })
     })
   }

@@ -27,7 +27,7 @@ angular.module("meanMarkdownApp")
         {
             type: "opMainzed",
             name: "Mainzed Jahresbericht",
-            enrichments: ["definition", "image", "citation"]
+            enrichments: ["definition", "image", "citation", "story"]
         },
         {
             type: "prMainzed",

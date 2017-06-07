@@ -444,26 +444,26 @@ angular.module('meanMarkdownApp')
           // for opMainzed, add ressources to end of page
           if (enrichment.filetype === "opMainzed" && usedEnrichments.indexOf(enrichment._id) === -1) {
 
-              var customRenderer = new marked.Renderer();
-              customRenderer.link = function (linkUrl, noIdea, text) {
-                  if (linkUrl.indexOf("#") === 0) {  // startsWith #
-                      return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
-                  } else {
-                      return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
-                  }
-              };
+            var customRenderer = new marked.Renderer();
+            customRenderer.link = function (linkUrl, noIdea, text) {
+              if (linkUrl.indexOf("#") === 0) {  // startsWith #
+                return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
+              } else {
+                return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
+              }
+            };
 
-              var html = marked(enrichment.text, { renderer: customRenderer });
+            var html = marked(enrichment.text, { renderer: customRenderer });
 
-              var metadataString = getDefinitionFootnoteString(enrichment);
+            var metadataString = getDefinitionFootnoteString(enrichment);
 
-              $("#footnotes", page).append([
-                  "<div class=\"" + enrichment._id + "\">",
-                      "<h4>" + enrichment.word + "</h4>",
-                      html,
-                      metadataString,
-                  "</div>"
-              ].join(""));
+            $("#footnotes", page).append([
+                "<div class=\"" + enrichment._id + "\">",
+                    "<h4>" + enrichment.word + "</h4>",
+                    html,
+                    metadataString,
+                "</div>"
+            ].join(""));
           }
 
           if (usedEnrichments.indexOf(enrichment._id) === -1) {  // skip duplicates

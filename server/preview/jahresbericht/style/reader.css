@@ -4,13 +4,13 @@
     src: url('fonts/mainzeddisplaytype-Regular?#iefix') format('embedded-opentype'),
          url('fonts/mainzeddisplaytype-Regular.woff2') format('woff2'),
          url('fonts/mainzeddisplaytype-Regular.woff') format('woff');
-      
+
     font-weight: normal;
     font-style: normal;
 }
 
 
-* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', Arial, sans-serif; letter-spacing: 0.02em;  
+* 		{ 	margin: 0; padding: 0;  font-family: 'roboto', Arial, sans-serif; letter-spacing: 0.02em;
 			list-style: none; text-decoration: none;  }
 html 	{	background: white;	}
 body 	{ 	height: 100%; width: 100%; display: block; position: absolute; }
@@ -36,23 +36,26 @@ iframe 	{	float: left; margin-left: 35%; }
 
 .citation 	{ 	margin: 40px 0; border-top: 1px solid #e7e7e7; display: inline-block;
 				border-bottom: 1px solid #e7e7e7; margin: 60px 25%; padding-top: 20px; padding-bottom: 120px;}
-.citation p { 	font-size: 35px; line-height: 45px; letter-spacing: 0; 
-				margin: 0; font-style: italic; 
+.citation p { 	font-size: 35px; line-height: 45px; letter-spacing: 0;
+				margin: 0; font-style: italic;
 				overflow-wrap: break-word; word-wrap: break-word; -webkit-hyphens: auto; -ms-hyphens: auto; -moz-hyphens: auto; hyphens: auto; }
 .citation .author {
-	font-size: 16px; line-height: 22px; float: left; 
+	font-size: 16px; line-height: 22px; float: left;
 	margin-top: 20px; padding-right: 20px; width: calc(100% - 20px);
-	overflow-wrap: break-word; word-wrap: break-word; 
+	overflow-wrap: break-word; word-wrap: break-word;
 	-webkit-hyphens: auto; -ms-hyphens: auto; -moz-hyphens: auto; hyphens: auto;
 }
 #titletextbg {	background: white; width: 100%; height: 100%;}
-.title {		font-size: 80px; line-height: 80px; font-family: "mainzeddisplay", sans-serif; 
+.title {		font-size: 80px; line-height: 80px; font-family: "mainzeddisplay", sans-serif;
 				font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
 				top: 30%; left: 0; width: auto; background: none;
 				overflow-wrap: none; word-wrap: none; -webkit-hyphens: none; -ms-hyphens: none; -moz-hyphens: none; hyphens: none;
+				text-transform: lowercase;
 			}
-.titletext {		}
+
 .shortcut {background: white;}
+.shortcut .definition {display: none;}
+
 #scrollmarker {position: absolute; top: 240px; width: 100px; height: 10px; background: transparent;}
 .tooltip {background: white; padding: 10px 10px 50px 10px; position:absolute; font-size: 15px; line-height: 22px;}
 
@@ -62,7 +65,7 @@ iframe 	{	float: left; margin-left: 35%; }
 #read li {	font-size: 19px; margin-left: 23px; margin-bottom: 10px; line-height: 28px;
 			overflow-wrap: break-word; word-wrap: break-word; -webkit-hyphens: auto; -ms-hyphens: auto; -moz-hyphens: auto; hyphens: auto;
 }
-#read li:before {    
+#read li:before {
 	content: "—";
 	margin-left: -26px;
 	margin-right: 12px;
@@ -71,13 +74,13 @@ iframe 	{	float: left; margin-left: 35%; }
 
 
 #ressourceswrapper 	{	position: fixed; height: 100%; top: 0; left: 0; }
-#ressources 		{ 	float: left; width: 2000px; background: white; color: black;   
+#ressources 		{ 	float: left; width: 2000px; background: white; color: black;
 						height: 100%; display: block; transition: 0.4s; border-right: 1px solid #e7e7e7;  }
 #ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
 #ressourcestext 	{ 	float: right; display: block; margin: 40px 20px 0 0; width: 258px; }
 #ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 20px; padding-bottom: 20px; }
-.figcaption 		{	color: white; position: absolute; right: 20px; bottom: 30px; 
-						text-align: right; font-size: 15px; margin-right: 0; 
+.figcaption 		{	color: white; position: absolute; right: 20px; bottom: 30px;
+						text-align: right; font-size: 15px; margin-right: 0;
 						display: block; overflow: hidden; line-height: 20px; z-index: 999999;  }
 
 #imagecontainer 	{	position: absolute; height: 90%; right: 1px; width: 1500px; background-size: contain !important;
@@ -86,24 +89,28 @@ iframe 	{	float: left; margin-left: 35%; }
 .picturegroup 		{	margin: 200px 20%; float: left; }
 .picturegroup figure 	{	float: left; clear: none; margin-left: 5px; }
 
-.definition-metadata {float: left; clear: left;}
-.definition-metadata span {float: left; clear: left; margin-top: 10px;}
-#ressourcestext .author, #ressourcestext .website {font-size: 15px; line-height: 20px;}
-#ressourcestext .website {padding-bottom: 50px;}
+#ressourcestext .definition { margin-top: 10px; background: red}
+#ressourcestext .definition-title { font-weight: bold; display: block; }
+#ressourcestext .definition-author, #ressourcestext .definition-website { font-size: 15px; line-height: 20px; display: block; }
+#ressourcestext .definition-website {padding-bottom: 50px;}
+#ressourcestext .definition-author::before {
+    content: "Autor: ";
+}
+
 
 .picture-metadata, .tooltip .picture-metadata {float: left; clear: left; width: 100%; margin-top: 15px;}
 .picture-metadata span, .tooltip .picture-metadata span {float: left; margin-right: 20px; }
 figcaption .author, figcaption .license  {font-size: 11px; line-height: 12px;  }
 figcaption .license {padding-bottom: 50px; }
 
-#ressources .picture-metadata {position: absolute; margin-top: 0; bottom: 10px; right: 0; font-size: 11px; text-align: right; color: white;} 
+#ressources .picture-metadata {position: absolute; margin-top: 0; bottom: 10px; right: 0; font-size: 11px; text-align: right; color: white;}
 #ressources .picture-metadata span {float: right; }
 
 
 /* start */
 .start				{ 	position: absolute; bottom: 100px; left: 10%; color: black; font-size: 20px;
 						font-style: italic; }
-#titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../bilder/zwei16atmosphaere.jpg"); 
+#titlepicture 		{ 	width: 100%; height: 100%; display: block; background: url("../bilder/zwei16atmosphaere.jpg");
 						background-size: cover; top: 0; z-index: -1; }
 .coverdescription 	{ 	position: absolute; text-align: right; bottom: 20px; right: 20px; line-height: 14px; font-size: 12px; margin: 0; color: white;}
 
@@ -115,7 +122,7 @@ figcaption .license {padding-bottom: 50px; }
 #nav li a 	{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
 #nav ul li a 	{	border: 0; color: black; font-size: 15px; line-height: 21px;	}
 
-#nav, #ressourcestext {	-webkit-overflow-scrolling: touch; 
+#nav, #ressourcestext {	-webkit-overflow-scrolling: touch;
 						overflow-y: auto; height: calc(100% - 40px);  }
 
 /*Nav Icon*/
@@ -129,7 +136,7 @@ figcaption .license {padding-bottom: 50px; }
 .shortcut:after { 	content: "\e900"; font-family: "icomoon" !important; font-style: normal; font-size: 15px;
     				font-weight: normal; margin-left: 2px; }
 
-	
+
 #read, #footnotes {width: 100%; padding-bottom: 200px; margin: 0 auto; overflow: hidden; }
 #footnotes, #imprint { float: left; clear: left;}
 
@@ -159,7 +166,7 @@ figcaption .license {padding-bottom: 50px; }
 
 
 /* Animation Classes */
-.showdefinitions { 
+.showdefinitions {
 	margin-left: -1700px;
 	-webkit-transition: width 2s; /* Safari */
 	transition: width 2s;
@@ -171,9 +178,9 @@ figcaption .license {padding-bottom: 50px; }
 	transition: width 1s;
 }
 
-.showpictures { 
+.showpictures {
 	margin-left: -500px;
-   	background: black !important; 
+   	background: black !important;
    	-webkit-transition: width 1s; /* Safari */
 	transition: width 1s;
 }
@@ -196,9 +203,9 @@ figcaption .license {padding-bottom: 50px; }
 /* laptop */
 @media screen and (max-width: 1600px) {
 
-	.showpictures { 
+	.showpictures {
 		margin-left: -800px;
-	   	background: black !important; 
+	   	background: black !important;
 	   	-webkit-transition: width 1s; /* Safari */
 		transition: width 1s;
 	}
@@ -210,7 +217,7 @@ figcaption .license {padding-bottom: 50px; }
 
 /* small screens */
 @media screen and (max-height: 900px) {
-	
+
 	/* Animation Classes */
 	.showpictures { margin-left: -1100px; background: black !important; }
 	.picturegroup { margin: 200px 15%;}
@@ -218,7 +225,7 @@ figcaption .license {padding-bottom: 50px; }
 	#imprint {margin: 100px 25%;}
 	#ressources img 	{ 	width: 800px;  }
 	#imagecontainer		{	position: absolute;  width: 900px;  }
-	#nav, #ressourcestext {	-webkit-overflow-scrolling: touch; 
+	#nav, #ressourcestext {	-webkit-overflow-scrolling: touch;
 							overflow-y: auto; height: calc(100% - 40px);  }
 	#read ul 			{	margin: 20px 25%;	}
 
@@ -234,20 +241,20 @@ figcaption .license {padding-bottom: 50px; }
 	figure {	margin-left: 25%; }
 
 
-	
+
 
 	.figcaption {margin-left: 20px;}
 
 
 
-	/* animation classes 
+	/* animation classes
 	.shiftread {
 		float: right;
 		width: calc(100% - 100px) !important;
-		-webkit-transition: width 0.5s; 
+		-webkit-transition: width 0.5s;
 		transition: width 0.5s;
 	}
-	
+
 	*/
 
 	.shiftread p { margin-left: 32%; margin-right: 18%; }
@@ -261,12 +268,14 @@ figcaption .license {padding-bottom: 50px; }
 	.shiftread iframe { margin-left: 32%;  }
 	.citation p {margin-left: 0; margin-right: 0;}
 
+	.story p { background: blue;}
+
 	.shiftread .picturegroup { margin: 200px 0 200px 30%;}
 	.shiftread .picturegroup figure {margin-left: 5px; margin-right: 0;}
 
-	.showpictures { 
+	.showpictures {
 		margin-left: -1000px;
-	   	background: black !important; 
+	   	background: black !important;
 	   	-webkit-transition: width 1s; /* Safari */
 		transition: width 1s;
 	}
@@ -279,7 +288,7 @@ figcaption .license {padding-bottom: 50px; }
 /* tablet portrait */
 @media screen and (max-width: 800px) {
 	* 	{ 	cursor: pointer; letter-spacing: 0.02em; }
-	
+
 	h1 	{ 	margin: 40px 5% 0 5%; width: calc(100% - 10%); font-size: 45px; line-height: 50px; letter-spacing: 0;  }
 	h2 	{	margin: 30px 5%; font-size: 29px; line-height: 34px; letter-spacing: 0; width: 90%; }
 	h3 	{	margin: 3px 5%; padding-top: 25px; font-size: 19px; line-height: 27px; 	}
@@ -288,7 +297,7 @@ figcaption .license {padding-bottom: 50px; }
 	h1,h2,h3 {padding-top: 70px;}
 
 	p  	{	font-size: 19px; line-height: 27px; width: 90%; margin: 20px 5%;	}
-	
+
 	figure img {	width: 100%; height: auto;	}
 	figure { margin-left: 0; }
 	.picturegroup figure {margin-left: 0;}
@@ -298,11 +307,11 @@ figcaption .license {padding-bottom: 50px; }
 	.title {font-size: 50px; line-height: 50px; top: auto; bottom: 70px; text-rendering: optimizeLegibility; }
 	.start				{ 	position: absolute; bottom: 20px; left: 5%; color: black; font-size: 15px;
 						font-style: italic; }
-	
-	
+
+
 	.citation {margin: 50px 5%; padding-bottom: 60px;}
 	.citation p {margin: 0; font-size: 30px; line-height: 38px; letter-spacing: 0.02em;}
-	
+
 	.picturegroup 		{	margin: 200px 0 100px 0; float: left; }
 
 	#read ul {margin: 20px 5%;}
@@ -320,7 +329,7 @@ figcaption .license {padding-bottom: 50px; }
 	#imprint { margin: 100px 5%; }
 	.tooltip {display: none;}
 
-				
+
 	#ressourceswrapper 	{	position: fixed; width: 100%; top: 0; left: auto; height: auto; }
 	#ressources 		{ 	float: none; position: relative; top: 0; height: 800px; border-right: 0; background: white;
 							width: 100%; border-bottom: 1px solid #e7e7e7; display: block; transition: 0.3s;
@@ -328,16 +337,16 @@ figcaption .license {padding-bottom: 50px; }
 
 	#nav, #ressourcestext {	float: left; margin-top: 450px; -webkit-overflow-scrolling: touch;  height: 400px;
 							overflow-y: auto; width: 90%; margin-bottom: 0; padding-top: 20px; margin-left: 5%; }
-	
+
 	#nav.activeressource {height: 330px;}
 	#ressourcestext.activeressource {height: 270px; margin-top: 510px; padding-top: 20px;}
 	#navicon {margin: 10px 0; left: 4.7%; top: 3px; z-index: 9999;}
 	#closeicon {float: none; position: fixed; top: 3px; right: 5%; margin: 10px 0;}
 	#ressources img {width: 100%;}
-	
+
 
 	#gradient {
-		height: 50px; width: 100%;    	
+		height: 50px; width: 100%;
     	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5e5e5+0,e5e5e5+72,e5e5e5+100&0+0,1+72,1+100 */
 		background: -moz-linear-gradient(top,  rgba(229,229,229,0) 0%, rgba(229,229,229,1) 80%, rgba(229,229,229,1) 100%); /* FF3.6-15 */
 		background: -webkit-linear-gradient(top,  rgba(229,229,229,0) 0%,rgba(229,229,229,1) 80%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
@@ -348,12 +357,12 @@ figcaption .license {padding-bottom: 50px; }
     	pointer-events: none; display: none; z-index: 99999999;
 	}
 
-	
+
 
 
 
 	/* Animation Classes */
-	.showdefinitionsm { 
+	.showdefinitionsm {
 		margin-top: -510px;
 		-webkit-transition: width 0.2s; /* Safari */
 		transition: width 0.2s;
@@ -372,15 +381,15 @@ figcaption .license {padding-bottom: 50px; }
 		-webkit-transition: width 0.2s; /* Safari */
 		transition: width 0.2s;
 	}
-	
-	.showpicturesm { 
+
+	.showpicturesm {
 		margin-top: 0;
 	   	background: black;
 	   	-webkit-transition: width 0.2s; /* Safari */
 		transition: width 0.2s;
 	}
 
-	
+
 	.fadeoutm {
 		margin-top: -800px;
 		-webkit-transition: width 0.2s; /* Safari */
@@ -394,14 +403,14 @@ figcaption .license {padding-bottom: 50px; }
 	}
 
 
-	
-	
+
+
 }
 
 /* smartphone portrait */
 @media screen and (max-width: 600px) {
-	
-	
+
+
 	h1 	{ 	font-size: 35px; line-height: 40px;  }
 	h2 	{	font-size: 25px; line-height: 30px;  }
 	h3 	{	font-size: 16px; line-height: 22px;  }
@@ -416,9 +425,9 @@ figcaption .license {padding-bottom: 50px; }
 	#ressourcestext {width: 90%;}
 
 	#nav ul li 		{	margin: 7px 0;	}
-	
 
-	.title {font-size: 32px; line-height: 30px; bottom: 50px; }
+
+	.title {font-size: 32px; line-height: 30px; bottom: 50px;}
 	#titlepicture  {background-position-x: -100px;}
 
 	.citation p {font-size: 23px; line-height: 28px;}
