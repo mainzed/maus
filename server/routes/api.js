@@ -347,22 +347,6 @@ router.delete('/activefiles/:id', function (req, res) {
 //     })
 // })
 
-router.get('/templates/opmainzed', function (req, res) {
-    var filePath = path.join(__dirname, "../templates/opMainzed.html")
-    fs.access(filePath, function(err) {
-        if (err) {
-            if (err.code === "ENOENT") {
-              res.status(500).send('Files does not exist!')
-              return
-            } else {
-              throw err
-            }
-        }
-        res.status(200)
-        res.sendFile(filePath)
-    })
-})
-
 router.post('/convert', function (req, res) {
   var type = req.query.type || 'jahresbericht'
   var markdown = req.body.markdown
@@ -380,7 +364,6 @@ router.post('/preview', function (req, res) {
   var markdown = req.body.markdown
   var converter = new Converter(type, markdown)
   converter.convert().then(() => {
-
     converter.createPreview(userID).then((filePath) => {
       var previewPath = path.join('preview', type, filePath)
       res.status(200)
@@ -389,8 +372,24 @@ router.post('/preview', function (req, res) {
         previewPath: previewPath
       })
     })
-
+  })
+  .catch(() => res.status(500).send('something went wrong'))
 })
+
+router.post('/export', function (req, res) {
+  var userID = req.query.user
+  var markdown = req.body.markdown
+  var type = req.body.type
+  if (type === 'opMainzed') type = 'jahresbericht'
+  var converter = new Converter(type, markdown)
+  converter.convert().then(() => {
+    converter.createBundle(userID).then(zipPath => {
+      res.status(200)
+
+      console.log(zipPath)
+      res.download(zipPath) // Set disposition and send it.
+    })
+  })
   .catch(() => res.status(500).send('something went wrong'))
 })
 

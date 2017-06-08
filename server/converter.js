@@ -1,9 +1,11 @@
 'use strict'
 
 var fs = require('fs')
+var fse = require('fs-extra')
 var path = require('path')
 var cheerio = require('cheerio')
 var marked = require('marked')
+var archiver = require('archiver')
 
 var renderer = require('./renderers/jahresbericht')
 var Definition = require('./models/definition')
@@ -95,14 +97,15 @@ class Converter {
     var includesList = []
     // find them
     var includes = markdown.match(/include\((.*?)\)/g)
-
-    includes.forEach((include) => {
-      var fileName = include.replace('include(', '').replace(')', '')
-      includesList.push({
-        original: include,
-        fileName: fileName
+    if (includes) {
+      includes.forEach((include) => {
+        var fileName = include.replace('include(', '').replace(')', '')
+        includesList.push({
+          original: include,
+          fileName: fileName
+        })
       })
-    })
+    }
     return includesList
   }
 
@@ -142,6 +145,37 @@ class Converter {
         // success
         resolve(filename)
       })
+    })
+  }
+
+  createBundle (userID) {
+    return new Promise((resolve, reject) => {
+      // input
+      var resourcePath = path.join(__dirname, 'preview/jahresbericht')
+      var inCss = path.join(resourcePath, 'style')
+      var inJs = path.join(resourcePath, 'js')
+
+      // output
+      var destPath = path.join(__dirname, 'tmp', userID)
+      var outIndex = path.join(destPath, 'index.html')
+      var outCss = path.join(destPath, 'style')
+      var outJs = path.join(destPath, 'js')
+
+      if (!fs.existsSync(destPath)) {
+        fs.mkdirSync(destPath)
+      }
+
+      var promises = []
+      promises.push(writeFile(outIndex, this.page.html()))
+      promises.push(copyFolder(inCss, outCss))
+      promises.push(copyFolder(inJs, outJs))
+
+      // when all files are written and copied, compress them into zip archive
+      Promise.all(promises).then(values => {
+        zipFolder(destPath, destPath + '.zip')
+        resolve(destPath + '.zip')
+      })
+      .catch(err => reject(err))
     })
   }
 
@@ -261,14 +295,16 @@ class Converter {
     var elementList = []
     // find them
     var elements = page(this.recipe['main-section-selector']).html().match(/\{(.*?)\}/g)
-    elements.forEach((element) => {
-      var content = element.replace('{', '').replace('}', '') // TODO: use regex
-      elementList.push({
-        markdown: element,
-        category: content.split(':')[0].trim(),
-        shortcut: content.split(':')[1].trim()
+    if (elements) {
+      elements.forEach((element) => {
+        var content = element.replace('{', '').replace('}', '') // TODO: use regex
+        elementList.push({
+          markdown: element,
+          category: content.split(':')[0].trim(),
+          shortcut: content.split(':')[1].trim()
+        })
       })
-    })
+    }
     return elementList
   }
 
@@ -388,6 +424,34 @@ class Converter {
 
 function isValidType (type) {
   return type === 'jahresbericht' || type === 'olat'
+}
+
+function copyFolder (inPath, outPath) {
+  return new Promise((resolve, reject) => {
+    fse.copy(inPath, outPath, function (err) {
+      if (err) reject(err)
+      resolve()
+    })
+  })
+}
+
+function writeFile (outPath, content) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(outPath, content, err => {
+      if (err) reject(err)
+      resolve()
+    })
+  })
+}
+
+function zipFolder (sourcePath, destPath) {
+  var output = fs.createWriteStream(destPath)
+  var archive = archiver('zip', {
+    store: true // Sets the compression method to STORE.
+  })
+  archive.pipe(output)
+  archive.directory(sourcePath, '')
+  archive.finalize()
 }
 
 module.exports = Converter

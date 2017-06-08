@@ -181,18 +181,32 @@ angular.module('meanMarkdownApp')
       $scope.addSnippet(snippet);
   };
 
-  $scope.onExportClick = function() {
+  $scope.onExportClick = function () {
+    // ngDialog.open({
+    //   template: "views/dialog_export.html",
+    //   className: "smalldialog",
+    //   disableAnimation: true,
+    //   scope: $scope
+    // })
 
-      $scope.filename = $scope.file.title.replace(/\s/g, "_") + ".html";
+    var type = $scope.file.type
+    if (type === 'opMainzed') type = 'jahresbericht'
+    var postData = {
+      'type': type,
+      'markdown': $scope.file.markdown
+    }
 
-      ngDialog.open({
-          template: "views/dialog_export.html",
-          className: "smalldialog",
-          disableAnimation: true,
-          scope: $scope
-      });
+    // get preview path
+    var url = `${ConfigService.API_PATH}/export?user=${$scope.currentUser._id}`
+    $http.post(url, postData).then(function (res) {
+      console.log(res)
+      var file = new Blob([res], { type: 'application/zip' })
+      window.location = URL.createObjectURL(file)
 
-  };
+    }, function error (res) {
+      console.log(res)
+    })
+  }
 
   $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) {
 

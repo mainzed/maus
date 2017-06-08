@@ -113,12 +113,12 @@ $('.shortcut').click(function (e) {
 $('.picture').click(function(e){
     zoomPicture($(this));
     e.stopPropagation();
-});
+})
 
 // exceptions
-$( ".picturegroup" ).each( function(){
+$( ".picturegroup" ).each(function () {
     console.log($(this).prev());
-});
+})
 
 // add class to headings followed by paragraphs
 $('h1').each(function () {

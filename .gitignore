@@ -4,3 +4,4 @@
 /bower_components
 /dist
 /server/preview/*/preview_*.html
+/server/tmp
