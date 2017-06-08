@@ -8,7 +8,8 @@
     "nav-section-selector": "#nav",
     "metadata": {
       "title-selectors": ["title", "h1.titletext"],
-      "cover-description-selectors": ["p.coverdescription"]
+      "cover-description-selectors": ["p.coverdescription"],
+      "pdf-link-selectors": ["#pdf"]
     },
     "elements": {
       "definition": {

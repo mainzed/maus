@@ -123,6 +123,13 @@ class Converter {
         })
       }
 
+      // insert link to pdf
+      if (this.metadata.pdfPath) {
+        this.recipe['metadata']['pdf-link-selectors'].forEach((selector) => {
+          page(selector).attr('href', this.metadata.pdfPath)
+        })
+      }
+
       // insert cover description
       if (this.metadata.coverDescription) {
         this.recipe['metadata']['cover-description-selectors'].forEach((selector) => {
@@ -258,6 +265,14 @@ class Converter {
         this.metadata.coverDescription = matches[1].trim()
         cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
       }
+
+      // link to pdf version of the current file
+      matches = cleanMarkdown.match(/^@pdf:(.*)/)
+      if (matches) {
+        this.metadata.pdfPath = matches[1].trim()
+        cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+      }
+
       resolve(cleanMarkdown)
     })
   }
