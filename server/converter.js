@@ -86,7 +86,9 @@ class Converter {
 
       Promise.all(promises).then((promises) => {
         promises.forEach((promise) => {
-          markdown = markdown.replace(promise.include.original, promise.replacement)
+          if (promise.include && promise.replacement) {
+            markdown = markdown.replace(promise.include.original, promise.replacement)
+          }
         })
         resolve(markdown)
       })
@@ -216,9 +218,9 @@ class Converter {
       })
 
       // prepend link to cover
-      $('ul#nav').prepend('<li><a href="#titlepicture">Cover</a></li>');
+      $('ul#nav').prepend('<li><a href="#titlepicture">Cover</a></li>')
       // append link to imprint
-      $('ul#nav').append('<li><a href="#imprint">Impressum</a></li>');
+      $('ul#nav').append('<li><a href="#imprint">Impressum</a></li>')
 
       resolve($)
     })
@@ -313,10 +315,27 @@ class Converter {
     if (elements) {
       elements.forEach((element) => {
         var content = element.replace('{', '').replace('}', '') // TODO: use regex
+
+        var category
+        var shortcut
+        var placeholder
+        if (content.split(':').length < 2) { // default to definition
+          category = 'definition'
+          shortcut = content.trim()
+        } else if (content.split(':').length === 3) {
+          category = content.split(':')[0].trim()
+          shortcut = content.split(':')[1].trim()
+          placeholder = content.split(':')[2].trim() // datenmodell: datenmodells
+        } else {
+          category = content.split(':')[0].trim()
+          shortcut = content.split(':')[1].trim()
+        }
+
         elementList.push({
           markdown: element,
-          category: content.split(':')[0].trim(),
-          shortcut: content.split(':')[1].trim()
+          category: category,
+          shortcut: shortcut,
+          placeholder: placeholder
         })
       })
     }
@@ -326,10 +345,7 @@ class Converter {
   findDefinitionAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
       // legacy
-      var type = this.type
-      if (type === 'jahresbericht') {
-        type = 'opMainzed'
-      }
+      var type = this.type === 'jahresbericht' ? 'opMainzed' : this.type
 
       Definition.findOne({
         'filetype': type,
@@ -338,12 +354,14 @@ class Converter {
       }, 'word text author url', (err, definition) => {
         if (err) reject(err)
 
+        var word = element.placeholder ? element.placeholder : definition.word
+
         // TODO: use template and insert element specifics
         var tag = `<span id="${definition._id}" class="shortcut">
-                    ${definition.word}
+                    ${word}
                     <span class="definition">
-                      <span class="definition-title">${definition.text}</span>
-                      <span class="definition-text">${definition.word}</span>
+                      <span class="definition-title">${definition.word}</span>
+                      <span class="definition-text">${definition.text}</span>
                       <span class="definition-author">${definition.author}</span>
                       <span class="definition-website">${definition.url}</span>
                     </span>
@@ -431,7 +449,10 @@ class Converter {
 
       File.findOne({'type': type, 'title': include.fileName}, 'markdown', (err, file) => {
         if (err) reject(err)
-        resolve({include: include, replacement: file.markdown})
+        if (file && file.markdown) {
+          resolve({include: include, replacement: file.markdown})
+        }
+        resolve({})
       })
     })
   }

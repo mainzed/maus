@@ -45,17 +45,18 @@ iframe 	{	float: left; margin-left: 35%; }
 	overflow-wrap: break-word; word-wrap: break-word;
 	-webkit-hyphens: auto; -ms-hyphens: auto; -moz-hyphens: auto; hyphens: auto;
 }
+
+.definition { display: none; }
+.story p { background-color: blue }
+
 #titletextbg {	background: white; width: 100%; height: 100%;}
 .title {		font-size: 80px; line-height: 80px; font-family: "mainzeddisplay", sans-serif;
 				font-weight: normal; width: 90%; margin: 0 5%; letter-spacing: 0;  position: absolute;
 				top: 30%; left: 0; width: auto; background: none;
 				overflow-wrap: none; word-wrap: none; -webkit-hyphens: none; -ms-hyphens: none; -moz-hyphens: none; hyphens: none;
-				text-transform: lowercase;
 			}
-
+.titletext {		}
 .shortcut {background: white;}
-.shortcut .definition {display: none;}
-
 #scrollmarker {position: absolute; top: 240px; width: 100px; height: 10px; background: transparent;}
 .tooltip {background: white; padding: 10px 10px 50px 10px; position:absolute; font-size: 15px; line-height: 22px;}
 
@@ -79,6 +80,8 @@ iframe 	{	float: left; margin-left: 35%; }
 #ressources img 	{ 	height: 80%; float: right; width: auto; clear: both; margin-right: 20px; }
 #ressourcestext 	{ 	float: right; display: block; margin: 40px 20px 0 0; width: 258px; }
 #ressourcestext p 	{	margin: 0; font-size: 15px; line-height: 20px; padding-bottom: 20px; }
+#ressourcestext .definition { margin: 0; font-size: 15px; line-height: 20px; padding-bottom: 20px; background-color: red; display: inline;}
+
 .figcaption 		{	color: white; position: absolute; right: 20px; bottom: 30px;
 						text-align: right; font-size: 15px; margin-right: 0;
 						display: block; overflow: hidden; line-height: 20px; z-index: 999999;  }
@@ -89,14 +92,10 @@ iframe 	{	float: left; margin-left: 35%; }
 .picturegroup 		{	margin: 200px 20%; float: left; }
 .picturegroup figure 	{	float: left; clear: none; margin-left: 5px; }
 
-#ressourcestext .definition { margin-top: 10px; background: red}
-#ressourcestext .definition-title { font-weight: bold; display: block; }
-#ressourcestext .definition-author, #ressourcestext .definition-website { font-size: 15px; line-height: 20px; display: block; }
-#ressourcestext .definition-website {padding-bottom: 50px;}
-#ressourcestext .definition-author::before {
-    content: "Autor: ";
-}
-
+.definition-metadata {float: left; clear: left;}
+.definition-metadata span {float: left; clear: left; margin-top: 10px;}
+#ressourcestext .author, #ressourcestext .website {font-size: 15px; line-height: 20px;}
+#ressourcestext .website {padding-bottom: 50px;}
 
 .picture-metadata, .tooltip .picture-metadata {float: left; clear: left; width: 100%; margin-top: 15px;}
 .picture-metadata span, .tooltip .picture-metadata span {float: left; margin-right: 20px; }
@@ -268,8 +267,6 @@ figcaption .license {padding-bottom: 50px; }
 	.shiftread iframe { margin-left: 32%;  }
 	.citation p {margin-left: 0; margin-right: 0;}
 
-	.story p { background: blue;}
-
 	.shiftread .picturegroup { margin: 200px 0 200px 30%;}
 	.shiftread .picturegroup figure {margin-left: 5px; margin-right: 0;}
 
@@ -427,7 +424,7 @@ figcaption .license {padding-bottom: 50px; }
 	#nav ul li 		{	margin: 7px 0;	}
 
 
-	.title {font-size: 32px; line-height: 30px; bottom: 50px;}
+	.title {font-size: 32px; line-height: 30px; bottom: 50px; }
 	#titlepicture  {background-position-x: -100px;}
 
 	.citation p {font-size: 23px; line-height: 28px;}
@@ -444,12 +441,3 @@ figcaption .license {padding-bottom: 50px; }
 .picturegroupex {margin-top: 20px;}
 .h1ex {margin-bottom: 30px;}
 a.active  {text-transform: uppercase; text-decoration: underline;}
-
-
-
-
-
-
-
-
-
