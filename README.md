@@ -11,6 +11,11 @@ with the name "markdownstore" by running `mongo` (in a separate terminal window)
 
 Run `npm start` to start an express server on port 3000 that will serve the app. Delete the "/dist" folder if it exists or express will serve it instead.
 
+### Backend tests
+Testing done using Mocha Testing Framework with the Chai Assertion Library.
+`npm test`
+
+### Frontend tests
 Running `grunt test` will run the unit tests with karma.
 
 ## Deployment

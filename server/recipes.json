@@ -1,15 +1,42 @@
 
 {
-  "olat": [],
+  "olat": {
+    "template-path": "templates/olat/main.html",
+    "main-section-selector": "#main",
+    "navigation": {
+      "selector": "#headings-table"
+    },
+    "glossary": {
+      "selectors": ["#definitions-table"]
+    },
+    "table-of-figures": {
+      "selector": "#images-table"
+    },
+    "metadata": {
+      "title": {
+        "selectors": ["title", "h1#page-title"]
+      }
+    }
+  },
 
   "jahresbericht": {
     "template-path": "templates/jahresbericht/main.html",
     "main-section-selector": "#read",
-    "nav-section-selector": "#nav",
+    "navigation": {
+      "selector": "#nav"
+    },
+    "glossary": false,
+    "table-of-figures": false,
     "metadata": {
-      "title-selectors": ["title", "h1.titletext"],
-      "cover-description-selectors": ["p.coverdescription"],
-      "pdf-link-selectors": ["#pdf"]
+      "title": {
+        "selectors": ["title", "h1.titletext"]
+      },
+      "cover-description": {
+        "selectors": ["p.coverdescription"]
+      },
+      "pdf-link": {
+        "selectors": ["#pdf"]
+      }
     },
     "elements": {
       "definition": {

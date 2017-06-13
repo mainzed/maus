@@ -12,14 +12,14 @@
     src: url('mdigitalread10-Medium.eot?#iefix') format('embedded-opentype'),
          url('mdigitalread10-Medium.woff2') format('woff2'),
          url('mdigitalread10-Medium.woff') format('woff');
-      
+
     font-weight: normal;
     font-style: normal;
 }
 
-* {	
-  font-family: 'Cousine'; 
-	font-weight: normal;  
+* {
+  font-family: 'Cousine';
+	font-weight: normal;
   font-size: 17px;
   line-height: 27px;
   text-rendering: optimizeLegibility !important;
@@ -30,23 +30,26 @@
 }
 
 
-em {font-weight: bold; font-style: normal; padding: 10px 0; float: left; letter-spacing: 0em !important;}
+em { padding: 10px 0; float: left; letter-spacing: 0em !important; }
 
-pre {float: left; clear: both; background: lavender; padding: 10px; margin-bottom: 10px; max-width: 500px; display: block;
+pre {
+	float: left; clear: both; background: lavender; padding: 10px; margin-bottom: 10px; max-width: 500px; display: block;
 	white-space: pre-wrap;       /* css-3 */
- white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
- white-space: -pre-wrap;      /* Opera 4-6 */
- white-space: -o-pre-wrap;    /* Opera 7 */
- word-wrap: break-word;       /* Internet Explorer 5.5+ */}
-code {float: left; clear: both; font-family: Courier; background: lavender;    }
+ 	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ 	white-space: -pre-wrap;      /* Opera 4-6 */
+ 	white-space: -o-pre-wrap;    /* Opera 7 */
+ 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+ }
 
-body {  width: calc(90% - 380px); background: #fbfbfb !important; 
+code {	font-family: Courier; background: lavender;}
+
+body {  width: calc(90% - 380px); background: #fbfbfb !important;
         margin: 0 200px 100px 100px; zoom: 1 !important; height: auto; display: block; }
 
 a {color: #1967B9 !important; text-decoration: underline;}
 
 h1 {color: tomato !important; font-weight: bold; font-size: 25px; line-height: 34px; padding-top: 70px; margin-bottom: 40px; float: left; font-family: 'Cousine'; float: left; clear: both; }
-h2 {color: black !important; font-weight: normal; font-size: 20px; margin-bottom: 80px; float: left; font-family: 'Cousine'; float: left; clear: both;}
+h2 {color: black !important; font-weight: bold; margin-top: 40px; float: left; font-family: 'Cousine'; float: left; clear: both;}
 h4 {color: black !important; font-weight: bold; font-size: 13px; float: left; font-family: 'Cousine'; margin-bottom: 14px;}
 
 figure {float: left; max-width: 200px; margin: 50px 30px 50px 0; overflow: hidden; }
@@ -64,24 +67,10 @@ ul {margin: 0 0 20px 0; float: left; clear: left;}
 
 p {float: left; margin-bottom: 24px; clear: left;}
 
-.story, .story p, .story li {
+strong { font-weight: bold; }
 
-  background: white;
-  
-}
-
-.story h2 {
-
-   font-size: 17px;
-   font-weight: bold;
-   margin-bottom: 26px;
-}
-
-.story em {
-  
-
-}
-
+.story, .story p, .story li { background: white; }
+.story h2 { font-size: 17px; font-weight: bold; margin-bottom: 26px; }
 
 .story {
   padding: 50px 80px 100px 80px;
@@ -90,9 +79,6 @@ p {float: left; margin-bottom: 24px; clear: left;}
   margin: 20px 0;
   box-shadow: 2px 2px 5px #d3d3d3;
 }
-
-
-
 
 #links-table {border-top: 1px solid lightgray; padding-top: 8px; float: left; width: 500px; clear: both; margin-bottom: 30px;}
 #definitions-table {border-top: 1px solid lightgray; padding-top: 8px; float: left; width: 500px; clear: both; margin-bottom: 30px;}
@@ -110,7 +96,7 @@ p {float: left; margin-bottom: 24px; clear: left;}
     content: "\2192";
     margin-left: -16px;
     margin-right: 5px;
-   
+
 }
 
 #headings-table li.story {padding: 2px; font-weight: bold; margin: 4px 0; box-shadow: 2px 2px 4px #d3d3d3;}
@@ -171,5 +157,3 @@ p {float: left; margin-bottom: 24px; clear: left;}
   figure.big {max-width: 400px; }
   figure.big img {max-width: 400px;}
 }
-
-

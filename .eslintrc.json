@@ -1,7 +1,16 @@
 {
-    "extends": "standard",
-    "plugins": [
-        "standard",
-        "promise"
-    ]
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "extends": "standard",
+  "plugins": [
+    "standard",
+    "promise",
+    "mocha"
+  ],
+  "rules": {
+    "mocha/no-exclusive-tests": "error"
+  }
 }

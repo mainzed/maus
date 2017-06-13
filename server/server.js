@@ -11,7 +11,6 @@ var session = require('express-session')
 var bodyParser = require('body-parser')
 var compression = require('compression')
 var cors = require('cors')
-var api = require('./routes/api')
 var authenticate = require('./routes/authenticate')(passport)
 
 // middleware
@@ -56,7 +55,12 @@ app.disable('x-powered-by')
 
 // routes
 app.use('/auth', authenticate)
-app.use('/api', api)
+app.use('/api', require('./routes/api'))
+app.use('/api', require('./routes/users'))
+app.use('/api', require('./routes/files'))
+app.use('/api', require('./routes/definitions'))
+app.use('/api', require('./routes/archived_files'))
+app.use('/api', require('./routes/active_files'))
 
 // serve
 app.listen(port, function () {

@@ -1,33 +1,34 @@
 'use strict'
 
 var fs = require('fs')
-var fse = require('fs-extra')
 var path = require('path')
 var cheerio = require('cheerio')
 var marked = require('marked')
-var archiver = require('archiver')
 
-var renderer = require('./renderers/jahresbericht')
+var renderers = require('./renderers/renderers')
 var Definition = require('./models/definition')
 var File = require('./models/file')
+var navigation = require('./navigation')
 
 var RECIPES_PATH = 'recipes.json'
 
 // Converts markdown to valid HTML as specified by a config file
 class Converter {
-  constructor (type, markdown) {
+  constructor (type = 'olat', markdown = 'This is **markdown**.') {
     if (!isValidType(type)) {
       console.log('unknown file type: ' + type)
     }
     this.type = type
     this.markdown = markdown
+    this.recipe = {}
+    this.page = {}
+    this.elements = []
   }
 
   convert () {
     return new Promise((resolve, reject) => {
       this.getRecipe(this.type).then((recipe) => {
         this.recipe = recipe
-
         // TODO: resolve custom elements
         this.getPageFromTemplate(recipe['template-path']).then((page) => {
           this.getMetadata(this.markdown).then((markdown) => {
@@ -35,10 +36,14 @@ class Converter {
               this.markdown = markdown
               this.insertContent(page).then((page) => {
                 this.resolveElements(page).then((page) => {
-                  this.createNavigation(page).then((page) => {
-                    // TODO: use metadata
-                    // TODO: resolve elements
+                  this.createGlossary(page).then((page) => {  // make synchronous
+                    console.log('ready')
                     this.page = page
+
+                    page = this.createTableOfFigures(page)
+
+                    // nav as last step after all elements and tables finished
+                    page = this.createNavigation(page)
                     resolve(page.html())
                   })
                 })
@@ -63,6 +68,12 @@ class Converter {
     })
   }
 
+  getLegacyType () {
+    if (this.type === 'jahresbericht') return 'opMainzed'
+    if (this.type === 'olat') return 'opOlat'
+    return this.type
+  }
+
   // returns a cheerio page object from template
   getPageFromTemplate (templatePath) {
     return new Promise((resolve, reject) => {
@@ -71,6 +82,16 @@ class Converter {
         if (err) reject(err)
         var page = cheerio.load(data)
         resolve(page)
+      })
+    })
+  }
+
+  getTooltipFromTemplate (templatePath) {
+    return new Promise((resolve, reject) => {
+      var filePath = path.resolve(__dirname, templatePath)
+      fs.readFile(filePath, 'utf8', function (err, data) {
+        if (err) reject(err)
+        resolve(data)
       })
     })
   }
@@ -115,115 +136,57 @@ class Converter {
   insertContent (page) {
     return new Promise((resolve, reject) => {
       // insert main content
-      var content = marked(this.markdown, { renderer: renderer })
+      var content = marked(this.markdown, { renderer: renderers[this.type] })
       page(this.recipe['main-section-selector']).html(content)
+
+      // legacy stories support
+      var matches = page(this.recipe['main-section-selector']).html().match(/story{(.|\n)*?}story/g)
+      if (matches) {
+        matches.forEach((match, index) => {
+          var content = match.replace('story{', '').replace('}story', '')
+          var string = `<div class="story" id="story${index + 1}">${content}</div>`
+          var newContent = page(this.recipe['main-section-selector']).html().replace(match, string)
+          page(this.recipe['main-section-selector']).html(newContent)
+        })
+      }
 
       // insert title
       if (this.metadata.title) {
-        this.recipe['metadata']['title-selectors'].forEach((selector) => {
+        this.recipe.metadata['title']['selectors'].forEach((selector) => {
           page(selector).text(this.metadata.title)
         })
       }
 
       // insert link to pdf
       if (this.metadata.pdfPath) {
-        this.recipe['metadata']['pdf-link-selectors'].forEach((selector) => {
+        this.recipe.metadata['pdf-link']['selectors'].forEach((selector) => {
           page(selector).attr('href', this.metadata.pdfPath)
         })
       }
 
       // insert cover description
       if (this.metadata.coverDescription) {
-        this.recipe['metadata']['cover-description-selectors'].forEach((selector) => {
+        this.recipe.metadata['cover-description']['selectors'].forEach((selector) => {
           page(selector).text(this.metadata.coverDescription)
         })
       }
-
       resolve(page)
     })
   }
 
-  // returns the path of the preview file
-  createPreview (userID) {
-    return new Promise((resolve, reject) => {
-      // copy stuff into preview folder
-      var filename = '/preview_' + userID + '.html'
-      var outputPath = path.join(__dirname, 'preview', this.type.toLowerCase(), filename)
-      fs.writeFile(outputPath, this.page.html(), (err) => {
-        if (err) reject(err)
-        // success
-        resolve(filename)
-      })
-    })
-  }
-
-  createBundle (userID) {
-    return new Promise((resolve, reject) => {
-      // input
-      var resourcePath = path.join(__dirname, 'preview/jahresbericht')
-      var inCss = path.join(resourcePath, 'style')
-      var inJs = path.join(resourcePath, 'js')
-
-      // output
-      var destPath = path.join(__dirname, 'tmp', userID)
-      var outIndex = path.join(destPath, 'index.html')
-      var outCss = path.join(destPath, 'style')
-      var outJs = path.join(destPath, 'js')
-
-      if (!fs.existsSync(destPath)) {
-        fs.mkdirSync(destPath)
-      }
-
-      var promises = []
-      promises.push(writeFile(outIndex, this.page.html()))
-      promises.push(copyFolder(inCss, outCss))
-      promises.push(copyFolder(inJs, outJs))
-
-      // when all files are written and copied, compress them into zip archive
-      Promise.all(promises).then(values => {
-        zipFolder(destPath, destPath + '.zip')
-        resolve(destPath + '.zip')
-      })
-      .catch(err => reject(err))
-    })
-  }
-
+  /**
+   * Creates a nav table from page elements and appends it to the page object.
+   * @param {Object<Cheerio>} page
+   * @returns {Object<Cheerio>} - A cheerio page object.
+   */
   createNavigation (page) {
-    var $ = page
-    return new Promise((resolve, reject) => {
-      var previousHeadingLevel
+    if (!this.recipe['navigation']) return page  // skip
+    return navigation[this.type](page, this.recipe)
+  }
 
-      $('h1, h2').each((index, value) => {
-        if (index > 0) {  // skip jahresbericht title
-          // generate string
-          var id = $(value).attr('id')
-          var text = $(value).text()
-          var link = `<a href="#${id}">${text}</a>`
-
-          // append string based on level
-          if ($(value).is('h1')) {
-            $('#nav').append(`<li>${link}</li>`)
-            previousHeadingLevel = 1
-          } else if ($(value).is('h2')) {
-            if (previousHeadingLevel === 1) {
-              // if previous was 1, open new ul and append li
-              $('#nav li').last().append(`<ul><li>${link}</li></ul>`)
-            } else if (previousHeadingLevel === 2) {
-              //  if previous was 2, just append to ul
-              $('#nav ul').last().append(`<li>${link}</li>`)
-            }
-            previousHeadingLevel = 2
-          }
-        }
-      })
-
-      // prepend link to cover
-      $('ul#nav').prepend('<li><a href="#titlepicture">Cover</a></li>')
-      // append link to imprint
-      $('ul#nav').append('<li><a href="#imprint">Impressum</a></li>')
-
-      resolve($)
-    })
+  createTableOfFigures (page) {
+    if (!this.recipe['table-of-figures']) return page  // skip
+    return navigation.addTableOfFigures(page)
   }
 
   // records and removes metadata from markdown
@@ -233,46 +196,28 @@ class Converter {
       var cleanMarkdown = markdown
       var matches
 
-      // title
-      matches = cleanMarkdown.match(/^@title:(.*)/)
-      if (matches) {
-        this.metadata.title = matches[1].trim()  // save
-        cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '') // remove
+      if (this.recipe.metadata.title) {
+        matches = cleanMarkdown.match(/^@title:(.*)/)
+        if (matches) {
+          this.metadata.title = matches[1].trim()  // save
+          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '') // remove
+        }
       }
 
-      // author
-      // matches = cleanMarkdown.match(/^@author:(.*)/)
-      // if (matches) {
-      //   this.metadata.author = matches[1].trim()
-      //   cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
-      // }
-
-      // created at
-      // matches = cleanMarkdown.match(/^@created:(.*)/)
-      // if (matches) {
-      //   this.metadata.created = matches[1].trim()
-      //   cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
-      // }
-
-      // updated at
-      // matches = cleanMarkdown.match(/^@updated:(.*)/)
-      // if (matches) {
-      //   this.metadata.updated = matches[1].trim()
-      //   cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
-      // }
-
-      // cover description
-      matches = cleanMarkdown.match(/^@cover-description:(.*)/)
-      if (matches) {
-        this.metadata.coverDescription = matches[1].trim()
-        cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+      if (this.recipe.metadata['cover-description']) {
+        matches = cleanMarkdown.match(/^@cover-description:(.*)/)
+        if (matches) {
+          this.metadata.coverDescription = matches[1].trim()
+          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+        }
       }
 
-      // link to pdf version of the current file
-      matches = cleanMarkdown.match(/^@pdf:(.*)/)
-      if (matches) {
-        this.metadata.pdfPath = matches[1].trim()
-        cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+      if (this.recipe.metadata['pdf-link']) {
+        matches = cleanMarkdown.match(/^@pdf:(.*)/)
+        if (matches) {
+          this.metadata.pdfPath = matches[1].trim()
+          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+        }
       }
 
       resolve(cleanMarkdown)
@@ -282,9 +227,8 @@ class Converter {
   resolveElements (page) {
     return new Promise((resolve, reject) => {
       var promises = []
-      var elements = this.getElements(page)
-
-      elements.forEach((element) => {
+      this.elements = this.getElements(page)
+      this.elements.forEach((element) => {
         if (element.category === 'definition') {
           promises.push(this.findDefinitionAndGetReplacement(element))
         } else if (element.category === 'citation') {
@@ -296,11 +240,11 @@ class Converter {
 
       // actually replace them
       Promise.all(promises).then((promises) => {
-        console.log(promises.length)
         promises.forEach((promise) => {
-          console.log(promise.element.markdown)
-          var newContent = page(this.recipe['main-section-selector']).html().replace(promise.element.markdown, promise.replacement)
-          page(this.recipe['main-section-selector']).html(newContent)
+          if (promise.element && promise.replacement) {
+            var newContent = page(this.recipe['main-section-selector']).html().replace(promise.element.markdown, promise.replacement)
+            page(this.recipe['main-section-selector']).html(newContent)
+          }
         })
         resolve(page)
       })
@@ -311,34 +255,51 @@ class Converter {
   getElements (page) {
     var elementList = []
     // find them
-    var elements = page(this.recipe['main-section-selector']).html().match(/\{(.*?)\}/g)
-    if (elements) {
-      elements.forEach((element) => {
-        var content = element.replace('{', '').replace('}', '') // TODO: use regex
+    if (page(this.recipe['main-section-selector']).html()) { // page has content
+      var elements = page(this.recipe['main-section-selector']).html().match(/\{(.*?)\}/g)
+      if (elements) {
+        elements.forEach((element) => {
+          var content = element.replace('{', '').replace('}', '') // TODO: use regex
 
-        var category
-        var shortcut
-        var placeholder
-        if (content.split(':').length < 2) { // default to definition
-          category = 'definition'
-          shortcut = content.trim()
-        } else if (content.split(':').length === 3) {
-          category = content.split(':')[0].trim()
-          shortcut = content.split(':')[1].trim()
-          placeholder = content.split(':')[2].trim() // datenmodell: datenmodells
-        } else {
-          category = content.split(':')[0].trim()
-          shortcut = content.split(':')[1].trim()
-        }
+          var category
+          var shortcut
+          var placeholder
+          if (content.split(':').length < 2) { // default to definition
+            category = 'definition'
+            shortcut = content.trim()
+          } else if (content.split(':').length === 3) {
+            category = content.split(':')[0].trim()
+            shortcut = content.split(':')[1].trim()
+            placeholder = content.split(':')[2].trim() // datenmodell: datenmodells
+          } else {
+            category = content.split(':')[0].trim()
+            shortcut = content.split(':')[1].trim()
+          }
 
-        elementList.push({
-          markdown: element,
-          category: category,
-          shortcut: shortcut,
-          placeholder: placeholder
+          elementList.push({
+            markdown: element,
+            category: category,
+            shortcut: shortcut,
+            placeholder: placeholder
+          })
         })
-      })
+      }
     }
+
+    // replace one by one to add custom ID for each
+    // var counter = 1;
+    // if (matches) {
+    //     for (var i = 0; i < matches.length; i++) {
+    //         //console.log("replacing!");
+    //         //console.log()
+    //         html = html.replace(/<p>story{<\/p>/, '<div class="story" id="story' + counter + '">');
+    //         counter++;
+    //     }
+    // }
+    //
+    // // replace closing tags all at once -> no id needed
+    // html = html.replace(/<p>}story<\/p>/g, "</div>");
+
     return elementList
   }
 
@@ -346,6 +307,7 @@ class Converter {
     return new Promise((resolve, reject) => {
       // legacy
       var type = this.type === 'jahresbericht' ? 'opMainzed' : this.type
+      type = type === 'olat' ? 'opOlat' : type
 
       Definition.findOne({
         'filetype': type,
@@ -354,37 +316,28 @@ class Converter {
       }, 'word text author url', (err, definition) => {
         if (err) reject(err)
 
-        var word = element.placeholder ? element.placeholder : definition.word
+        if (definition) {  // is defined
+          var word = element.placeholder ? element.placeholder : definition.word
 
-        // TODO: use template and insert element specifics
-        var tag = `<span id="${definition._id}" class="shortcut">
-                    ${word}
-                    <span class="definition">
-                      <span class="definition-title">${definition.word}</span>
-                      <span class="definition-text">${definition.text}</span>
-                      <span class="definition-author">${definition.author}</span>
-                      <span class="definition-website">${definition.url}</span>
-                    </span>
-                  </span>`
+          // TODO: use template and insert element specifics
+          var tag = ''
 
-        /*
-                  <span class="metadata">
-                        <span class="author">Autor: ${definition.author}</span>
-                        <span class="website"><a href="${definition.url}" target="_blank">Website</a></span>
-                      </span>
-                      */
-        // TODO: convert to markdown
-        // var customRenderer = new marked.Renderer();
-        //     customRenderer.link = function (linkUrl, noIdea, text) {
-        //       if (linkUrl.indexOf("#") === 0) {  // startsWith #
-        //         return "<a href=\"" + linkUrl + "\" class=\"internal-link\">" + text + "</a>";
-        //       } else {
-        //         return "<a href=\"" + linkUrl + "\" class=\"external-link\" target=\"_blank\">" + text + "</a>";
-        //       }
-        //     };
-
-        //     var html = marked(enrichment.text, { renderer: customRenderer });
-
+          if (this.type === 'jahresbericht') {
+            tag = `<span id="${definition._id}" class="shortcut">
+                        ${word}
+                        <span class="definition">
+                          <span class="definition-title">${definition.word}</span>
+                          <span class="definition-text">${definition.text}</span>
+                          <span class="definition-author">${definition.author}</span>
+                          <span class="definition-website">${definition.url}</span>
+                        </span>
+                      </span>`
+          } else if (this.type === 'olat') {
+            tag = `<a href="#definitions-table" title="${definition.text}" class="definition">${definition.word}</a>`
+          }
+        } else {  // definition not found in database
+          resolve({})
+        }
         resolve({element: element, replacement: tag})
       })
     })
@@ -419,10 +372,8 @@ class Converter {
   findStoryAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
       // legacy
-      var type = this.type
-      if (type === 'jahresbericht') {
-        type = 'opMainzed'
-      }
+      var type = this.type === 'jahresbericht' ? 'opMainzed' : this.type
+      type = type === 'olat' ? 'opOlat' : type
 
       Definition.findOne({
         'filetype': type,
@@ -430,11 +381,13 @@ class Converter {
         'category': element.category
       }, 'word text author url', (err, definition) => {
         if (err) reject(err)
-
-        // TODO: use template and insert element specifics
-        var content = marked(definition.text)
-        var tag = `<div class="story">${content}</div>`
-        resolve({element: element, replacement: tag})
+        if (definition && definition.text) {
+          // TODO: use template and insert element specifics
+          var content = marked(definition.text)
+          var tag = `<div class="story">${content}</div>`
+          resolve({element: element, replacement: tag})
+        }
+        resolve({})
       })
     })
   }
@@ -456,38 +409,78 @@ class Converter {
       })
     })
   }
+
+  /**
+   * Queries the database for an element.
+   * @param {Object} element - An enrichment object.
+   * @returns {Promise<Definition>} - A definition instance.
+   */
+  getElement (element) {
+    return new Promise((resolve, reject) => {
+      let type = this.getLegacyType()
+      Definition.findOne({
+        'filetype': type,
+        'word': element.shortcut,
+        'category': element.category
+      }, 'word text author url', (err, definition) => {
+        if (err) reject(err)
+        resolve(definition)
+      })
+    })
+  }
+
+  /**
+   * Creates a glossary with all used definitions and appends it to the section
+   * specified in the recipes.json.
+   * @param {Object<Cheerio>} page
+   * @returns {Promise<Cheerio>} - Cheerio object.
+   */
+  createGlossary (page) {
+    return new Promise((resolve, reject) => {
+      let elements = this.elements
+      let promises = []
+
+      if (this.recipe['glossary'] && this.recipe['glossary']['selectors']) {
+        // get all definitions
+        elements.forEach((element) => {
+          if (element.category === 'definition') {
+            promises.push(this.getElement(element))
+          }
+        })
+
+        Promise.all(promises).then((promises) => {
+          this.recipe['glossary']['selectors'].forEach((selector) => {
+            // create glossary structure
+            page(selector).append('<h4>Glossar</h4>\n')
+            page(selector).append('<ul></ul>\n')
+
+            // append definitions
+            let usedElements = []
+            promises.forEach((element) => {
+              if (element) {
+                if (!usedElements.find((x) => x.word === element.word)) {
+                  const DEF_STRING = `<li>
+                                      <a href="#" target="_blank" class="definition" title="${element.text}">
+                                        ${element.word}
+                                      </a>
+                                    </li>\n`
+                  page(selector).find('ul').append(DEF_STRING)
+                  usedElements.push(element)
+                }
+              }
+            })
+          })
+          resolve(page)  // created
+        })
+      } else {
+        resolve(page)  // not created
+      }
+    })
+  }
 }
 
 function isValidType (type) {
   return type === 'jahresbericht' || type === 'olat'
-}
-
-function copyFolder (inPath, outPath) {
-  return new Promise((resolve, reject) => {
-    fse.copy(inPath, outPath, function (err) {
-      if (err) reject(err)
-      resolve()
-    })
-  })
-}
-
-function writeFile (outPath, content) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(outPath, content, err => {
-      if (err) reject(err)
-      resolve()
-    })
-  })
-}
-
-function zipFolder (sourcePath, destPath) {
-  var output = fs.createWriteStream(destPath)
-  var archive = archiver('zip', {
-    store: true // Sets the compression method to STORE.
-  })
-  archive.pipe(output)
-  archive.directory(sourcePath, '')
-  archive.finalize()
 }
 
 module.exports = Converter

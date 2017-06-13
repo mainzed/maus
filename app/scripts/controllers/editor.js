@@ -52,7 +52,7 @@ angular.module('meanMarkdownApp')
     // init jquery col resizable plugin
     // $(function (){
     //   $(".filegroup").colResizable()
-    // });
+    // })
   }
 
   $scope.showSuccess = false
@@ -76,110 +76,105 @@ angular.module('meanMarkdownApp')
     scrollbarStyle: null
   }
 
-  $scope.onSaveClick = function() {
+  $scope.onSaveClick = function () {
+    var id = $scope.file._id
 
-      var id = $scope.file._id;
+    // migration steps
+    if ($scope.file.type === 'OLAT') {
+      $scope.file.type = 'opOlat'
+    } else if ($scope.file.type === 'presentation') {
+      $scope.file.type = 'prMainzed'
+    }
 
-      // migration steps
-      if ($scope.file.type === "OLAT") {
-          $scope.file.type = "opOlat";
-      } else if ($scope.file.type === "presentation") {
-          $scope.file.type = "prMainzed";
-      }
+    var newFile = {
+      author: $scope.file.author,
+      markdown: $scope.file.markdown,
+      type: $scope.file.type,
+      title: $scope.file.title,
+      private: $scope.file.private,
+      updated_by: $scope.currentUser.name
+    }
 
-      var newFile = {
-          author: $scope.file.author,
-          markdown: $scope.file.markdown,
-          type: $scope.file.type,
-          title: $scope.file.title,
-          private: $scope.file.private,
-          updated_by: $scope.currentUser.name
-      };
+    FileService.update({ id: id }, newFile, function success () {
+      $scope.unsavedChanges = false
+      $scope.showSuccess = true
+      $timeout(function () { $scope.showSuccess = false }, 3000)
+    }, function error () {
+      $scope.showError = true
+      $timeout(function () { $scope.showError = false }, 3000)
+    })
+  }
 
-      FileService.update({ id: id }, newFile, function() {
-          // success
-          $scope.unsavedChanges = false;
-          $scope.showSuccess = true;
-          $timeout(function () { $scope.showSuccess = false; }, 3000);
+  $scope.onFilesClick = function () {
+    if ($scope.unsavedChanges) {
+      ngDialog.openConfirm({
+        template: "views/dialog_confirm_home.html",
+        className: 'smalldialog',
+        scope: $scope
+      }).then(function(success) {
+        // user confirmed to go back to files
+        $location.path("/files")
+      }, function (error) {
+        console.log(error)
+      })
+    } else {  // no changes, go back without asking
+      $location.path("/files")
+    }
+  }
 
-      }, function() {
-          //error
-          $scope.showError = true;
-          $timeout(function () { $scope.showError = false; }, 3000);
-      });
-  };
-
-  $scope.onFilesClick = function() {
-
-      if ($scope.unsavedChanges) {
-          ngDialog.openConfirm({
-              template: "views/dialog_confirm_home.html",
-              className: 'smalldialog',
-              scope: $scope
-          }).then(function(success) {
-              // user confirmed to go back to files
-              $location.path("/files");
-          }, function(error) {
-              // user cancelled
-          });
-      } else {  // no changes, go back without asking
-          $location.path("/files");
-      }
-  };
-
-  $scope.addSnippet = function(snippet) {
-      // add snippet at cursor position or replace selection
-      $scope.editor.replaceSelection(snippet);
-      $scope.editor.focus();
-  };
+  $scope.addSnippet = function (snippet) {
+    // add snippet at cursor position or replace selection
+    $scope.editor.replaceSelection(snippet)
+    $scope.editor.focus()
+  }
 
   $scope.addDefinition = function(definition) {
-      var snippet = "{definition: " + definition.word + "}";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "{definition: " + definition.word + "}"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.addStory = function(definition) {
-      var snippet = "{story: " + definition.word + "}";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "{story: " + definition.word + "}"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.addImage = function(definition) {
-      var snippet = "{picture: " + definition.word + "}";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "{picture: " + definition.word + "}"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.addCitation = function(definition) {
-      var snippet = "{citation: " + definition.word + "}"; // changes
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "{citation: " + definition.word + "}" // changes
+    $scope.addSnippet(snippet)
+  }
 
   $scope.onLabelClick = function() {
-      var snippet = "[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "[I'm a Label](http://labeling.i3mainz.hs-mainz.de/label/#ec25d32d-3c1a-4539-9755-9bc63c17d989)"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.onLinkClick = function() {
-      var snippet = "[I'm a link](https://www.google.com)";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "[I'm a link](https://www.google.com)"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.onImageClick = function() {
-      var snippet = "![image-alt](bilder/filname.jpg \"caption; author; license; url\")";
-      $scope.addSnippet(snippet);
-  };
+    var snippet = "![image-alt](bilder/filname.jpg \"caption author license url\")"
+    $scope.addSnippet(snippet)
+  }
 
   $scope.onStoryScriptClick = function() {
-      var snippet;
-      var selection = $scope.editor.getSelection();
+      var snippet
+      var selection = $scope.editor.getSelection()
 
       if (selection.length) {
-          snippet = "\nstory{\n\n" + selection + "\n\n}story\n";
+          snippet = "\nstory{\n\n" + selection + "\n\n}story\n"
       } else {
-          snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n";
+          snippet = "\nstory{\n\nWrite **normal** markdown inside *storyscript* tags\n\n}story\n"
       }
 
-      $scope.addSnippet(snippet);
-  };
+      $scope.addSnippet(snippet)
+  }
 
   $scope.onExportClick = function () {
     // ngDialog.open({
@@ -208,65 +203,63 @@ angular.module('meanMarkdownApp')
     })
   }
 
-  $scope.onDownloadConfirm = function(filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) {
+  $scope.onDownloadConfirm = function (filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) {
+    var config = {
+      addTitle: addTitle,
+      addContentTable: addContentTable,
+      addImagesTable: addImages,
+      //addLinksTable: addLinks,
+      addDefinitionsTable: addDefinitions
+      //isFolder: isFolder
+    }
+    var html
+    DefinitionService.query(function(definitions) {
+      FileService.query(function(files) {
+        var markdown = $scope.processIncludes($scope.file.markdown, files)
 
-      var config = {
-          addTitle: addTitle,
-          addContentTable: addContentTable,
-          addImagesTable: addImages,
-          //addLinksTable: addLinks,
-          addDefinitionsTable: addDefinitions
-          //isFolder: isFolder
-      };
-      var html;
-      DefinitionService.query(function(definitions) {
-          FileService.query(function(files) {
-              var markdown = $scope.processIncludes($scope.file.markdown, files);
+        //console.log(markdown)
+        $scope.fileCopy = angular.copy($scope.file)
+        $scope.fileCopy.markdown = markdown
 
-              //console.log(markdown);
-              $scope.fileCopy = angular.copy($scope.file);
-              $scope.fileCopy.markdown = markdown;
+        if ($scope.file.type === "opOlat") {
+          // convert markdown to html
+          html = HTMLService.getOlat($scope.fileCopy, definitions, config)
+          html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder)
+          initDownload(filename, html)
+        } else if ($scope.file.type === "opMainzed") {
+          // jahresbericht
+          TemplateService.getOpMainzed(function(template) {
+              // modify template
+              html = HTMLService.getOpMainzed($scope.fileCopy, definitions, template)
+              initDownload(filename, html)
+          })
+        }
+      })
+    })
 
-              if ($scope.file.type === "opOlat") {
-                  // convert markdown to html
-                  html = HTMLService.getOlat($scope.fileCopy, definitions, config);
-                  html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder);
-                  initDownload(filename, html);
-              } else if ($scope.file.type === "opMainzed") {
-                  // jahresbericht
+    function initDownload (filename, html) {
+      var blob = new Blob([html], { type:"data:text/plaincharset=utf-8" })
+      var downloadLink = angular.element('<a></a>')
+      downloadLink.attr('href', window.URL.createObjectURL(blob))
+      downloadLink.attr('download', filename)
+      downloadLink[0].click()
+    }
+  }
 
-                  TemplateService.getOpMainzed(function(template) {
+  $scope.onUndoClick = function () {
+    $scope.editor.undo()
+  }
 
-                      // modify template
-                      html = HTMLService.getOpMainzed($scope.fileCopy, definitions, template);
-                      initDownload(filename, html);
-                  });
-              }
-          });
-      });
-
-      function initDownload(filename, html) {
-          var blob = new Blob([html], { type:"data:text/plain;charset=utf-8;" });
-          var downloadLink = angular.element('<a></a>');
-          downloadLink.attr('href', window.URL.createObjectURL(blob));
-          downloadLink.attr('download', filename);
-          downloadLink[0].click();
-      }
-  };
-
-  $scope.onUndoClick = function() {
-      $scope.editor.undo();
-  };
-
-  $scope.onRedoClick = function() {
-      $scope.editor.redo();
-  };
+  $scope.onRedoClick = function () {
+    $scope.editor.redo()
+  }
 
   $scope.onPreviewClick = function () {
-    var type = $scope.file.type
-    if (type === 'opMainzed') {
-      type = 'jahresbericht'
-    }
+    var type = $scope.file.type === 'opMainzed'
+      ? 'jahresbericht' : $scope.file.type
+
+    type = type === 'opOlat' ? 'olat' : type
+
     var postData = {
       'type': type,
       'markdown': $scope.file.markdown,
@@ -285,7 +278,7 @@ angular.module('meanMarkdownApp')
         scope: $scope
       })
     }, function error (res) {
-        reject(res)
+      alert(res.data)
     })
   }
 
@@ -304,41 +297,41 @@ angular.module('meanMarkdownApp')
       }
 
       DefinitionService.query(function(definitions) {
-          var html;
+          var html
           // convert markdown to html
           if ($scope.file.type === "opOlat") {
-              html = HTMLService.getOlat(file, definitions, config);
-              html = HTMLService.wrapOlatHTML(html, file.title);  // TODO: wrap html and save on server
-              resolve(html);
+              html = HTMLService.getOlat(file, definitions, config)
+              html = HTMLService.wrapOlatHTML(html, file.title)  // TODO: wrap html and save on server
+              resolve(html)
 
           } else if ($scope.file.type === "opMainzed") {
               // TODO: replace with server methods
               // get template
               TemplateService.getOpMainzed(function(template) {
                   // modify template
-                  var html = HTMLService.getOpMainzed(file, definitions, template);
-                  resolve(html);
-              });
+                  var html = HTMLService.getOpMainzed(file, definitions, template)
+                  resolve(html)
+              })
           }
-      });
-    });
-  };
+      })
+    })
+  }
 
   /**
    * update markdown service when editor changes
    */
   $scope.onEditorChange = function() {
-      $scope.unsavedChanges = true;  // gets reset on save
-  };
+      $scope.unsavedChanges = true  // gets reset on save
+  }
 
   // handler for click on button "Glossareintrag"
   $scope.onDefinitionClick = function() {
-      $scope.definitions = DefinitionService.query();
+      $scope.definitions = DefinitionService.query()
 
       // select first enrichment by default
-      var template = ConfigService.getTemplateByType($scope.file.type);
+      var template = ConfigService.getTemplateByType($scope.file.type)
       if (template && template.enrichments) {
-          $scope.category = template.enrichments[0];
+          $scope.category = template.enrichments[0]
       }
 
       ngDialog.open({
@@ -346,20 +339,20 @@ angular.module('meanMarkdownApp')
           scope: $scope,
           disableAnimation: true,
           preCloseCallback: function() {
-              $scope.onApplyDefinitionChanges();
-              $scope.editMode = false;
+              $scope.onApplyDefinitionChanges()
+              $scope.editMode = false
           }
-      });
-  };
+      })
+  }
 
   $scope.onRemoveDefinitionClick = function(id) {
       DefinitionService.remove({id: id}, function() {
           // success
           // remove from local definitions array without reloading
-          var index = _.findIndex($scope.definitions, {_id: id});
-          $scope.definitions.splice(index, 1);
-      });
-  };
+          var index = _.findIndex($scope.definitions, {_id: id})
+          $scope.definitions.splice(index, 1)
+      })
+  }
 
   /**
    * saves all defintions in case they were changed
@@ -367,96 +360,96 @@ angular.module('meanMarkdownApp')
   $scope.onApplyDefinitionChanges = function() {
       $scope.definitions.forEach(function(definition) {
           if (definition._id) {
-              DefinitionService.update({id: definition._id}, definition);
+              DefinitionService.update({id: definition._id}, definition)
           } else {  // new definition
-              DefinitionService.save(definition);
+              DefinitionService.save(definition)
           }
-      });
-  };
+      })
+  }
 
   $scope.onCreateDefinitionClick = function(category) {
       // add empty object to local definitions array
-      var timestmap = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm:ss.sssZ", "CEST");
+      var timestmap = $filter('date')(new Date(), "yyyy-MM-ddTHH:mm:ss.sssZ", "CEST")
 
       $scope.definitions.push({
           filetype: $scope.file.type,  // to be shown in table
           category: category,
           updated_at: timestmap // to be sorted to top
-      });
-  };
+      })
+  }
 
   $scope.processIncludes = function(markdown, files) {
 
-      var includes = markdown.match(/include\((.*)\)/g);
+      var includes = markdown.match(/include\((.*)\)/g)
 
       if (includes) {
           for (var i = 0; i < includes.length; i++) {
-              //var include = includes[i];
-              var filename = includes[i].match(/include\((.*)\)/m)[1];
+              //var include = includes[i]
+              var filename = includes[i].match(/include\((.*)\)/m)[1]
 
               // look for file
               for (var j = 0; j < files.length; j++) {
-                  var file = files[j];
-                  //console.log(files);
+                  var file = files[j]
+                  //console.log(files)
                   if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
-                      //console.log("inside");
+                      //console.log("inside")
                       if (file.markdown) {
-                          //console.log(includes[i]);
-                          markdown = markdown.replace(includes[i], file.markdown);
-                          break;
+                          //console.log(includes[i])
+                          markdown = markdown.replace(includes[i], file.markdown)
+                          break
                       }
                   }
               }
           }
       }
-      return markdown;
-  };
+      return markdown
+  }
 
   $scope.onHelpClick = function() {
-      $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank");
-  };
+      $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank")
+  }
 
 // save hotkey
 $(document).keydown(function (e) {
-  var code = e.keyCode || e.which;
+  var code = e.keyCode || e.which
   // shiftKey ctrlKey
   if(e.ctrlKey && code === 83) { // Shift + S
-    $scope.onSaveClick();
-    e.preventDefault();  // stop save action
+    $scope.onSaveClick()
+    e.preventDefault()  // stop save action
   }
-});
+})
 
 // undo hotkey
 $(document).keydown(function (e) {
-  var code = e.keyCode || e.which;
+  var code = e.keyCode || e.which
   // shiftKey ctrlKey
   if(e.ctrlKey && code === 90) {
-    console.log("Ctrl + Z");
-    $scope.onUndoClick();
-    e.preventDefault();
+    console.log("Ctrl + Z")
+    $scope.onUndoClick()
+    e.preventDefault()
   }
-});
+})
 
   /**
    * prompt when trying to refresh with unsaved changes
    */
   $(window).bind('beforeunload', function(){
       // this.removeActiveState(function() {
-      //     //console.log("unload");
+      //     //console.log("unload")
       //     if ($scope.unsavedChanges) {
-      //         //this.removeActiveState();
+      //         //this.removeActiveState()
       //
       //
       //     }
-      // });
+      // })
       //this.removeActiveState(function() {
-      //    console.log("remove active");
-      //});
-      //console.log("want to close!");
-      return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?';
+      //    console.log("remove active")
+      //})
+      //console.log("want to close!")
+      return 'It seems like you made unsaved changes to your document. Are you sure you want to leave without saving?'
 
       /*if ($scope.unsavedChanges) {
-          console.log("still unsaved!");
+          console.log("still unsaved!")
       }*/
-  });
-});
+  })
+})
