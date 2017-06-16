@@ -36,6 +36,11 @@ angular.module('meanMarkdownApp')
     FileService.get({ id: $routeParams.id }, function (file) {
       $scope.file = file
 
+      // workaround, part of file hidden until click
+      setTimeout(function () {
+        $scope.editor.refresh()
+      }, 0)
+
       // lock editor if news
       if ($scope.file.type === 'news' && $scope.currentUser.group !== 'admin') {
         $scope.editor.setOption('readOnly', true)
@@ -202,49 +207,6 @@ angular.module('meanMarkdownApp')
     })
   }
 
-  $scope.onDownloadConfirm = function (filename, addTitle, addContentTable, addImages, addLinks, addDefinitions, isFolder) {
-    var config = {
-      addTitle: addTitle,
-      addContentTable: addContentTable,
-      addImagesTable: addImages,
-      //addLinksTable: addLinks,
-      addDefinitionsTable: addDefinitions
-      //isFolder: isFolder
-    }
-    var html
-    DefinitionService.query(function(definitions) {
-      FileService.query(function(files) {
-        var markdown = $scope.processIncludes($scope.file.markdown, files)
-
-        //console.log(markdown)
-        $scope.fileCopy = angular.copy($scope.file)
-        $scope.fileCopy.markdown = markdown
-
-        if ($scope.file.type === "opOlat") {
-          // convert markdown to html
-          html = HTMLService.getOlat($scope.fileCopy, definitions, config)
-          html = HTMLService.wrapOlatHTML(html, $scope.file.title, isFolder)
-          initDownload(filename, html)
-        } else if ($scope.file.type === "opMainzed") {
-          // jahresbericht
-          TemplateService.getOpMainzed(function(template) {
-              // modify template
-              html = HTMLService.getOpMainzed($scope.fileCopy, definitions, template)
-              initDownload(filename, html)
-          })
-        }
-      })
-    })
-
-    function initDownload (filename, html) {
-      var blob = new Blob([html], { type: "data:text/plaincharset=utf-8" })
-      var downloadLink = angular.element('<a></a>')
-      downloadLink.attr('href', window.URL.createObjectURL(blob))
-      downloadLink.attr('download', filename)
-      downloadLink[0].click()
-    }
-  }
-
   $scope.onUndoClick = function () {
     $scope.editor.undo()
   }
@@ -278,41 +240,6 @@ angular.module('meanMarkdownApp')
       })
     }, function error (res) {
       alert(res.data)
-    })
-  }
-
-  /**
-   * requires file object that includes markdown author etc
-   * @returns void
-   */
-  $scope.processHtml = function (file) {
-    return new Promise(function (resolve) {
-      var config = {
-        addTitle: true,
-        addContentTable: true,
-        addImagesTable: true,
-        // addLinksTable: true,
-        addDefinitionsTable: true
-      }
-
-      DefinitionService.query(function(definitions) {
-          var html
-          // convert markdown to html
-          if ($scope.file.type === "opOlat") {
-              html = HTMLService.getOlat(file, definitions, config)
-              html = HTMLService.wrapOlatHTML(html, file.title)  // TODO: wrap html and save on server
-              resolve(html)
-
-          } else if ($scope.file.type === "opMainzed") {
-              // TODO: replace with server methods
-              // get template
-              TemplateService.getOpMainzed(function(template) {
-                  // modify template
-                  var html = HTMLService.getOpMainzed(file, definitions, template)
-                  resolve(html)
-              })
-          }
-      })
     })
   }
 
@@ -377,33 +304,6 @@ angular.module('meanMarkdownApp')
       })
   }
 
-  $scope.processIncludes = function(markdown, files) {
-
-      var includes = markdown.match(/include\((.*)\)/g)
-
-      if (includes) {
-          for (var i = 0; i < includes.length; i++) {
-              //var include = includes[i]
-              var filename = includes[i].match(/include\((.*)\)/m)[1]
-
-              // look for file
-              for (var j = 0; j < files.length; j++) {
-                  var file = files[j]
-                  //console.log(files)
-                  if (file.title.toLowerCase().trim() === filename.toLowerCase().trim()) {
-                      //console.log("inside")
-                      if (file.markdown) {
-                          //console.log(includes[i])
-                          markdown = markdown.replace(includes[i], file.markdown)
-                          break
-                      }
-                  }
-              }
-          }
-      }
-      return markdown
-  }
-
   $scope.onHelpClick = function() {
       $window.open("https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet", "_blank")
   }
@@ -432,7 +332,7 @@ $(document).keydown(function (e) {
   /**
    * prompt when trying to refresh with unsaved changes
    */
-  $(window).bind('beforeunload', function(){
+  $(window).bind('beforeunload', function () {
       // this.removeActiveState(function() {
       //     //console.log("unload")
       //     if ($scope.unsavedChanges) {
@@ -452,3 +352,11 @@ $(document).keydown(function (e) {
       }*/
   })
 })
+
+function initDownload (filename, html) {
+  var blob = new Blob([html], { type: "data:text/plaincharset=utf-8" })
+  var downloadLink = angular.element('<a></a>')
+  downloadLink.attr('href', window.URL.createObjectURL(blob))
+  downloadLink.attr('download', filename)
+  downloadLink[0].click()
+}
