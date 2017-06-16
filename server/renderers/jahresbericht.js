@@ -34,6 +34,23 @@ var jahresbericht = () => {
     }
   }
 
+  renderer.image = (href, titleString, altText) => {
+    let tokens = titleString.split('&quot; &quot;')
+    let title = tokens[0]
+    let author = tokens[1] || 'mainzed'
+    let license = tokens[2]
+    return `<figure>
+              <img src="${href}" class="picture" alt="${altText}" title="${title}">
+              <figcaption>
+                ${title}
+                <div class="picture-metadata">
+                  <span class="author">Autor: ${author}</span>
+                  <span class="license">Lizenz: ${license}</span>
+                </div>
+              </figcaption>
+            </figure>`
+  }
+
   return renderer
 }
 

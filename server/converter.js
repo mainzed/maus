@@ -235,8 +235,6 @@ class Converter {
           promises.push(this.findCitationAndGetReplacement(element))
         } else if (element.category === 'story') {
           promises.push(this.findStoryAndGetReplacement(element))
-        } else if (element.category === 'picture') {
-          promises.push(this.findPictureAndGetReplacement(element))
         }
       })
 
@@ -361,35 +359,6 @@ class Converter {
                      <span class="author">${definition.author}</span>
                    </div>`
         resolve({element: element, replacement: tag})
-      })
-    })
-  }
-
-  findPictureAndGetReplacement (element) {
-    return new Promise((resolve, reject) => {
-      let type = this.getLegacyType()
-
-      Definition.findOne({
-        'filetype': type,
-        'word': element.shortcut,
-        'category': element.category
-      }, 'word text author url', (err, picture) => {
-        if (err) reject(err)
-
-        if (picture) {
-          const tag = `<figure id="${picture._id}">
-                        <img src="${picture.url}" class="picture" alt="${picture.word}">
-                        <figcaption>
-                          ${picture.text}
-                          <div class="picture-metadata">
-                            <span class="author">Autor: ${picture.author}</span>
-                            <span class="license">Lizenz: ${picture.license}</span>
-                          </div>
-                        </figcaption>
-                      </figure>`
-          resolve({element: element, replacement: tag})
-        }
-        resolve({})
       })
     })
   }

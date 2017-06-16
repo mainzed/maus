@@ -9,6 +9,7 @@
     "chai": "^4.0.2",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-angular": "^2.5.0",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-mocha": "^4.10.1",
     "eslint-plugin-node": "^5.0.0",

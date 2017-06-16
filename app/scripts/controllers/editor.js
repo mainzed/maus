@@ -132,7 +132,7 @@ angular.module('meanMarkdownApp')
     $scope.editor.focus()
   }
 
-  $scope.addDefinition = function(definition) {
+  $scope.addDefinition = function (definition) {
     var snippet = "{definition: " + definition.word + "}"
     $scope.addSnippet(snippet)
   }

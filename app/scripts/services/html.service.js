@@ -39,18 +39,6 @@ angular.module('meanMarkdownApp')
       });
   };
 
-  this.replacePicture = function(tag, page, enrichment) {
-    if (enrichment.filetype !== "opMainzed") {
-        console.log("filetype " + enrichment.filetype + "currently does not support picture tags");
-        //throw Error("filetype " + enrichment.filetype + "currently does not support picture tags");
-    }
-
-    var pictureString = getPictureString(enrichment);
-
-    // replace tag with newly created HTML
-    var currentHTML = $("#read", page).html();
-    $("#read", page).html(currentHTML.replace(tag, pictureString));
-  }
 })
 
 // private function
