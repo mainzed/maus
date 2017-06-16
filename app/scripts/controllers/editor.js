@@ -18,7 +18,6 @@ angular.module('meanMarkdownApp')
   $timeout,
   $window,
   HTMLService,
-  PreviewService,
   FileService,
   AuthService,
   ngDialog,
@@ -238,7 +237,7 @@ angular.module('meanMarkdownApp')
     })
 
     function initDownload (filename, html) {
-      var blob = new Blob([html], { type:"data:text/plaincharset=utf-8" })
+      var blob = new Blob([html], { type: "data:text/plaincharset=utf-8" })
       var downloadLink = angular.element('<a></a>')
       downloadLink.attr('href', window.URL.createObjectURL(blob))
       downloadLink.attr('download', filename)

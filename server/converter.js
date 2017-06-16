@@ -135,8 +135,8 @@ class Converter {
   // converts markdown to HTML and inserts it into the template's main section
   insertContent (page) {
     return new Promise((resolve, reject) => {
-      // insert main content
-      var content = marked(this.markdown, { renderer: renderers[this.type] })
+      // get renders as function to reset counters
+      var content = marked(this.markdown, { renderer: renderers[this.type]() })
       page(this.recipe['main-section-selector']).html(content)
 
       // legacy stories support
@@ -235,6 +235,8 @@ class Converter {
           promises.push(this.findCitationAndGetReplacement(element))
         } else if (element.category === 'story') {
           promises.push(this.findStoryAndGetReplacement(element))
+        } else if (element.category === 'picture') {
+          promises.push(this.findPictureAndGetReplacement(element))
         }
       })
 
@@ -305,9 +307,7 @@ class Converter {
 
   findDefinitionAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
-      // legacy
-      var type = this.type === 'jahresbericht' ? 'opMainzed' : this.type
-      type = type === 'olat' ? 'opOlat' : type
+      let type = this.getLegacyType()
 
       Definition.findOne({
         'filetype': type,
@@ -345,11 +345,7 @@ class Converter {
 
   findCitationAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
-      // legacy
-      var type = this.type
-      if (type === 'jahresbericht') {
-        type = 'opMainzed'
-      }
+      let type = this.getLegacyType()
 
       Definition.findOne({
         'filetype': type,
@@ -369,11 +365,38 @@ class Converter {
     })
   }
 
+  findPictureAndGetReplacement (element) {
+    return new Promise((resolve, reject) => {
+      let type = this.getLegacyType()
+
+      Definition.findOne({
+        'filetype': type,
+        'word': element.shortcut,
+        'category': element.category
+      }, 'word text author url', (err, picture) => {
+        if (err) reject(err)
+
+        if (picture) {
+          const tag = `<figure id="${picture._id}">
+                        <img src="${picture.url}" class="picture" alt="${picture.word}">
+                        <figcaption>
+                          ${picture.text}
+                          <div class="picture-metadata">
+                            <span class="author">Autor: ${picture.author}</span>
+                            <span class="license">Lizenz: ${picture.license}</span>
+                          </div>
+                        </figcaption>
+                      </figure>`
+          resolve({element: element, replacement: tag})
+        }
+        resolve({})
+      })
+    })
+  }
+
   findStoryAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
-      // legacy
-      var type = this.type === 'jahresbericht' ? 'opMainzed' : this.type
-      type = type === 'olat' ? 'opOlat' : type
+      let type = this.getLegacyType()
 
       Definition.findOne({
         'filetype': type,
