@@ -33,7 +33,8 @@ var oneDay = 86400000
 app.use('/preview', express.static(path.join(__dirname, '../preview'), { maxAge: oneDay }))
 
 // serve either /app or /dist
-fs.access(path.resolve(__dirname, '../dist'), function (err) {
+const frontendDistPath = path.resolve(__dirname, '../../dist')
+fs.access(frontendDistPath, (err) => {
   if (err) {
     // TODO: check build process
     // console.log('production version "/dist" not found. run "grunt build". serving the development version "/app" ...')
@@ -42,7 +43,7 @@ fs.access(path.resolve(__dirname, '../dist'), function (err) {
     app.use(express.static(path.resolve(__dirname, '../../app')))
   } else {
     console.log('production version /dist found. serving ...')
-    app.use(express.static(path.resolve(__dirname, '../dist')))
+    app.use(express.static(frontendDistPath))
   }
 })
 
