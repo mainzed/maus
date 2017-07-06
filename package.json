@@ -85,9 +85,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "build": "babel server/src -d server/lib",
+    "build": "mkdir server/dist && babel server/src -d server/dist",
     "babel-node": "babel-node",
     "test": "./node_modules/.bin/grunt watch:mocha",
-    "start": "export NODE_ENV=development && nodemon --exec npm run babel-node -- server/src/app.js"
+    "start": "nodemon --exec npm run babel-node -- server/src/run.js"
   }
 }

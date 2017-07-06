@@ -1,0 +1,14 @@
+import mongoose from 'mongoose'
+import app from '../src/server'
+
+let server = {}
+
+before(done => {
+  mongoose.connect('mongodb://localhost/teststore', { useMongoClient: true })
+  server = app.listen(3002, () => done())
+})
+
+after(done => {
+  server.close() // close express server
+  done()
+})

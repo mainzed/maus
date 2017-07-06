@@ -1,25 +1,14 @@
-process.env.NODE_ENV = 'test'
-
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../../src/app'
 import File from '../../src/models/file'
 
 let should = chai.should()
+const URL = 'http://localhost:3002'
 
 chai.use(chaiHttp)
 
 describe('Routes: Files', () => {
   let fileID = ''
-
-  before(() => {
-    process.env.NODE_ENV = 'test'
-  })
-
-  after(done => {
-    server.close()
-    done()
-  })
 
   beforeEach(done => {
     // clear database
@@ -27,15 +16,17 @@ describe('Routes: Files', () => {
 
     // create dummy file
     File.create({ title: 'New File', markdown: 'This is *markdown*!' }, (err, file) => {
+      if (err) done(err)
       fileID = file._id
       done()
     })
   })
 
   it('should GET all the files', done => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/files')
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('array')
@@ -54,9 +45,10 @@ describe('Routes: Files', () => {
   })
 
   it('should get a single file on GET /files/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/files/' + fileID)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('object')
@@ -75,10 +67,11 @@ describe('Routes: Files', () => {
       'title': 'My new file',
       'markdown': 'Some **new** content!'
     }
-    chai.request(server)
+    chai.request(URL)
       .post('/api/files')
       .send(file)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('object')
@@ -101,10 +94,11 @@ describe('Routes: Files', () => {
       title: 'My updated title'
     }
 
-    chai.request(server)
+    chai.request(URL)
       .put('/api/files/' + fileID)
       .send(updatedFile)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.have.property('title')
@@ -114,9 +108,10 @@ describe('Routes: Files', () => {
   })
 
   it('should delete file on DELETE /files/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .delete('/api/files/' + fileID)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         done()

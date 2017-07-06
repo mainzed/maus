@@ -1,29 +1,19 @@
-process.env.NODE_ENV = 'test'
-
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../../src/app'
-
 let should = chai.should()
+
 chai.use(chaiHttp)
 
+const URL = 'http://localhost:3002'
+
 describe('Routes: Processing', () => {
-  before(() => {
-    process.env.NODE_ENV = 'test'
-  })
-
-  after(done => {
-    server.close() // close express server
-    done()
-  })
-
   it('should convert file and return preview path on POST /preview', done => {
     const file = {
       userID: 'someID',
       type: 'jahresbericht',
       markdown: 'This is some new *markdown*!'
     }
-    chai.request(server)
+    chai.request(URL)
       .post('/api/preview')
       .send(file)
       .end((err, res) => {
@@ -37,7 +27,7 @@ describe('Routes: Processing', () => {
   })
 
   it('should return 422 when parameters are missing', done => {
-    chai.request(server)
+    chai.request(URL)
       .post('/api/preview')
       .send({})
       .end((err, res) => {
@@ -53,7 +43,7 @@ describe('Routes: Processing', () => {
       type: 'jahresbericht',
       markdown: 'This is some new *markdown*!'
     }
-    chai.request(server)
+    chai.request(URL)
       .post('/api/export')
       .send(file)
       .end((err, res) => {

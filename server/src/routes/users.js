@@ -24,7 +24,7 @@ router.get('/users/:id', (req, res, next) => {
   })
 })
 
-router.put('/users/:id', function (req, res, next) {
+router.put('/users/:id', (req, res, next) => {
   var id = req.params.id
   var user = req.body
 
@@ -43,9 +43,9 @@ router.put('/users/:id', function (req, res, next) {
   })
 })
 
-router.delete('/users/:id', function (req, res, next) {
+router.delete('/users/:id', (req, res, next) => {
   var id = req.params.id
-  User.remove({_id: id}, function (err, user) {
+  User.remove({ _id: id }, (err, user) => {
     if (err) {
       res.status(404).send('Not found')
       next()

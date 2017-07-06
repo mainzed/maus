@@ -3,16 +3,19 @@ import Definition from '../models/definition'
 
 export const router = express.Router()
 
-router.get('/definitions', (req, res) => {
+router.get('/definitions', (req, res, next) => {
   Definition.find().sort('word').exec((err, definitions) => {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(definitions)
   })
 })
 
 router.get('/definitions/:id', (req, res, next) => {
   var id = req.params.id
-  Definition.findById(id, function (err, definition) {
+  Definition.findById(id, (err, definition) => {
     if (err) {
       res.status(404).send('Not found')
       next()
@@ -21,15 +24,18 @@ router.get('/definitions/:id', (req, res, next) => {
   })
 })
 
-router.post('/definitions', (req, res) => {
+router.post('/definitions', (req, res, next) => {
   var definition = req.body
   Definition.create(definition, (err, file) => {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(file)
   })
 })
 
-router.put('/definitions/:id', (req, res) => {
+router.put('/definitions/:id', (req, res, next) => {
   var id = req.params.id
   var definition = req.body
 
@@ -44,15 +50,21 @@ router.put('/definitions/:id', (req, res) => {
   }
 
   Definition.findOneAndUpdate({ _id: id }, update, { new: true }, (err, definition) => {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(definition)
   })
 })
 
-router.delete('/definitions/:id', (req, res) => {
+router.delete('/definitions/:id', (req, res, next) => {
   var id = req.params.id
   Definition.remove({ _id: id }, (err, definition) => {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(definition)
   })
 })

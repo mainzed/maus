@@ -10,7 +10,7 @@ var renderers = require('./renderers/renderers')
 var File = require('./models/file')
 var navigation = require('./navigation')
 
-var RECIPES_PATH = 'recipes.json'
+var RECIPES_PATH = '../recipes.json'
 
 // Converts markdown to valid HTML as specified by a config file
 class Converter {
@@ -27,12 +27,10 @@ class Converter {
 
   convert () {
     return new Promise((resolve, reject) => {
-      this.getRecipe(this.type).then((recipe) => {
-        this.recipe = recipe
-        // TODO: resolve custom elements
-        this.getPageFromTemplate(recipe['template-path']).then((page) => {
-          this.getMetadata(this.markdown).then((markdown) => {
-            this.resolveIncludes(markdown).then((markdown) => {
+      this.getRecipe(this.type).then(() => {
+        this.getPageFromTemplate().then(page => {
+          this.getMetadata(this.markdown).then(markdown => {
+            this.resolveIncludes(markdown).then(markdown => {
               this.markdown = markdown
               this.insertContent(page).then((page) => {
                 this.resolveElements(page).then((page) => {
@@ -57,12 +55,13 @@ class Converter {
 
   // promise that returns the recipe
   getRecipe (type) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       var filePath = path.resolve(__dirname, RECIPES_PATH)
-      fs.readFile(filePath, 'utf8', function (err, jsonData) {
+      fs.readFile(filePath, 'utf8', (err, jsonData) => {
         if (err) reject(err)
         try {
           var data = JSON.parse(jsonData)
+          this.recipe = data[type]
           resolve(data[type])
         } catch (err) {
           reject(err)
@@ -77,21 +76,25 @@ class Converter {
     return this.type
   }
 
-  // returns a cheerio page object from template
-  getPageFromTemplate (templatePath) {
+  /**
+   * Gets the template path from recipe and loads it's content into a cheerio page object.
+   * @returns {Object<Cheerio>}
+   */
+  getPageFromTemplate () {
     return new Promise((resolve, reject) => {
-      var filePath = path.resolve(__dirname, templatePath)
-      fs.readFile(filePath, 'utf8', function (err, data) {
+      const filePath = path.join(__dirname, '../', this.recipe['template-path'])
+
+      // console.log(filePath)
+      fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) reject(err)
-        var page = cheerio.load(data)
-        resolve(page)
+        resolve(cheerio.load(data))
       })
     })
   }
 
   getTooltipFromTemplate (templatePath) {
     return new Promise((resolve, reject) => {
-      var filePath = path.resolve(__dirname, templatePath)
+      var filePath = path.resolve(__dirname, '../', templatePath)
       fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) reject(err)
         resolve(data)
@@ -254,9 +257,17 @@ class Converter {
     })
   }
 
+  /**
+   * Gathers all custom elements from the page.
+   * @param {Object<Cheerio>} page
+   * @returns {Array<Elements>}
+   */
   // returns a lit of all elements, their shortcut and type
   getElements (page) {
+
+    let isValidCategory = category => ['definition', 'citation', 'story'].includes(category)
     var elementList = []
+
     // find them
     if (page(this.recipe['main-section-selector']).html()) { // page has content
       var elements = page(this.recipe['main-section-selector']).html().match(/\{(.*?)\}/g)
@@ -267,16 +278,28 @@ class Converter {
           var category
           var shortcut
           var placeholder
-          if (content.split(':').length < 2) { // default to definition
+
+          const tokens = content.split(':')
+          if (tokens.length < 2) {
+            // { datenmodell }
             category = 'definition'
             shortcut = content.trim()
-          } else if (content.split(':').length === 3) {
-            category = content.split(':')[0].trim()
-            shortcut = content.split(':')[1].trim()
-            placeholder = content.split(':')[2].trim() // datenmodell: datenmodells
+          } else if (tokens.length === 2 && isValidCategory(tokens[0].trim())) {
+            // { definition: datenmodell }
+            category = tokens[0].trim()
+            shortcut = tokens[1].trim()
+          } else if (tokens.length === 2 && !isValidCategory(tokens[0].trim())) {
+            // { datenmodell: datenmodells }
+            category = 'definition'
+            shortcut = tokens[0].trim()
+            placeholder = tokens[1].trim()
+          } else if (tokens.length === 3) {
+            // { definition: datenmodell: datenmodells }
+            category = tokens[0].trim()
+            shortcut = tokens[1].trim()
+            placeholder = tokens[2].trim()
           } else {
-            category = content.split(':')[0].trim()
-            shortcut = content.split(':')[1].trim()
+            console.error('unknown definition format')
           }
 
           elementList.push({

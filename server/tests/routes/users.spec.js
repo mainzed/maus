@@ -1,29 +1,22 @@
-process.env.NODE_ENV = 'test'
-
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../../src/app'
 import User from '../../src/models/user'
 
 let should = chai.should()
+
 chai.use(chaiHttp)
+
+const URL = 'http://localhost:3002'
 
 describe('Routes: Users', () => {
   let userID = ''
 
-  before(() => {
-    process.env.NODE_ENV = 'test'
-  })
-
   after(done => {
-    server.close() // close express server
+    User.collection.drop() // clear database
     done()
   })
 
   beforeEach(done => {
-    // clear database
-    User.collection.drop()
-
     // create dummy users
     User.create({ username: 'John Doe', password: 'secret-password' }, (err, user) => {
       if (err) throw err
@@ -33,7 +26,7 @@ describe('Routes: Users', () => {
   })
 
   it('should GET all the users', (done) => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/users')
       .end((err, res) => {
         res.should.have.status(200)
@@ -51,7 +44,7 @@ describe('Routes: Users', () => {
   })
 
   it('should get a single user on GET /users/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/users/' + userID)
       .end((err, res) => {
         res.should.have.status(200)
@@ -71,7 +64,7 @@ describe('Routes: Users', () => {
       username: 'John Doe',
       group: 'admin'
     }
-    chai.request(server)
+    chai.request(URL)
       .put('/api/users/' + userID)
       .send(user)
       .end((err, res) => {
@@ -84,7 +77,7 @@ describe('Routes: Users', () => {
   })
 
   it('should delete user on DELETE /users/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .delete('/api/users/' + userID)
       .end((err, res) => {
         res.should.have.status(200)

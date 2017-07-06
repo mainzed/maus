@@ -1,28 +1,21 @@
-process.env.NODE_ENV = 'test'
-
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../../src/app'
 import User from '../../src/models/user'
 
-let should = chai.should()
+const URL = 'http://localhost:3002'
 
+let should = chai.should()
 chai.use(chaiHttp)
 
 describe('Routes: Authentication', () => {
 
-  before(() => {
-    process.env.NODE_ENV = 'test'
-  })
-
   after(done => {
-    server.close()
     User.collection.drop()
     done()
   })
 
   it('should signup user on POST /auth/signup', done => {
-    chai.request(server)
+    chai.request(URL)
       .post('/auth/signup')
       .send({ username: 'Max', password: 'test123' })
       .end((err, res) => {
@@ -37,7 +30,7 @@ describe('Routes: Authentication', () => {
   })
 
   it('should not login user with invalid password on POST /auth/login', done => {
-    chai.request(server)
+    chai.request(URL)
       .post('/auth/login')
       .send({ username: 'Max', password: 'some-password' })
       .end((err, res) => {
@@ -48,13 +41,12 @@ describe('Routes: Authentication', () => {
 
         res.body.state.should.equal('failure')
         res.body.message.should.equal('Invalid username or password')
-
         done()
       })
   })
 
   it('should login user on POST /auth/login', done => {
-    chai.request(server)
+    chai.request(URL)
       .post('/auth/login')
       .send({ username: 'Max', password: 'test123' })
       .end((err, res) => {
@@ -68,7 +60,7 @@ describe('Routes: Authentication', () => {
   })
 
   it('should logout user on GET /auth/signout', done => {
-    chai.request(server)
+    chai.request(URL)
       .get('/auth/signout')
       .end((err, res) => {
         res.should.have.status(200)
@@ -76,5 +68,4 @@ describe('Routes: Authentication', () => {
         done()
       })
   })
-
 })

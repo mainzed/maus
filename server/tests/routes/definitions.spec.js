@@ -1,9 +1,8 @@
-process.env.NODE_ENV = 'test'
-
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../../src/app'
 import Definition from '../../src/models/definition'
+
+const URL = 'http://localhost:3002'
 
 let should = chai.should()
 chai.use(chaiHttp)
@@ -11,19 +10,7 @@ chai.use(chaiHttp)
 describe('Routes: Definitions', () => {
   let defID = ''
 
-  before(() => {
-    process.env.NODE_ENV = 'test'
-  })
-
-  after(done => {
-    server.close() // close express server
-    done()
-  })
-
   beforeEach(done => {
-    // clear database
-    Definition.collection.drop()
-
     // create dummy definition
     Definition.create({
       category: 'definition',
@@ -36,10 +23,16 @@ describe('Routes: Definitions', () => {
     })
   })
 
+  after(done => {
+    Definition.collection.drop()
+    done()
+  })
+
   it('should GET all the definitions', (done) => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/definitions')
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('array')
@@ -54,9 +47,10 @@ describe('Routes: Definitions', () => {
   })
 
   it('should get a single definition on GET /definitions/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .get('/api/definitions/' + defID)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('object')
@@ -76,10 +70,11 @@ describe('Routes: Definitions', () => {
       'text': 'This is a citation!',
       'filetype': 'opMainzed'
     }
-    chai.request(server)
+    chai.request(URL)
       .post('/api/definitions')
       .send(definition)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.should.be.a('object')
@@ -98,10 +93,11 @@ describe('Routes: Definitions', () => {
       category: 'definition',
       text: 'This is an example definition.'
     }
-    chai.request(server)
+    chai.request(URL)
       .put('/api/definitions/' + defID)
       .send(definition)
       .end((err, res) => {
+        if (err) done(err)
         res.should.have.status(200)
         res.should.be.json
         res.body.category.should.equal('definition')
@@ -112,7 +108,7 @@ describe('Routes: Definitions', () => {
   })
 
   it('should delete definition on DELETE /definitions/:id', done => {
-    chai.request(server)
+    chai.request(URL)
       .delete('/api/definitions/' + defID)
       .end((err, res) => {
         res.should.have.status(200)

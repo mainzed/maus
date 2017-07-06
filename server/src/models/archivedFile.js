@@ -1,14 +1,13 @@
 var mongoose = require('mongoose')
-var Schema = mongoose.Schema
 mongoose.Promise = global.Promise
 
-var archivedFileSchema = new Schema({
+var archivedFileSchema = new mongoose.Schema({
   fileID: String,
   author: String,
   title: String,
   markdown: String,
   type: String,
-  updated_by: { type: String, default: "author" },
+  updated_by: { type: String, default: 'author' },
   created_at: { type: Date, default: Date.now }
 })
 

@@ -5,20 +5,22 @@ export const router = express.Router()
 var File = require('../models/file')
 var ArchivedFile = require('../models/archivedFile')
 
-router.get('/files', (req, res) => {
+router.get('/files', (req, res, next) => {
   File.getFiles(function (err, files) {
     if (err) {
-      throw err
+      res.status(404).send('Not found')
+      next()
     }
     res.json(files)
   })
 })
 
-router.get('/files/:id', function (req, res) {
+router.get('/files/:id', function (req, res, next) {
   var id = req.params.id
   File.getFileById(id, function (err, file) {
     if (err) {
-      throw err
+      res.status(404).send('Not found')
+      next()
     }
     res.json(file)
   })
@@ -26,15 +28,16 @@ router.get('/files/:id', function (req, res) {
 
 router.post('/files', function (req, res) {
   var file = req.body
-  File.addFile(file, function (err, file) {
+  File.addFile(file, function (err, file, next) {
     if (err) {
-      throw err
+      res.status(404).send('Not found')
+      next()
     }
     res.json(file)
   })
 })
 
-router.put('/files/:id', function (req, res) {
+router.put('/files/:id', function (req, res, next) {
   var id = req.params.id
   var file = req.body
 
@@ -51,24 +54,37 @@ router.put('/files/:id', function (req, res) {
   }
 
   ArchivedFile.create(archivedFile, function (err) {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
   })
 
   // update
   File.updateFile(id, file, function (err, file) {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(file)
   })
 })
 
-router.delete('/files/:id', function (req, res) {
+router.delete('/files/:id', function (req, res, next) {
   var id = req.params.id
   File.deleteFile(id, function (err, file) {
-    if (err) throw err
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
 
     // remove archived files
     // TODO: test
-    ArchivedFile.find({ _id: id}, (err, archivedFiles) => {
+    ArchivedFile.find({ _id: id }, (err, archivedFiles) => {
+      if (err) {
+        res.status(404).send('Not found')
+        next()
+      }
       archivedFiles.forEach((archivedFile) => {
         ArchivedFile.remove({ _id: archivedFile.fileID })
       })
