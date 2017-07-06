@@ -1,9 +1,7 @@
-'use strict'
+import express from 'express'
+import Definition from '../models/definition'
 
-var express = require('express')
-var router = express.Router()
-
-var Definition = require('../models/definition')
+export const router = express.Router()
 
 router.get('/definitions', (req, res) => {
   Definition.find().sort('word').exec((err, definitions) => {
@@ -12,10 +10,13 @@ router.get('/definitions', (req, res) => {
   })
 })
 
-router.get('/definitions/:id', (req, res) => {
+router.get('/definitions/:id', (req, res, next) => {
   var id = req.params.id
   Definition.findById(id, function (err, definition) {
-    if (err) res.status(404).send('Not found')
+    if (err) {
+      res.status(404).send('Not found')
+      next()
+    }
     res.json(definition)
   })
 })
@@ -41,7 +42,8 @@ router.put('/definitions/:id', (req, res) => {
     url: definition.url,
     filetype: definition.filetype
   }
-  Definition.findOneAndUpdate({_id: id}, update, (err, definition) => {
+
+  Definition.findOneAndUpdate({ _id: id }, update, { new: true }, (err, definition) => {
     if (err) throw err
     res.json(definition)
   })
@@ -49,10 +51,8 @@ router.put('/definitions/:id', (req, res) => {
 
 router.delete('/definitions/:id', (req, res) => {
   var id = req.params.id
-  Definition.remove({_id: id}, (err, definition) => {
+  Definition.remove({ _id: id }, (err, definition) => {
     if (err) throw err
     res.json(definition)
   })
 })
-
-module.exports = router

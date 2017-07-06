@@ -54,7 +54,7 @@ angular.module('meanMarkdownApp')
 
   $scope.initResizable = function () {
     // init jquery col resizable plugin
-    // $(function (){
+    // $(function () {
     //   $(".filegroup").colResizable()
     // })
   }
@@ -191,17 +191,16 @@ angular.module('meanMarkdownApp')
     var type = $scope.file.type
     if (type === 'opMainzed') type = 'jahresbericht'
     var postData = {
+      'userID': $scope.currentUser._id,
       'type': type,
       'markdown': $scope.file.markdown
     }
 
     // get preview path
-    var url = `${ConfigService.API_PATH}/export?user=${$scope.currentUser._id}`
-    $http.post(url, postData).then(function (res) {
-      console.log(res)
-      var file = new Blob([res], { type: 'application/zip' })
-      window.location = URL.createObjectURL(file)
+    var url = `${ConfigService.API_PATH}/export`
 
+    $http.post(url, postData).then(function (res) {
+      window.location = res.data.zipPath
     }, function error (res) {
       console.log(res)
     })
@@ -224,7 +223,7 @@ angular.module('meanMarkdownApp')
     var postData = {
       'type': type,
       'markdown': $scope.file.markdown,
-      'user_id': $scope.currentUser._id
+      'userID': $scope.currentUser._id
     }
 
     // get preview path

@@ -1,8 +1,6 @@
-'use strict';
-
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+mongoose.Promise = global.Promise
 var File = require('../models/file');
 
 var activeFileSchema = new Schema({
@@ -12,4 +10,4 @@ var activeFileSchema = new Schema({
     timestamps: true  // creates updatedAt and createdAt
 });
 
-var ActiveFile = module.exports = mongoose.model('ActiveFile', activeFileSchema);
+var ActiveFile = module.exports = mongoose.models.ActiveFile || mongoose.model('ActiveFile', activeFileSchema)

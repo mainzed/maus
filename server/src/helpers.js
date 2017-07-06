@@ -4,12 +4,15 @@ var fs = require('fs')
 var fse = require('fs-extra')
 var path = require('path')
 
+const PREVIEW_FOLDER = '../preview'
+const TMP_FOLDER = '../tmp'
+
 // returns the path of the preview file
 function createPreview (converterObj, userID) {
   return new Promise((resolve, reject) => {
     // copy stuff into preview folder
     var filename = '/preview_' + userID + '.html'
-    var outputPath = path.join(__dirname, 'preview', converterObj.type.toLowerCase(), filename)
+    var outputPath = path.join(__dirname, '../preview', converterObj.type.toLowerCase(), filename)
     fs.writeFile(outputPath, converterObj.page.html(), (err) => {
       if (err) reject(err)
       // success
@@ -21,12 +24,12 @@ function createPreview (converterObj, userID) {
 function createBundle (converterObj, userID) {
   return new Promise((resolve, reject) => {
     // input
-    var resourcePath = path.join(__dirname, 'preview/jahresbericht')
+    var resourcePath = path.join(__dirname, PREVIEW_FOLDER, 'jahresbericht')
     var inCss = path.join(resourcePath, 'style')
     var inJs = path.join(resourcePath, 'js')
 
     // output
-    var destPath = path.join(__dirname, 'tmp', userID)
+    var destPath = path.join(__dirname, TMP_FOLDER, userID)
     var outIndex = path.join(destPath, 'index.html')
     var outCss = path.join(destPath, 'style')
     var outJs = path.join(destPath, 'js')
@@ -43,7 +46,7 @@ function createBundle (converterObj, userID) {
     // when all files are written and copied, compress them into zip archive
     Promise.all(promises).then(values => {
       zipFolder(destPath, destPath + '.zip')
-      resolve(destPath + '.zip')
+      resolve(path.join('tmp', userID + '.zip'))
     })
     .catch(err => reject(err))
   })

@@ -1,7 +1,5 @@
-'use strict'
-
-var express = require('express')
-var router = express.Router()
+import express from 'express'
+export const router = express.Router()
 
 // mongoose models
 var ArchivedFile = require('../models/archivedFile')
@@ -29,5 +27,3 @@ router.delete('/archivedfiles/:id', function (req, res) {
     res.json(archivedFile)
   })
 })
-
-module.exports = router

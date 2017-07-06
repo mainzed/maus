@@ -1,4 +1,4 @@
-'use strict'
+import Definition from './models/definition'
 
 var fs = require('fs')
 var path = require('path')
@@ -6,7 +6,7 @@ var cheerio = require('cheerio')
 var marked = require('marked')
 
 var renderers = require('./renderers/renderers')
-var Definition = require('./models/definition')
+// var Definition = require('./models/definition')
 var File = require('./models/file')
 var navigation = require('./navigation')
 
@@ -37,7 +37,6 @@ class Converter {
               this.insertContent(page).then((page) => {
                 this.resolveElements(page).then((page) => {
                   this.createGlossary(page).then((page) => {  // make synchronous
-                    console.log('ready')
                     this.page = page
 
                     page = this.createTableOfFigures(page)
@@ -62,8 +61,12 @@ class Converter {
       var filePath = path.resolve(__dirname, RECIPES_PATH)
       fs.readFile(filePath, 'utf8', function (err, jsonData) {
         if (err) reject(err)
-        var data = JSON.parse(jsonData)
-        resolve(data[type])
+        try {
+          var data = JSON.parse(jsonData)
+          resolve(data[type])
+        } catch (err) {
+          reject(err)
+        }
       })
     })
   }
@@ -475,4 +478,4 @@ function isValidType (type) {
   return type === 'jahresbericht' || type === 'olat'
 }
 
-module.exports = Converter
+export default Converter

@@ -1,13 +1,11 @@
-'use strict'
-
-var express = require('express')
-var router = express.Router()
+import express from 'express'
+export const router = express.Router()
 
 // mongoose models
 var File = require('../models/file')
 var ArchivedFile = require('../models/archivedFile')
 
-router.get('/files', function (req, res) {
+router.get('/files', (req, res) => {
   File.getFiles(function (err, files) {
     if (err) {
       throw err
@@ -67,8 +65,15 @@ router.delete('/files/:id', function (req, res) {
   var id = req.params.id
   File.deleteFile(id, function (err, file) {
     if (err) throw err
+
+    // remove archived files
+    // TODO: test
+    ArchivedFile.find({ _id: id}, (err, archivedFiles) => {
+      archivedFiles.forEach((archivedFile) => {
+        ArchivedFile.remove({ _id: archivedFile.fileID })
+      })
+    })
+
     res.json(file)
   })
 })
-
-module.exports = router
