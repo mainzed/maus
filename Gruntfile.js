@@ -16,10 +16,10 @@ module.exports = function (grunt) {
 
   // Automatically load required Grunt tasks
   require('jit-grunt')(grunt, {
-      useminPrepare: 'grunt-usemin',
-      ngtemplates: 'grunt-angular-templates',
-      cdnify: 'grunt-google-cdn'
-      // mochaTest: 'grunt-mocha-test'
+    useminPrepare: 'grunt-usemin',
+    ngtemplates: 'grunt-angular-templates',
+    cdnify: 'grunt-google-cdn'
+    // mochaTest: 'grunt-mocha-test'
   })
 
   // Configurable paths for the application
@@ -34,7 +34,7 @@ module.exports = function (grunt) {
     // references package.json so it can load plugins automatically
     // this way we dont have to do this for every plugin:
     // grunt.loadNpmTasks('grunt-express-server');
-    //pgk: grunt.file.readJSON('package.json'),
+    // pgk: grunt.file.readJSON('package.json'),
 
     // Project settings
     yeoman: appConfig,
@@ -469,21 +469,6 @@ module.exports = function (grunt) {
     }
   })
 
-  grunt.registerTask('serve', 'Compile then start the express web server', function () {
-      /*if (target === 'dist') {
-          return grunt.task.run(['build', 'connect:dist:keepalive']);
-      }*/
-
-      grunt.task.run([
-        'clean:server',
-        'wiredep',
-        'concurrent:server',
-        'postcss:server',
-        //'express',  // added this to use custom express server
-        'connect:livereload',
-        'watch'
-      ]);
-  });
 
   // grunt.registerTask('test', [
   //     //'clean:server',
@@ -495,58 +480,52 @@ module.exports = function (grunt) {
   // ]);
 
   grunt.registerTask('build', [
-      // run unit tests once
-      // 'karma:build',
+    // deletes /dist
+    'clean:dist',
 
-      // deletes /dist
-      'clean:dist',
+    // prepares files for concat, uglify and cssmin (in memory)
+    'useminPrepare',
 
-      // update bower references
-      'wiredep',
+    // do multiple tasks concurrently (at the same time)
+    // run image minify and copy them to /dist
+    // and copy styles to .tmp
+    'concurrent:dist',
 
-      // prepares files for concat, uglify and cssmin (in memory)
-      'useminPrepare',
+    'postcss',
 
-      // do multiple tasks concurrently (at the same time)
-      // run image minify and copy them to /dist
-      // and copy styles to .tmp
-      'concurrent:dist',
+    // copy app files to /dist (all but javascript and css files in .tmp)
+    'copy:dist',
 
-      'postcss',
+    // stores all angular views/templates in .tmp/templateCache.js
+    // also adds a reference to it into the final index.html
+    'ngtemplates',
 
-      // copy app files to /dist (all but javascript and css files in .tmp)
-      'copy:dist',
+    // creates vendor.js and scripts.js (just merges, doesnt minify)
+    // copies them to folder .tmp/concat/scripts
+    'concat',
 
-      // stores all angular views/templates in .tmp/templateCache.js
-      // also adds a reference to it into the final index.html
-      'ngtemplates',
+    // makes angular-files in .tmp/concat/scripts save for minification
+    'ngAnnotate',
 
-      // creates vendor.js and scripts.js (just merges, doesnt minify)
-      // copies them to folder .tmp/concat/scripts
-      'concat',
+    // minify styles in .tmp/styles and copies them to /dist
+    'cssmin',
 
-      // makes angular-files in .tmp/concat/scripts save for minification
-      'ngAnnotate',
+    // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
+    // the result to /dist/scripts
+    'uglify',
 
-      // minify styles in .tmp/styles and copies them to /dist
-      'cssmin',
+    // gives cryptic names to files :) (browser caching)
+    'filerev',
 
-      // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
-      // the result to /dist/scripts
-      'uglify',
+    // replaces bower components with cdns when possible in index.html
+    //'cdnify',
 
-      // gives cryptic names to files :) (browser caching)
-      'filerev',
+    // replaces references to scripts and styles in index.html with links
+    // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
+    'usemin',
 
-      // replaces bower components with cdns when possible in index.html
-      //'cdnify',
-
-      // replaces references to scripts and styles in index.html with links
-      // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
-      'usemin',
-
-      // minify index.html
-      'htmlmin'
+    // minify index.html
+    'htmlmin'
   ])
 
   grunt.registerTask('test', 'mochaTest')

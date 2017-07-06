@@ -197,7 +197,7 @@ angular.module('meanMarkdownApp')
     }
 
     // get preview path
-    var url = `${ConfigService.API_PATH}/export`
+    var url = ConfigService.API_PATH + '/export'
 
     $http.post(url, postData).then(function (res) {
       window.location = res.data.zipPath

@@ -7,5 +7,5 @@
 /dist
 /server/preview/*/preview_*.html
 /server/tmp
-
+/server/dist
 .vscode
