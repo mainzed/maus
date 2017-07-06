@@ -264,8 +264,7 @@ class Converter {
    */
   // returns a lit of all elements, their shortcut and type
   getElements (page) {
-
-    let isValidCategory = category => ['definition', 'citation', 'story'].includes(category)
+    const isValidCategory = category => ['definition', 'citation', 'story'].includes(category)
     var elementList = []
 
     // find them
@@ -329,6 +328,11 @@ class Converter {
     return elementList
   }
 
+  /**
+   * Looks up the element in the definition collection and creates the replacement.
+   * @param {Object} element
+   * @returns {Object}
+   */
   findDefinitionAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
       let type = this.getLegacyType()
@@ -347,22 +351,24 @@ class Converter {
           var tag = ''
 
           if (this.type === 'jahresbericht') {
-            tag = `<span id="${definition._id}" class="shortcut">
-                        ${word}
-                        <span class="definition">
-                          <span class="definition-title">${definition.word}</span>
-                          <span class="definition-text">${definition.text}</span>
-                          <span class="definition-author">${definition.author}</span>
-                          <span class="definition-website">${definition.url}</span>
-                        </span>
-                      </span>`
+            tag = `
+              <span id="${definition._id}" class="shortcut">
+                ${word}
+                <span class="definition">
+                  <span class="definition-title">${definition.word}</span>
+                  <span class="definition-text">${definition.text}</span>
+                  <span class="definition-author">${definition.author}</span>
+                  <span class="definition-website">${definition.url}</span>
+                </span>
+              </span>
+            `
           } else if (this.type === 'olat') {
             tag = `<a href="#definitions-table" title="${definition.text}" class="definition">${definition.word}</a>`
           }
         } else {  // definition not found in database
           resolve({})
         }
-        resolve({element: element, replacement: tag})
+        resolve({ element: element, replacement: tag })
       })
     })
   }

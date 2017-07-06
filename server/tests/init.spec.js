@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import app from '../src/server'
+import Definition from '../src/models/definition'
 
 let server = {}
 
@@ -10,5 +11,8 @@ before(done => {
 
 after(done => {
   server.close() // close express server
+
+  // clear database
+  Definition.collection.drop()
   done()
 })

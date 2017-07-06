@@ -2,6 +2,7 @@ import chai from 'chai'
 import Converter from '../src/converter'
 import chaiAsPromised from 'chai-as-promised'
 import * as cheerio from 'cheerio'
+import Definition from '../src/models/definition'
 
 chai.use(chaiAsPromised)
 
@@ -99,12 +100,16 @@ describe('Converter', () => {
     })
 
     describe('Elements', () => {
-
       beforeEach(done => {
         converter.getRecipe(converter.type).then(recipe => {
           converter.recipe = recipe
           done()
         }).catch((err) => done(err))
+      })
+
+      after(done => {
+        Definition.collection.drop()
+        done()
       })
 
       it('getElements() should record definitions (with & w/o placeholders)', () => {
@@ -213,7 +218,41 @@ describe('Converter', () => {
         result[0].shortcut.should.be.eql('story1')
       })
 
-      it('findDefinitionAndGetReplacement()')
+      it('findDefinitionAndGetReplacement() should create definition content', done => {
+        const element = {
+          markdown: '{ definition: def1 }',
+          category: 'definition',
+          shortcut: 'def1'
+        }
+
+        Definition.create({
+          category: 'definition',
+          word: 'def1',
+          text: 'This is an example definition.',
+          filetype: 'opMainzed'
+        }, (err, definition) => {
+          if (err) done(err)
+          // after database element exists, try to find it
+          converter.findDefinitionAndGetReplacement(element).then((result) => {
+            result.should.have.property('element')
+            result.should.have.property('replacement')
+
+            result.replacement.should.be.eql(`
+              <span id="${definition._id}" class="shortcut">
+                def1
+                <span class="definition">
+                  <span class="definition-title">def1</span>
+                  <span class="definition-text">This is an example definition.</span>
+                  <span class="definition-author">undefined</span>
+                  <span class="definition-website">undefined</span>
+                </span>
+              </span>
+            `)
+            done()
+          }).catch(err => done(err))
+        })
+      })
+
       it('findCitationAndGetReplacement()')
       it('findStoryAndGetReplacement()')
       it('findIncludeAndGetReplacement()')

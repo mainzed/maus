@@ -24,7 +24,7 @@ describe('Routes: Definitions', () => {
   })
 
   after(done => {
-    Definition.collection.drop()
+    // Definition.collection.drop()
     done()
   })
 
