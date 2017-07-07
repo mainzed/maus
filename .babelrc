@@ -1,11 +1,6 @@
 {
   "presets": [
-    "env",
-    {
-      "targets": {
-        "node": 4
-      }
-    }
+    ["env", { "targets": { "node": "4.8.3" } }]
   ],
   "ignore": [
     "node_modules"
