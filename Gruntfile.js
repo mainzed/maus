@@ -39,8 +39,6 @@ module.exports = function (grunt) {
     // Project settings
     yeoman: appConfig,
 
-    // mocha --compilers js:babel-core/register server/tests/**/*.spec.js -w !./server/**/*.js*
-
     mochaTest: {
       test: {
         options: {
@@ -503,6 +501,8 @@ module.exports = function (grunt) {
     // creates vendor.js and scripts.js (just merges, doesnt minify)
     // copies them to folder .tmp/concat/scripts
     'concat',
+
+    // convert concated scripts to es2015 using babel
 
     // makes angular-files in .tmp/concat/scripts save for minification
     'ngAnnotate',

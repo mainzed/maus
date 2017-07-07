@@ -1,0 +1,14 @@
+{
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "angular": true,
+    "$": true
+  },
+  "extends": "standard",
+  "plugins": [
+    "standard",
+    "angular"
+  ]
+}
