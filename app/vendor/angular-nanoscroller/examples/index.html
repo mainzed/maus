@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrollable example</title>
+    <link rel="stylesheet" href="../bower_components/nanoscroller/bin/css/nanoscroller.css"/>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../scrollable.js" type="text/javascript"></script>
+    <script src="app.js"></script>
+    <style>
+        .some-content {
+            margin: 10px;
+            border: 1px solid #000000;
+            width: 200px;
+            height: 200px;
+        }
+
+    </style>
+</head>
+<body ng-app="app" ng-controller="DemoController">
+<div class="some-content">
+    <scrollable always-visible="true">
+        <ul>
+            <li ng-repeat="item in items">{{item}}</li>
+        </ul>
+    </scrollable>
+</div>
+<div class="some-content" scrollable always-visible="true" static>
+    <ul>
+        <li ng-repeat="item in items">{{item}}</li>
+    </ul>
+</div>
+<div class="some-content" scrollable always-visible="true" watch-collection="items">
+    <ul>
+        <li ng-repeat="item in items">{{item}}</li>
+    </ul>
+</div>
+<a ng-click="addItem()" href="">Add item</a>
+</body>
+</html>

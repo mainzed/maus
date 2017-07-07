@@ -8,28 +8,25 @@
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <!-- build:css(./) styles/vendor.css -->
-  <link rel='stylesheet' href='node_modules/font-awesome/css/font-awesome.css' />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel='stylesheet' href='node_modules/codemirror/lib/codemirror.css' />
   <link rel='stylesheet' href='node_modules/bootstrap/dist/css/bootstrap.css' />
   <link rel='stylesheet' href='node_modules/ng-dialog/css/ngDialog.css' />
   <link rel='stylesheet' href='node_modules/ng-dialog/css/ngDialog-theme-default.css' />
-  <!--
-  <link rel='stylesheet' href='bower_components/nanoscroller/bin/css/nanoscroller.css' />-->
+  <link rel='stylesheet' href='node_modules/nanoscroller/bin/css/nanoscroller.css' />
+  <link rel="stylesheet" href="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
   <!-- endbuild -->
 
   <!-- build:css styles/main.css -->
-  <link rel="stylesheet" href="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.css" />
   <link rel="stylesheet" href="scripts/codemirror-plugin/codemirror-show-olat-markdown.css" />
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/style.css">
   <!-- endbuild -->
 
-  <link rel="shortcut icon" href="images/mausicon.ico" type="image/x-icon" />
   <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,300,500,700,400italic,500italic,700italic,300italic,100italic,100'
     rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic'
     rel='stylesheet' type='text/css'>
-
 </head>
 
 <body>
@@ -60,20 +57,18 @@
   <script src="node_modules/codemirror/mode/markdown/markdown.js"></script>
   <script src="node_modules/angular-ui-codemirror/src/ui-codemirror.js"></script>
 
+  <script src="node_modules/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
+  <script src="vendor/angular-nanoscroller/scrollable.js"></script>
+  <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
   <!--
-  <script src="bower_components/ngcssinjector/dist/ngcssinjector.min.js"></script>
-  <script src="bower_components/angular-css/angular-css.js"></script>
-  <script src="bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js"></script>
-  <script src="bower_components/angular-nanoscroller/scrollable.js"></script>
   <script src="bower_components/jquery.mousestop/jquery.event.mousestop.js"></script>
 
   <script src="bower_components/col-resizable/colResizable-1.6.js"></script>-->
   <!-- endbuild -->
 
   <!-- build:js scripts/scripts.js -->
-  <script src="vendor/codemirror-plugin/codemirror-show-markdown-line-breaks.js"></script>
-  <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
 
+  <script src="scripts/codemirror-plugin/codemirror-show-olat-markdown.js"></script>
   <script src="scripts/app.js"></script>
 
   <script src="scripts/controllers/main.js"></script>

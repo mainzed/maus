@@ -39,6 +39,7 @@ fs.access(frontendDistPath, (err) => {
     // TODO: check build process
     // console.log('production version "/dist" not found. run "grunt build". serving the development version "/app" ...')
     app.use('/node_modules', express.static(path.resolve(__dirname, '../../node_modules'), { maxAge: oneDay }))
+    app.use('/vendor', express.static(path.resolve(__dirname, '../../app/vendor'), { maxAge: oneDay }))
     app.use('/tmp', express.static(path.resolve(__dirname, '../../server/tmp'), { maxAge: oneDay }))
     app.use(express.static(path.resolve(__dirname, '../../app')))
   } else {
