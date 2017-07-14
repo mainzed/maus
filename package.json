@@ -93,7 +93,7 @@
   "scripts": {
     "build": "rm -r server/dist && mkdir server/dist && babel server/src -d server/dist",
     "babel-node": "babel-node",
-    "test:server": "./node_modules/.bin/grunt watch:mocha",
+    "test": "./node_modules/.bin/grunt watch:mocha",
     "start": "nodemon --exec npm run babel-node -- server/src/run.js"
   }
 }

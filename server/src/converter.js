@@ -26,24 +26,20 @@ class Converter {
     this.content = undefined // cheerio html just content
     // this.template = ''
     this.recipe = {}
-    this.page = {} // cheerio html incl template
+    this.page = undefined // cheerio html incl template
     this.elements = []
   }
 
   convert () {
     return new Promise((resolve, reject) => {
       this.getRecipe(this.type).then(() => {
-
         // pre-process markdown
         this.prepareMarkdown().then(() => {
-
           // convert markdown to html
           this.convertContent().then(() => {
-
             // get template and put content in it
             this.getTemplate().then(data => {
-
-              this.fillTemplate()
+              this.fillTemplate(data)
 
               // post-processing
               this.addMetada()
@@ -90,7 +86,7 @@ class Converter {
       const content = marked(this.markdown, { renderer: renderers[this.type]() })
       this.content = cheerio.load(content)
 
-      this.resolveLegacyStories()
+      // this.resolveLegacyStories()
 
       // resolve elements
       this.resolveElements().then(() => {
@@ -100,6 +96,7 @@ class Converter {
   }
 
   fillTemplate (data) {
+    if (!data) throw Error('Method requires an html string to be passed as a parameter')
     this.page = cheerio.load(data)
     this.page(MAIN_SECTION_SELECTOR).html(data)
   }
@@ -202,6 +199,7 @@ class Converter {
 
   // legacy stories support
   resolveLegacyStories () {
+    console.log(this.content(MAIN_SECTION_SELECTOR).html())
     var matches = this.content(MAIN_SECTION_SELECTOR).html().match(/story{(.|\n)*?}story/g)
     if (matches) {
       matches.forEach((match, index) => {
@@ -362,7 +360,7 @@ class Converter {
    */
   findDefinitionAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
-      let type = this.getLegacyType()
+      const type = this.getLegacyType()
 
       Definition.findOne({
         'filetype': type,

@@ -17,6 +17,7 @@ describe('Routes: Processing', () => {
       .post('/api/preview')
       .send(file)
       .end((err, res) => {
+        if (err) done(err)
         // err.should.be.null
         res.should.have.status(200)
         res.should.be.json

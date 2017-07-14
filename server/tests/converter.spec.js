@@ -242,16 +242,16 @@ describe('Converter', () => {
           result.should.have.property('replacement')
 
           result.replacement.should.be.eql(`
-            <span id="${definition._id}" class="shortcut">
-              def1
-              <span class="definition">
-                <span class="definition-title">def1</span>
-                <span class="definition-text">This is an example definition.</span>
-                <span class="definition-author">undefined</span>
-                <span class="definition-website">undefined</span>
+              <span id="${definition._id}" class="shortcut">
+                def1
+                <span class="definition">
+                  <span class="definition-title">def1</span>
+                  <span class="definition-text">This is an example definition.</span>
+                  <span class="definition-author">undefined</span>
+                  <span class="definition-website">undefined</span>
+                </span>
               </span>
-            </span>
-          `)
+            `)
           done()
         }).catch(err => done(err))
       })
@@ -273,7 +273,16 @@ describe('Converter', () => {
       }).catch(err => done(err))
     })
 
-    it('fillTemplate() should create page with content')
+    it('fillTemplate() should throw error when no parameters provided', () => {
+      (function () {
+        converter.fillTemplate()
+      }).should.throw(Error, 'Method requires an html string to be passed as a parameter')
+    })
+
+    it('fillTemplate() given an html string should create a Cheerio page object', () => {
+      converter.fillTemplate('<p>This is some content</p>')
+      converter.page.html().should.include('<p>This is some content</p>')
+    })
   })
 
   describe('Post-Processing', () => {
