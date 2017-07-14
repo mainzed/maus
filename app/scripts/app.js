@@ -32,8 +32,7 @@ angular
       template: '<ms-login></ms-login>'
     })
     .when('/files', {
-      templateUrl: 'views/files.html',
-      controller: 'MainCtrl'
+      template: '<ms-files></ms-files>'
     })
     .when('/editor/:id', {
       templateUrl: 'views/editor.html',

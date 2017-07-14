@@ -1,0 +1,10 @@
+node_modules/**
+app/**
+test/**
+.git/**
+Gruntfile.js
+
+server/dist/**
+server/preview/**
+server/tmp/**
+server/tests/**

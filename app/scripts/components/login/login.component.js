@@ -3,7 +3,7 @@
 angular.module('meanMarkdownApp').component('msLogin', {
   bindings: {},
   templateUrl: 'scripts/components/login/login.component.html',
-  controller: function ($scope, $location, $document, AuthService) {
+  controller: function ($document, $location, AuthService) {
     var ctrl = this
 
     ctrl.isValidating = false

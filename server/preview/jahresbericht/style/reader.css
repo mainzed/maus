@@ -62,11 +62,11 @@ iframe 	{	float: left; margin-left: 35%; }
 
 /* listen im Text */
 .readnoshift {padding-left: 0;}
-#read ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
-#read li {	font-size: 19px; margin-left: 23px; margin-bottom: 10px; line-height: 28px;
+#main ul {margin: 20px 0; float: left; clear: left; margin: 20px 35%;}
+#main li {	font-size: 19px; margin-left: 23px; margin-bottom: 10px; line-height: 28px;
 			overflow-wrap: break-word; word-wrap: break-word; -webkit-hyphens: auto; -ms-hyphens: auto; -moz-hyphens: auto; hyphens: auto;
 }
-#read li:before {
+#main li:before {
 	content: "—";
 	margin-left: -26px;
 	margin-right: 12px;
@@ -136,7 +136,7 @@ figcaption .license {padding-bottom: 50px; }
     				font-weight: normal; margin-left: 2px; }
 
 
-#read, #footnotes {width: 100%; padding-bottom: 200px; margin: 0 auto; overflow: hidden; }
+#main, #footnotes {width: 100%; padding-bottom: 200px; margin: 0 auto; overflow: hidden; }
 #footnotes, #imprint { float: left; clear: left;}
 
 #imprint {margin: 100px 35%; padding-bottom: 100px;}
@@ -226,7 +226,7 @@ figcaption .license {padding-bottom: 50px; }
 	#imagecontainer		{	position: absolute;  width: 900px;  }
 	#nav, #ressourcestext {	-webkit-overflow-scrolling: touch;
 							overflow-y: auto; height: calc(100% - 40px);  }
-	#read ul 			{	margin: 20px 25%;	}
+	#main ul 			{	margin: 20px 25%;	}
 
 	.title 	{	font-size: 60px; line-height: 60px; top: 30%; left: 0; }
 	#footnotes {margin: 0 25%; word-break: break-all;}
@@ -260,7 +260,7 @@ figcaption .license {padding-bottom: 50px; }
 	.shiftread h1 { margin-left: 32%; margin-right: 18%; }
 	.shiftread h2 { margin-left: 32%; margin-right: 18%; }
 	.shiftread h3 { margin-left: 32%; margin-right: 18%; }
-	#read.shiftread ul { margin-left: 32%; margin-right: 18%; }
+	#main.shiftread ul { margin-left: 32%; margin-right: 18%; }
 	.shiftread h3 { margin-left: 32%; margin-right: 18%; }
 	.shiftread .citation { margin-left: 32%; margin-right: 18%; }
 	.shiftread figure { margin-left: 32%;  }
@@ -311,9 +311,9 @@ figcaption .license {padding-bottom: 50px; }
 
 	.picturegroup 		{	margin: 200px 0 100px 0; float: left; }
 
-	#read ul {margin: 20px 5%;}
-	#read li {font-size: 19px; line-height: 27px; }
-	#read li:before {   margin-left: -24px; margin-right: 10px; }
+	#main ul {margin: 20px 5%;}
+	#main li {font-size: 19px; line-height: 27px; }
+	#main li:before {   margin-left: -24px; margin-right: 10px; }
 
 	#nav a {color: black; font-size: 16px; line-height: 22px;}
 	#nav ul li 		{	margin: 0;	}
@@ -416,7 +416,7 @@ figcaption .license {padding-bottom: 50px; }
 
 	p  	{	font-size: 16px; line-height: 22px; margin: 10px 5%; 	}
 
-	#read li {font-size: 16px; line-height: 22px; }
+	#main li {font-size: 16px; line-height: 22px; }
 	#nav {width: 85%;}
 
 	#ressourcestext {width: 90%;}

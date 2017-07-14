@@ -1,0 +1,47 @@
+<div class="row files-top">
+  <div class="listcontainer">
+
+  	<!-- <scrollable>
+	    <ms-files-panel class="filesection"></ms-files-panel>
+    </scrollable> -->
+
+    <!-- search box -->
+    <input type="search" placeholder="Filter" ng-model="$ctrl.filesFilterBox">
+
+    <!-- show currently active filter -->
+    <!-- <ms-filter-button></ms-filter-button> -->
+
+    <div ng-repeat="(key, value) in $ctrl.files | filter: $ctrl.filesFilterBox | groupBy: 'type'" ng-show="$ctrl.groupHasValidFiles($ctrl.files, key)">
+
+      <!-- custom section names -->
+      <span class="tableheader">{{ key }}</span>
+
+      <ms-filegroup files="value" filter="$ctrl.filter" onDownloadClick="$ctrl.onDownloadClick()"></ms-filegroup>
+
+    </div>
+
+    <!-- create new -->
+    <div class="toolbarwrapper">
+      <div class="toolbar autowidth center">
+        <div class="displayuser">
+
+          <!-- admin button -->
+          <!-- <button type="button" class="btn btn-default underline" ng-click="onUsersClick()" ng-show="currentUser.group === 'admin'">
+            Users
+          </button> -->
+
+          <span ng-show="$ctrl.user">
+            <span class="icon-maus"></span>
+            maus v0.7.0 / Angemeldet als {{ $ctrl.user.name.toLowerCase() }},
+          </span>
+
+          <button type="button" class="btn btn-default underline" ng-click="$ctrl.onLogoutClick()">
+            Abmelden
+          </button>
+        </div>
+  	  </div>
+    </div>
+  </div>
+</div>
+
+<img class="plusposition" src="../images/plus.png" width="50" ng-click="$ctrl.onCreateNewFile()" />

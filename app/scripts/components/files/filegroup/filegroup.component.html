@@ -1,0 +1,87 @@
+<table class="filegroup">
+  <colgroup>
+    <col span="1" style="width: 60%;">
+    <col span="1" style="width: 15%;">
+    <col span="1" style="width: 10%;">
+    <col span="1" style="width: 5%;">
+    <col span="1" style="width: 10%;">
+  </colgroup>
+
+  <tr ng-repeat="file in $ctrl.files | filter: $ctrl.filter | orderBy: '-updatedAt'">
+
+    <!-- Title -->
+    <td class="colfilename">
+      <a ng-href="#/editor/{{ file._id }}">{{ file.title }}</a>
+    </td>
+
+    <!-- Date -->
+    <td>
+      <button type="button" class="btn btn-link" ng-click="$ctrl.setFilter({ updatedAt: file.updatedAt })" ng-disabled="$ctrl.filter['updatedAt']">
+        {{ $ctrl.getFormattedDate(file.updatedAt) }}
+      </button>
+    </td>
+
+    <!-- Author -->
+    <td>
+      <button ng-show="file.author === $ctrl.user.name" type="button" class="btn btn-link" ng-click="$ctrl.setFilter({ author: file.author })" ng-disabled="$ctrl.filter['author']">
+        {{ "me" }}
+      </button>
+      <button ng-show="file.author !== $ctrl.user.name" type="button" class="btn btn-link" ng-click="$ctrl.setFilter({ author: file.author })" ng-disabled="$ctrl.filter['author']">
+        {{ file.author.toLowerCase() }}
+      </button>
+    </td>
+
+    <!-- Private -->>
+    <td class="colfilestate">
+      <button type="button" class="btn btn-link" ng-click="$ctrl.setFilter({ private: true })" ng-disabled="$ctrl.filter['private']">
+        <i ng-show="file.private" class="fa fa-lock icon-locked" aria-hidden="true" data-toggle="tooltip" title="Private Document. Not visible to other users!"></i>
+      </button>
+    </td>
+
+    <!-- Options -->
+    <td>
+      <div class="dropdown pull-right" ng-init="checkIfArchivedFiles(file._id)">
+        <button ng-disabled="file.type === 'news' && ctrl.user.group !== 'admin'" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+          <!-- download -->
+          <li>
+            <a ng-href="#" target="_self" class="" ng-click="$ctrl.onDownloadClick(file._id)" data-toggle="tooltip" title="Download Markdown">
+              Download
+            </a>
+          </li>
+
+          <!-- history -->
+          <li ng-show="hasArchived.indexOf(file._id) > -1">
+            <a ng-click="$ctrl.onHistoryClick(file._id)"  data-toggle="tooltip" title="Show History">
+              Frühere Versionen
+             </a>
+          </li>
+
+          <!-- edit metadata -->
+          <li ng-if="canEdit(file)">
+            <a ng-click="$ctrl.onEditClick(file._id)" data-toggle="tooltip" title="File Settings" >
+              Editieren
+            </a>
+          </li>
+
+          <!-- delete -->
+          <li ng-if="canEdit(file)">
+            <a class="" ng-click="$ctrl.onRemoveClick(file._id)" data-toggle="tooltip" title="File Settings" >
+              Löschen
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+    </td>
+
+  </tr>
+
+</table>

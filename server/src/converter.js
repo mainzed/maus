@@ -11,6 +11,9 @@ var File = require('./models/file')
 var navigation = require('./navigation')
 
 var RECIPES_PATH = '../recipes.json'
+const MAIN_SECTION_SELECTOR = '#main'
+const GLOSSARY_SELECTOR = '#glossary'
+const PDF_SELECTOR = '#pdf'
 
 // Converts markdown to valid HTML as specified by a config file
 class Converter {
@@ -20,37 +23,85 @@ class Converter {
     }
     this.type = type
     this.markdown = markdown
+    this.content = undefined // cheerio html just content
+    // this.template = ''
     this.recipe = {}
-    this.page = {}
+    this.page = {} // cheerio html incl template
     this.elements = []
   }
 
   convert () {
     return new Promise((resolve, reject) => {
       this.getRecipe(this.type).then(() => {
-        this.getPageFromTemplate().then(page => {
-          this.getMetadata(this.markdown).then(markdown => {
-            this.resolveIncludes(markdown).then(markdown => {
-              this.markdown = markdown
-              this.insertContent(page).then((page) => {
-                this.resolveElements(page).then((page) => {
-                  this.createGlossary(page).then((page) => {  // make synchronous
-                    this.page = page
 
-                    page = this.createTableOfFigures(page)
+        // pre-process markdown
+        this.prepareMarkdown().then(() => {
 
-                    // nav as last step after all elements and tables finished
-                    page = this.createNavigation(page)
-                    resolve(page.html())
-                  })
-                })
-              })
+          // convert markdown to html
+          this.convertContent().then(() => {
+
+            // get template and put content in it
+            this.getTemplate().then(data => {
+
+              this.fillTemplate()
+
+              // post-processing
+              this.addMetada()
+
+              if (this.recipe['navigation']) this.addNavigation()
+              if (this.recipe['addTableOfFigures']) this.addTableOfFigures()
+
+              // TODO: check if they can be done synchronous
+              if (this.recipe['glossary']) {
+                this.addGlossary().then(() => {
+                  resolve(this.page.html())
+                }).catch(err => reject(err))
+              } else {
+                resolve(this.page.html())
+              }
             })
           })
         })
       })
       .catch((err) => reject(err))
     })
+  }
+
+  // prepares markdown content (resolves includes, removes metadata)
+  // sets this.metadata
+  // processes this.markdown
+  prepareMarkdown () {
+    return new Promise((resolve, reject) => {
+      // clean markdown
+      const cleanMarkdown = this.getMetadata(this.markdown)
+
+      // resolve includes
+      this.resolveIncludes(cleanMarkdown).then(markdown => {
+        this.markdown = markdown
+        resolve()
+      }).catch(err => reject(err))
+    })
+  }
+
+  // convert markdown to html and sets cheerio object
+  convertContent () {
+    return new Promise((resolve, reject) => {
+      // markdown to html
+      const content = marked(this.markdown, { renderer: renderers[this.type]() })
+      this.content = cheerio.load(content)
+
+      this.resolveLegacyStories()
+
+      // resolve elements
+      this.resolveElements().then(() => {
+        resolve()
+      }).catch(err => reject(err))
+    })
+  }
+
+  fillTemplate (data) {
+    this.page = cheerio.load(data)
+    this.page(MAIN_SECTION_SELECTOR).html(data)
   }
 
   // promise that returns the recipe
@@ -80,22 +131,12 @@ class Converter {
    * Gets the template path from recipe and loads it's content into a cheerio page object.
    * @returns {Object<Cheerio>}
    */
-  getPageFromTemplate () {
+  getTemplate () {
     return new Promise((resolve, reject) => {
       const filePath = path.join(__dirname, '../', this.recipe['template-path'])
 
       // console.log(filePath)
       fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) reject(err)
-        resolve(cheerio.load(data))
-      })
-    })
-  }
-
-  getTooltipFromTemplate (templatePath) {
-    return new Promise((resolve, reject) => {
-      var filePath = path.resolve(__dirname, '../', templatePath)
-      fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) reject(err)
         resolve(data)
       })
@@ -138,102 +179,88 @@ class Converter {
     return includesList
   }
 
-  // converts markdown to HTML and inserts it into the template's main section
-  insertContent (page) {
-    return new Promise((resolve, reject) => {
-      // get renders as function to reset counters
-      var content = marked(this.markdown, { renderer: renderers[this.type]() })
-      page(this.recipe['main-section-selector']).html(content)
+  addMetada () {
+    // insert title
+    if (this.metadata && this.metadata.title) {
+      this.recipe.metadata['title']['selectors'].forEach((selector) => {
+        this.page(selector).text(this.metadata.title)
+      })
+    }
 
-      // legacy stories support
-      var matches = page(this.recipe['main-section-selector']).html().match(/story{(.|\n)*?}story/g)
-      if (matches) {
-        matches.forEach((match, index) => {
-          var content = match.replace('story{', '').replace('}story', '')
-          var string = `<div class="story" id="story${index + 1}">${content}</div>`
-          var newContent = page(this.recipe['main-section-selector']).html().replace(match, string)
-          page(this.recipe['main-section-selector']).html(newContent)
-        })
-      }
+    // insert link to pdf
+    if (this.metadata && this.metadata.pdfPath) {
+      this.page(PDF_SELECTOR).attr('href', this.metadata.pdfPath)
+    }
 
-      // insert title
-      if (this.metadata.title) {
-        this.recipe.metadata['title']['selectors'].forEach((selector) => {
-          page(selector).text(this.metadata.title)
-        })
-      }
+    // insert cover description
+    if (this.metadata && this.metadata.coverDescription) {
+      this.recipe.metadata['cover-description']['selectors'].forEach((selector) => {
+        this.page(selector).text(this.metadata.coverDescription)
+      })
+    }
+  }
 
-      // insert link to pdf
-      if (this.metadata.pdfPath) {
-        this.recipe.metadata['pdf-link']['selectors'].forEach((selector) => {
-          page(selector).attr('href', this.metadata.pdfPath)
-        })
-      }
-
-      // insert cover description
-      if (this.metadata.coverDescription) {
-        this.recipe.metadata['cover-description']['selectors'].forEach((selector) => {
-          page(selector).text(this.metadata.coverDescription)
-        })
-      }
-      resolve(page)
-    })
+  // legacy stories support
+  resolveLegacyStories () {
+    var matches = this.content(MAIN_SECTION_SELECTOR).html().match(/story{(.|\n)*?}story/g)
+    if (matches) {
+      matches.forEach((match, index) => {
+        var content = match.replace('story{', '').replace('}story', '')
+        var string = `<div class="story" id="story${index + 1}">${content}</div>`
+        var newContent = this.content(MAIN_SECTION_SELECTOR).html().replace(match, string)
+        this.content(MAIN_SECTION_SELECTOR).html(newContent)
+      })
+    }
   }
 
   /**
    * Creates a nav table from page elements and appends it to the page object.
-   * @param {Object<Cheerio>} page
    * @returns {Object<Cheerio>} - A cheerio page object.
    */
-  createNavigation (page) {
-    if (!this.recipe['navigation']) return page  // skip
-    return navigation[this.type](page, this.recipe)
+  addNavigation () {
+    return navigation[this.type](this.page, this.recipe)
   }
 
-  createTableOfFigures (page) {
-    if (!this.recipe['table-of-figures']) return page  // skip
-    return navigation.addTableOfFigures(page)
+  addTableOfFigures (page) {
+    return navigation.addTableOfFigures(this.page)
   }
 
   // records and removes metadata from markdown
   getMetadata (markdown) {
-    return new Promise((resolve, reject) => {
-      this.metadata = {}
-      var cleanMarkdown = markdown
-      var matches
+    this.metadata = {}
+    let cleanMarkdown = markdown
+    let matches
 
-      if (this.recipe.metadata.title) {
-        matches = cleanMarkdown.match(/^@title:(.*)/)
-        if (matches) {
-          this.metadata.title = matches[1].trim()  // save
-          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '') // remove
-        }
-      }
+    matches = cleanMarkdown.match(/^@author:(.*)/)
+    if (matches) {
+      this.metadata.author = matches[1].trim()  // save
+      cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '') // remove
+    }
 
-      if (this.recipe.metadata['cover-description']) {
-        matches = cleanMarkdown.match(/^@cover-description:(.*)/)
-        if (matches) {
-          this.metadata.coverDescription = matches[1].trim()
-          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
-        }
-      }
+    matches = cleanMarkdown.match(/^@title:(.*)/)
+    if (matches) {
+      this.metadata.title = matches[1].trim()  // save
+      cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '') // remove
+    }
 
-      if (this.recipe.metadata['pdf-link']) {
-        matches = cleanMarkdown.match(/^@pdf:(.*)/)
-        if (matches) {
-          this.metadata.pdfPath = matches[1].trim()
-          cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
-        }
-      }
+    matches = cleanMarkdown.match(/^@cover-description:(.*)/)
+    if (matches) {
+      this.metadata.coverDescription = matches[1].trim()
+      cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+    }
 
-      resolve(cleanMarkdown)
-    })
+    matches = cleanMarkdown.match(/^@pdf:(.*)/)
+    if (matches) {
+      this.metadata.pdfPath = matches[1].trim()
+      cleanMarkdown = cleanMarkdown.replace(matches[0] + '\n', '')
+    }
+    return cleanMarkdown
   }
 
-  resolveElements (page) {
+  resolveElements () {
     return new Promise((resolve, reject) => {
       var promises = []
-      this.elements = this.getElements(page)
+      this.elements = this.getElements(this.content)
       this.elements.forEach((element) => {
         if (element.category === 'definition') {
           promises.push(this.findDefinitionAndGetReplacement(element))
@@ -248,11 +275,11 @@ class Converter {
       Promise.all(promises).then((promises) => {
         promises.forEach((promise) => {
           if (promise.element && promise.replacement) {
-            var newContent = page(this.recipe['main-section-selector']).html().replace(promise.element.markdown, promise.replacement)
-            page(this.recipe['main-section-selector']).html(newContent)
+            var newContent = this.content(MAIN_SECTION_SELECTOR).html().replace(promise.element.markdown, promise.replacement)
+            this.content(MAIN_SECTION_SELECTOR).html(newContent)
           }
         })
-        resolve(page)
+        resolve()
       })
     })
   }
@@ -268,8 +295,8 @@ class Converter {
     var elementList = []
 
     // find them
-    if (page(this.recipe['main-section-selector']).html()) { // page has content
-      var elements = page(this.recipe['main-section-selector']).html().match(/\{(.*?)\}/g)
+    if (page(MAIN_SECTION_SELECTOR).html()) { // page has content
+      var elements = page(MAIN_SECTION_SELECTOR).html().match(/\{(.*?)\}/g)
       if (elements) {
         elements.forEach((element) => {
           var content = element.replace('{', '').replace('}', '') // TODO: use regex
@@ -456,49 +483,42 @@ class Converter {
   /**
    * Creates a glossary with all used definitions and appends it to the section
    * specified in the recipes.json.
-   * @param {Object<Cheerio>} page
    * @returns {Promise<Cheerio>} - Cheerio object.
    */
-  createGlossary (page) {
+  addGlossary () {
     return new Promise((resolve, reject) => {
       let elements = this.elements
       let promises = []
 
-      if (this.recipe['glossary'] && this.recipe['glossary']['selectors']) {
-        // get all definitions
-        elements.forEach((element) => {
-          if (element.category === 'definition') {
-            promises.push(this.getElement(element))
+      // get all definitions
+      elements.forEach((element) => {
+        if (element.category === 'definition') {
+          promises.push(this.getElement(element))
+        }
+      })
+
+      Promise.all(promises).then((promises) => {
+        // create glossary structure
+        this.page(GLOSSARY_SELECTOR).append('<h4>Glossar</h4>\n')
+        this.page(GLOSSARY_SELECTOR).append('<ul></ul>\n')
+
+        // append definitions
+        let usedElements = []
+        promises.forEach((element) => {
+          if (element) {
+            if (!usedElements.find((x) => x.word === element.word)) {
+              const DEF_STRING = `<li>
+                                  <a href="#" target="_blank" class="definition" title="${element.text}">
+                                    ${element.word}
+                                  </a>
+                                </li>\n`
+              this.page(GLOSSARY_SELECTOR).find('ul').append(DEF_STRING)
+              usedElements.push(element)
+            }
           }
         })
-
-        Promise.all(promises).then((promises) => {
-          this.recipe['glossary']['selectors'].forEach((selector) => {
-            // create glossary structure
-            page(selector).append('<h4>Glossar</h4>\n')
-            page(selector).append('<ul></ul>\n')
-
-            // append definitions
-            let usedElements = []
-            promises.forEach((element) => {
-              if (element) {
-                if (!usedElements.find((x) => x.word === element.word)) {
-                  const DEF_STRING = `<li>
-                                      <a href="#" target="_blank" class="definition" title="${element.text}">
-                                        ${element.word}
-                                      </a>
-                                    </li>\n`
-                  page(selector).find('ul').append(DEF_STRING)
-                  usedElements.push(element)
-                }
-              }
-            })
-          })
-          resolve(page)  // created
-        })
-      } else {
-        resolve(page)  // not created
-      }
+        resolve()  // created
+      })
     })
   }
 }

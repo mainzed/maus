@@ -26,9 +26,18 @@ router.get('/files/:id', function (req, res, next) {
   })
 })
 
-router.post('/files', function (req, res) {
-  var file = req.body
-  File.addFile(file, function (err, file, next) {
+router.post('/files', (req, res, next) => {
+  if (!req.body.title || !req.body.markdown) {
+    res.status(422).send('Missing fields')
+    next()
+  }
+  // TODO: check if type string
+  const file = new File({
+    title: req.body.title,
+    markdown: req.body.markdown
+  })
+
+  File.addFile(file, function (err, file) {
     if (err) {
       res.status(404).send('Not found')
       next()
