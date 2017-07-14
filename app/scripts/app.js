@@ -19,7 +19,7 @@ angular
   'ui.codemirror',
   'ngDialog',
   // 'ngCssInjector',
-  // 'sun.scrollable',
+  'sun.scrollable',
   'angular.filter'
 ])
 .config(function ($routeProvider, $locationProvider) {
@@ -29,10 +29,12 @@ angular
       redirectTo: '/login'
     })
     .when('/login', {
-      template: '<ms-login></ms-login>'
+      templateUrl: 'views/login.html',
+      controller: 'LoginCtrl'
     })
     .when('/files', {
-      template: '<ms-files></ms-files>'
+      templateUrl: 'views/files.html',
+      controller: 'MainCtrl'
     })
     .when('/editor/:id', {
       templateUrl: 'views/editor.html',

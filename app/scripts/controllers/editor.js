@@ -238,7 +238,7 @@ angular.module('meanMarkdownApp')
         scope: $scope
       })
     }, function error (res) {
-      alert(res.data)
+      console.error(res.data.error)
     })
   }
 

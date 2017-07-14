@@ -1,3 +1,4 @@
+import Resolver from './resolver'
 import Definition from './models/definition'
 
 var fs = require('fs')
@@ -38,8 +39,11 @@ class Converter {
           // convert markdown to html
           this.convertContent().then(() => {
             // get template and put content in it
-            this.getTemplate().then(data => {
-              this.fillTemplate(data)
+            this.getTemplate().then(templateHTMLString => {
+              // create cheerio object from template string and insert content
+              this.fillTemplate(templateHTMLString)
+
+              // the following steps have to be executed on entire page incl header
 
               // post-processing
               this.addMetada()
@@ -89,16 +93,20 @@ class Converter {
       // this.resolveLegacyStories()
 
       // resolve elements
-      this.resolveElements().then(() => {
+      let resolver = new Resolver(content)
+      resolver.resolveElements().then(html => {
+        this.content = html
         resolve()
       }).catch(err => reject(err))
     })
   }
 
-  fillTemplate (data) {
-    if (!data) throw Error('Method requires an html string to be passed as a parameter')
-    this.page = cheerio.load(data)
-    this.page(MAIN_SECTION_SELECTOR).html(data)
+  fillTemplate (templateHTMLString) {
+    if (!templateHTMLString) throw Error('Method requires an html string to be passed as a parameter')
+    this.page = cheerio.load(templateHTMLString)
+
+    // insert processed content (already has processed defnitions etc)
+    this.page(MAIN_SECTION_SELECTOR).html(this.content('body').html())
   }
 
   // promise that returns the recipe
@@ -258,9 +266,10 @@ class Converter {
   resolveElements () {
     return new Promise((resolve, reject) => {
       var promises = []
-      this.elements = this.getElements(this.content)
+      this.elements = this.getElements()
       this.elements.forEach((element) => {
         if (element.category === 'definition') {
+          console.log('FOUND DEFINITION')
           promises.push(this.findDefinitionAndGetReplacement(element))
         } else if (element.category === 'citation') {
           promises.push(this.findCitationAndGetReplacement(element))
@@ -271,10 +280,12 @@ class Converter {
 
       // actually replace them
       Promise.all(promises).then((promises) => {
+        console.log(promises)
         promises.forEach((promise) => {
           if (promise.element && promise.replacement) {
-            var newContent = this.content(MAIN_SECTION_SELECTOR).html().replace(promise.element.markdown, promise.replacement)
-            this.content(MAIN_SECTION_SELECTOR).html(newContent)
+            console.log(promise.element)
+            var newContent = this.content('body').html().replace(promise.element.markdown, promise.replacement)
+            this.content('body').html(newContent)
           }
         })
         resolve()
@@ -283,18 +294,17 @@ class Converter {
   }
 
   /**
-   * Gathers all custom elements from the page.
-   * @param {Object<Cheerio>} page
+   * Gathers all custom elements from the page. Uses this.content
    * @returns {Array<Elements>}
    */
   // returns a lit of all elements, their shortcut and type
-  getElements (page) {
+  getElements () {
     const isValidCategory = category => ['definition', 'citation', 'story'].includes(category)
     var elementList = []
 
     // find them
-    if (page(MAIN_SECTION_SELECTOR).html()) { // page has content
-      var elements = page(MAIN_SECTION_SELECTOR).html().match(/\{(.*?)\}/g)
+    if (this.content.html()) { // page has content
+      var elements = this.content.html().match(/\{(.*?)\}/g)
       if (elements) {
         elements.forEach((element) => {
           var content = element.replace('{', '').replace('}', '') // TODO: use regex
@@ -361,14 +371,12 @@ class Converter {
   findDefinitionAndGetReplacement (element) {
     return new Promise((resolve, reject) => {
       const type = this.getLegacyType()
-
       Definition.findOne({
         'filetype': type,
         'word': element.shortcut,
         'category': element.category
       }, 'word text author url', (err, definition) => {
         if (err) reject(err)
-
         if (definition) {  // is defined
           var word = element.placeholder ? element.placeholder : definition.word
 

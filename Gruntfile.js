@@ -42,10 +42,10 @@ module.exports = function (grunt) {
     mochaTest: {
       test: {
         options: {
-          reporter: 'min',
+          reporter: 'spec',
           require: 'babel-core/register'
         },
-        src: ['server/tests/**/*.spec.js']
+        src: ['server/tests/resolver.spec.js']
       }
     },
 

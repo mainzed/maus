@@ -10,9 +10,28 @@ let should = chai.should()
 
 describe('Converter', () => {
   let converter = {}
+  let defID
 
-  beforeEach(() => {
+  before(done => {
+    // create a definition to test resolves
+    const definition = {
+      category: 'definition',
+      word: 'def1',
+      text: 'This is an example definition.',
+      filetype: 'opMainzed'
+    }
+    Definition.create(definition, (err, def) => {
+      if (err) done(err)
+      defID = def._id
+      done()
+    })
+
     converter = new Converter('jahresbericht', 'some markdown!')
+  })
+
+  after(done => {
+    Definition.collection.drop()
+    done()
   })
 
   it('should init new converter with default parameters', () => {
@@ -104,26 +123,14 @@ describe('Converter', () => {
   })
 
   describe('Conversion', () => {
-    it('convertContent() should create valid html', done => {
-      converter.markdown = 'This **markdown** contains metadata!'
-      converter.convertContent().then(() => {
-        converter.content('body').should.not.be.undefined
-        converter.content('body').html().should.be.eql(`<p>This <strong>markdown</strong> contains metadata!</p>\n`)
-        done()
-      }).catch(err => done(err))
-    })
-
-    it('resolveLegacyStories()')
-    it('convertContent() should resolve includes')
-
     it('getElements() should record definitions (with & w/o placeholders)', () => {
-      const page = cheerio.load(`
-        <div id="main">
-          some markdown and a { definition: someDef }
-          as well as a definition with { definition: someDef: somePlaceholder }
-        </div>
+      converter.content = cheerio.load(`
+        <p>
+        some markdown and a { definition: someDef }
+        as well as a definition with { definition: someDef: somePlaceholder }
+        </p>
       `)
-      const result = converter.getElements(page)
+      const result = converter.getElements()
       result.should.be.a('array')
       result.length.should.be.eql(2)
 
@@ -155,13 +162,13 @@ describe('Converter', () => {
     })
 
     it('getElements() should record legacy definitions (with & w/o placeholders)', () => {
-      const page = cheerio.load(`
+      converter.content = cheerio.load(`
         <div id="main">
           some markdown and a { legacyDef }
           and with a placeholder { legacyDef: placeholder }
         </div>
       `)
-      const result = converter.getElements(page)
+      const result = converter.getElements()
       result.should.be.a('array')
       result.length.should.be.eql(2)
 
@@ -193,12 +200,12 @@ describe('Converter', () => {
     })
 
     it('getElements() should record citations', () => {
-      const page = cheerio.load(`
+      converter.content = cheerio.load(`
         <div id="main">
           some markdown and a { citation: cit1 }
         </div>
       `)
-      const result = converter.getElements(page)
+      const result = converter.getElements()
       result.should.be.a('array')
       result.length.should.be.eql(1)
 
@@ -208,12 +215,12 @@ describe('Converter', () => {
     })
 
     it('getElements() should record stories', () => {
-      const page = cheerio.load(`
+      converter.content = cheerio.load(`
         <div id="main">
           some markdown and a { story: story1 }
         </div>
       `)
-      const result = converter.getElements(page)
+      const result = converter.getElements()
       result.should.be.a('array')
       result.length.should.be.eql(1)
 
@@ -229,39 +236,72 @@ describe('Converter', () => {
         shortcut: 'def1'
       }
 
-      Definition.create({
-        category: 'definition',
-        word: 'def1',
-        text: 'This is an example definition.',
-        filetype: 'opMainzed'
-      }, (err, definition) => {
-        if (err) done(err)
-        // after database element exists, try to find it
-        converter.findDefinitionAndGetReplacement(element).then((result) => {
-          result.should.have.property('element')
-          result.should.have.property('replacement')
+      converter.findDefinitionAndGetReplacement(element).then((result) => {
+        result.should.have.property('element')
+        result.should.have.property('replacement')
 
-          result.replacement.should.be.eql(`
-              <span id="${definition._id}" class="shortcut">
-                def1
-                <span class="definition">
-                  <span class="definition-title">def1</span>
-                  <span class="definition-text">This is an example definition.</span>
-                  <span class="definition-author">undefined</span>
-                  <span class="definition-website">undefined</span>
-                </span>
-              </span>
-            `)
-          done()
-        }).catch(err => done(err))
-      })
+        const expected = `
+          <span id="${defID}" class="shortcut">
+            def1
+            <span class="definition">
+              <span class="definition-title">def1</span>
+              <span class="definition-text">This is an example definition.</span>
+              <span class="definition-author">undefined</span>
+              <span class="definition-website">undefined</span>
+            </span>
+          </span>
+        `.replace(/\s/g, '')
+        const actual = result.replacement.replace(/\s/g, '')
+        actual.should.be.eql(expected)
+        done()
+      }).catch(err => done(err))
     })
 
     it('findCitationAndGetReplacement()')
     it('findStoryAndGetReplacement()')
     it('findIncludeAndGetReplacement()')
     it('getElement()')
-    it('resolveElements()')
+
+    it('resolveElements() given html content should resolve definitions', done => {
+      converter.content = cheerio.load('<p>This markdown contains a { definition: def1 }!</p>')
+      converter.resolveElements().then(() => {
+        converter.content('body').html().replace(/\s/g, '').should.be.eql(`
+          <p>This markdown contains a
+            <span id="${defID}" class="shortcut">
+              def1
+              <span class="definition">
+                <span class="definition-title">def1</span>
+                <span class="definition-text">This is an example definition.</span>
+                <span class="definition-author">undefined</span>
+                <span class="definition-website">undefined</span>
+              </span>
+            </span>
+          !</p>
+        `.replace(/\s/g, ''))
+      }).catch(err => done(err))
+    })
+
+    it('convertContent() should create valid html', done => {
+      converter.markdown = 'This **markdown** contains metadata!'
+      converter.convertContent().then(() => {
+        converter.content('body').should.not.be.undefined
+        converter.content('body').html().replace(/\s/g, '').should.be.eql(`
+          <p>This <strong>markdown</strong> contains metadata!</p>\n`.replace(/\s/g, ''))
+        done()
+      }).catch(err => done(err))
+    })
+
+    // it('convertContent() should resolve defnitions', done => {
+    //   converter.markdown = 'This **markdown** contains a { definition: def1 }!'
+    //   converter.convertContent().then(() => {
+    //     converter.content('body').should.not.be.undefined
+    //     converter.content('body').html().should.be.eql(`<p>This <strong>markdown</strong> contains metadata!</p>\n`)
+    //     done()
+    //   }).catch(err => done(err))
+    // })
+
+    it('resolveLegacyStories()')
+    it('convertContent() should resolve includes')
   })
 
   describe('fill template', () => {
@@ -280,7 +320,8 @@ describe('Converter', () => {
     })
 
     it('fillTemplate() given an html string should create a Cheerio page object', () => {
-      converter.fillTemplate('<p>This is some content</p>')
+      converter.content = cheerio.load('<p>This is some content</p>')
+      converter.fillTemplate('<html><head></head><body><div id="main"></div></body></html>')
       converter.page.html().should.include('<p>This is some content</p>')
     })
   })
@@ -298,5 +339,15 @@ describe('Converter', () => {
     it('addGlossary()')
     it('addNavigation()')
     it('addTableOfFigures()')
+  })
+
+  describe('Entire process', () => {
+    // it('convert() should produce html', done => {
+    //   converter.convert().then(html => {
+    //     html.should.be.a('String')
+    //     html.should.include('<div id="main"><p>some markdown!</p>\n</div>')
+    //     done()
+    //   }).catch(err => done(err))
+    // })
   })
 })
