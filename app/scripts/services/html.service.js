@@ -298,7 +298,6 @@ angular.module('meanMarkdownApp')
     };
 
     this.replacePictureGroup = function(page, shortcut, enrichments, tag) {
-        //console.log(shortcut);
         if (shortcut.length < 2) {
             console.log("Picturegroup needs at least two pictures.");
             throw Error("Picturegroup needs at least two pictures.");
