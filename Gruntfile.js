@@ -20,7 +20,7 @@ module.exports = function (grunt) {
 
     // Configurable paths for the application
     var appConfig = {
-        app: require('./bower.json').appPath || 'app',
+        app: 'app',
         dist: 'dist'
     };
 
@@ -37,10 +37,6 @@ module.exports = function (grunt) {
 
         // Watches files for changes and runs tasks based on the changed files
         watch: {
-          bower: {
-            files: ['bower.json'],
-            tasks: ['wiredep']
-          },
           js: {
             files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
             tasks: ['newer:jshint:all', 'newer:jscs:all'],
@@ -188,34 +184,6 @@ module.exports = function (grunt) {
               src: '{,*/}*.css',
               dest: '.tmp/styles/'
             }]
-          }
-        },
-
-        // Automatically inject Bower components into the app
-        wiredep: {
-
-          // inject components into index.html
-          app: {
-            src: ['<%= yeoman.app %>/index.html'],
-            ignorePath:  /\.\.\//
-          },
-
-          // inject components into karma config file
-          test: {
-            devDependencies: true,
-            src: '<%= karma.unit.configFile %>',
-            ignorePath:  /\.\.\//,
-            fileTypes: {
-              js: {
-                block: /(([\s\t]*)\/{2}\s*?bower:\s*?(\S*))(\n|\r|.)*?(\/{2}\s*endbower)/gi,
-                detect: {
-                  js: /'(.*\.js)'/gi
-                },
-                replace: {
-                  js: '\'{{filePath}}\','
-                }
-              }
-            }
           }
         },
 
@@ -434,15 +402,6 @@ module.exports = function (grunt) {
                 configFile: 'test/karma.conf.js',
                 singleRun: true  // overwrites config setting
             }
-        },
-
-        // express server settings (use my custom server instead of default grunt serve)
-        express: {
-          server: {
-              options: {
-                  script: 'server.js'
-              }
-          }
         }
     });
 
@@ -456,10 +415,8 @@ module.exports = function (grunt) {
 
         grunt.task.run([
           'clean:server',
-          'wiredep',
           'concurrent:server',
           'postcss:server',
-          //'express',  // added this to use custom express server
           'connect:livereload',
           'watch'
         ]);
@@ -467,7 +424,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         //'clean:server',
-        'wiredep',
+        // 'wiredep',
         //'concurrent:test',
         'postcss',
         'connect:test',   // connect to test server
@@ -482,7 +439,7 @@ module.exports = function (grunt) {
         'clean:dist',
 
         // update bower references
-        'wiredep',
+        // 'wiredep',
 
         // prepares files for concat, uglify and cssmin (in memory)
         'useminPrepare',
