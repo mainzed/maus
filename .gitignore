@@ -4,3 +4,6 @@
 /bower_components
 /dist
 /server/preview/*/preview_*.html
+.DS_Store
+/server/dist
+server/tmp
