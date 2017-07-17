@@ -29,8 +29,6 @@ module.exports = function (grunt) {
 
         // references package.json so it can load plugins automatically
         // this way we dont have to do this for every plugin:
-        // grunt.loadNpmTasks('grunt-express-server');
-        //pgk: grunt.file.readJSON('package.json'),
 
         // Project settings
         yeoman: appConfig,
@@ -110,8 +108,7 @@ module.exports = function (grunt) {
         // Make sure there are no obvious mistakes
         jshint: {
           options: {
-            jshintrc: '.jshintrc',
-            reporter: require('jshint-stylish')
+            jshintrc: '.jshintrc'
           },
           all: {
             src: [
@@ -403,23 +400,6 @@ module.exports = function (grunt) {
                 singleRun: true  // overwrites config setting
             }
         }
-    });
-
-    // load all plugins automatically using the package.json file
-    grunt.loadNpmTasks('grunt-express-server');
-
-    grunt.registerTask('serve', 'Compile then start the express web server', function () {
-        /*if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
-        }*/
-
-        grunt.task.run([
-          'clean:server',
-          'concurrent:server',
-          'postcss:server',
-          'connect:livereload',
-          'watch'
-        ]);
     });
 
     grunt.registerTask('test', [
