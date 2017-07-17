@@ -1,0 +1,6 @@
+{
+  "name": "maus",
+  "script": "./server/server.js",
+  "watch": true,
+  "ignore_watch" : ["server/preview", "server/tmp", ".tmp"]
+}
