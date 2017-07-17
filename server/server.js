@@ -14,10 +14,6 @@ var cors = require("cors");
 var api = require("./routes/api");
 var authenticate = require("./routes/authenticate")(passport);
 
-// set file sizes
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
-
 // middleware
 app.use(cors());
 app.use(compression());  // compress static content using gzip
@@ -47,7 +43,7 @@ fs.access(path.resolve(__dirname, "../dist"), function(err) {
     }
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
