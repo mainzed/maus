@@ -10,16 +10,13 @@
  */
 angular
 .module('meanMarkdownApp', [
-  // 'ngAnimate',
   'ngCookies',
   'ngResource',
   'ngRoute',
   'ngSanitize',
-  // 'ngTouch',
   'ui.codemirror',
   'ngDialog',
-  // 'ngCssInjector',
-  // 'sun.scrollable',
+  'sun.scrollable', // angular-nanoscroller
   'angular.filter'
 ])
 .config(function ($routeProvider, $locationProvider) {

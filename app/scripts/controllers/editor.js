@@ -47,11 +47,13 @@ angular.module('meanMarkdownApp')
     return ConfigService.hasEnrichment(type, enrichment)
   }
 
-  $scope.initResizable = function () {
-    // init jquery col resizable plugin
-    // $(function (){
-    //   $(".filegroup").colResizable()
-    // });
+  /**
+   * init jquery col resizable plugin
+   */
+  $scope.initResizable = function() {
+    $(function (){
+      $(".filegroup").colResizable()
+    });
   }
 
   $scope.showSuccess = false
