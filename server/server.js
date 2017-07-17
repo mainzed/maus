@@ -36,6 +36,7 @@ fs.access(path.resolve(__dirname, "../dist"), function(err) {
         // TODO: check build process
         console.log("production version '/dist' not found. run 'grunt build'. serving the development version '/app' ...");
         app.use('/node_modules',  express.static(path.resolve(__dirname, "../node_modules"), { maxAge: oneDay }));
+        app.use('/vendor',  express.static(path.resolve(__dirname, "../vendor"), { maxAge: oneDay }));
         app.use(express.static(path.resolve(__dirname, "../app")));
     } else {
         console.log("production version /dist found. serving ...");
