@@ -2,5 +2,10 @@
   "name": "maus",
   "script": "./server/server.js",
   "watch": true,
-  "ignore_watch" : ["server/preview", "server/tmp", ".tmp"]
+  "ignore_watch" : [
+    "node_modules",
+    "server/preview",
+    "server/tmp",
+    ".tmp"
+  ]
 }
