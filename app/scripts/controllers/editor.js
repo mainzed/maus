@@ -50,10 +50,12 @@ angular.module('meanMarkdownApp')
   /**
    * init jquery col resizable plugin
    */
-  $scope.initResizable = function() {
-    $(function (){
-      $(".filegroup").colResizable()
-    });
+  $scope.initResizable = function () {
+    $(function () {
+      // you have to disable previously enabled table for the new one to work
+      $('table.filegroup').colResizable({ disable: true })
+      $('table.filegroup').colResizable()
+    })
   }
 
   $scope.showSuccess = false

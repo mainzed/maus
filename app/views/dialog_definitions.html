@@ -1,9 +1,8 @@
 
-<button type="button" class="btn btn-default" ng-click="category = 'definition'" ng-show="hasEnrichment(file.type, 'definition')">Definitionen</button>
-<button type="button" class="btn btn-default" ng-click="category = 'picture'" ng-show="hasEnrichment(file.type, 'image')">Bilder</button>
-<button type="button" class="btn btn-default" ng-click="category = 'citation'" ng-show="hasEnrichment(file.type, 'citation')">Zitate</button>
-<button type="button" class="btn btn-default" ng-click="category = 'story'" ng-show="hasEnrichment(file.type, 'story')">Storyelemente</button>
-<button type="button" class="btn btn-default" ng-click="category = 'linklist'" ng-show="hasEnrichment(file.type, 'linklist')">Linklisten</button>
+<button type="button" class="btn btn-default" ng-click="category = 'definition'; initResizable()" ng-show="hasEnrichment(file.type, 'definition')">Definitionen</button>
+<button type="button" class="btn btn-default" ng-click="category = 'picture'; initResizable()" ng-show="hasEnrichment(file.type, 'image')">Bilder</button>
+<button type="button" class="btn btn-default" ng-click="category = 'citation'; initResizable()" ng-show="hasEnrichment(file.type, 'citation')">Zitate</button>
+<button type="button" class="btn btn-default" ng-click="category = 'story'; initResizable()" ng-show="hasEnrichment(file.type, 'story')">Storyelemente</button>
 
 <div class="container">
 
