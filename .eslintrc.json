@@ -5,6 +5,7 @@
     "promise"
   ],
   "globals": {
+    "angular": true,
     "$": true,
     "marked": true
   }
