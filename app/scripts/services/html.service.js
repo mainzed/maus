@@ -163,7 +163,8 @@ angular.module('meanMarkdownApp')
 
       // use data-original instead of src to work with the jQuery lazyload plugin
       customRenderer.image = function (src, title, alt) {
-        return '<img data-original="' + src + '" alt="' + alt + '">'
+        return '<img data-original="' + src + '" alt="' + alt + '">' +
+                 '<noscript><img src="' + src + '" alt="' + alt + '"></noscript>'
       }
       return marked(markdown, { renderer: customRenderer })
     }
@@ -372,6 +373,7 @@ angular.module('meanMarkdownApp')
         figureString = [
             '<figure id="' + enrichment._id + '">',
                 '<img data-original="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '">',
+                '<noscript><img src="' + enrichment.url + '" class="picture" alt="' + enrichment.title + '"></noscript>',
                 '<figcaption>',
                     enrichment.text,
                     metadataString,
