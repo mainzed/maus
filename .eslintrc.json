@@ -5,6 +5,7 @@
     "promise"
   ],
   "globals": {
-    "$": true
+    "$": true,
+    "marked": true
   }
 }
