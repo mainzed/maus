@@ -44,7 +44,7 @@ module.exports = function (grunt) {
           },
           jsTest: {
             files: ['test/spec/{,*/}*.js'],
-            tasks: ['newer:jshint:test', 'newer:jscs:test', 'karma']
+            tasks: ['newer:jshint:test', 'newer:jscs:test']
           },
           styles: {
             files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
@@ -380,96 +380,62 @@ module.exports = function (grunt) {
           dist: [
             'copy:styles',
             'copy:fontawesome',  // copy fonts folder manually
-            'imagemin',
+            'imagemin'
             //'svgmin'
           ]
-        },
-
-        // Test settings
-        karma: {
-
-            // used with grunt test
-            unit: {
-                configFile: 'test/karma.conf.js',
-                singleRun: false  // overwrites config setting
-            },
-
-            // used with grunt build
-            build: {
-                configFile: 'test/karma.conf.js',
-                singleRun: true  // overwrites config setting
-            }
         }
     });
 
-    grunt.registerTask('test', [
-        //'clean:server',
-        // 'wiredep',
-        //'concurrent:test',
-        'postcss',
-        'connect:test',   // connect to test server
-        'karma:unit'
-    ]);
-
     grunt.registerTask('build', [
-        // run unit tests once
-        // 'karma:build',
 
-        // deletes /dist
-        'clean:dist',
+      // deletes /dist
+      'clean:dist',
 
-        // update bower references
-        // 'wiredep',
+      // update bower references
+      // 'wiredep',
 
-        // prepares files for concat, uglify and cssmin (in memory)
-        'useminPrepare',
+      // prepares files for concat, uglify and cssmin (in memory)
+      'useminPrepare',
 
-        // do multiple tasks concurrently (at the same time)
-        // run image minify and copy them to /dist
-        // and copy styles to .tmp
-        'concurrent:dist',
+      // do multiple tasks concurrently (at the same time)
+      // run image minify and copy them to /dist
+      // and copy styles to .tmp
+      'concurrent:dist',
 
-        'postcss',
+      'postcss',
 
-        // copy app files to /dist (all but javascript and css files in .tmp)
-        'copy:dist',
+      // copy app files to /dist (all but javascript and css files in .tmp)
+      'copy:dist',
 
-        // stores all angular views/templates in .tmp/templateCache.js
-        // also adds a reference to it into the final index.html
-        'ngtemplates',
+      // stores all angular views/templates in .tmp/templateCache.js
+      // also adds a reference to it into the final index.html
+      'ngtemplates',
 
-        // creates vendor.js and scripts.js (just merges, doesnt minify)
-        // copies them to folder .tmp/concat/scripts
-        'concat',
+      // creates vendor.js and scripts.js (just merges, doesnt minify)
+      // copies them to folder .tmp/concat/scripts
+      'concat',
 
-        // makes angular-files in .tmp/concat/scripts save for minification
-        'ngAnnotate',
+      // makes angular-files in .tmp/concat/scripts save for minification
+      'ngAnnotate',
 
-        // minify styles in .tmp/styles and copies them to /dist
-        'cssmin',
+      // minify styles in .tmp/styles and copies them to /dist
+      'cssmin',
 
-        // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
-        // the result to /dist/scripts
-        'uglify',
+      // minifies vendor.js and scripts.js in .tmp/concat/scipts and copies
+      // the result to /dist/scripts
+      'uglify',
 
-        // gives cryptic names to files :) (browser caching)
-        'filerev',
+      // gives cryptic names to files :) (browser caching)
+      'filerev',
 
-        // replaces bower components with cdns when possible in index.html
-        //'cdnify',
+      // replaces bower components with cdns when possible in index.html
+      //'cdnify',
 
-        // replaces references to scripts and styles in index.html with links
-        // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
-        'usemin',
+      // replaces references to scripts and styles in index.html with links
+      // to the minified versions (vender.js, scripts.js, vendor.css, main.css)
+      'usemin',
 
-        // minify index.html
-        'htmlmin'
+      // minify index.html
+      'htmlmin'
     ]);
-
-    /*grunt.registerTask('default', [
-        'newer:jshint',
-        'newer:jscs',
-        'test',
-        'build'
-    ]);*/
-};
+}
