@@ -252,14 +252,6 @@ angular.module('meanMarkdownApp')
       return template.name;
   };
 
-  $("#maus").hover(function(){
-      $(this).attr("src", "../images/maussmile.svg");
-  });
-
-  $("#maus").mouseleave(function(){
-      $(this).attr("src", "../images/maus.svg");
-  });
-
   $scope.checkforfirefox = function() {
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
           alert("Bitte Chrome benutzen!!");
