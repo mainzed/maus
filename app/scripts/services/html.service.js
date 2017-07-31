@@ -528,7 +528,7 @@ angular.module('meanMarkdownApp')
         if (enrichment.url) {
             websiteString = [
                 '<span class="website">',
-                    '<a href="' + enrichment.url + '" target="_blank">Website</a>',
+                    '<a href="' + enrichment.url + '" target="_blank">Webressource</a>',
                 '</span>'
             ].join("");
         }
