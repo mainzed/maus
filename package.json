@@ -3,6 +3,8 @@
   "private": true,
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
+    "babel-core": "^6.26.0",
+    "chai": "^4.1.1",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.3.0",
@@ -31,6 +33,7 @@
     "grunt-svgmin": "^2.0.0",
     "grunt-usemin": "^3.0.0",
     "jit-grunt": "^0.9.1",
+    "mocha": "^3.5.0",
     "time-grunt": "^1.0.0"
   },
   "dependencies": {
@@ -41,6 +44,7 @@
     "angular-route": "^1.6.4",
     "angular-sanitize": "^1.6.4",
     "angular-ui-codemirror": "^0.3.0",
+    "babel-preset-es2015": "^6.24.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
     "bootstrap": "^3.3.7",
@@ -70,6 +74,7 @@
   },
   "scripts": {
     "start": "nodemon server/server.js",
+    "test": "mocha --compilers js:babel-core/register test/**/*.spec.js --reporter=min -w",
     "build": "grunt build"
   }
 }

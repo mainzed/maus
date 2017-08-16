@@ -15,4 +15,4 @@ var definitionSchema = new Schema({
     updated_at: { type: Date, default: Date.now }
 });
 
-var Definition = module.exports = mongoose.model('Definition', definitionSchema);
+var Definition = module.exports = mongoose.models.Definition || mongoose.model('Definition', definitionSchema);

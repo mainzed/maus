@@ -16,7 +16,7 @@ var fileSchema = new Schema({
     timestamps: true  // creates updatedAt and createdAt
 });
 
-var File = module.exports = mongoose.model('File', fileSchema);
+var File = module.exports = mongoose.models.File || mongoose.model('File', fileSchema);
 
 module.exports.getFiles = function(callback, limit) {
     File.find(callback).limit(limit);
