@@ -7,6 +7,31 @@ class Exporter {
     this.counter = 1
   }
 
+  recordCitations (input) {
+    // parse and get all citations
+    // replace them later
+    const matches = input.match(/{\scitation:\s(.*?)}/g)
+    const citations = matches.reduce((acc, val) => {
+      const key = val.split(':')[1].replace('}', '').trim()
+      acc.push(key)
+      return acc
+    }, [])
+    return citations
+  }
+
+  /**
+   * Takes an array of citation objects
+   * @param {*} input
+   * @param {*} citationArr
+   */
+  replaceCitations (input, citationArr) {
+    let markdown = input
+    citationArr.forEach(citation => {
+      markdown = markdown.replace(`{ citation: ${citation.word} }`, `> ${citation.text}`)
+    })
+    return markdown
+  }
+
   /**
    * Replace citation with blockquotes given it's ID and it's citation obj
    * @returns {string} replaced markdown
@@ -61,8 +86,12 @@ class Exporter {
     return markdown
   }
 
-  export (input) {
+  async export (input) {
     let markdown = input
+
+    const citations = this.recordCitations(markdown)
+    // TODO: async replace citations
+
     markdown = this.replaceLinks(markdown)
     markdown = this.replaceDefinitions(markdown)
     markdown = this.replaceNumberPlaceholders(markdown)

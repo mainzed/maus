@@ -31,6 +31,22 @@ describe('Exporter', () => {
     expect(exporter.replaceDefinitions(markdown)).to.eql(`some someDef ({{#}})`)
   })
 
+  it('recordCitations() should return list with used citations', () => {
+    const citations = exporter.recordCitations(mockFile)
+    expect(citations).to.be.a('array')
+    expect(citations).to.contain('someCitation')
+  })
+
+  it('replaceCitations() should replace all given citations', () => {
+    const markdown = '{ citation: someCitation }'
+    const citations = [{
+      word: 'someCitation',
+      text: 'this is the actual citation text',
+      author: 'John Doe'
+    }]
+    expect(exporter.replaceCitations(markdown, citations)).to.eql('> this is the actual citation text')
+  })
+
   describe('citations', () => {
     it('replaceCitation() should replace citation with blockquote', () => {
       file.markdown = `
@@ -61,18 +77,31 @@ describe('Exporter', () => {
   })
 
   describe('Export', () => {
-    it('export() should replace all links and definitions', () => {
-      const result = exporter.export(mockFile)
-      expect(result).to.include('some content with a link (1) and a someDef (2)')
-      expect(result).to.include('more content with another link (3)')
+    it('export() should replace all links and definitions', (done) => {
+      exporter.export(mockFile).then((result) => {
+        expect(result).to.include('some content with a link (1) and a someDef (2)')
+        expect(result).to.include('more content with another link (3)')
+        done()
+      })
+
     })
 
-    it('should number links and definitions correctly by main sections', () => {
-      const result = exporter.export(mockFile)
-      expect(result).to.include('link (1) and a someDef (2)')
-      expect(result).to.include('should have resetted link (1) and aDef (2) numbers')
+    it('export() should number links and definitions correctly by main sections', (done) => {
+      exporter.export(mockFile).then((result) => {
+        expect(result).to.include('link (1) and a someDef (2)')
+        expect(result).to.include('should have resetted link (1) and aDef (2) numbers')
+        done()
+      })
     })
+
+    it('export() should replace citations')
+
+    it('should replace pictures')
+
+    it('should replace picture groups')
   })
+
+  it('get')
 
   // it.skip('export() should replace citations with blockquotes', () => {
   //   file.markdown = `
