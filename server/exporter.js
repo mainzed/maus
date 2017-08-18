@@ -1,101 +1,143 @@
 var File = require('./models/file')
 
 class Exporter {
-  constructor (file) {
-    if (file.constructor.name !== 'model') throw new Error('not a valid mongoose object')
-    this.file = file
-    this.counter = 1
-  }
-
-  recordCitations (input) {
-    // parse and get all citations
-    // replace them later
-    const matches = input.match(/{\scitation:\s(.*?)}/g)
-    const citations = matches.reduce((acc, val) => {
-      const key = val.split(':')[1].replace('}', '').trim()
-      acc.push(key)
-      return acc
-    }, [])
-    return citations
-  }
-
   /**
-   * Takes an array of citation objects
+   * creates map for all stuff that has to be replaced
    * @param {*} input
-   * @param {*} citationArr
    */
-  replaceCitations (input, citationArr) {
-    let markdown = input
-    citationArr.forEach(citation => {
-      markdown = markdown.replace(`{ citation: ${citation.word} }`, `> ${citation.text}`)
-    })
-    return markdown
-  }
-
-  /**
-   * Replace citation with blockquotes given it's ID and it's citation obj
-   * @returns {string} replaced markdown
-   */
-  replaceCitation (citationID, citationObj) {
-    let markdown = this.file.markdown
-    const matches = this.file.markdown.match(`{ citation: ${citationID} }`, 'g')
-    matches.forEach(match => {
-      markdown = markdown.replace(match, `> ${citationObj.text}`)
-    })
-    return markdown
-  }
-
-  replaceDefinitions (input) {
-    let markdown = input
-    const matches = markdown.match(/{\sdefinition:\s(.*?)}/g)
-    matches.forEach(match => {
-      const text = match.split(':')[1].replace('}', '').trim()
-      markdown = markdown.replace(match, `${text} ({{#}})`)
-    })
-    return markdown
-  }
-
-  /**
-   * Remove urls from links.
-   */
-  replaceLinks (markdown) {
-    const matches = markdown.match(/(?:__|[*])|\[(.*?)\]\(.*?\)/g)
-    matches.forEach(match => {
-      const text = match.split(']')[0].replace('[', '')
-      markdown = markdown.replace(match, `${text} ({{#}})`)
-    })
-    return markdown
-  }
-
-  /**
-   * Replace placeholders with actual numbers
-   */
-  replaceNumberPlaceholders (input) {
-    let markdown = input
+  getMapping (input) {
+    const mapping = []
     let counter = 1
-    const matches = markdown.match(/({{#}}|#+?\s(\w.*))/g) // matches placeholders and headings
+    let sectionCounter = 0
+    let pictureCounter = 1
+    // matches headings, definitions and links
+    const matches = input.match(/(#+?\s(\w.*)|{\s?.*:\s(.*?)}|(?:__|[*])|\[(.*?)\]\(.*?\))/g)
     matches.forEach(match => {
       // reset counter for each main section
       if (match.startsWith('#') && !match.startsWith('##')) { // is h1
+        sectionCounter++
         counter = 1
-      } else if (match === '{{#}}') {
-        markdown = markdown.replace(match, counter)
+        pictureCounter = 1
+      } else if (match.startsWith('[')) { // is link
+        mapping.push({
+          section: sectionCounter,
+          footnote: counter,
+          type: 'link',
+          placeholder: match
+        })
         counter++
+      } else if (match.includes('definition:')) { // is definition
+        mapping.push({
+          section: sectionCounter,
+          footnote: counter,
+          type: 'definition',
+          placeholder: match
+        })
+        counter++
+      } else if (match.includes('citation:')) { // is definition
+        mapping.push({
+          type: 'citation',
+          placeholder: match
+        })
+      } else if (match.includes('picture:')) { // is definition
+        mapping.push({
+          section: sectionCounter,
+          type: 'picture',
+          placeholder: match,
+          number: pictureCounter
+        })
+        pictureCounter++
+      } else if (match.includes('picturegroup:')) {
+        const pictures = match.split(':')[1].replace('}', '').split(',')
+        const pics = []
+        pictures.forEach((pic) => {
+          pics.push({ id: pic.trim(), number: pictureCounter })
+          pictureCounter++
+        })
+        mapping.push({
+          section: sectionCounter,
+          type: 'picturegroup',
+          placeholder: match,
+          pictures: pics
+        })
+      }
+    })
+    return mapping
+  }
+
+  // dont need definitions, since just the word is used
+  resolveMapping (input, mapping, citations=[], pictures=[]) {
+    let markdown = input
+    mapping.forEach(token => {
+      if (token.type === 'link') {
+        const link = token.placeholder.split(']')[0].replace('[', '').trim()
+        markdown = markdown.replace(
+          token.placeholder,
+          `${link} (${token.footnote})`
+        )
+      } else if (token.type === 'definition') {
+        const definition = token.placeholder.split(':')[1].replace('}', '').trim()
+        markdown = markdown.replace(
+          token.placeholder,
+          `${definition} (${token.footnote})`
+        )
+      } else if (token.type === 'citation') {
+        const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        let citation = citations.find(cit => cit.word === shortcut)
+        if (citation) {
+          markdown = markdown.replace(
+            token.placeholder,
+            `> ${citation.text}\n${citation.author}`
+          )
+        }
+      } else if (token.type === 'picture') {
+        const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        let picture = pictures.find(pic => pic.word === shortcut)
+        if (picture) {
+          markdown = markdown.replace(
+            token.placeholder,
+            `<${picture.url}>\nAbb. ${token.number}: ${picture.text}`
+          )
+        }
+      } else if (token.type === 'picturegroup') {
+        let urls = ''
+        let captions = ''
+        token.pictures.forEach(element => {
+          let picture = pictures.find(pic => pic.word === element.id)
+          if (picture) {
+            urls += `<${picture.url}>\n`
+            captions += `Abb. ${element.number}: ${picture.text}\n`
+          }
+        })
+        markdown = markdown.replace(token.placeholder, urls + captions)
       }
     })
     return markdown
   }
 
-  async export (input) {
-    let markdown = input
+  /**
+   * Expects used definitions in array
+   */
+  getFootnotes (mapping, definitonsArr=[]) {
+    let output = ''
 
-    const citations = this.recordCitations(markdown)
-    // TODO: async replace citations
-
-    markdown = this.replaceLinks(markdown)
-    markdown = this.replaceDefinitions(markdown)
-    markdown = this.replaceNumberPlaceholders(markdown)
-    return markdown
+    let currSection = 0
+    mapping.forEach((token) => {
+      if (token.section && token.section > currSection) {
+        currSection = token.section
+        output += `\n# Kapitel ${currSection}\n`
+      }
+      if (token.type === 'link') {
+        let url = token.placeholder.split(']')[1].replace('(', '').replace(')', '').trim()
+        output += `${token.footnote}. ${url}\n`
+      } else if (token.type === 'definition') {
+        // get definition details
+        const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        let definition = definitonsArr.find(def => def.word === shortcut)
+        output += `${token.footnote}. ${definition.text}, ${definition.author}, ${definition.url}\n`
+      }
+    })
+    return output
   }
 }
 

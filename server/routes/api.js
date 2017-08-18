@@ -1,9 +1,10 @@
-'use strict';
+'use strict'
 
-var express = require('express');
-var router = express.Router();
-var fs = require('fs');  // write files
-var path = require('path');
+var Exporter = require('../exporter')
+var express = require('express')
+var router = express.Router()
+var fs = require('fs')
+var path = require('path')
 
 // mongoose models
 var File = require('../models/file');
@@ -378,5 +379,44 @@ router.get('/templates/opmainzed', function (req, res) {
         res.sendFile(filePath);
     });
 });
+
+router.get('/download/:id', function (req, res) {
+  var id = req.params.id;
+
+  // get markdown
+  File.findById(id, function(err, file) {
+    if (err) {
+      res.status(500).send('File does not exist!');
+      return
+    }
+    Definition.find({ filetype: 'opMainzed' }, function(err, definitions) {
+      // console.log(file.markdown)
+      var definitions = definitions.filter(function(def) {
+        return def.category === 'definition'
+      })
+      var pictures = definitions.filter(function(def) {
+        return def.category === 'picture'
+      })
+      var citations = definitions.filter(function(def) {
+        return def.category === 'citation'
+      })
+
+
+      var exporter = new Exporter()
+      var mapping = exporter.getMapping(file.markdown)
+
+      var markdown = exporter.resolveMapping(file.markdown, mapping, citations, pictures)
+      var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
+
+      fs.writeFile(__dirname + '/../' + 'tmp/export.md', markdown, function(err) {
+        if (err) console.log('error saving markdown file: ' + err)
+        fs.writeFile(__dirname + '/../' + 'tmp/footnotes.md', footnotes, function(err) {
+          if (err) console.log('error saving footnotes file: ' + err)
+          res.json({})
+        })
+      })
+    })
+  })
+})
 
 module.exports = router;

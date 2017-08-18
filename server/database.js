@@ -4,7 +4,7 @@ var mongoose = require('mongoose')
 
 var db = process.env.MONGOLAB_URI || 'mongodb://localhost/markdownstore'
 
-mongoose.connect(db, function (err) {
+mongoose.connect(db, { mongoClient: true}, function (err) {
   if (err) {
     console.log('couldnt connect to mongodb!')
     console.log(err)
