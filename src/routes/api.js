@@ -391,15 +391,15 @@ router.get('/download/:id', function (req, res) {
     }
 
     resolveIncludes(file.markdown).then(markdown => {
-      Definition.find({ filetype: 'opMainzed' }, function(err, definitions) {
+      Definition.find({ filetype: 'opMainzed' }, function(err, defs) {
         // console.log(file.markdown)
-        var definitions = definitions.filter(function(def) {
+        var definitions = defs.filter(function(def) {
           return def.category === 'definition'
         })
-        var pictures = definitions.filter(function(def) {
+        var pictures = defs.filter(function(def) {
           return def.category === 'image'
         })
-        var citations = definitions.filter(function(def) {
+        var citations = defs.filter(function(def) {
           return def.category === 'citation'
         })
 
