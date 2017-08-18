@@ -5,8 +5,4 @@
 /dist
 /server/preview/*/preview_*.html
 .DS_Store
-/server/dist
-server/tmp
-server/models
-server/routes
-server/*.js
+lib/

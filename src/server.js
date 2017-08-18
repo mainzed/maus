@@ -1,5 +1,3 @@
-"use strict";
-
 var fs = require("fs");
 var path = require("path");
 var express = require("express");
@@ -28,7 +26,7 @@ var initPassport = require("./passport-init");
 initPassport(passport);
 
 var oneDay = 86400000;
-app.use("/preview",  express.static(__dirname + "/preview", { maxAge: oneDay }));
+app.use("/preview",  express.static(__dirname + "/preview", { maxAge: oneDay }))
 
 // serve either /app or /dist
 fs.access(path.resolve(__dirname, "../dist"), function(err) {
@@ -49,7 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // connect to mongoDB
-require("./database.js");
+require("./database.js")
 
 // security
 app.disable("x-powered-by");
@@ -60,5 +58,5 @@ app.use("/api", api);
 
 // serve
 app.listen(port, function () {
-    console.log("Server listening on port " + port + "!");
+  console.log("Server listening on port " + port + "!");
 });
