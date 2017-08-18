@@ -13,7 +13,10 @@ echo "npm install..."
 cd $INTDIR
 npm install
 
-echo "build using grunt..."
+echo "build express app..."
+npm run build-server
+
+echo "build angular app..."
 grunt build
 
 echo "restart maus app via pm2"

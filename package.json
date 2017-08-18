@@ -3,6 +3,7 @@
   "private": true,
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "chai": "^4.1.1",
     "eslint": "^3.19.0",
@@ -75,6 +76,8 @@
   "scripts": {
     "start": "nodemon server/server.js",
     "test": "mocha --compilers js:babel-core/register test/**/*.spec.js --reporter=min -w",
-    "build": "grunt build"
+    "build": "grunt build",
+    "build-server": "babel src --out-dir server"
+
   }
 }
