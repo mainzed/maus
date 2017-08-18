@@ -38,6 +38,8 @@ describe('Exporter', () => {
 
     expect(mapping).to.deep.include({ section: 2, footnote: 4, type: 'definition', placeholder: '{definition: Akademie der Wissenschaften und der Literatur | Mainz}'})
     expect(mapping).to.deep.include({ section: 2, footnote: 5, type: 'definition', placeholder: '{definition: Hochschule Mainz}'})
+
+    expect(mapping).to.deep.include({ type: 'citation', placeholder: '{citation: Gersmann}' })
   })
 
   // output of main indesign markdown
@@ -54,6 +56,7 @@ describe('Exporter', () => {
     expect(result).to.include('> Be water my friend.\nBruce Lee')
     expect(result).to.include('> Winter is coming.\nEddard Stark')
     expect(result).to.include('> i am no one\nMany-faced God')
+    expect(result).to.include('> In Laboratorien wie dem jüngst gegründeten „Mainzer Zentrum für Digitalität in den Geistes- und Kulturwissenschaften“ (mainzed), für das sechs Mainzer Wissenschaftsorganisationen ihre Kompetenzen in den digitalen Geistes- und Kulturwissenschaften gebündelt haben, werden systematisch neue digitale Methoden in Disziplinen wie Archäologie, Geschichte, Sprachwissenschaft etc. erarbeitet und erprobt.\nGudrun Gersmann, Einige Überlegungen zur digitalen Geschichtswissenschaft. Blog, Digitalität Theorien und Praktiken des Digitalen in den Geisteswissenschaften. 4. Juli 2016. https://digigeist.hypotheses.org/132#more-132 (20. Juni 2017)')
 
     // figures
     expect(result).to.include('<some-url.de>\nAbb. 1: some caption')
