@@ -405,14 +405,17 @@ router.get('/download/:id', function (req, res) {
 
         var markdown = exporter.resolveMapping(content, mapping, citations, pictures)
         var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
+        // var tableOfFigures = exporter.getFigures()
 
         var zip = new Zip;
         zip.file('content.md', markdown)
-        zip.file('footnotes.md', footnotes)
+        zip.file('endnotes.md', footnotes)
         var options = { base64: false, compression: 'DEFLATE' }
         const filename = path.join(__dirname, '../preview/export.zip')
         fs.writeFile(filename, zip.generate(options), 'binary', (err) => {
           if (err) console.log(err)
+          res.set('Content-Type', 'application/zip')
+          res.set('Content-Disposition', 'attachment; filename=export.zip')
           res.sendFile(filename)
         })
       })

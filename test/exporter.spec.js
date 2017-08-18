@@ -48,9 +48,9 @@ describe('Exporter', () => {
     const result = exporter.resolveMapping(mockFile, mapping, mockCitations, mockPictures)
 
     // links and definitions
-    expect(result).to.include('some content with a link (1) and a someDef (2)')
-    expect(result).to.include('more content with another link (3)')
-    expect(result).to.include('resetted link (1) and aDef (2)')
+    expect(result).to.include('some content with a link [1] and a someDef [2]')
+    expect(result).to.include('more content with another link [3]')
+    expect(result).to.include('resetted link [1] and aDef [2]')
 
     // citations
     expect(result).to.include('> Be water my friend.\nBruce Lee')

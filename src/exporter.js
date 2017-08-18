@@ -76,13 +76,13 @@ class Exporter {
         const link = token.placeholder.split(']')[0].replace('[', '').trim()
         markdown = markdown.replace(
           token.placeholder,
-          `${link} (${token.footnote})`
+          `${link} [${token.footnote}]`
         )
       } else if (token.type === 'definition') {
         const definition = token.placeholder.split(':')[1].replace('}', '').trim()
         markdown = markdown.replace(
           token.placeholder,
-          `${definition} (${token.footnote})`
+          `${definition} [${token.footnote}]`
         )
       } else if (token.type === 'citation') {
         const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
