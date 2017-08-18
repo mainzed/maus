@@ -397,7 +397,7 @@ router.get('/download/:id', function (req, res) {
           return def.category === 'definition'
         })
         var pictures = definitions.filter(function(def) {
-          return def.category === 'picture'
+          return def.category === 'image'
         })
         var citations = definitions.filter(function(def) {
           return def.category === 'citation'
