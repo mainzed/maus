@@ -13,6 +13,7 @@ class Exporter {
 
     // matches headings, definitions and links
     const matches = input.match(/(#+?\s(\w.*)|{\s?\w*:\s(.*?)}|(?:__|[*])|\[(.*?)\]\(.*?\))/g)
+    if (!matches) return mapping
     matches.forEach(match => {
       // reset counter for each main section
       if (match.startsWith('#') && !match.startsWith('##')) { // is h1

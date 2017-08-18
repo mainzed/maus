@@ -404,9 +404,9 @@ router.get('/download/:id', function (req, res) {
         })
 
         var exporter = new Exporter()
-        var mapping = exporter.getMapping(file.markdown)
+        var mapping = exporter.getMapping(markdown)
 
-        var markdown = exporter.resolveMapping(file.markdown, mapping, citations, pictures)
+        var markdown = exporter.resolveMapping(markdown, mapping, citations, pictures)
         var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
 
         fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
