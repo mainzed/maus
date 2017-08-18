@@ -74,12 +74,10 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-
     "babel-node": "babel-node",
     "start": "nodemon --exec npm run babel-node -- src/server.js",
     "test": "mocha --compilers js:babel-core/register test/**/*.spec.js --reporter=min -w",
     "build": "grunt build",
     "build-server": "babel src --out-dir server"
-
   }
 }

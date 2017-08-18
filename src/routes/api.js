@@ -5,6 +5,7 @@ var express = require('express')
 var router = express.Router()
 var fs = require('fs')
 var path = require('path')
+var Zip = require('node-zip')
 
 // mongoose models
 var File = require('../models/file');
@@ -405,22 +406,29 @@ router.get('/download/:id', function (req, res) {
         var markdown = exporter.resolveMapping(content, mapping, citations, pictures)
         var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
 
-        fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
-          if (err) console.log('error saving markdown file: ' + err)
-          fs.writeFile(__dirname + '/../' + 'preview/footnotes.md', footnotes, function(err) {
-            if (err) console.log('error saving footnotes file: ' + err)
-            res.json({
-                mapping: mapping,
-                definitions: definitions,
-                pictures: pictures,
-                citations: citations
-            })
-          })
+        var zip = new Zip;
+        zip.file('content.md', markdown)
+        zip.file('footnotes.md', footnotes)
+        var options = { base64: false, compression: 'DEFLATE' }
+        const filename = path.join(__dirname, '../preview/export.zip')
+        fs.writeFile(filename, zip.generate(options), 'binary', (err) => {
+          if (err) console.log(err)
+          res.sendFile(filename)
         })
       })
     })
+
   })
 })
+
+// function bundle(main, footnotes) {
+//   var zip = new Zip;
+//   zip.file('hello.txt', 'Hello, World!')
+//   var options = { base64: false, compression: 'DEFLATE' }
+//   fs.writeFile(__dirname + '/export.zip', zip.generate(options), 'binary', function (error) {
+//     console.log('wrote test1.zip', error)
+//   });
+// }
 
 // resolves includes if any exist
 function resolveIncludes(markdown) {
@@ -444,7 +452,6 @@ function resolveIncludes(markdown) {
     } else {
         resolve(result)
     }
-
   })
 }
-module.exports = router;
+module.exports = router
