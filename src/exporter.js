@@ -147,6 +147,23 @@ class Exporter {
     })
     return output
   }
+
+  getTableOfFigures (mapping, pictures) {
+    let output = ''
+    let currSection = 0
+    mapping.forEach((token) => {
+      if (token.section && token.section > currSection) {
+        currSection = token.section
+        output += `\n# Kapitel ${currSection}\n`
+      }
+      if (token.type === 'picture') {
+        let shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        let picture = pictures.find(pic => pic.word === shortcut)
+        output += `Lizenz: ${picture.license}\nAutor: ${picture.author}\n\n`
+      }
+    })
+    return output
+  }
 }
 
 module.exports = Exporter

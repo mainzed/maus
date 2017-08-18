@@ -80,4 +80,11 @@ describe('Exporter', () => {
     expect(result).to.include(`2. this is another definition\nAutor: Max Mustermann, Webressource: www.duckduckgo.com`)
     expect(result).to.include(`3. http://web.rgzm.de/no_cache/ueber-uns/team/m/guido_heinz.html`) // picture
   })
+
+  it('getTableOfPictures() should return string containing all pictures', () => {
+    const mapping = exporter.getMapping(mockFile)
+    let result = exporter.getTableOfFigures(mapping, mockPictures)
+    expect(result).to.include(`Lizenz: CC-BY 4.0\nAutor: me\n\n`)
+    expect(result).to.include(`Lizenz: CC-BY 4.0\nAutor: me\n\n`)
+  })
 })

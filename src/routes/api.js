@@ -1,5 +1,3 @@
-'use strict'
-
 var Exporter = require('../exporter')
 var express = require('express')
 var router = express.Router()
@@ -8,11 +6,11 @@ var path = require('path')
 var Zip = require('node-zip')
 
 // mongoose models
-var File = require('../models/file');
-var Definition = require('../models/definition');
-var ArchivedFile = require('../models/archivedFile');
-var ActiveFile = require('../models/activeFile');
-var User = require('../models/user');
+var File = require('../models/file')
+var Definition = require('../models/definition')
+var ArchivedFile = require('../models/archivedFile')
+var ActiveFile = require('../models/activeFile')
+var User = require('../models/user')
 
 //Used for routes that must be authenticated.
 function isAuthenticated (req, res, next) {
@@ -405,11 +403,12 @@ router.get('/download/:id', function (req, res) {
 
         var markdown = exporter.resolveMapping(content, mapping, citations, pictures)
         var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
-        // var tableOfFigures = exporter.getFigures()
+        const tableOfFigures = exporter.getTableOfFigures(mapping, pictures)
 
-        var zip = new Zip;
+        var zip = new Zip
         zip.file('content.md', markdown)
         zip.file('endnotes.md', footnotes)
+        zip.file('figures.md', tableOfFigures)
         var options = { base64: false, compression: 'DEFLATE' }
         const filename = path.join(__dirname, '../preview/export.zip')
         fs.writeFile(filename, zip.generate(options), 'binary', (err) => {
@@ -418,20 +417,12 @@ router.get('/download/:id', function (req, res) {
           res.set('Content-Disposition', 'attachment; filename=export.zip')
           res.sendFile(filename)
         })
+
       })
     })
 
   })
 })
-
-// function bundle(main, footnotes) {
-//   var zip = new Zip;
-//   zip.file('hello.txt', 'Hello, World!')
-//   var options = { base64: false, compression: 'DEFLATE' }
-//   fs.writeFile(__dirname + '/export.zip', zip.generate(options), 'binary', function (error) {
-//     console.log('wrote test1.zip', error)
-//   });
-// }
 
 // resolves includes if any exist
 function resolveIncludes(markdown) {
