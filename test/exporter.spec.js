@@ -72,12 +72,12 @@ describe('Exporter', () => {
     // console.log(result)
     expect(result).to.include(`# Kapitel 1`)
     expect(result).to.include(`1. www.google.de`)
-    expect(result).to.include(`2. this is the actual definition, John Doe, www.google.com`)
+    expect(result).to.include(`2. this is the actual definition\nAutor: John Doe, Webressource: www.google.com`)
     expect(result).to.include(`3. www.google.de`)
 
     expect(result).to.include(`# Kapitel 2`)
     expect(result).to.include(`1. www.google.de`)
-    expect(result).to.include(`2. this is another definition, Max Mustermann, www.duckduckgo.com`)
+    expect(result).to.include(`2. this is another definition\nAutor: Max Mustermann, Webressource: www.duckduckgo.com`)
     expect(result).to.include(`3. http://web.rgzm.de/no_cache/ueber-uns/team/m/guido_heinz.html`) // picture
   })
 })
