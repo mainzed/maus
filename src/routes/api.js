@@ -412,7 +412,7 @@ router.get('/download/:id', function (req, res) {
         if (err) console.log('error saving markdown file: ' + err)
         fs.writeFile(__dirname + '/../' + 'preview/footnotes.md', footnotes, function(err) {
           if (err) console.log('error saving footnotes file: ' + err)
-          res.json({})
+          res.json(mapping)
         })
       })
     })
