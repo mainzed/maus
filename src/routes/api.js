@@ -389,34 +389,59 @@ router.get('/download/:id', function (req, res) {
       res.status(500).send('File does not exist!');
       return
     }
-    Definition.find({ filetype: 'opMainzed' }, function(err, definitions) {
-      // console.log(file.markdown)
-      var definitions = definitions.filter(function(def) {
-        return def.category === 'definition'
-      })
-      var pictures = definitions.filter(function(def) {
-        return def.category === 'picture'
-      })
-      var citations = definitions.filter(function(def) {
-        return def.category === 'citation'
-      })
 
+    resolveIncludes(file.markdown).then(markdown => {
+      Definition.find({ filetype: 'opMainzed' }, function(err, definitions) {
+        // console.log(file.markdown)
+        var definitions = definitions.filter(function(def) {
+          return def.category === 'definition'
+        })
+        var pictures = definitions.filter(function(def) {
+          return def.category === 'picture'
+        })
+        var citations = definitions.filter(function(def) {
+          return def.category === 'citation'
+        })
 
-      var exporter = new Exporter()
-      var mapping = exporter.getMapping(file.markdown)
+        var exporter = new Exporter()
+        var mapping = exporter.getMapping(file.markdown)
 
-      var markdown = exporter.resolveMapping(file.markdown, mapping, citations, pictures)
-      var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
+        var markdown = exporter.resolveMapping(file.markdown, mapping, citations, pictures)
+        var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
 
-      fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
-        if (err) console.log('error saving markdown file: ' + err)
-        fs.writeFile(__dirname + '/../' + 'preview/footnotes.md', footnotes, function(err) {
-          if (err) console.log('error saving footnotes file: ' + err)
-          res.json(mapping)
+        fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
+          if (err) console.log('error saving markdown file: ' + err)
+          fs.writeFile(__dirname + '/../' + 'preview/footnotes.md', footnotes, function(err) {
+            if (err) console.log('error saving footnotes file: ' + err)
+            res.json(mapping)
+          })
         })
       })
     })
   })
 })
 
+// resolves includes if any exist
+function resolveIncludes(markdown) {
+  return new Promise((resolve, reject) => {
+    let result = markdown
+
+    // process includes
+    var includes = markdown.match(/include\((.*)\)/g);
+
+    // if includes, get all files (select later)
+    if (includes) {
+      File.find({}, (err, files) => {
+        if (err) reject(err)
+        includes.forEach(include => {
+          let filename = include.replace('include(', '').replace(')', '')
+          const file = files.find(f => f.title === filename)
+          result = markdown.replace(include, file.markdown)
+        })
+        resolve(result)
+      })
+    }
+    resolve(result)
+  })
+}
 module.exports = router;

@@ -1,6 +1,6 @@
 import { expect } from 'chai'
-import Exporter from '../server/exporter'
-import File from '../server/models/file'
+import Exporter from '../src/exporter'
+import File from '../src/models/file'
 import mockFile from './mock/markdown'
 import mockDefinitions from './mock/definitions'
 import mockCitations from './mock/citations'
@@ -34,6 +34,7 @@ describe('Exporter', () => {
     expect(mapping).to.deep.include({ type: 'citation', placeholder: '{ citation: anotherCitation }' })
     expect(mapping).to.deep.include({ section: 2, footnote: 3, type: 'link', placeholder: '[Dipl.-Ing. (FH) Guido Heinz M.Eng.](http://web.rgzm.de/no_cache/ueber-uns/team/m/guido_heinz.html)' })
     expect(mapping).to.deep.include({ section: 2, type: 'picturegroup', placeholder: '{ picturegroup: pic1, pic2 }', pictures: [{ id: 'pic1', number: 2 }, { id: 'pic2', number: 3 }] })
+    expect(mapping).to.deep.include({ type: 'citation', placeholder: '{ citation: two words }' })
   })
 
   // output of main indesign markdown
@@ -49,6 +50,7 @@ describe('Exporter', () => {
     // citations
     expect(result).to.include('> Be water my friend.\nBruce Lee')
     expect(result).to.include('> Winter is coming.\nEddard Stark')
+    expect(result).to.include('> i am no one\nMany-faced God')
 
     // figures
     expect(result).to.include('<some-url.de>\nAbb. 1: some caption')

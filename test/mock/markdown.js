@@ -22,4 +22,6 @@ export default `
 
   { picturegroup: pic1, pic2 }
 
+  { citation: two words }
+
 `

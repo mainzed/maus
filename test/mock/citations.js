@@ -8,5 +8,10 @@ export default [
     word: 'anotherCitation',
     text: 'Winter is coming.',
     author: 'Eddard Stark'
+  },
+  {
+    word: 'two words',
+    text: 'i am no one',
+    author: 'Many-faced God'
   }
 ]
