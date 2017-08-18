@@ -391,22 +391,18 @@ router.get('/download/:id', function (req, res) {
     }
 
     resolveIncludes(file.markdown).then(markdown => {
-      Definition.find({ filetype: 'opMainzed' }, function(err, defs) {
-        // console.log(file.markdown)
-        var definitions = defs.filter(function(def) {
-          return def.category === 'definition'
-        })
-        var pictures = defs.filter(function(def) {
-          return def.category === 'picture'
-        })
-        var citations = defs.filter(function(def) {
-          return def.category === 'citation'
-        })
+      // console.log(markdown)
+      let content = markdown
+      Definition.find({ filetype: 'opMainzed' }, (err, defs) => {
+
+        var definitions = defs.filter((def) => def.category === 'definition')
+        var pictures = defs.filter((def) => def.category === 'picture')
+        var citations = defs.filter((def) => def.category === 'citation')
 
         var exporter = new Exporter()
-        var mapping = exporter.getMapping(markdown)
+        var mapping = exporter.getMapping(content)
 
-        var markdown = exporter.resolveMapping(markdown, mapping, citations, pictures)
+        var markdown = exporter.resolveMapping(content, mapping, citations, pictures)
         var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
 
         fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
@@ -445,8 +441,10 @@ function resolveIncludes(markdown) {
         })
         resolve(result)
       })
+    } else {
+        resolve(result)
     }
-    resolve(result)
+
   })
 }
 module.exports = router;
