@@ -134,7 +134,9 @@ class Exporter {
         // get definition details
         const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
         let definition = definitonsArr.find(def => def.word === shortcut)
-        output += `${token.footnote}. ${definition.text}, ${definition.author}, ${definition.url}\n`
+        if (definition) {
+          output += `${token.footnote}. ${definition.text}, ${definition.author}, ${definition.url}\n`
+        }
       }
     })
     return output

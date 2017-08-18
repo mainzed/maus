@@ -408,9 +408,9 @@ router.get('/download/:id', function (req, res) {
       var markdown = exporter.resolveMapping(file.markdown, mapping, citations, pictures)
       var footnotes = exporter.getFootnotes(mapping, definitions, pictures)
 
-      fs.writeFile(__dirname + '/../' + 'tmp/export.md', markdown, function(err) {
+      fs.writeFile(__dirname + '/../' + 'preview/export.md', markdown, function(err) {
         if (err) console.log('error saving markdown file: ' + err)
-        fs.writeFile(__dirname + '/../' + 'tmp/footnotes.md', footnotes, function(err) {
+        fs.writeFile(__dirname + '/../' + 'preview/footnotes.md', footnotes, function(err) {
           if (err) console.log('error saving footnotes file: ' + err)
           res.json({})
         })
