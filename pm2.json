@@ -1,11 +1,11 @@
 {
   "name": "maus",
-  "script": "./server/server.js",
+  "script": "./lib/server.js",
   "watch": true,
   "ignore_watch" : [
     "node_modules",
-    "server/preview",
-    "server/tmp",
+    "lib/preview",
+    "lib/tmp",
     ".tmp"
   ]
 }
