@@ -435,7 +435,7 @@ function resolveIncludes(markdown) {
         if (err) reject(err)
         includes.forEach(include => {
           let filename = include.replace('include(', '').replace(')', '')
-          const file = files.find(f => f.title === filename)
+          const file = files.find(f => f.title.toLowerCase().trim() === filename.toLowerCase().trim())
           result = markdown.replace(include, file.markdown)
         })
         resolve(result)
