@@ -24,4 +24,6 @@ export default `
 
   { citation: two words }
 
+  die {definition: Akademie der Wissenschaften und der Literatur | Mainz}, die {definition: Hochschule Mainz}, das {definition: Institut für Geschichtliche Landeskunde an der Universität e. V.}, die {definition: Johannes Gutenberg-Universität Mainz}, das {definition: Leibniz-Institut für Europäische Geschichte} und das {definition: Römisch-Germanisches Zentralmuseum | Leibniz-Forschungsinstitut für Archäologie "Römisch-Germanische Zentralmuseum | Leibniz-Forschungsinstitut für Archäologie"}.
+
 `

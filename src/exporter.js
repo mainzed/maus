@@ -10,8 +10,9 @@ class Exporter {
     let counter = 1
     let sectionCounter = 0
     let pictureCounter = 1
+
     // matches headings, definitions and links
-    const matches = input.match(/(#+?\s(\w.*)|{\s?.*:\s(.*?)}|(?:__|[*])|\[(.*?)\]\(.*?\))/g)
+    const matches = input.match(/(#+?\s(\w.*)|{\s?\w*:\s(.*?)}|(?:__|[*])|\[(.*?)\]\(.*?\))/g)
     matches.forEach(match => {
       // reset counter for each main section
       if (match.startsWith('#') && !match.startsWith('##')) { // is h1
@@ -27,6 +28,7 @@ class Exporter {
         })
         counter++
       } else if (match.includes('definition:')) { // is definition
+        console.log(match)
         mapping.push({
           section: sectionCounter,
           footnote: counter,

@@ -35,6 +35,9 @@ describe('Exporter', () => {
     expect(mapping).to.deep.include({ section: 2, footnote: 3, type: 'link', placeholder: '[Dipl.-Ing. (FH) Guido Heinz M.Eng.](http://web.rgzm.de/no_cache/ueber-uns/team/m/guido_heinz.html)' })
     expect(mapping).to.deep.include({ section: 2, type: 'picturegroup', placeholder: '{ picturegroup: pic1, pic2 }', pictures: [{ id: 'pic1', number: 2 }, { id: 'pic2', number: 3 }] })
     expect(mapping).to.deep.include({ type: 'citation', placeholder: '{ citation: two words }' })
+
+    expect(mapping).to.deep.include({ section: 2, footnote: 4, type: 'definition', placeholder: '{definition: Akademie der Wissenschaften und der Literatur | Mainz}'})
+    expect(mapping).to.deep.include({ section: 2, footnote: 5, type: 'definition', placeholder: '{definition: Hochschule Mainz}'})
   })
 
   // output of main indesign markdown
