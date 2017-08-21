@@ -29,7 +29,6 @@ class Exporter {
         })
         counter++
       } else if (match.includes('definition:')) { // is definition
-        console.log(match)
         mapping.push({
           section: sectionCounter,
           footnote: counter,
@@ -160,6 +159,10 @@ class Exporter {
         let shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
         let picture = pictures.find(pic => pic.word === shortcut)
         output += `Lizenz: ${picture.license}\nAutor: ${picture.author}\n\n`
+      } else if (token.type === 'picturegroup') {
+        pictures.forEach(picture => {
+          output += `Lizenz: ${picture.license}\nAutor: ${picture.author}\n\n`
+        })
       }
     })
     return output

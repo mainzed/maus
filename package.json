@@ -80,7 +80,7 @@
   },
   "scripts": {
     "start": "concurrently --kill-others --names \"babel,nodemon\" --prefix-colors \"yellow.bold,green.bold\" \"gulp watch:server\" \"nodemon lib/server.js\"",
-    "test": "mocha --compilers js:babel-core/register test/**/*.spec.js --reporter=min -w",
+    "test": "mocha --compilers js:babel-core/register test/**/*.spec.js -w",
     "build": "grunt build",
     "build-server": "gulp build:server"
   }

@@ -86,5 +86,6 @@ describe('Exporter', () => {
     let result = exporter.getTableOfFigures(mapping, mockPictures)
     expect(result).to.include(`Lizenz: CC-BY 4.0\nAutor: me\n\n`)
     expect(result).to.include(`Lizenz: CC-BY 4.0\nAutor: me\n\n`)
+    expect(result).to.include(`Lizenz: MIT\nAutor: John Doe\n\n`)
   })
 })
