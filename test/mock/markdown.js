@@ -34,5 +34,7 @@ export default `
 
   Der Zusammenschluss in mainzed ist der Schlüssel zur erfolgreichen Profilierung von Mainz als Standort innovativer, zukunftsfähiger Forschung und Lehre im Bereich der Geistes- und Kulturwissenschaften. Um dies zu erreichen, ist nicht alleine die Förderung einzelner Abteilungen und Personen notwendig, sondern die Kenntnis und Aufnahme digitaler Methoden in der ganzen Breite der Geistes- und Kulturwissenschaften vor Ort. Wissenschaftlerinnen und Wissenschaftler der verschiedenen geistes- und kulturwissenschaftlichen Einrichtungen - ob Universität, außeruniversitäres Forschungsinstitut oder Museum und Archiv - benötigen Unterstützung bei der Implementierung digitaler Technologien in der Forschung und Vermittlung. mainzed ist daher im innerakademischen Wissenstransfer aktiv, entwickelt Qualifizierungsangebote und bietet Kooperationen an.
 
+  # section 3
+  This definition has a { definition: someDef "specific wording" }
 
 `

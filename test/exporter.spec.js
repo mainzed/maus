@@ -65,6 +65,15 @@ describe('Exporter', () => {
     expect(result).to.include('<some-url.de>\n<some-other-url.de>\nAbb. 2: some caption\nAbb. 3: some other caption')
   })
 
+  it('resolveMapping() should use specified wording for definitions', () => {
+    const markdown = 'This definition has a { definition: someDef "specific wording" }'
+    const mapping = exporter.getMapping(markdown)
+    const result = exporter.resolveMapping(markdown, mapping, mockCitations, mockPictures)
+
+    // links and definitions
+    expect(result).to.include('This definition has a specific wording [1]')
+  })
+
   // output of extra file containing all the footnotes
   it('getFootnotes() should return string containing all definitions', () => {
     const mapping = exporter.getMapping(mockFile)
@@ -79,6 +88,9 @@ describe('Exporter', () => {
     expect(result).to.include(`1. www.google.de`)
     expect(result).to.include(`2. this is another definition\nAutor: Max Mustermann, Webressource: www.duckduckgo.com`)
     expect(result).to.include(`3. http://web.rgzm.de/no_cache/ueber-uns/team/m/guido_heinz.html`) // picture
+
+    expect(result).to.include(`# Kapitel 3`)
+    expect(result).to.include(`1. this is the actual definition\nAutor: John Doe, Webressource: www.google.com`)
   })
 
   it('getTableOfPictures() should return string containing all pictures', () => {

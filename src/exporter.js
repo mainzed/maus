@@ -79,10 +79,14 @@ class Exporter {
         )
       } else if (token.type === 'definition') {
         const definition = token.placeholder.split(':')[1].replace('}', '').trim()
-        markdown = markdown.replace(
-          token.placeholder,
-          `${definition} [${token.footnote}]`
-        )
+        const wording = definition.match(/".*"/)
+        let replacement = ''
+        if (wording) {
+          replacement = `${wording[0].replace('"', '').replace('"', '')} [${token.footnote}]`
+        } else {
+          replacement = `${definition} [${token.footnote}]`
+        }
+        markdown = markdown.replace(token.placeholder, replacement)
       } else if (token.type === 'citation') {
         const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
         let citation = citations.find(cit => cit.word === shortcut)
@@ -134,7 +138,12 @@ class Exporter {
         output += `${token.footnote}. ${url}\n`
       } else if (token.type === 'definition') {
         // get definition details
-        const shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        let shortcut = token.placeholder.split(':')[1].replace('}', '').trim()
+        const wording = shortcut.match(/".*"/)
+        if (wording) {
+          shortcut = shortcut.replace(wording, '').trim()
+        }
+
         let definition = definitonsArr.find(def => def.word === shortcut)
         if (definition) {
           let defString = `${token.footnote}. ${definition.text}`
