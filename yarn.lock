@@ -97,9 +97,9 @@ angular-ui-codemirror@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/angular-ui-codemirror/-/angular-ui-codemirror-0.3.0.tgz#e4286fc50f393f2a6e697c1bf3170424e12cbb60"
 
-angular@*, angular@^1.6.4:
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.5.tgz#37f788eebec5ce2e3fa02b17bbcb2a231576a0d6"
+angular@*, angular@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.0.tgz#b1ec179887869215cab6dfd0df2e42caa65b1b51"
 
 ansi-escapes@^1.1.0:
   version "1.4.0"
